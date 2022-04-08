@@ -25,7 +25,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal save new schedule', async function (assert) {
-    assert.expect(14);
+    assert.expect(13);
     await visit('/reports');
 
     // Click "Schedule"
@@ -81,12 +81,6 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
         'Successful notification is shown after clicking save'
       );
 
-    assert.dom('.modal.is-active').isNotVisible('Modal closed on successful save');
-
-    // Reopen the schedule modal
-    await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-report-actions__schedule');
-
     // Check that all fields match the delivery rule we just saved
     assert
       .dom('.schedule__modal-delete-btn')
@@ -113,7 +107,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal with overwrite file toggle', async function (assert) {
-    assert.expect(9);
+    assert.expect(8);
     let originalFlag = config.navi.FEATURES.exportFileTypes;
     config.navi.FEATURES.exportFileTypes = ['csv', 'gsheet'];
 
@@ -151,18 +145,13 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
         'Successful notification is shown after clicking save'
       );
 
-    assert.dom('.modal.is-active').isNotVisible('Modal closed on successful save');
-
-    await triggerEvent('.navi-collection__row2', 'mouseenter');
-    await click('.navi-report-actions__schedule');
-
     assert.dom('.schedule__modal-overwrite-toggle').isChecked('overwrite is saved and can be seen on reopen');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
   });
 
   test('schedule modal save changes to existing schedule', async function (assert) {
-    assert.expect(9);
+    assert.expect(8);
     await visit('/reports');
 
     // Open an existing schedule
@@ -210,12 +199,6 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
         `'Email delivered csv every day' schedule successfully saved!`,
         'Successful notification is shown after clicking save'
       );
-
-    assert.dom('.schedule__modal').doesNotExist('Modal closes after successful save');
-
-    // Reopen the modal
-    await triggerEvent('.navi-collection__row2', 'mouseenter');
-    await click('.navi-report-actions__schedule');
 
     // Check that all fields match the delivery rule we just saved
     assert
@@ -400,7 +383,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal validations', async function (assert) {
-    assert.expect(11);
+    assert.expect(10);
 
     await visit('/reports');
 
@@ -458,12 +441,6 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
         `'Email delivered csv every week' schedule successfully saved!`,
         'Successful notification is shown after clicking save and the schedule is valid'
       );
-
-    assert.dom('.schedule .primary-header').isNotVisible('Schedule modal closes after deleting a schedule');
-
-    // Reopen the modal
-    await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.navi-report-actions__schedule');
 
     assert.deepEqual(
       findAll('.schedule__modal-input--recipients .tag').map((e) => e.innerText.trim()),

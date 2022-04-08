@@ -148,11 +148,6 @@ export default class ScheduleActionComponent extends Component<Args> {
   }
 
   /**
-   * @property {Boolean} attemptedSave
-   */
-  @tracked attemptedSave = false;
-
-  /**
    * @action addNewRule
    */
   @action
@@ -188,22 +183,19 @@ export default class ScheduleActionComponent extends Component<Args> {
       if (rule.name.match(/\w+ \bdelivered\b +\w+ \bevery\b (day|week|month|quarter|year)$/)) {
         rule.name = this.defaultName;
       }
-      this.attemptedSave = false;
-
-      let savePromise = new RSVP.Promise((resolve, reject) => {
-        assert('The Rule is defined', rule);
-        this.args.onSave(rule, { resolve, reject });
-      });
 
       try {
-        await savePromise;
+        await new RSVP.Promise((resolve, reject) => {
+          assert('The Rule is defined', rule);
+          this.args.onSave(rule, { resolve, reject });
+        });
+
         assert('The currentDisplayedRule is defined', rule);
         this.naviNotifications.add({
           title: `'${capitalize(rule.name)}'  schedule successfully saved!`,
           style: 'success',
           timeout: 'short',
         });
-        this.closeModal();
       } catch (errors) {
         this.notification = getAllApiErrMsg(
           errors.errors[0],
@@ -211,11 +203,9 @@ export default class ScheduleActionComponent extends Component<Args> {
         );
       } finally {
         this.isSaving = false;
-        this.attemptedSave = true;
       }
     } else {
       this.isSaving = false;
-      this.attemptedSave = true;
     }
   }
 
@@ -328,13 +318,11 @@ export default class ScheduleActionComponent extends Component<Args> {
         if (confirm('You have unsaved changes on your schedule(s), are you sure you want to exit?')) {
           this.isSaving = false;
           this.showModal = false;
-          this.attemptedSave = false;
           this.notification = undefined;
         }
       } else {
         this.isSaving = false;
         this.showModal = false;
-        this.attemptedSave = false;
         this.notification = undefined;
       }
     }

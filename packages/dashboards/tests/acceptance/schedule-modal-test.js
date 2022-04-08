@@ -63,10 +63,6 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
         'Successful notification is shown after clicking save'
       );
 
-    //Reopen the modal because it closed when saved
-    await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.dashboard-actions__schedule');
-
     // Check that all fields match the delivery rule we just saved
     assert
       .dom('.schedule__modal-delete-btn')
@@ -114,9 +110,6 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
         `'Email delivered pdf every day' schedule successfully saved!`,
         'Successful notification is shown after clicking save'
       );
-
-    // Reopen the modal
-    await click('.dashboard-header__schedule-btn');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
