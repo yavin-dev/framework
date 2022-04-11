@@ -120,6 +120,9 @@ export function buildTimeDimensionFilterValues(
     }
   } else if (timeFilter.operator === 'intervals') {
     return timeFilter.values as string[];
+  } else if (timeFilter.operator === 'eq') {
+    start = timeFilter.values[0] as string;
+    end = moment.utc(start).add(1, getPeriodForGrain(filterGrain)).startOf(filterGrain).toISOString();
   } else {
     assert(`Time Dimension filter operator ${timeFilter.operator} is not supported`);
   }

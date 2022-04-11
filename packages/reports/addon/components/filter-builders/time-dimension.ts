@@ -22,6 +22,7 @@ export const OPERATORS = <const>{
   before: 'before',
   dateRange: 'in',
   advanced: 'advanced',
+  equals: 'eq',
 };
 type InternalOperatorType = typeof OPERATORS[keyof typeof OPERATORS];
 
@@ -130,6 +131,9 @@ export function valuesForOperator(
   } else if (newOperator === OPERATORS.before) {
     const { end } = interval.asMomentsInclusive(grain);
     return [end.toISOString()];
+  } else if (newOperator === OPERATORS.equals) {
+    const { start } = interval.asMomentsInclusive(grain);
+    return [start.toISOString()];
   } else if (newOperator === OPERATORS.dateRange) {
     const { start, end } = interval.asMomentsInclusive(grain);
     return [start.toISOString(), end.toISOString()];
@@ -159,6 +163,8 @@ export function internalOperatorForValues(filter: FilterLike): InternalOperatorT
       return OPERATORS.since;
     } else if (operator === 'lte') {
       return OPERATORS.before;
+    } else if (operator === 'eq') {
+      return OPERATORS.equals;
     }
   }
 
@@ -220,6 +226,12 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
         operator: 'lte' as const,
         internalId: OPERATORS.before,
         name: 'Before',
+        component: 'filter-values/time-dimension/date',
+      },
+      {
+        operator: 'eq' as const,
+        internalId: OPERATORS.equals,
+        name: 'Equals',
         component: 'filter-values/time-dimension/date',
       },
       {
