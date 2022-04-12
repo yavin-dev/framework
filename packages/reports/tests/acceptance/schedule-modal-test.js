@@ -489,7 +489,6 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     //Save the schedule
     await click('.schedule__modal-save-btn');
     await waitFor('.alert');
-    debugger;
 
     let errors = findAll('.alert p');
     assert.equal(errors[1].innerText, 'Invalid recipients: cannot schedule report with unauthorized users');
