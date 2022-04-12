@@ -117,7 +117,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
         'Only send if data is present',
         '',
         'Status',
-        '',
+        'Paused\n  Active',
       ],
       'Schedule Modal has all the expected sections'
     );
@@ -168,7 +168,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.dom('.schedule__modal-rejected').doesNotExist('rejected error does not show');
 
-    assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'Close button is rendered');
+    assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Cancel button is rendered');
 
     assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
 
@@ -270,7 +270,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     //Click save after modal is open
     await click('.schedule__modal-save-btn');
 
-    assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'Show close button after save a delivery rule');
+    assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Show cancel button after save a delivery rule');
   });
 
   test('onRevert Action', async function (assert) {
@@ -507,7 +507,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
         'Only send if data is present',
         '',
         'Status',
-        '',
+        'Paused\n  Active',
       ],
       'Schedule Modal has all the expected sections once we add a rule'
     );
@@ -562,7 +562,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.dom('.schedule__modal-rejected').doesNotExist('rejected error does not show');
 
-    assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'Close button is rendered');
+    assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Cancel button is rendered');
 
     assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
 
@@ -590,7 +590,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
         'Only send if data is present',
         '',
         'Status',
-        '',
+        'Paused\n  Active',
       ],
       'Schedule Modal has all the expected sections'
     );
@@ -600,7 +600,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Schedule Name', 'Delivery', 'Frequency', 'Status', ''],
+      ['Schedule Name', 'Delivery', 'Frequency', 'Status', 'Paused\n  Active'],
       'Schedule Modal has all the expected sections'
     );
   });
@@ -615,7 +615,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Schedule Name', 'Delivery', 'Frequency', 'Status', ''],
+      ['Schedule Name', 'Delivery', 'Frequency', 'Status', 'Paused\n  Active'],
       'Schedule Modal has all the expected sections'
     );
   });

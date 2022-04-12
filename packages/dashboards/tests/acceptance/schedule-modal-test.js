@@ -23,9 +23,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
       .dom('.schedule__modal-delete-btn')
       .isNotVisible('The delete button is not present when creating a new schedule');
 
-    assert
-      .dom('.schedule__modal-save-btn')
-      .hasText('Save', 'The save button says "Save" and not "Save Changes" when creating a new schedule');
+    assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button says "Save"');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
@@ -68,12 +66,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
       .dom('.schedule__modal-delete-btn')
       .isVisible('The delete button is present after a delivery rule has been saved');
 
-    assert
-      .dom('.schedule__modal-save-btn')
-      .hasText(
-        'Save Changes',
-        'The save button says "Save Changes" and not "Save" after a delivery rule has been saved'
-      );
+    assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button is rendered properly');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')

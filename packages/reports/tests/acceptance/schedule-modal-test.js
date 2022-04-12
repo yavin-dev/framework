@@ -41,9 +41,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       .dom('.schedule__modal-delete-btn')
       .isNotVisible('The delete button is not present when creating a new schedule');
 
-    assert
-      .dom('.schedule__modal-save-btn')
-      .hasText('Save', 'The save button says "Save" and not "Save Changes" when creating a new schedule');
+    assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button says "Save"');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
@@ -86,12 +84,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       .dom('.schedule__modal-delete-btn')
       .isVisible('The delete button is present after a delivery rule has been saved');
 
-    assert
-      .dom('.schedule__modal-save-btn')
-      .hasText(
-        'Save Changes',
-        'The save button says "Save Changes" and not "Save" after a delivery rule has been saved'
-      );
+    assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button says "Save"');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
@@ -161,25 +154,15 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     // The initial state of the Cancel button should say "Close"
     assert
       .dom('.schedule__modal-cancel-btn')
-      .hasText('Close', 'The cancel button says "Close" upon opening the schedule modal');
+      .hasText('Cancel', 'The cancel button says "Cancel" upon opening the schedule modal');
 
     // Change the value of the mustHaveData toggle and make sure the model detects changes
     await click('.schedule__modal-must-have-data-toggle');
-    assert
-      .dom('.schedule__modal-cancel-btn')
-      .hasText(
-        'Cancel',
-        'The cancel button says "Cancel" and not "Close" after a user modifies the state of the mustHaveData toggled'
-      );
+    assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'The cancel button says "Cancel"');
 
     // Reverting the changes are also detected by the model and reflected to the user
     await click('.schedule__modal-must-have-data-toggle');
-    assert
-      .dom('.schedule__modal-cancel-btn')
-      .hasText(
-        'Close',
-        'The cancel button says "Close" after a user puts the mustHaveData toggle value back to its initial state'
-      );
+    assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'The cancel button says "Cancel"');
 
     // Enter emails
     await fillIn('.js-ember-tag-input-new', 'navi_user@navi.io');
@@ -205,12 +188,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       .dom('.schedule__modal-delete-btn')
       .isVisible('The delete button is present after a schedule has been modified and saved');
 
-    assert
-      .dom('.schedule__modal-save-btn')
-      .hasText(
-        'Save Changes',
-        'The save button says "Save Changes" and not "Save" after a schedule has been modified and saved'
-      );
+    assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button says "Save"');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
@@ -235,12 +213,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       .dom('.schedule__modal-delete-btn')
       .isVisible('The delete button is present when there is an existing delivery rule');
 
-    assert
-      .dom('.schedule__modal-save-btn')
-      .hasText(
-        'Save Changes',
-        'The save button says "Save Changes" and not "Save" when there is an existing delivery rule'
-      );
+    assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button says "Save"');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
@@ -516,6 +489,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     //Save the schedule
     await click('.schedule__modal-save-btn');
     await waitFor('.alert');
+    debugger;
 
     let errors = findAll('.alert p');
     assert.equal(errors[1].innerText, 'Invalid recipients: cannot schedule report with unauthorized users');
@@ -602,7 +576,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
         'Error is displayed when validation fails'
       );
 
-    assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'The close button says "Close"');
+    assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'The close button says "Cancel"');
 
     window.confirm = () => {
       return true;

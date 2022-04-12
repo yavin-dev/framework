@@ -227,6 +227,8 @@ export default class ScheduleActionComponent extends Component<Args> {
         this.currentDisplayedRule = undefined;
       }
 
+      this.deliveryRules = this.deliveryRules.filter((rule) => rule !== deliveryRule);
+
       //Add Page notification
       this.naviNotifications.add({
         title: `Delivery schedule '${name}' removed`,

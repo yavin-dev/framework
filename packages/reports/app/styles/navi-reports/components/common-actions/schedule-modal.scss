@@ -6,6 +6,7 @@
   &__modal {
     /* stylelint-disable selector-no-qualifying-type */
     div.modal-container {
+      height: 753px;
       width: 901px;
     }
 
@@ -43,11 +44,15 @@
 
     &-options {
       align-items: center;
-      border-bottom: 1px solid #e8e8e8;
-      border-left: 1px solid #e8e8e8;
+      height: 695px;
+
       justify-content: center;
-      min-height: 530px;
       position: relative;
+    }
+
+    &-delivery-list {
+      border-right: 1px solid #e8e8e8;
+      min-height: 695px;
     }
 
     &-no-schedule {
@@ -60,7 +65,7 @@
     }
 
     &-buttons {
-      border-left: 1px solid #e8e8e8;
+      border-top: 1px solid #e8e8e8;
     }
 
     &-new-delivery {
