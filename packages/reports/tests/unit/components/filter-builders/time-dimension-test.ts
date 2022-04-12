@@ -54,7 +54,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
 
     assert.deepEqual(
       dateBuilder.valueBuilders.map((op) => op.name),
-      ['Current Day', 'In The Past', 'Since', 'Before', 'Between', 'Advanced'],
+      ['Current Day', 'In The Past', 'Since', 'Before', 'Equals', 'Between', 'Advanced'],
       'Filter operator is the first and only supported operator'
     );
 
@@ -62,7 +62,7 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
 
     assert.deepEqual(
       dateBuilder.valueBuilders.map((op) => op.name),
-      ['Current IsoWeek', 'In The Past', 'Since', 'Before', 'Between', 'Advanced'],
+      ['Current IsoWeek', 'In The Past', 'Since', 'Before', 'Equals', 'Between', 'Advanced'],
       'Filter operator is the first and only supported operator'
     );
   });
@@ -432,6 +432,80 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
       valuesForOperator(filter, 'year', 'since'),
       ['2019-01-01T00:00:00.000Z'],
       'since translates start/end to start/current for year'
+    );
+
+    // 'equals' tests
+
+    filter.values = ['2019-01-01', '2020-01-01'];
+    filter.parameters.grain = 'day';
+    assert.deepEqual(
+      valuesForOperator(filter, 'day', 'eq'),
+      ['2019-01-01T00:00:00.000Z'],
+      'eq maps invalid interval for day'
+    );
+
+    filter.values = ['2019-01-02', '2020-01-01'];
+    filter.parameters.grain = 'isoWeek';
+    assert.deepEqual(
+      valuesForOperator(filter, 'isoWeek', 'eq'),
+      ['2018-12-31T00:00:00.000Z'],
+      'eq maps invalid interval for isoWeek'
+    );
+
+    filter.values = ['2019-01-02', '2020-01-01'];
+    filter.parameters.grain = 'month';
+    assert.deepEqual(
+      valuesForOperator(filter, 'month', 'eq'),
+      ['2019-01-01T00:00:00.000Z'],
+      'since maps invalid interval for month'
+    );
+
+    filter.values = ['2019-05-01', '2020-01-01'];
+    filter.parameters.grain = 'quarter';
+    assert.deepEqual(
+      valuesForOperator(filter, 'quarter', 'eq'),
+      ['2019-04-01T00:00:00.000Z'],
+      'since maps invalid interval for quarter'
+    );
+
+    filter.values = ['2019-03-01', '2020-01-01'];
+    filter.parameters.grain = 'year';
+    assert.deepEqual(
+      valuesForOperator(filter, 'year', 'eq'),
+      ['2019-01-01T00:00:00.000Z'],
+      'since maps invalid interval for year'
+    );
+
+    filter.values = ['2019-01-01', '2020-01-01'];
+    filter.parameters.grain = 'day';
+    assert.deepEqual(
+      valuesForOperator(filter, 'day', 'eq'),
+      ['2019-01-01T00:00:00.000Z'],
+      'since translates start/end for day'
+    );
+
+    filter.values = ['2018-12-31', '2020-01-01'];
+    filter.parameters.grain = 'isoWeek';
+    assert.deepEqual(
+      valuesForOperator(filter, 'isoWeek', 'eq'),
+      ['2018-12-31T00:00:00.000Z'],
+      'since translates start/end for isoWeek'
+    );
+
+    filter.values = ['2019-03-01', '2020-01-01'];
+    filter.parameters.grain = 'quarter';
+    assert.deepEqual(
+      valuesForOperator(filter, 'quarter', 'eq'),
+      ['2019-01-01T00:00:00.000Z'],
+      'since translates start/end for quarter'
+    );
+
+    filter.values = ['2019-01-01', '2020-01-01'];
+    filter.parameters.grain = 'year';
+    assert.deepEqual(
+      valuesForOperator(filter, 'year', 'eq'),
+      ['2019-01-01T00:00:00.000Z'],
+      'since translates start/end for year'
     );
 
     /*

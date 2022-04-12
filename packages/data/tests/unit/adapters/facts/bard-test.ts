@@ -246,8 +246,6 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   });
 
   test('_buildDateTimeParam', function (assert) {
-    assert.expect(11);
-
     let singleInterval: RequestV2 = {
       ...EmptyRequest,
       table: 'tableName',
@@ -387,6 +385,14 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       '_buildDateTimeParam throws error if end date is not a valid datetime'
     );
     config.navi.dataEpoch = originalDataEpoch;
+
+    const eqDate = '2022-04-11';
+    const eqRequest = singleValue(eqDate, 'eq');
+    assert.equal(
+      Adapter._buildDateTimeParam(eqRequest),
+      `${eqDate}/2022-04-18T00:00:00.000`,
+      'eq operator renders date interval correctly'
+    );
 
     const singleIntervalsOperator = singleValue('2021-10/2021-12', 'intervals');
     assert.equal(
