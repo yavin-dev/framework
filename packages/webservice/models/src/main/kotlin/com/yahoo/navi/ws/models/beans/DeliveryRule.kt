@@ -94,11 +94,13 @@ class DeliveryRule : HasOwner {
     var delivery: Delivery? = null
 
     @NotNull
+    @CreatePermission(expression = "${DefaultJobRunnerCheck.IS_JOB_RUNNER} OR ${DefaultAdminCheck.IS_ADMIN} OR ${DefaultOwnerCheck.IS_OWNER}")
     @UpdatePermission(expression = "${DefaultJobRunnerCheck.IS_JOB_RUNNER} OR ${DefaultAdminCheck.IS_ADMIN} OR ${DefaultOwnerCheck.IS_OWNER}")
     var isDisabled: Boolean? = false
 
     @NotNull
-    @UpdatePermission(expression = "${DefaultJobRunnerCheck.IS_JOB_RUNNER} OR ${DefaultAdminCheck.IS_ADMIN} OR ${DefaultOwnerCheck.IS_OWNER}")
+    @CreatePermission(expression = "${DefaultJobRunnerCheck.IS_JOB_RUNNER} OR ${DefaultAdminCheck.IS_ADMIN}")
+    @UpdatePermission(expression = "${DefaultJobRunnerCheck.IS_JOB_RUNNER} OR ${DefaultAdminCheck.IS_ADMIN}")
     var failureCount: Int? = 0
 
     @Column(name = "scheduling_rules", columnDefinition = "MEDIUMTEXT")
