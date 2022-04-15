@@ -19,6 +19,7 @@ import com.yahoo.navi.ws.models.checks.DefaultAdminCheck
 import com.yahoo.navi.ws.models.checks.DefaultAdminCheck.Companion.IS_ADMIN
 import com.yahoo.navi.ws.models.checks.DefaultJobRunnerCheck
 import com.yahoo.navi.ws.models.checks.DefaultNobodyCheck
+import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck
 import com.yahoo.navi.ws.models.checks.DefaultOwnerCheck.Companion.IS_OWNER
 import com.yahoo.yavin.ws.hooks.DeliveryRuleConditionalRecipientsHook
 import org.hibernate.annotations.CreationTimestamp
@@ -93,10 +94,14 @@ class DeliveryRule : HasOwner {
     var delivery: Delivery? = null
 
     @NotNull
-    var isDisabled: Boolean? = null
+    @CreatePermission(expression = "${DefaultJobRunnerCheck.IS_JOB_RUNNER} OR ${DefaultAdminCheck.IS_ADMIN} OR ${DefaultOwnerCheck.IS_OWNER}")
+    @UpdatePermission(expression = "${DefaultJobRunnerCheck.IS_JOB_RUNNER} OR ${DefaultAdminCheck.IS_ADMIN} OR ${DefaultOwnerCheck.IS_OWNER}")
+    var isDisabled: Boolean? = false
 
     @NotNull
-    var failureCount: Int? = null
+    @CreatePermission(expression = "${DefaultJobRunnerCheck.IS_JOB_RUNNER} OR ${DefaultAdminCheck.IS_ADMIN}")
+    @UpdatePermission(expression = "${DefaultJobRunnerCheck.IS_JOB_RUNNER} OR ${DefaultAdminCheck.IS_ADMIN}")
+    var failureCount: Int? = 0
 
     @Column(name = "scheduling_rules", columnDefinition = "MEDIUMTEXT")
     @Type(
