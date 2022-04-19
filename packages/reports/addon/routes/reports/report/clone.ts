@@ -19,7 +19,7 @@ export default class ReportsReportCloneRoute extends Route {
   model() {
     const report = this.modelFor('reports.report') as ModelFrom<ReportsReportRoute>;
 
-    return this.store.createRecord('report', this.cloneReport(report));
+    return this.cloneReport(report);
   }
 
   /**

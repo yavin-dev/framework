@@ -85,7 +85,7 @@ module('Acceptance | Navi Report', function (hooks) {
   });
 
   test('Clone report', async function (assert) {
-    assert.expect(2);
+    assert.expect(3);
 
     await visit('/reports/1/clone');
 
@@ -96,6 +96,16 @@ module('Acceptance | Navi Report', function (hooks) {
       'Copy Of Hyrule News',
       'Cloned report is being viewed'
     );
+
+    // rename 'Copy of Hyrule News' to 'Gerudo Gazette'
+    await click('.editable-label__value');
+    await fillIn('.editable-label__input', 'Gerudo Gazette');
+    await blur('.editable-label__input');
+
+    // save report
+    await click('.navi-report__save-btn');
+
+    assert.equal(find('.report-header__title').innerText.trim(), 'Gerudo Gazette', 'Can rename cloned reports');
   });
 
   test('Clone invalid report', async function (assert) {
