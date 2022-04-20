@@ -1,7 +1,7 @@
 import { A as arr } from '@ember/array';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { click, findAll, render } from '@ember/test-helpers';
+import { click, fillIn, findAll, render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
@@ -28,10 +28,10 @@ module('Integration | Component | dashboard actions/add widget', function (hooks
         @dashboard={{this.dashboard}}
         @addWidgetToDashboard={{this.onAdd}}
         as |toggleModal|
-      > 
-        <button 
+      >
+        <button
           type="button"
-          class="add-widget__action-btn" 
+          class="add-widget__action-btn"
           {{on "click" toggleModal}}
         >
           Add Widget
@@ -46,7 +46,7 @@ module('Integration | Component | dashboard actions/add widget', function (hooks
   });
 
   test('report selector', async function (assert) {
-    assert.expect(4);
+    assert.expect(5);
 
     await click('.add-widget__action-btn');
 
@@ -71,6 +71,14 @@ module('Integration | Component | dashboard actions/add widget', function (hooks
     assert
       .dom('.ember-power-select-group-name')
       .hasText('My Reports', 'The user`s report titles are shown under a group name `My Reports` in the dropdown');
+
+    // Search for a report
+    await fillIn('.ember-power-select-search-input', '1');
+    assert.deepEqual(
+      findAll('.ember-power-select-option').map((el) => el.textContent.trim()),
+      ['Report 1'],
+      'Only reports matching search are shown'
+    );
 
     // Clean up
     await click('.add-widget__cancel-btn');
