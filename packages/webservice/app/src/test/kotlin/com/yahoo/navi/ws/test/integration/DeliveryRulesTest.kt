@@ -103,7 +103,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("version", "1"),
                             attr("schedulingRules", schedulingRules),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -158,7 +157,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -189,7 +187,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -254,7 +251,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("lastDeliveredOn", "2018-12-03 00:00:00"),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -287,7 +283,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -385,7 +380,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -416,7 +410,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf<String>()),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -446,7 +439,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("delivery", "email"),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -477,7 +469,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("user1@yavin.dev", "uasdf")),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -508,7 +499,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("user1@yavin.dev")),
                             attr("format", format),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -542,7 +532,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -572,7 +561,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -643,7 +631,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -707,7 +694,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
                             attr("version", "1"),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -803,7 +789,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("version", "1"),
                             attr("schedulingRules", schedulingRules),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -910,7 +895,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("version", "1"),
                             attr("schedulingRules", schedulingRules),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
@@ -982,7 +966,6 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("version", "1"),
                             attr("schedulingRules", schedulingRules),
                             attr("isDisabled", false),
-                            attr("failureCount", 0),
                             attr("name", "Test Name")
                         ),
                         relationships(
