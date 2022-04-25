@@ -5,6 +5,14 @@
 @import 'navi-notifications';
 @import 'navi-dashboards';
 
+body {
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  height: 100vh;
+  margin: 0;
+}
+
 .nav-responsive {
   z-index: 1;
 

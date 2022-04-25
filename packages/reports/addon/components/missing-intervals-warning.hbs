@@ -2,15 +2,15 @@
 <AnimatedContainer class="missing-intervals-warning" @motion={{this.resizeMotion}}>
   {{#animated-if this.warningEnabled initialInsertion=true use=this.drawerTransition}}
     <div class="missing-intervals-warning__contents" role="button" {{on "click" (toggle "showDetails" this)}} ...attributes>
-      <NaviIcon @icon="exclamation-triangle" class="missing-intervals-warning__warning-icon" />
+      <DenaliIcon @icon="warning" @size="small" class="missing-intervals-warning__warning-icon" />
       <span class="missing-intervals-warning__message-text">Results have missing data.</span>
       <span class="missing-intervals-warning__details-trigger">
         {{#animated-if this.showDetails use=this.fadeTransition}}
-          <span class="missing-intervals-warning__details-desc">Click to close.</span>
-          <NaviIcon @icon="chevron-down" class="missing-intervals-warning__arrow-icon" />
+          <span class="missing-intervals-warning__details-desc link">Click to close.</span>
+          <DenaliIcon class="m-r-10 p-t-3" @icon="arrowhead-down" @size="small" />
         {{else}}
-          <span class="missing-intervals-warning__details-desc">Click for more details.</span>
-          <NaviIcon @icon="chevron-up" class="missing-intervals-warning__arrow-icon" />
+          <span class="missing-intervals-warning__details-desc link">Click for more details.</span>
+          <DenaliIcon class="m-r-10 p-t-3" @icon="arrowhead-up" @size="small" />
         {{/animated-if}}
       </span>
     </div>
@@ -19,8 +19,8 @@
         <div class="missing-intervals-warning__details-help-text">The following intervals from the result set have missing data:</div>
         <div class="missing-intervals-warning__dates">
           {{#each this.missingIntervals as |interval|}}
-            <div class="missing-intervals-warning__date-row">
-              <NaviIcon @icon="times" class="missing-intervals-warning__x-icon" />
+            <div class="missing-intervals-warning__date-row flex align-items-center">
+              <DenaliIcon @icon="close" class="is-status-danger p-r-5" @size="extrasmall" />
               <span class="missing-intervals-warning__date-interval">{{interval}}</span>
             </div>
           {{/each}}

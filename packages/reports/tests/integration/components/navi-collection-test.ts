@@ -1,12 +1,13 @@
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { A } from '@ember/array';
 import ArrayProxy from '@ember/array/proxy';
-import $ from 'jquery';
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render, find, findAll } from '@ember/test-helpers';
+//@ts-ignore
 import { selectChoose } from 'ember-power-select/test-support';
 import hbs from 'htmlbars-inline-precompile';
+//@ts-ignore
 import findByContains from 'navi-core/test-support/contains-helpers';
 
 const REPORTS = ArrayProxy.create({
@@ -39,32 +40,33 @@ const REPORTS = ArrayProxy.create({
 });
 
 const TEMPLATE = hbs`
-    {{navi-collection
-        items=reports
-        config=(hash
-            filterable=true
-        )
-    }}`;
+<NaviCollection
+  @items={{this.items}}
+  @itemType={{this.itemType}}
+  @itemNewRoute={{this.itemNewRoute}}
+  @config={{hash actions=this.actions filterable=this.filterable emptyMsg=this.emptyMsg}}
+/>`;
 
 module('Integration | Component | navi collection', function (hooks) {
   setupRenderingTest(hooks);
 
   hooks.beforeEach(function () {
     // suppress report-actions/export component inside integration tests, since we are not testing it here
-    this.owner.register('component:report-actions/export', Component.extend(), { instantiate: false });
+    this.owner.register('component:report-actions/export', class extends Component {}, { instantiate: false });
   });
 
   test('Table filtering', async function (assert) {
     assert.expect(2);
 
-    this.set('reports', REPORTS);
+    this.set('filterable', true);
+    this.set('items', REPORTS);
 
     await render(TEMPLATE);
 
     // Click "Favorites" filter option
     await selectChoose('.navi-collection__filter-trigger', 'All');
 
-    let listedReports = findAll('tbody tr td:first-of-type').map((el) => el.textContent.trim());
+    let listedReports = findAll('tbody tr td:first-of-type').map((el) => el.textContent?.trim());
 
     assert.deepEqual(
       listedReports,
@@ -74,7 +76,7 @@ module('Integration | Component | navi collection', function (hooks) {
 
     // Click "Favorites" filter option
     await selectChoose('.navi-collection__filter-trigger', 'Favorites');
-    listedReports = findAll('tbody tr td:first-of-type').map((el) => el.textContent.trim());
+    listedReports = findAll('tbody tr td:first-of-type').map((el) => el.textContent?.trim());
 
     assert.deepEqual(
       listedReports,
@@ -84,12 +86,9 @@ module('Integration | Component | navi collection', function (hooks) {
   });
 
   test('Favorite icon', async function (assert) {
-    this.set('reports', REPORTS);
+    this.set('items', REPORTS);
 
     await render(TEMPLATE);
-
-    //Reset to all filter
-    await selectChoose('.navi-collection__filter-trigger', 'All');
 
     assert
       .dom(findByContains('td', 'Hyrule News').querySelector('.favorite-item--active'))
@@ -103,26 +102,16 @@ module('Integration | Component | navi collection', function (hooks) {
   test('Filterable Table', async function (assert) {
     assert.expect(2);
 
-    this.set('reports', REPORTS);
+    this.set('items', REPORTS);
 
-    await render(hbs`
-          {{navi-collection
-              items=reports
-          }}
-      `);
+    this.set('filterable', false);
+    await render(TEMPLATE);
 
     assert
       .dom('.navi-collection__filter-selector')
       .isNotVisible('Filter dropdown is not shown when `filterable` flag is not set to true in collection config');
 
-    await render(hbs`
-          {{navi-collection
-              items=reports
-              config=(hash
-                  filterable=true
-              )
-          }}
-      `);
+    this.set('filterable', true);
 
     assert
       .dom('.navi-collection__filter-selector')
@@ -132,36 +121,25 @@ module('Integration | Component | navi collection', function (hooks) {
   test('Actions in Table', async function (assert) {
     assert.expect(2);
 
-    this.set('reports', REPORTS);
+    this.set('items', REPORTS);
 
-    await render(hbs`
-          {{navi-collection
-              items=reports
-          }}
-      `);
+    this.set('filterable', false);
+    await render(TEMPLATE);
 
-    assert.notOk(
-      $('.navi-collection .navi-collection__actions').is(':visible'),
-      'Actions column is not shown when `actions` component is missing from collection config'
-    );
+    assert
+      .dom('.navi-collection .navi-collection__actions')
+      .doesNotExist('Actions column is not shown when `actions` component is missing from collection config');
 
-    this.owner.register('component:mock-actions-component', Component.extend(), {
+    this.owner.register('component:mock-actions-component', class extends Component {}, {
       instantiate: false,
     });
 
-    await render(hbs`
-          {{navi-collection
-              items=reports
-              config=(hash
-                  actions='mock-actions-component'
-              )
-          }}
-      `);
+    this.set('actions', 'mock-actions-component');
+    await render(TEMPLATE);
 
-    assert.ok(
-      $('.navi-collection .navi-collection__actions').is(':visible'),
-      'Actions column is shown when `actions` component is in the collection config'
-    );
+    assert
+      .dom('.navi-collection .navi-collection__actions')
+      .exists('Actions column is shown when `actions` component is in the collection config');
   });
 
   test('Error Message - default', async function (assert) {
@@ -175,24 +153,19 @@ module('Integration | Component | navi collection', function (hooks) {
       })
     );
 
-    await render(hbs`
-          {{navi-collection
-              items=items
-              itemType='reports'
-              itemNewRoute='customReports.new'
-          }}
-      `);
+    this.set('itemType', 'reports');
+    this.set('itemNewRoute', 'customReports.new');
+    await render(TEMPLATE);
 
     assert.deepEqual(
-      find('.navi-collection .no-results').textContent.trim(),
+      find('.navi-collection .no-results')?.textContent?.trim(),
       `You don't have any reports yet. Go ahead and create one now?`,
       'Default message is shown when no items are rendered'
     );
 
-    assert.ok(
-      $('.navi-collection .no-results a').is(':visible'),
-      'Default message is shown when no items are rendered with a link'
-    );
+    assert
+      .dom('.navi-collection .no-results a')
+      .exists('Default message is shown when no items are rendered with a link');
   });
 
   test('Error Message - custom', async function (assert) {
@@ -206,17 +179,11 @@ module('Integration | Component | navi collection', function (hooks) {
       })
     );
 
-    await render(hbs`
-          {{navi-collection
-              items=items
-              config=(hash
-                  emptyMsg='You have no custom reports. Create one now.'
-              )
-          }}
-      `);
+    this.set('emptyMsg', 'You have no custom reports. Create one now.');
+    await render(TEMPLATE);
 
     assert.deepEqual(
-      find('.navi-collection .no-results').textContent.trim(),
+      find('.navi-collection .no-results')?.textContent?.trim(),
       'You have no custom reports. Create one now.',
       'Custom message is shown when no items are rendered'
     );
