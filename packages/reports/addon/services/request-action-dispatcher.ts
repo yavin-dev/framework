@@ -19,6 +19,7 @@ export const RequestActions = <const>{
   UPDATE_FILTER: 'updateFilter',
   REMOVE_FILTER: 'removeFilter',
 
+  WILL_UPDATE_TABLE: 'willUpdateTable',
   UPDATE_TABLE: 'updateTable',
   DID_UPDATE_TABLE: 'didUpdateTable',
 

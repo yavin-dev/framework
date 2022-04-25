@@ -13,6 +13,7 @@ import { DateTimePeriod, getPeriodForGrain, Grain } from 'navi-data/utils/date';
 import Interval from 'navi-data/utils/classes/interval';
 import BaseFilterBuilderComponent, { FilterValueBuilder } from './base';
 import { isEmpty } from '@ember/utils';
+import { GrainOrdering } from 'navi-data/models/metadata/bard/table';
 
 export const MONTHS_IN_QUARTER = 3;
 export const OPERATORS = <const>{
@@ -103,7 +104,8 @@ export function valuesForOperator(
   }
 
   const filterGrain = filter.parameters.grain as Grain;
-  const interval = Interval.parseInclusive(startStr, endStr, filterGrain);
+  const minGrain = GrainOrdering[filterGrain] < GrainOrdering.day ? 'day' : filterGrain;
+  const interval = Interval.parseInclusive(startStr, endStr, minGrain);
 
   if (newOperator === OPERATORS.current) {
     return ['current', 'next'];

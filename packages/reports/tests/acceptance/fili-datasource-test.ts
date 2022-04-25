@@ -296,4 +296,46 @@ module('Acceptance | fili datasource', function (hooks) {
       'Date dimension columns shows up correctly with fields and grains'
     );
   });
+
+  test('Fili date time column and filter are preserved when switching tables', async function (assert) {
+    assert.expect(11);
+    await visit('reports/1/edit');
+
+    assert.deepEqual(
+      findAll('.navi-column-config-item__name').map((el) => el.textContent?.trim()),
+      ['Date Time (Day)', 'Property (id)', 'Ad Clicks', 'Nav Link Clicks'],
+      'All columns exist as expected'
+    );
+
+    await selectChoose('.dropdown-parameter-picker', 'Hour');
+    assert
+      .dom('.filter-builder__subject')
+      .hasText('Date Time Hour', 'Date time matches existing filter grain on the report');
+    assert
+      .dom('.navi-column-config-item__name')
+      .hasText('Date Time (Hour)', 'Date Time column is updated to match filter grain of hour');
+
+    assert.dom('.filter-values--date-range-input__low-value input').hasValue('Nov 09, 2015', 'Start Date is correct');
+    assert.dom('.filter-values--date-range-input__high-value input').hasValue('Nov 15, 2015', 'End Date is correct');
+
+    // Switch to Table A which also supports hour grain
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Table A"]');
+
+    assert
+      .dom('.navi-column-config-item__name')
+      .hasText('Date Time (Hour)', 'Date Time column is updated to match filter grain of hour');
+    assert.dom('.filter-values--date-range-input__low-value input').hasValue('Nov 09, 2015', 'Start Date is correct');
+    assert.dom('.filter-values--date-range-input__high-value input').hasValue('Nov 15, 2015', 'End Date is correct');
+
+    // Switch to Table B which doesn't support hour grain
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Table B"]');
+
+    assert
+      .dom('.navi-column-config-item__name')
+      .hasText('Date Time (Day)', 'Date Time column is updated to match filter grain of hour');
+    assert.dom('.filter-values--date-range-input__low-value input').hasValue('Nov 09, 2015', 'Start Date is correct');
+    assert.dom('.filter-values--date-range-input__high-value input').hasValue('Nov 15, 2015', 'End Date is correct');
+  });
 });
