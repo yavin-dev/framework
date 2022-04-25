@@ -307,7 +307,7 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("schedulingRules", SchedulingRules(true)),
                         )
                     )
-                )
+                ).toJSON()
             )
             .`when`()
             .patch("/deliveryRules/1")
@@ -328,7 +328,7 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("isDisabled", true),
                         )
                     )
-                )
+                ).toJSON()
             )
             .`when`()
             .patch("/deliveryRules/1")
@@ -994,7 +994,7 @@ class DeliveryRulesTest : IntegrationTest() {
                             attr("isDisabled", false),
                         )
                     )
-                )
+                ).toJSON()
             )
             .`when`()
             .patch("/deliveryRules/1")
