@@ -14,13 +14,10 @@ Analytics reporting library for navi
 ember install navi-reports
 ```
 
-- Including CSS styling:
-  - Add `@import "navi-reports";` into your `app.less`
-
 ## Usage
 
 - Including CSS styling:
-  - Add `@import "navi-reports";` into your `app.less`
+  - Add `@import "navi-reports";` into your `app.scss`
 
 ## Contributing
 

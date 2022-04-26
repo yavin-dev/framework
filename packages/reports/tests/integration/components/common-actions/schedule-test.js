@@ -59,7 +59,7 @@ const TEMPLATE = hbs`
     class="schedule-action__button"
     {{on "click" toggleModal}}
   >
-    <NaviIcon @icon="clock-o" class="navi-report__action-icon" />
+    <DenaliIcon @icon="time" class="navi-report__action-icon" />
   </button>
 </CommonActions::Schedule>
 `;

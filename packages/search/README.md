@@ -9,7 +9,7 @@ Search for navi
   - `ember install navi-search`
 
 - Including CSS styling:
-  - Add `@import "navi-search";` into your `app.less`
+  - Add `@import "navi-search";` into your `app.scss`
 
 ## Requirements
 
