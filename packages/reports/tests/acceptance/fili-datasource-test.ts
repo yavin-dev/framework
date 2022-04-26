@@ -334,7 +334,7 @@ module('Acceptance | fili datasource', function (hooks) {
 
     assert
       .dom('.navi-column-config-item__name')
-      .hasText('Date Time (Day)', 'Date Time column is updated to match filter grain of hour');
+      .hasText('Date Time (Day)', 'Date Time column is updated to match filter grain of day');
     assert.dom('.filter-values--date-range-input__low-value input').hasValue('Nov 09, 2015', 'Start Date is correct');
     assert.dom('.filter-values--date-range-input__high-value input').hasValue('Nov 15, 2015', 'End Date is correct');
   });
