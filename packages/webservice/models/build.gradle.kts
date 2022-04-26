@@ -1,4 +1,5 @@
 description = "The models required to be stored for the webservice"
+val elideVersion: String by rootProject.extra
 
 plugins {
     base
@@ -23,7 +24,7 @@ allOpen {
 }
 
 dependencies {
-    implementation("com.yahoo.elide", "elide-core", "6.0.1")
+    implementation("com.yahoo.elide", "elide-core", elideVersion)
     implementation("javax.persistence", "javax.persistence-api", "2.2")
     implementation("org.hibernate", "hibernate-core", "5.4.15.Final")
     implementation("jakarta.mail:jakarta.mail-api:1.6.7")

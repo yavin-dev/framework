@@ -26,10 +26,16 @@ elide:
   dynamic-config:
     enabled: true
     path: demo-configs
+    configApiEnabled: true
 
 spring:
   application:
     name: NaviWS
+  config:
+    use-legacy-processing: true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   jpa:
     hibernate:
       show_sql: true

@@ -7,6 +7,8 @@ fun readVersion(): String {
 }
 val parentVersion = readVersion()
 
+val elideVersion by extra { "6.0.6" }
+
 allprojects {
     group = "com.yahoo.navi"
     description = "The persistence webservice for navi application data"

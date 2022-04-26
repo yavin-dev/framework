@@ -4,16 +4,16 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 description = "app"
 
 val environment: String by project
+val elideVersion: String by rootProject.extra
+
 
 val buildEnv = if (!project.hasProperty("environment")) "development" else environment
 
-
-
 plugins {
-    id("org.springframework.boot") version "2.3.1.RELEASE"
-    id("io.spring.dependency-management") version "1.0.9.RELEASE"
+    id("org.springframework.boot") version "2.6.7"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
     kotlin("jvm")
-    kotlin("plugin.spring") version "1.3.72"
+    kotlin("plugin.spring") version "1.6.21"
     id("com.github.node-gradle.node") version "2.2.4"
 }
 
@@ -30,7 +30,8 @@ repositories {
 dependencies {
     implementation(project(":models"))
     implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("com.yahoo.elide", "elide-spring-boot-starter", "6.0.1")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("com.yahoo.elide", "elide-spring-boot-starter", elideVersion)
     implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("com.h2database", "h2", "1.3.176")
     // drivers for models
