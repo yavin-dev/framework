@@ -5,9 +5,9 @@
 
 package com.yahoo.navi.ws.models.hooks
 
-import com.yahoo.elide.RefreshableElide
 import com.yahoo.elide.annotation.LifeCycleHookBinding.Operation
 import com.yahoo.elide.annotation.LifeCycleHookBinding.TransactionPhase
+import com.yahoo.elide.core.dictionary.EntityDictionary
 import com.yahoo.elide.core.exceptions.BadRequestException
 import com.yahoo.elide.core.lifecycle.LifeCycleHook
 import com.yahoo.elide.core.security.ChangeSpec
@@ -25,10 +25,9 @@ import javax.inject.Inject
  */
 class UserValidationHook : LifeCycleHook<User> {
     @Inject
-    private lateinit var refreshableElide: RefreshableElide
+    private lateinit var dictionary: EntityDictionary
 
     private val adminCheck by lazy {
-        val dictionary = refreshableElide.elide.elideSettings.dictionary
         dictionary.injector.instantiate(dictionary.getCheck(IS_ADMIN)) as UserCheck?
     }
 

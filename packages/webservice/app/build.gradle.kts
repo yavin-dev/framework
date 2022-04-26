@@ -42,6 +42,7 @@ dependencies {
     runtimeOnly("org.apache.calcite.avatica","avatica-core","1.17.0")
     runtimeOnly("mysql","mysql-connector-java","8.0.23")
     runtimeOnly("org.postgresql","postgresql","42.2.19")
+    runtimeOnly("org.springframework.cloud","spring-cloud-context","2.2.9.RELEASE")
     // drivers for models
     implementation( "org.hibernate", "hibernate-validator", "6.1.5.Final")
     implementation("io.micrometer","micrometer-core", "1.5.1")

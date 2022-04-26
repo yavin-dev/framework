@@ -32,11 +32,11 @@ import javax.validation.constraints.NotBlank
 @Include(name = "users")
 @DeletePermission(expression = "$NOBODY OR $IS_ADMIN")
 @UpdatePermission(expression = "$IS_SAME_USER OR $IS_ADMIN")
-@LifeCycleHookBinding(
-    operation = LifeCycleHookBinding.Operation.CREATE,
-    phase = LifeCycleHookBinding.TransactionPhase.PRECOMMIT,
-    hook = UserValidationHook::class
-)
+//@LifeCycleHookBinding(
+//    operation = LifeCycleHookBinding.Operation.CREATE,
+//    phase = LifeCycleHookBinding.TransactionPhase.PRECOMMIT,
+//    hook = UserValidationHook::class
+//)
 class User : HasRoles {
 
     @Id
