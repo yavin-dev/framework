@@ -10,7 +10,7 @@ module('Unit | Component | navi collection', function (hooks) {
   test('itemRoute and itemNewRoute', function (assert) {
     assert.expect(4);
 
-    const component: NaviCollection = createGlimmerComponent('component:navi-collection', { itemType: 'report' });
+    const component = createGlimmerComponent('component:navi-collection', { itemType: 'report' }) as NaviCollection;
 
     assert.equal(component.itemRoute, 'reports.report', 'itemRoute is computed based on itemType');
 
