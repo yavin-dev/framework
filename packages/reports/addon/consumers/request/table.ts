@@ -17,6 +17,7 @@ export default class TableConsumer extends ActionConsumer {
     [RequestActions.UPDATE_TABLE](this: TableConsumer, route: Route, table: TableMetadataModel) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
+      this.requestActionDispatcher.dispatch(RequestActions.WILL_UPDATE_TABLE, route, table);
       request.setTableByMetadata(table);
       this.requestActionDispatcher.dispatch(RequestActions.DID_UPDATE_TABLE, route, table);
     },

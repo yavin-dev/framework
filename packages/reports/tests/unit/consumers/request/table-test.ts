@@ -8,7 +8,7 @@ import { TestContext } from 'ember-test-helpers';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import StoreService from 'ember-data/store';
+import type StoreService from '@ember-data/store';
 
 const dispatchedActions: string[] = [];
 const dispatchedActionArgs: unknown[] = [];
@@ -16,7 +16,7 @@ const dispatchedActionArgs: unknown[] = [];
 const MockDispatcher = {
   dispatch(action: string, _route: Route, ...args: unknown[]) {
     dispatchedActions.push(action);
-    dispatchedActionArgs.push(...args);
+    dispatchedActionArgs.push(args);
   },
 };
 
@@ -61,8 +61,12 @@ module('Unit | Consumer | request table', function (hooks) {
 
     Consumer.send(RequestActions.UPDATE_TABLE, route, newTable);
 
-    assert.deepEqual(dispatchedActions, [RequestActions.DID_UPDATE_TABLE], 'actions are dispatched in correct order');
-    assert.deepEqual(dispatchedActionArgs, [newTable], 'actions are dispatched with correct args');
+    assert.deepEqual(
+      dispatchedActions,
+      [RequestActions.WILL_UPDATE_TABLE, RequestActions.DID_UPDATE_TABLE],
+      'actions are dispatched in correct order'
+    );
+    assert.deepEqual(dispatchedActionArgs, [[newTable], [newTable]], 'actions are dispatched with correct args');
     assert.equal(request.table, 'inventory', 'UPDATE_TABLE updates the table request attribute');
     assert.equal(request.dataSource, 'bardTwo', 'UPDATE_TABLE updates the dataSource request attribute');
   });

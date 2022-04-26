@@ -462,4 +462,155 @@ module('Unit | Consumer | request fili', function (hooks) {
       'The filter is updated to match the existingColumnGrain grain'
     );
   });
+
+  test('WILL_UPDATE_TABLE - table with unsupported grain', function (this: TestContext, assert) {
+    const store = this.owner.lookup('service:store') as StoreService;
+    const request = store.createFragment('request', {
+      table: 'network',
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'hour' },
+          operator: 'bet',
+          values: ['2015-11-09T00:00:00.000Z', '2015-11-13T00:00:00.000Z'],
+          source: 'bardOne',
+        },
+      ],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      columns: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'hour' },
+          source: 'bardOne',
+        },
+      ],
+    });
+
+    const route = { modelFor: () => ({ request }) };
+
+    // simulate filter being added
+    request.addFilter({
+      type: 'timeDimension',
+      field: 'tableB.dateTime',
+      parameters: { grain: 'day' },
+      operator: 'bet',
+      values: ['2015-11-09T00:00:00.000Z', '2015-11-13T00:00:00.000Z'],
+      source: 'bardOne',
+    });
+
+    consumer.send(RequestActions.WILL_UPDATE_TABLE, route, this.metadataService.getById('table', 'tableB', 'bardOne'));
+    assert.deepEqual(
+      dispatchedActions,
+      [
+        RequestActions.ADD_DIMENSION_FILTER,
+        RequestActions.UPDATE_FILTER,
+        RequestActions.UPDATE_FILTER,
+        RequestActions.ADD_COLUMN_WITH_PARAMS,
+      ],
+      'A new dateTime filter is added, updated to have the same interval with the new grain, and a new dateTime column is added'
+    );
+
+    const tableBDateTimeMetadata = this.metadataService.getById('timeDimension', 'tableB.dateTime', 'bardOne');
+    assert.deepEqual(
+      dispatchedActionArgs[0],
+      [tableBDateTimeMetadata, { grain: 'hour' }],
+      'The dateTime filter is added with the current grain'
+    );
+
+    assert.deepEqual(
+      dispatchedActionArgs[1],
+      [
+        request.filters.objectAt(1),
+        { operator: 'bet', values: ['2015-11-09T00:00:00.000Z', '2015-11-13T00:00:00.000Z'] },
+      ],
+      'The dateTime filter is updated to have the same interval'
+    );
+
+    assert.deepEqual(
+      dispatchedActionArgs[2],
+      [request.filters.objectAt(1), { parameters: { grain: 'day' } }],
+      'The dateTime filter is updated to match the new grain since tableB does not support "hour"'
+    );
+
+    assert.deepEqual(
+      dispatchedActionArgs[3],
+      [tableBDateTimeMetadata, { grain: 'day' }],
+      'The dateTime column is added with the new grain'
+    );
+  });
+
+  test('WILL_UPDATE_TABLE - table with supported grain', function (this: TestContext, assert) {
+    const store = this.owner.lookup('service:store') as StoreService;
+    const request = store.createFragment('request', {
+      table: 'network',
+      filters: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'hour' },
+          operator: 'bet',
+          values: ['2015-11-09T00:00:00.000Z', '2015-11-13T00:00:00.000Z'],
+          source: 'bardOne',
+        },
+      ],
+      sorts: [],
+      limit: null,
+      dataSource: 'bardOne',
+      requestVersion: '2.0',
+      columns: [
+        {
+          type: 'timeDimension',
+          field: 'network.dateTime',
+          parameters: { grain: 'hour' },
+          source: 'bardOne',
+        },
+      ],
+    });
+
+    const route = { modelFor: () => ({ request }) };
+
+    // simulate filter being added
+    request.addFilter({
+      type: 'timeDimension',
+      field: 'tableA.dateTime',
+      parameters: { grain: 'day' },
+      operator: 'bet',
+      values: ['2015-11-09T00:00:00.000Z', '2015-11-13T00:00:00.000Z'],
+      source: 'bardOne',
+    });
+
+    consumer.send(RequestActions.WILL_UPDATE_TABLE, route, this.metadataService.getById('table', 'tableA', 'bardOne'));
+    assert.deepEqual(
+      dispatchedActions,
+      [RequestActions.ADD_DIMENSION_FILTER, RequestActions.UPDATE_FILTER, RequestActions.ADD_COLUMN_WITH_PARAMS],
+      'A new dateTime filter is added, updated to have the same interval, and a new dateTime column is added'
+    );
+
+    const tableADateTimeMetadata = this.metadataService.getById('timeDimension', 'tableA.dateTime', 'bardOne');
+    assert.deepEqual(
+      dispatchedActionArgs[0],
+      [tableADateTimeMetadata, { grain: 'hour' }],
+      'The dateTime filter is added with the current grain'
+    );
+
+    assert.deepEqual(
+      dispatchedActionArgs[1],
+      [
+        request.filters.objectAt(1),
+        { operator: 'bet', values: ['2015-11-09T00:00:00.000Z', '2015-11-13T00:00:00.000Z'] },
+      ],
+      'The dateTime filter is updated to have the same interval'
+    );
+
+    assert.deepEqual(
+      dispatchedActionArgs[2],
+      [tableADateTimeMetadata, { grain: 'hour' }],
+      'The dateTime column is added with the new grain'
+    );
+  });
 });
