@@ -153,6 +153,9 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   addNewRule() {
     this.currentDisplayedRule = this._createNewDeliveryRule();
+    if (this.currentDisplayedRule.name === '') {
+      this.currentDisplayedRule.name = this.defaultName;
+    }
     this.deliveryRules = [...this.deliveryRules, this.currentDisplayedRule];
   }
 
@@ -253,13 +256,7 @@ export default class ScheduleActionComponent extends Component<Args> {
           if (this.formats.length === 1) {
             this.updateFormat(this.formats[0]);
           }
-          if (
-            this.currentDisplayedRule.format.type !== 'pdf' &&
-            this.currentDisplayedRule.delivery !== 'none' &&
-            this.currentDisplayedRule.name
-              .toString()
-              .match(/\w+ \bdelivered\b +\w+ \bevery\b (day|week|month|quarter|year)$/)
-          ) {
+          if (this.currentDisplayedRule.name === '') {
             this.currentDisplayedRule.name = this.defaultName;
           }
         }

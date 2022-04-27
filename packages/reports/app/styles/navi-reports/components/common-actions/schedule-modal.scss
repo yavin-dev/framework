@@ -6,7 +6,7 @@
   &__modal {
     /* stylelint-disable selector-no-qualifying-type */
     div.modal-container {
-      height: 753px;
+      height: 630px;
       width: 901px;
     }
 
@@ -44,15 +44,24 @@
 
     &-options {
       align-items: center;
-      height: 695px;
+      height: 570px;
 
       justify-content: center;
       position: relative;
+
+      &-inputs {
+        height: 455px;
+        overflow-y: auto;
+      }
     }
 
     &-delivery-list {
       border-right: 1px solid #e8e8e8;
-      min-height: 695px;
+
+      div.tabs ul {
+        height: 521px;
+        overflow-y: auto;
+      }
     }
 
     &-no-schedule {
