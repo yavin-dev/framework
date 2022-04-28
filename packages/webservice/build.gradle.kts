@@ -7,7 +7,7 @@ fun readVersion(): String {
 }
 val parentVersion = readVersion()
 
-val elideVersion by extra { "6.0.6" }
+val elideVersion by extra { "6.1.5" }
 
 allprojects {
     group = "com.yahoo.navi"
