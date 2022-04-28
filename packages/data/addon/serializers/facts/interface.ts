@@ -25,6 +25,7 @@ export interface ResponseV1 {
       numberOfResults: number;
     };
     missingIntervals?: string[];
+    warning?: string[];
   };
 }
 

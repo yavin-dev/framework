@@ -342,6 +342,9 @@ export default function (
       .filter((r) => r !== undefined);
 
     let missingIntervals = request.queryParams.metrics.includes('uniqueIdentifier') ? MISSING_INTERVALS : undefined;
+    let warning = request.queryParams.metrics.includes('revenue(currency=-2')
+      ? ['Revenue with currency of -2 cannot be aggregated together without conversion.']
+      : undefined;
 
     //lets do subtotal total stuff
     const processedDims: string[] = [];
@@ -459,6 +462,7 @@ export default function (
           numberOfResults: rows.length,
         },
         missingIntervals,
+        warning,
       },
     };
   });

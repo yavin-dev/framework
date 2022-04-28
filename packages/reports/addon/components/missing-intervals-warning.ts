@@ -51,10 +51,17 @@ export default class MissingIntervalWarning extends Component<Args> {
   }
 
   /**
-   * Shows the warning if missing intervals are present
+   * gets any warning messages.
+   */
+  get warningMessages() {
+    return this.args.response.meta.warning || [];
+  }
+
+  /**
+   * Shows the warning if missing intervals or warnings are present
    */
   get warningEnabled() {
-    return this.missingIntervals.length > 0;
+    return this.missingIntervals.length > 0 || this.warningMessages.length > 0;
   }
 
   /**
