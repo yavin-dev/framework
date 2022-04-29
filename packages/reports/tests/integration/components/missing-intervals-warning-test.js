@@ -31,7 +31,7 @@ module('Integration | Component | missing intervals warning', function (hooks) {
     assert
       .dom('.missing-intervals-warning__message-text')
       .hasText(
-        'Results have missing data.',
+        'Important message(s) about your results.',
         'The component is visible when missing intervals are present and the warning is displayed'
       );
 
@@ -106,5 +106,120 @@ module('Integration | Component | missing intervals warning', function (hooks) {
 
     await click('.missing-intervals-warning__contents');
     await animationsSettled();
+  });
+
+  test('It has warnings', async function (assert) {
+    let response = {
+      meta: {
+        warning: ['Thank You Mario! But Our Princess is in Another Castle.', "It's Dangerous to Go Alone! Take This."],
+      },
+    };
+    set(this, 'response', response);
+    set(this, 'onDetailsToggle', () => {});
+
+    await render(hbs`<MissingIntervalsWarning
+      @response={{this.response}}
+      @onDetailsToggle={{this.onDetailsToggle}}
+    />`);
+
+    assert
+      .dom('.missing-intervals-warning__message-text')
+      .hasText(
+        'Important message(s) about your results.',
+        'The component is visible when missing intervals are present and the warning is displayed'
+      );
+
+    assert
+      .dom('.missing-intervals-warning__details-content')
+      .isNotVisible('The details section is not expanded by default');
+
+    await click('.missing-intervals-warning__contents');
+    await animationsSettled();
+
+    assert
+      .dom('.missing-intervals-warning__details-content')
+      .isVisible('The details section expands when the component is clicked');
+
+    assert.deepEqual(
+      findAll('.missing-intervals-warning__details-help-text').map((e) => e.textContent),
+      ['Thank You Mario! But Our Princess is in Another Castle.', "It's Dangerous to Go Alone! Take This."],
+      'The warnings displayed correctly'
+    );
+
+    assert.dom('.missing-intervals-warning__disclaimer').doesNotExist();
+
+    await click('.missing-intervals-warning__contents');
+    await animationsSettled();
+
+    assert
+      .dom('.missing-intervals-warning__details-content')
+      .isNotVisible('The details section collapses when the component is clicked');
+  });
+
+  test('It has warnings AND missing intervals', async function (assert) {
+    let response = {
+      meta: {
+        missingIntervals: [
+          '2018-11-10 00:00:00.000/2018-11-13 00:00:00.000',
+          '2018-11-14 00:00:00.000/2018-11-16 00:00:00.000',
+        ],
+        warning: ['Thank You Mario! But Our Princess is in Another Castle.', "It's Dangerous to Go Alone! Take This."],
+      },
+    };
+    set(this, 'response', response);
+    set(this, 'onDetailsToggle', () => {});
+
+    await render(hbs`<MissingIntervalsWarning
+      @response={{this.response}}
+      @onDetailsToggle={{this.onDetailsToggle}}
+    />`);
+
+    assert
+      .dom('.missing-intervals-warning__message-text')
+      .hasText(
+        'Important message(s) about your results.',
+        'The component is visible when missing intervals are present and the warning is displayed'
+      );
+
+    assert
+      .dom('.missing-intervals-warning__details-content')
+      .isNotVisible('The details section is not expanded by default');
+
+    await click('.missing-intervals-warning__contents');
+    await animationsSettled();
+
+    assert
+      .dom('.missing-intervals-warning__details-content')
+      .isVisible('The details section expands when the component is clicked');
+
+    assert.deepEqual(
+      findAll('.missing-intervals-warning__details-help-text').map((e) => e.textContent),
+      [
+        'Thank You Mario! But Our Princess is in Another Castle.',
+        "It's Dangerous to Go Alone! Take This.",
+        'The following intervals from the result set have missing data:',
+      ],
+      'The warnings are displayed correctly'
+    );
+
+    assert.deepEqual(
+      findAll('.missing-intervals-warning__date-interval').map((e) => e.textContent),
+      ['2018/11/10 - 2018/11/12', '2018/11/14 - 2018/11/15'],
+      'The missing intervals are displayed correctly'
+    );
+
+    assert
+      .dom('.missing-intervals-warning__disclaimer')
+      .hasText(
+        'Note: Listed intervals include both the start and end dates.',
+        'The disclaimer is shown when the details are expanded'
+      );
+
+    await click('.missing-intervals-warning__contents');
+    await animationsSettled();
+
+    assert
+      .dom('.missing-intervals-warning__details-content')
+      .isNotVisible('The details section collapses when the component is clicked');
   });
 });
