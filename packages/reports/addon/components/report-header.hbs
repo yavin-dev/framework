@@ -30,7 +30,10 @@
         {{/let}}
       {{/unless}}
       </div>
-      <AssetOwner @user={{@model.owner.id}} @updatedOn={{@model.updatedOn}}/>
+      <div class="row align-items-center">
+        <AssetOwner @user={{@model.owner.id}} @updatedOn={{@model.updatedOn}}/>
+        <DataAvailability class="m-l-10" @dataSources={{this.dataSources}} @position="left" />
+      </div>
     </div>
     <div class="xs-col-10-10 sm-col-10-10 col-6-10 p-x-0">
       <div class="report-header__header-actions">

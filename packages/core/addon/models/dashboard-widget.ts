@@ -41,7 +41,7 @@ export default class DashboardWidget extends Model.extend(hasVisualization, Vali
    */
   @computed('dashboard.owner')
   get owner() {
-    return this.dashboard.owner;
+    return this.dashboard.get('owner');
   }
 
   /**

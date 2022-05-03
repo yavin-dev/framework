@@ -12,4 +12,9 @@ interface ReportHeaderArgs {
   addToNewDashboard?: (dashboardTitle: string, reportName: string) => void;
 }
 
-export default class ReportHeader extends Component<ReportHeaderArgs> {}
+export default class ReportHeader extends Component<ReportHeaderArgs> {
+  get dataSources() {
+    const { dataSource } = this.args.model.request;
+    return dataSource ? [dataSource] : undefined;
+  }
+}

@@ -5,6 +5,9 @@ import { setupAnimationTest, animationsSettled } from 'ember-animated/test-suppo
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { selectChoose } from 'ember-power-select/test-support';
 import { clickItem } from 'navi-reports/test-support/report-builder';
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
+import { getStatus, getDataSourceStatuses, DATE_FORMAT } from 'navi-core/test-support/data-availability';
+import moment from 'moment';
 
 module('Acceptance | Multi datasource Dashboard', function (hooks) {
   setupApplicationTest(hooks);
@@ -145,6 +148,40 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
       widgetsWithFilterWarning(),
       ['Untitled Widget'],
       'Widget with bardTwo datasource has a warning that filter does not apply'
+    );
+  });
+
+  test('Data availability', async function (assert) {
+    await visit('/dashboards/6/view');
+
+    assert.strictEqual(getStatus(), 'delayed', 'availability status is delayed since there are conflicting');
+    await clickTrigger('.data-availability');
+
+    const bardOneDate = moment.utc().startOf('day').format(DATE_FORMAT);
+    const bardTwoDate = moment.utc().subtract(2, 'day').startOf('hour').format(DATE_FORMAT);
+
+    assert.deepEqual(
+      getDataSourceStatuses(),
+      [
+        { status: 'delayed', name: 'Bard One', date: bardOneDate },
+        { status: 'late', name: 'Bard Two', date: bardTwoDate },
+      ],
+      'availability summary shows both datasources since they are both visible on the dashboard'
+    );
+
+    const widgetDeleteButtons = findAll('.navi-widget__delete-btn');
+    await click(widgetDeleteButtons[0]);
+    await click('.delete__modal-delete-btn');
+    await click(widgetDeleteButtons[2]);
+    await click('.delete__modal-delete-btn');
+
+    assert.strictEqual(getStatus(), 'late', 'availability status is updated to only datasource shown on dashboard');
+    await clickTrigger('.data-availability');
+
+    assert.deepEqual(
+      getDataSourceStatuses(),
+      [{ status: 'late', name: 'Bard Two', date: bardTwoDate }],
+      'availability summary only shows bard two datasource since bard one widgets were deleted'
     );
   });
 });

@@ -1,0 +1,62 @@
+<div class="data-availability" ...attributes {{did-insert this.setupElement}} {{did-update this.setupElement @dataSources}}>
+  <BasicDropdown @horizontalPosition={{@position}} as |dd|>
+    <dd.Trigger {{on "mouseenter" (fn this.open dd)}} {{on "mouseleave" (fn this.close dd)}}>
+      {{#if this.availabilities.isSuccessful}}
+        <DenaliIcon @icon="activity" class="data-availability__status is-{{this.statusClass this.availabilities.value.status}}" />
+      {{else if this.availabilities.isRunning}}
+        <DenaliIcon @icon="activity" class="data-availability__status data-availability__status--loading" />
+      {{else}}
+        <DenaliIcon title="Availability Status Update Failed" @icon="activity" class="data-availability__status data-availability__status--error is-status-danger" />
+      {{/if}}
+    </dd.Trigger>
+    <dd.Content class="data-availability__menu p-t-5 menu is-active" {{on "mouseenter" (fn this.open dd)}} {{on "mouseleave" (fn this.close dd)}}>
+      <div class="menu-content p-0">
+        <h4 class="p-x-10 p-y-5">Data Source Status</h4>
+        <hr class="w-full m-0" />
+        <div class="data-availability__summary col">
+          {{#if this.availabilities.isSuccessful}}
+            {{#each this.availabilities.value.dataSources as |availability|}}
+              <div class="data-availability__row row p-x-10 p-y-2">
+                <span class="flex align-items-center">
+                  <div class="data-availability__indicator has-bg-{{this.statusClass availability.result.status}} m-r-8"></div>
+                </span>
+                <div class="data-availability__info flex flex-1 space-between ">
+                  <span class="data-availability__info__name-container flex">
+                    <span class="data-availability__info__name ellipsis m-r-5" title={{availability.displayName}}>{{availability.displayName}}</span>
+                  </span>
+                  <span class="data-availability__info__date-container flex">
+                  {{#if availability.result.date}}
+                      <span class="data-availability__info__date" title={{moment-format availability.result.date}}>
+                          {{moment-format (moment availability.result.date) "MM/DD/YYYY - hh:mm:ss A"}}
+                      </span>
+                  {{else}}
+                      <span class="data-availability__info__date" title={{availability.result.error.message}}>Availability Unknown</span>
+                  {{/if}}
+                  </span>
+                </div>
+              </div>
+            {{else}}
+              <div class="row justify-content-center p-y-10">
+                <span class="flex">
+                  {{#if (eq @dataSources.length 0)}}
+                    No availabilities to show.
+                  {{else}}
+                    Data availability has not been configured.
+                  {{/if}}
+                </span>
+              </div>
+            {{/each}}
+          {{else if this.availabilities.isRunning}}
+            <div class="row justify-content-center p-y-10">
+              <DenaliLoader />
+            </div>
+          {{else}}
+            <div class="row justify-content-center p-y-10">
+              <span class="flex">There was an error loading availability.</span>
+            </div>
+          {{/if}}
+        </div>
+      </div>
+    </dd.Content>
+  </BasicDropdown>
+</div>

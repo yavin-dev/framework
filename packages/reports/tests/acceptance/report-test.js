@@ -24,6 +24,7 @@ import { get } from '@ember/object';
 import $ from 'jquery';
 import config from 'ember-get-config';
 import moment from 'moment';
+import { getStatus, getDataSourceStatuses, DATE_FORMAT } from 'navi-core/test-support/data-availability';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -2125,6 +2126,34 @@ module('Acceptance | Navi Report', function (hooks) {
       findAll('.filter-values--dimension-select__option-value').map((el) => el.textContent.trim()),
       ['114', '100001', '100002', '3', '1', '2'],
       'pasted values are added'
+    );
+  });
+
+  test('Data availability', async function (assert) {
+    await visit('/reports/2/view');
+
+    const bardOneDate = moment.utc().startOf('day').format(DATE_FORMAT);
+
+    assert.strictEqual(getStatus(), 'ok', 'Report shows data as delayed from bard one');
+    await clickTrigger('.data-availability');
+
+    assert.deepEqual(
+      getDataSourceStatuses(),
+      [{ status: 'ok', name: 'Bard One', date: bardOneDate }],
+      'availability summary shows bard one status'
+    );
+
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard Two"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Inventory"]');
+
+    assert.strictEqual(getStatus(), 'unavailable', 'Report is updated to show data as late from bard two');
+    await clickTrigger('.data-availability');
+
+    assert.deepEqual(
+      getDataSourceStatuses(),
+      [{ status: 'unavailable', name: 'Bard Two', date: 'Availability Unknown' }],
+      'availability summary is updated to show bard two status'
     );
   });
 });

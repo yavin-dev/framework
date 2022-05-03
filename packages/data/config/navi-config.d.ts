@@ -41,6 +41,9 @@ declare module 'navi-config' {
   export type NaviDataSource = DataSourceRegistry[keyof DataSourceRegistry];
 
   export default interface NaviConfig {
+    availability?: {
+      cacheMs?: number;
+    };
     dataEpoch: string;
     dataSources: NaviDataSource[];
     defaultDataSource?: string;

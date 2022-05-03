@@ -4,8 +4,8 @@
  */
 
 import Component from '@glimmer/component';
-import FilterFragment from 'navi-core/models/request/filter';
-import DashboardModel from 'navi-core/models/dashboard';
+import type FilterFragment from 'navi-core/models/request/filter';
+import type DashboardModel from 'navi-core/models/dashboard';
 
 interface Args {
   dashboard: DashboardModel;
@@ -16,4 +16,15 @@ interface Args {
   onAddFilter(filter: FilterFragment): void;
 }
 
-export default class DashboardHeaderComponent extends Component<Args> {}
+export default class DashboardHeaderComponent extends Component<Args> {
+  get dataSources(): string[] {
+    const { presentation, widgets } = this.args.dashboard;
+    // only use widgets that are shown on the dashboard
+    const shownWidgets = new Set(presentation.layout.toArray().map((layout) => `${layout.widgetId}`));
+    const requests = widgets
+      .filter((widget) => shownWidgets.has(widget.id))
+      .flatMap((widget) => widget.requests.toArray());
+    const dataSources = requests.map((request) => request.dataSource);
+    return [...new Set(dataSources)];
+  }
+}
