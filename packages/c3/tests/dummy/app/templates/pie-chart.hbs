@@ -1,0 +1,31 @@
+{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+
+<h3>Group by One dimension</h3>
+<div class="chart-container pie-chart-container">
+  <NaviVisualizationConfig::Wrapper
+    @request={{this.request}}
+    @response={{this.response}}
+    @manifest={{this.manifest}}
+    @settings={{this.visualizationOptions.metadata}}
+    @onUpdateSettings={{this.onUpdateConfigOneDimension}}
+  />
+  <NaviVisualizations::PieChart
+    @model={{this.model}}
+    @options={{this.options}}
+  />
+</div>
+
+<h3>Group by Two dimensions</h3>
+<div class="chart-container pie-chart-container">
+  <NaviVisualizationConfig::Wrapper
+    @request={{this.multiDimensionRequest}}
+    @response={{this.multiDimensionResponse}}
+    @manifest={{this.manifest}}
+    @settings={{this.visualizationOptionsMultiDimension.metadata}}
+    @onUpdateSettings={{this.onUpdateConfigMultipleDimension}}
+  />
+  <NaviVisualizations::PieChart
+    @model={{this.multiDimensionModel}}
+    @options={{this.multiDimensionOptions}}
+  />
+</div>

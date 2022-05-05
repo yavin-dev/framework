@@ -21,19 +21,16 @@ module('Acceptance | print report', function (hooks) {
   });
 
   test('print reports view', async function (assert) {
-    assert.expect(5);
-    await visit('/print/reports/1/view');
+    await visit('/print/reports/14/view');
 
-    assert.dom('.navi-report__title').hasText('Hyrule News', 'Should show report title');
+    assert.dom('.navi-report__title').hasText('RequestV2 multi-param testing report', 'Should show report title');
 
     assert.dom('.print-report-view__visualization').isVisible('Should show report visualization');
 
     assert.dom('.print-report-view__visualization-header').isNotVisible('Should not show report visualization header');
-
-    assert.dom('.c3-axis-y-label').hasText('Ad Clicks', 'Report chart should have y-axis label');
     assert.deepEqual(
-      [...document.querySelectorAll('.c3-legend-item')].map((el) => el.textContent.trim()),
-      ['Property 1', 'Property 2', 'Property 3', 'Property 4'],
+      [...document.querySelectorAll('.table-header-cell')].map((el) => el.textContent.trim()),
+      ['Date Time (Day)', 'Give me params (EUR,6)', 'Property (id)'],
       'The legend fills in with widget dimensions'
     );
   });

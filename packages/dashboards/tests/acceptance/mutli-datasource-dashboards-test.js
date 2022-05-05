@@ -128,7 +128,7 @@ module('Acceptance | Multi datasource Dashboard', function (hooks) {
     );
 
     await click('.navi-dashboard__save-button');
-    assert.equal(currentURL(), '/dashboards/8/view', 'Dashboard saves without issue');
+    assert.equal(currentURL(), '/dashboards/9/view', 'Dashboard saves without issue');
 
     await click('.filter-collection__remove');
     await click('.filter-collection__remove');

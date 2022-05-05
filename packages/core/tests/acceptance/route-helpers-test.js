@@ -9,7 +9,6 @@ module('Acceptance | route helpers', function (hooks) {
 
   test('route helpers', async function (assert) {
     assert.expect(6);
-
     await visit('/helpers');
     assert.dom('#parent').hasText('helpers', 'parent-route helper return parent route name');
 

@@ -113,22 +113,12 @@ module('Integration | Component | navi-visualizations/wrapper', function (hooks)
       Store.createRecord('report', {
         request: Request,
         visualization: {
-          vizModelType: 'line-chart',
-          type: 'line-chart',
+          vizModelType: 'metric-label',
+          type: 'metric-label',
           version: 2,
           metadata: {
-            style: {
-              area: false,
-              stacked: false,
-            },
-            axis: {
-              y: {
-                series: {
-                  type: 'metric',
-                  config: {},
-                },
-              },
-            },
+            format: '0,0.00',
+            metricCid: 'c1',
           },
         },
       })
@@ -138,14 +128,14 @@ module('Integration | Component | navi-visualizations/wrapper', function (hooks)
     this.set('isPrint', true);
     await render(TEMPLATE);
 
-    assert.ok(
-      !!findAll('.line-chart-widget').length,
-      'navi-visualization wrapper falls back to non print visualization when print version is not available'
-    );
+    assert
+      .dom('.metric-label-vis')
+      .exists('navi-visualization wrapper falls back to non print visualization when print version is not available');
 
-    assert.notOk(
-      !!findAll('.line-chart-widget--print').length,
-      'navi-visualization wrapper falls back to non print visualization when print version is not available'
-    );
+    assert
+      .dom('.metric-label-vis--print')
+      .doesNotExist(
+        'navi-visualization wrapper falls back to non print visualization when print version is not available'
+      );
   });
 });

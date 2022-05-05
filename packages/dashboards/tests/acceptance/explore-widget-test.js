@@ -346,7 +346,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-report-widget__footer button').map((e) => e.textContent.trim()),
-      ['Run', 'Save Changes', 'Revert'],
+      ['Run'],
       'When not loading a widget, the standard footer buttons are available'
     );
 
@@ -361,7 +361,7 @@ module('Acceptance | Exploring Widgets', function (hooks) {
 
     assert.deepEqual(
       findAll('.navi-report-widget__footer button').map((e) => e.textContent.trim()),
-      ['Run', 'Save Changes', 'Revert'],
+      ['Run'],
       'When not loading a widget, the standard footer buttons are available'
     );
   });
