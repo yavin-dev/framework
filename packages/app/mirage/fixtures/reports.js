@@ -13,25 +13,73 @@ export default [
       type: 'line-chart',
       version: 1,
       metadata: {
+        style: {},
         axis: {
           y: {
             series: {
               type: 'dimension',
               config: {
-                metric: 'wins',
-                dimensionOrder: ['character'],
+                metricCid: 'On39J_pg3X',
                 dimensions: [
                   {
-                    name: 'Dry Bowser',
-                    values: { character: '7' },
+                    name: '0',
+                    values: {
+                      egGEHPAAvX: '0',
+                    },
                   },
                   {
-                    name: 'Daisy',
-                    values: { character: '4' },
+                    name: '1',
+                    values: {
+                      egGEHPAAvX: '1',
+                    },
                   },
                   {
-                    name: 'Wario',
-                    values: { character: '8' },
+                    name: '2',
+                    values: {
+                      egGEHPAAvX: '2',
+                    },
+                  },
+                  {
+                    name: '3',
+                    values: {
+                      egGEHPAAvX: '3',
+                    },
+                  },
+                  {
+                    name: '4',
+                    values: {
+                      egGEHPAAvX: '4',
+                    },
+                  },
+                  {
+                    name: '5',
+                    values: {
+                      egGEHPAAvX: '5',
+                    },
+                  },
+                  {
+                    name: '6',
+                    values: {
+                      egGEHPAAvX: '6',
+                    },
+                  },
+                  {
+                    name: '7',
+                    values: {
+                      egGEHPAAvX: '7',
+                    },
+                  },
+                  {
+                    name: '8',
+                    values: {
+                      egGEHPAAvX: '8',
+                    },
+                  },
+                  {
+                    name: '9',
+                    values: {
+                      egGEHPAAvX: '9',
+                    },
                   },
                 ],
               },
@@ -41,27 +89,67 @@ export default [
       },
     },
     request: {
-      logicalTable: {
-        table: 'gameStats',
-        timeGrain: 'day',
-      },
-      metrics: [{ metric: 'wins' }, { metric: 'timeSpent' }],
-      dimensions: [{ dimension: 'character' }],
-      filters: [],
-      sort: [
+      filters: [
         {
-          metric: 'wins',
+          operator: 'bet',
+          values: ['P7D', 'current'],
+          field: 'gameStats.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+      ],
+      columns: [
+        {
+          cid: '98PEvO3nd5',
+          alias: null,
+          field: 'gameStats.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+        {
+          cid: 'egGEHPAAvX',
+          alias: null,
+          field: 'character',
+          parameters: {
+            field: 'id',
+          },
+          type: 'dimension',
+        },
+        {
+          cid: 'On39J_pg3X',
+          alias: null,
+          field: 'wins',
+          parameters: {},
+          type: 'metric',
+        },
+        {
+          cid: 'D-sQV-zDsp',
+          alias: null,
+          field: 'timeSpent',
+          parameters: {},
+          type: 'metric',
+        },
+      ],
+      table: 'gameStats',
+      sorts: [
+        {
           direction: 'asc',
+          field: 'wins',
+          parameters: {},
+          type: 'metric',
         },
       ],
-      intervals: [
-        {
-          end: 'current',
-          start: 'P7D',
-        },
-      ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
+      rollup: {
+        columnCids: [],
+        grandTotal: false,
+      },
+      limit: null,
+      requestVersion: '2.0',
+      dataSource: 'default',
     },
   },
   {
@@ -114,21 +202,53 @@ export default [
       },
     },
     request: {
-      logicalTable: {
-        table: 'gameStats',
-        timeGrain: 'day',
-      },
-      metrics: [{ metric: 'timeSpent' }],
-      dimensions: [{ dimension: 'game' }],
-      filters: [],
-      intervals: [
+      filters: [
         {
-          end: 'current',
-          start: 'P7D',
+          operator: 'bet',
+          values: ['P7D', 'current'],
+          field: 'gameStats.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
         },
       ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
+      columns: [
+        {
+          cid: 'iUsAFmMxcy',
+          alias: null,
+          field: 'gameStats.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+        {
+          cid: '9UAFaJpzFT',
+          alias: null,
+          field: 'game',
+          parameters: {
+            field: 'id',
+          },
+          type: 'dimension',
+        },
+        {
+          cid: 'EQT0kwW0et',
+          alias: null,
+          field: 'timeSpent',
+          parameters: {},
+          type: 'metric',
+        },
+      ],
+      table: 'gameStats',
+      sorts: [],
+      rollup: {
+        columnCids: [],
+        grandTotal: false,
+      },
+      limit: null,
+      requestVersion: '2.0',
+      dataSource: 'default',
     },
   },
   {
@@ -151,43 +271,73 @@ export default [
                 dimensions: [
                   {
                     name: 'switch,galaxy_2',
-                    values: { platform: 'switch', game: 'galaxy_2' },
+                    values: {
+                      platform: 'switch',
+                      game: 'galaxy_2',
+                    },
                   },
                   {
                     name: 'nes,3d_land',
-                    values: { platform: 'nes', game: '3d_land' },
+                    values: {
+                      platform: 'nes',
+                      game: '3d_land',
+                    },
                   },
                   {
                     name: 'nes,sunshine',
-                    values: { platform: 'nes', game: 'sunshine' },
+                    values: {
+                      platform: 'nes',
+                      game: 'sunshine',
+                    },
                   },
                   {
                     name: 'switch,kart',
-                    values: { platform: 'switch', game: 'kart' },
+                    values: {
+                      platform: 'switch',
+                      game: 'kart',
+                    },
                   },
                   {
                     name: 'entertainment system,kart',
-                    values: { platform: 'nes', game: 'kart' },
+                    values: {
+                      platform: 'nes',
+                      game: 'kart',
+                    },
                   },
                   {
                     name: 'entertainment system,oddysey',
-                    values: { platform: 'nes', game: 'oddysey' },
+                    values: {
+                      platform: 'nes',
+                      game: 'oddysey',
+                    },
                   },
                   {
                     name: '64,oddysey',
-                    values: { platform: '64', game: 'oddysey' },
+                    values: {
+                      platform: '64',
+                      game: 'oddysey',
+                    },
                   },
                   {
                     name: '64,3d land',
-                    values: { platform: '64', game: '3d_land' },
+                    values: {
+                      platform: '64',
+                      game: '3d_land',
+                    },
                   },
                   {
                     name: '64,galaxy',
-                    values: { platform: '64', game: 'galaxy' },
+                    values: {
+                      platform: '64',
+                      game: 'galaxy',
+                    },
                   },
                   {
                     name: '64,sunshine',
-                    values: { platform: '64', game: 'sunshine' },
+                    values: {
+                      platform: '64',
+                      game: 'sunshine',
+                    },
                   },
                 ],
               },
@@ -197,21 +347,62 @@ export default [
       },
     },
     request: {
-      logicalTable: {
-        table: 'gameStats',
-        timeGrain: 'day',
-      },
-      metrics: [{ metric: 'coins' }],
-      dimensions: [{ dimension: 'platform' }, { dimension: 'game' }],
-      filters: [],
-      intervals: [
+      filters: [
         {
-          end: 'current',
-          start: 'P30D',
+          operator: 'bet',
+          values: ['P30D', 'current'],
+          field: 'gameStats.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
         },
       ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
+      columns: [
+        {
+          cid: 'jQMq8mmKPY',
+          alias: null,
+          field: 'gameStats.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+        {
+          cid: 'KrAbGxmkfT',
+          alias: null,
+          field: 'platform',
+          parameters: {
+            field: 'id',
+          },
+          type: 'dimension',
+        },
+        {
+          cid: 'R1NGaIiJxV',
+          alias: null,
+          field: 'game',
+          parameters: {
+            field: 'id',
+          },
+          type: 'dimension',
+        },
+        {
+          cid: 'fqB8e0yHai',
+          alias: null,
+          field: 'coins',
+          parameters: {},
+          type: 'metric',
+        },
+      ],
+      table: 'gameStats',
+      sorts: [],
+      rollup: {
+        columnCids: [],
+        grandTotal: false,
+      },
+      limit: null,
+      requestVersion: '2.0',
+      dataSource: 'default',
     },
   },
   {

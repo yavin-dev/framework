@@ -72,28 +72,75 @@ const ExpectedRequest = {
   ExpectedReport = {
     data: {
       attributes: {
-        title: 'Hyrule News',
-        request: ExpectedRequest,
+        title: 'RequestV2 multi-param testing report',
+        request: {
+          filters: [
+            {
+              operator: 'bet',
+              values: ['2015-10-02T00:00:00.000Z', '2015-10-14T00:00:00.000Z'],
+              field: 'network.dateTime',
+              parameters: {
+                grain: 'day',
+              },
+              type: 'timeDimension',
+            },
+          ],
+          columns: [
+            {
+              cid: 'c1',
+              alias: null,
+              field: 'network.dateTime',
+              parameters: {
+                grain: 'day',
+              },
+              type: 'timeDimension',
+            },
+            {
+              cid: 'c2',
+              alias: null,
+              field: 'multipleParamMetric',
+              parameters: {
+                currency: 'EUR',
+                age: '6',
+              },
+              type: 'metric',
+            },
+            {
+              cid: 'c3',
+              alias: null,
+              field: 'property',
+              parameters: {
+                field: 'id',
+              },
+              type: 'dimension',
+            },
+          ],
+          table: 'network',
+          sorts: [],
+          rollup: {
+            columnCids: [],
+            grandTotal: false,
+          },
+          limit: null,
+          requestVersion: '2.0',
+          dataSource: 'bardOne',
+        },
         visualization: {
-          type: 'line-chart',
+          type: 'table',
           version: 2,
           metadata: {
-            axis: {
-              y: {
-                series: {
-                  type: 'dimension',
-                  config: {
-                    metricCid: 'cid_adClicks',
-                    dimensions: [
-                      { name: 'Property 1', values: { 'cid_property(field=id)': '114' } },
-                      { name: 'Property 2', values: { 'cid_property(field=id)': '100001' } },
-                      { name: 'Property 3', values: { 'cid_property(field=id)': '100002' } },
-                      { name: 'Property 4', values: { 'cid_property(field=id)': '101272' } },
-                    ],
-                  },
-                },
+            columnAttributes: {
+              c1: {
+                canAggregateSubtotal: false,
+              },
+              c3: {
+                canAggregateSubtotal: false,
+              },
+              c2: {
+                canAggregateSubtotal: false,
               },
             },
+            showTotals: {},
           },
         },
       },
@@ -119,35 +166,12 @@ module('Unit | Model | report', function (hooks) {
   });
 
   test('Retrieving records', async function (assert) {
-    assert.expect(6);
+    const report = await Store.findRecord('report', 14);
+    const serialized = report.serialize();
 
-    await run(async () => {
-      const report = await Store.findRecord('report', 1);
-      const cids = report.request.columns.mapBy('cid');
-      const cidToReadable = report.request.columns.reduce((map, col) => {
-        map[col.cid] = `cid_${col.canonicalName}`;
-        return map;
-      }, {});
-      const vizConfig = report.visualization.metadata.axis.y.series.config;
-      vizConfig.metricCid = cidToReadable[vizConfig.metricCid];
-      vizConfig.dimensions.forEach((series) => {
-        Object.keys(series.values).forEach((key) => {
-          series.values[cidToReadable[key]] = series.values[key];
-          delete series.values[key];
-        });
-      });
-      const serialized = report.serialize();
-
-      cids.forEach((cid, idx) => {
-        assert.equal(cid.length, 10, 'column cid has proper value');
-        //TODO remove this once fixtures are converted request v2
-        //remove from validation since cid value is non deterministic
-        unset(serialized, `data.attributes.request.columns[${idx}].cid`);
-      });
-
-      assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
-      assert.deepEqual(serialized, ExpectedReport, 'Fetched report has all attributes as expected');
-    });
+    assert.ok(report instanceof DeliverableItem, 'Report should be instance of DeliverableItem');
+    assert.deepEqual(serialized, ExpectedReport, 'Fetched report has all attributes as expected');
+    debugger;
   });
 
   test('Coalescing find requests', async function (assert) {
@@ -198,7 +222,7 @@ module('Unit | Model | report', function (hooks) {
     assert.expect(2);
 
     await run(async () => {
-      const model = await Store.findRecord('report', 1);
+      const model = await Store.findRecord('report', 2);
       const clonedModel = model.clone(Store);
       const expectedTitle = model.toJSON().title;
 

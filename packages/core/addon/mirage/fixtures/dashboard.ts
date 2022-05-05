@@ -169,4 +169,18 @@ export default [
       columns: 12,
     },
   },
+  {
+    id: 8,
+    title: 'Table Dashboard',
+    ownerId: 'navi_user',
+    createdOn: '2016-01-01 03:00:00',
+    updatedOn: '2016-01-01 03:00:00',
+    deliveryRuleIds: [],
+    filters: [],
+    presentation: {
+      version: 1,
+      layout: [{ column: 0, row: 0, height: 4, width: 6, widgetId: 13 }],
+      columns: 12,
+    },
+  },
 ];

@@ -60,6 +60,7 @@ export default class MultipleFormatExport extends ReportActionExport {
     // Model compression requires an id
     newModel.set('id', newModel.tempId);
 
+    debugger;
     return compression.compressModel(newModel).then((compressedModel) => `/export?reportModel=${compressedModel}`);
   }
 

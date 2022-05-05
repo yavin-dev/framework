@@ -38,90 +38,82 @@ module('Unit | Model | dashboard widget', function (hooks) {
     });
   });
 
-  test('Retrieving Records', async function (assert) {
-    assert.expect(4);
-
-    await run(async () => {
-      const dashboard = await Store.findRecord('dashboard', 1);
+  test(
+    'Retrieving Records',
+    async function (assert) {
+      const dashboard = await Store.findRecord('dashboard', 3);
       const widgets = await dashboard.get('widgets');
       const rec = widgets.objectAt(0);
-
       const serializedWidget = rec.toJSON();
-      const cids = serializedWidget.requests[0].columns.map((c) => c.cid);
-      const metricCid = serializedWidget.requests[0].columns[1].cid;
-      cids.forEach((cid, idx) => {
-        assert.equal(cid?.length, 10, 'column cid has proper value');
-        //remove from validation since cid value is non deterministic
-        unset(serializedWidget.requests[0], `columns[${idx}].cid`);
-      });
 
-      assert.deepEqual(
-        serializedWidget,
-        {
-          title: 'Mobile DAU Goal',
-          dashboard: '1',
-          visualization: {
-            type: 'goal-gauge',
-            version: 2,
-            metadata: {
-              baselineValue: 200,
-              goalValue: 1000,
-              metricCid: metricCid,
-            },
-          },
-          requests: [
-            {
-              columns: [
-                {
-                  alias: null,
-                  field: 'network.dateTime',
-                  parameters: {
-                    grain: 'day',
-                  },
-                  type: 'timeDimension',
+      assert.deepEqual(serializedWidget, {
+        title: 'Mobile DAU Goal',
+        createdOn: '2016-01-01 00:00:00.000',
+        updatedOn: '2016-01-01 00:00:00.000',
+        requests: [
+          {
+            filters: [
+              {
+                operator: 'bet',
+                values: ['P1D', 'current'],
+                field: 'network.dateTime',
+                parameters: {
+                  grain: 'day',
                 },
-                {
-                  alias: null,
-                  field: 'adClicks',
-                  parameters: {},
-                  type: 'metric',
-                },
-                {
-                  alias: null,
-                  field: 'navClicks',
-                  parameters: {},
-                  type: 'metric',
-                },
-              ],
-              dataSource: 'bardOne',
-              filters: [
-                {
-                  field: 'network.dateTime',
-                  operator: 'bet',
-                  parameters: {
-                    grain: 'day',
-                  },
-                  type: 'timeDimension',
-                  values: ['P1D', 'current'],
-                },
-              ],
-              rollup: {
-                columnCids: [],
-                grandTotal: false,
+                type: 'timeDimension',
               },
-              limit: null,
-              requestVersion: '2.0',
-              sorts: [],
-              table: 'network',
+            ],
+            columns: [
+              {
+                cid: 'm3',
+                alias: null,
+                field: 'network.dateTime',
+                parameters: {
+                  grain: 'day',
+                },
+                type: 'timeDimension',
+              },
+              {
+                cid: 'm2',
+                alias: null,
+                field: 'adClicks',
+                parameters: {},
+                type: 'metric',
+              },
+              {
+                cid: 'm1',
+                alias: null,
+                field: 'navClicks',
+                parameters: {},
+                type: 'metric',
+              },
+            ],
+            table: 'network',
+            sorts: [],
+            rollup: {
+              columnCids: [],
+              grandTotal: false,
             },
-          ],
-          createdOn: '2016-01-01 00:00:00.000',
-          updatedOn: '2016-01-01 00:00:00.000',
+            limit: null,
+            requestVersion: '2.0',
+            dataSource: 'bardOne',
+          },
+        ],
+        visualization: {
+          namespace: null,
+          type: 'goal-gauge',
+          version: 2,
+          metadata: {
+            baselineValue: 200,
+            goalValue: 1000,
+            metricCid: 'm1',
+          },
         },
-        'dashboard-widget record with id 1 is found in the store'
-      );
-    });
-  });
+        dashboard: '3',
+      });
+    },
+    'dashboard-widget record is found in the store'
+  );
 
   test('Request property', async function (assert) {
     assert.expect(1);
@@ -143,7 +135,7 @@ module('Unit | Model | dashboard widget', function (hooks) {
     assert.expect(1);
 
     await run(async () => {
-      const dashboard = await Store.findRecord('dashboard', 1);
+      const dashboard = await Store.findRecord('dashboard', 8);
       const widgets = await dashboard.get('widgets');
       const widgetModel = widgets.objectAt(0);
       const clonedModel = widgetModel.clone().toJSON();

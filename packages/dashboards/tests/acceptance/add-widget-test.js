@@ -30,9 +30,9 @@ module('Acceptance | Add New Widget', function (hooks) {
     await visit('/dashboards/1/');
     assert.dom('.navi-widget').exists({ count: 3 }, 'dashboard 1 initially has 3 widgets');
 
-    const NEW_WIDGET_ID = 13;
+    const NEW_WIDGET_ID = 14;
 
-    assert.notOk(!!findAll(`[data-gs-id="${NEW_WIDGET_ID}"]`).length, '4th widget is not present');
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('4th widget is not present');
 
     //Make a new widget
     const store = getContext().owner.lookup('service:store');
@@ -52,7 +52,7 @@ module('Acceptance | Add New Widget', function (hooks) {
 
     assert.dom('.navi-widget').exists({ count: 4 }, 'visiting the add route adds a widget to dashboard 1');
 
-    assert.ok(!!findAll(`[data-gs-id="${NEW_WIDGET_ID}"]`).length, '4th widget is present');
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"]`).exists('4th widget is present');
 
     assert
       .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
