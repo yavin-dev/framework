@@ -25,7 +25,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal save new schedule', async function (assert) {
-    assert.expect(13);
+    assert.expect(11);
     await visit('/reports');
 
     // Click "Schedule"
@@ -37,10 +37,6 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
     await click('.schedule__modal-new-delivery button');
 
     // Default View
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .isNotVisible('The delete button is not present when creating a new schedule');
-
     assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button says "Save"');
 
     assert
@@ -80,10 +76,6 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       );
 
     // Check that all fields match the delivery rule we just saved
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .isVisible('The delete button is present after a delivery rule has been saved');
-
     assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button says "Save"');
 
     assert
@@ -144,7 +136,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal save changes to existing schedule', async function (assert) {
-    assert.expect(8);
+    assert.expect(7);
     await visit('/reports');
 
     // Open an existing schedule
@@ -184,10 +176,6 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
       );
 
     // Check that all fields match the delivery rule we just saved
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .isVisible('The delete button is present after a schedule has been modified and saved');
-
     assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button says "Save"');
 
     assert
@@ -202,16 +190,12 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
   });
 
   test('schedule modal delete action', async function (assert) {
-    assert.expect(10);
+    assert.expect(6);
     await visit('/reports');
 
     // Click "Schedule"
     await triggerEvent('.navi-collection__row2', 'mouseenter');
     await click('.navi-report-actions__schedule');
-
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .isVisible('The delete button is present when there is an existing delivery rule');
 
     assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button says "Save"');
 
@@ -227,22 +211,7 @@ module('Acceptance | Navi Report Schedule Modal', function (hooks) {
 
     assert.dom('.schedule__modal-format-trigger').hasText('csv', 'Format field is populated by existing delivery rule');
 
-    await click('.schedule__modal-delete-btn');
-    assert
-      .dom('.delete__modal-details')
-      .hasText('This action cannot be undone. This will permanently delete the delivery rule.');
-
-    // Click confirm deletion
-    await click('.delete__modal-delete-btn');
-
-    assert.dom('.schedule .primary-header').isNotVisible('Schedule modal closes after deleting a schedule');
-
-    await triggerEvent('.navi-collection__row2', 'mouseenter');
-    await click('.navi-report-actions__schedule');
-
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .isNotVisible('The delete button is not present after deleting the schedule');
+    await click('.schedule__modal-delete-2');
 
     assert
       .dom('.schedule__modal-save-btn')

@@ -14,6 +14,7 @@ const DeliveryRule = {
   name: 'Email delivered csv every week',
   isDisabled: false,
   validations: { isValid: true },
+  id: 1,
 };
 const NoDelivery = {
   frequency: 'Week',
@@ -136,7 +137,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('schedule modal when invalid', async function (assert) {
-    assert.expect(10);
+    assert.expect(9);
 
     this.set('model', unscheduledModel);
     this.set('isValidForSchedule', () => Promise.resolve(false));
@@ -171,8 +172,6 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Cancel button is rendered');
 
     assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
-
-    assert.dom('.schedule__modal-delete-btn').doesNotExist('Delete button is not rendered');
   });
 
   test('schedule modal - delivery rule passed in when valid', async function (assert) {
@@ -193,7 +192,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('schedule modal - delivery rule passed in when invalid', async function (assert) {
-    assert.expect(4);
+    assert.expect(3);
     this.set('model', TestModel);
     this.set('isValidForSchedule', () => Promise.resolve(false));
 
@@ -209,12 +208,10 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.dom('.schedule__modal-frequency-trigger').hasText('Week', 'The frequency is fetched from the delivery rule');
 
     assert.dom('.schedule__modal-save-btn').exists('Save button is rendered');
-
-    assert.dom('.schedule__modal-delete-btn').exists('Delete button is rendered');
   });
 
   test('onSave Action', async function (assert) {
-    assert.expect(10);
+    assert.expect(9);
 
     this.set('model', unscheduledModel);
 
@@ -232,10 +229,6 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.dom('.schedule__modal-save-btn').isDisabled('The save button should be disabled initially');
 
     assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Show cancel button before save a delivery rule');
-
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .isNotVisible('The delete button is not available when model does not have a delivery rule for the current user');
 
     await fillIn('.schedule__modal-name', 'Test');
     await blur('.schedule__modal-name');
@@ -292,7 +285,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('onDelete action', async function (assert) {
-    assert.expect(2);
+    assert.expect(1);
 
     this.set('deliveryRule', DeliveryRule);
 
@@ -306,13 +299,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await click('.schedule-action__button');
 
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .exists({ count: 1 }, 'Delete button is shown when deliveryRule is present for current user');
-
-    await click('.schedule__modal-delete-btn');
-
-    await click('.delete__modal-delete-btn');
+    await click('.schedule__modal-delete-1');
   });
 
   test('frequency options - default', async function (assert) {
@@ -468,7 +455,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('error fetching delivery rule when valid', async function (assert) {
-    assert.expect(12);
+    assert.expect(11);
 
     this.set('model', errorModel);
 
@@ -525,12 +512,10 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Cancel button is rendered');
 
     assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
-
-    assert.dom('.schedule__modal-delete-btn').doesNotExist('Delete button is not rendered');
   });
 
   test('error fetching delivery rule when invalid', async function (assert) {
-    assert.expect(10);
+    assert.expect(9);
 
     this.set('model', errorModel);
     this.set('isValidForSchedule', () => Promise.resolve(false));
@@ -565,8 +550,6 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Cancel button is rendered');
 
     assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
-
-    assert.dom('.schedule__modal-delete-btn').doesNotExist('Delete button is not rendered');
   });
 
   test('Change to no delivery', async function (assert) {

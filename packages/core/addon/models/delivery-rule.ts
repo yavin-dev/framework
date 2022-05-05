@@ -14,6 +14,7 @@ import { Moment } from 'moment';
 // eslint-disable-next-line ember/use-ember-data-rfc-395-imports
 import DS from 'ember-data';
 import { computed } from '@ember/object';
+import { capitalize } from 'lodash-es';
 
 const Validations = buildValidations({
   frequency: [
@@ -45,6 +46,11 @@ const Validations = buildValidations({
 });
 
 export default class DeliveryRuleModel extends Model.extend(Validations) {
+  get defaultName() {
+    return `${capitalize(this.delivery)} delivered ${this.format.type} every ${this.frequency}`;
+  }
+
+  nameChanged = false;
   /* == Attributes == */
   @attr('moment')
   createdOn!: Moment;
@@ -64,7 +70,7 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
   @fragment('fragments/delivery-format', { polymorphic: true })
   format!: DeliveryFormatFragment;
 
-  @attr('string', { defaultValue: '' })
+  @attr('string')
   name!: string;
 
   @attr({ defaultValue: () => [] })

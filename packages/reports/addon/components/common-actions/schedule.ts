@@ -80,12 +80,6 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   overwriteableFormats = ['gsheet'];
 
-  get defaultName() {
-    return `${capitalize(this.currentDisplayedRule?.delivery)} delivered ${
-      this.currentDisplayedRule?.format.type
-    } every ${this.currentDisplayedRule?.frequency}`;
-  }
-
   /**
    * Promise resolving to whether item is valid to be scheduled
    */
@@ -153,9 +147,6 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   addNewRule() {
     this.currentDisplayedRule = this._createNewDeliveryRule();
-    if (this.currentDisplayedRule.name === '') {
-      this.currentDisplayedRule.name = this.defaultName;
-    }
     this.deliveryRules = [...this.deliveryRules, this.currentDisplayedRule];
   }
 
@@ -166,6 +157,7 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   _createNewDeliveryRule() {
     let newRule = this.store.createRecord('delivery-rule', {
+      recipients: [],
       format: { type: this.formats.firstObject },
       deliveredItem: this.args.model,
       owner: this.user.getUser(),
@@ -182,11 +174,6 @@ export default class ScheduleActionComponent extends Component<Args> {
   async doSave() {
     let rule = this.currentDisplayedRule;
     if (rule?.validations.isValid) {
-      // Only add relationships to the new delivery rule if the fields are valid
-      if (rule.name.match(/\w+ \bdelivered\b +\w+ \bevery\b (day|week|month|quarter|year)$/)) {
-        rule.name = this.defaultName;
-      }
-
       try {
         await new RSVP.Promise((resolve, reject) => {
           assert('The Rule is defined', rule);
@@ -195,14 +182,18 @@ export default class ScheduleActionComponent extends Component<Args> {
 
         assert('The currentDisplayedRule is defined', rule);
         this.naviNotifications.add({
-          title: `'${capitalize(rule.name)}'  schedule successfully saved!`,
+          title: `'${
+            rule.name !== undefined ? rule.defaultName : capitalize(rule.name)
+          }'  schedule successfully saved!`,
           style: 'success',
           timeout: 'short',
         });
       } catch (errors) {
         this.notification = getAllApiErrMsg(
           errors.errors[0],
-          `There was an error updating your delivery settings for schedule '${capitalize(rule.name)}'`
+          `There was an error updating your delivery settings for schedule '${
+            rule.name !== undefined ? capitalize(rule.name) : rule.defaultName
+          }'`
         );
       } finally {
         this.isSaving = false;
@@ -218,7 +209,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   async doDelete(deliveryRule: DeliveryRuleModel) {
     assert('The currentDisplayedRule is defined', deliveryRule);
-    const name = deliveryRule.name;
+    const name = deliveryRule.name ? deliveryRule.defaultName : deliveryRule.name;
     const deletePromise = new RSVP.Promise((resolve, reject) => {
       this.args.onDelete(deliveryRule, { resolve, reject });
     });
@@ -255,9 +246,6 @@ export default class ScheduleActionComponent extends Component<Args> {
         if (this.currentDisplayedRule) {
           if (this.formats.length === 1) {
             this.updateFormat(this.formats[0]);
-          }
-          if (this.currentDisplayedRule.name === '') {
-            this.currentDisplayedRule.name = this.defaultName;
           }
         }
       }

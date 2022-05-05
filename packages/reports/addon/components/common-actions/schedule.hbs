@@ -36,11 +36,19 @@
 	                {{on "click" (fn (mut this.currentDisplayedRule) deliveryRule)}}
 	              >
                 <div class="w-full flex space-between align-items-center">
-                  <span>{{deliveryRule.name}}</span>
+                  {{#if deliveryRule.hasDirtyAttributes}}
+                    <div class="schedule__modal-unsaved-rule" />
+                  {{/if}}
+                  <div class="schedule__modal-delivery-list-name">
+                    <p class="is-bold">{{unless deliveryRule.name deliveryRule.defaultName deliveryRule.name}}</p>
+                    {{#if deliveryRule.hasDirtyAttributes}}
+                      <p class="is-italic">&nbsp;unsaved</p>
+                    {{/if}}
+                  </div>
                   <DenaliIcon
                     @icon="trash"
                     @size="small"
-                    class="delete__{{deliveryRule.name}}"
+                    class="schedule__modal-delete-{{deliveryRule.id}}"
                     {{on "click" (fn this.doDelete deliveryRule)}}
                   />
                 </div>
@@ -50,57 +58,57 @@
         </div>
         <div class="sm-col-1-1 col-3-5 p-0">
           <div class="schedule__modal-options p-24">
-            {{#if this.notification}}
-              <DenaliAlert
-                @style="danger"
-                @isBlock={{true}}
-                class="m-b-30"
-                as |Alert|
-              >
-                <Alert.Title>Error</Alert.Title>
-                {{#each this.notification as |message|}}
-                  <Alert.Context>{{message}}</Alert.Context>
-                {{/each}}
-              </DenaliAlert>
-            {{/if}}
-            {{!-- enable creation of a new delivery rule only if valid --}}
-            {{#if (and this.currentDisplayedRule.isNew (not (await this.isValidForSchedule)))}}
-              <DenaliAlert
-                @style="danger"
-                @isBlock={{true}}
-                class="m-b-30"
-                as |Alert|
-              >
-                <Alert.Context>
-                  Unable to schedule invalid {{this.modelType}}. Please fix errors before proceeding.
-                </Alert.Context>
-              </DenaliAlert>
-            {{else}}
-                {{#if (eq this.currentDisplayedRule undefined)}}
-                  <div class="schedule__modal-no-schedule">
-                    <DenaliIcon class="flex justify-content-center m-t-200" @size="large" @icon="calendar-event" />
-                    <h3 class="flex justify-content-center">Let's Jump Right In!</h3>
-                    <p class="flex justify-content-center">You currently have no schedules for this {{this.modelType}}.</p>
-                    <DenaliButton
-                      @style="text"
-                      @size="large"
-                      class="w-full schedule__modal-no-schedule-new-delivery"
-                      {{on "click" this.addNewRule}}
-                    >
-                      <DenaliIcon @icon="add-circle" />
-                      New Schedule
-                    </DenaliButton>
-                  </div>
-                {{else}}
-                  <div class="schedule__modal-options-inputs">
+            <div class="schedule__modal-options-inputs">
+              {{#if this.notification}}
+                <DenaliAlert
+                  @style="danger"
+                  @isBlock={{true}}
+                  class="m-b-30"
+                  as |Alert|
+                >
+                  <Alert.Title>Error</Alert.Title>
+                  {{#each this.notification as |message|}}
+                    <Alert.Context>{{message}}</Alert.Context>
+                  {{/each}}
+                </DenaliAlert>
+              {{/if}}
+              {{!-- enable creation of a new delivery rule only if valid --}}
+              {{#if (and this.currentDisplayedRule.isNew (not (await this.isValidForSchedule)))}}
+                <DenaliAlert
+                  @style="danger"
+                  @isBlock={{true}}
+                  class="m-b-30"
+                  as |Alert|
+                >
+                  <Alert.Context>
+                    Unable to schedule invalid {{this.modelType}}. Please fix errors before proceeding.
+                  </Alert.Context>
+                </DenaliAlert>
+              {{else}}
+                  {{#if (eq this.currentDisplayedRule undefined)}}
+                    <div class="schedule__modal-no-schedule">
+                      <DenaliIcon class="flex justify-content-center m-t-200" @size="large" @icon="calendar-event" />
+                      <h3 class="flex justify-content-center">Let's Jump Right In!</h3>
+                      <p class="flex justify-content-center">You currently have no schedules for this {{this.modelType}}.</p>
+                      <DenaliButton
+                        @style="text"
+                        @size="large"
+                        class="w-full schedule__modal-no-schedule-new-delivery"
+                        {{on "click" this.addNewRule}}
+                      >
+                        <DenaliIcon @icon="add-circle" />
+                        New Schedule
+                      </DenaliButton>
+                    </div>
+                  {{else}}
                     <DenaliInputGroup @isStacked={{true}} @label="Schedule Name" class="m-b-30">
                       <DenaliInput 
                         @wrapperClass="w-full" 
                         type="text" 
                         placeholder="Schedule Name (Optional)"
                         class="schedule__modal-name"
-                        value={{this.currentDisplayedRule.name}}
-                        {{on "input" (pipe (pick "target.value") (fn (mut this.currentDisplayedRule.name) ) )}}
+                        value={{unless this.currentDisplayedRule.name this.currentDisplayedRule.defaultName this.currentDisplayedRule.name}}
+                        {{on "focusout" (pipe (pick "target.value") (fn (mut this.currentDisplayedRule.name) ) )}}
                       />
                         <div class="schedule__modal-helper-name is-grey-800">
                           Please enter a custom name for this schedule.
@@ -147,13 +155,13 @@
                         <PowerSelect
                           class="w-full"
                           @triggerClass="schedule__modal-format-trigger w-full"
-                          @dropdownClass="w-full"
+                          @dropdownClass="schedule__modal-format-dropdown"
                           @disabled={{lt this.formats.length 2}}
                           @options={{this.formats}}
                           @selected={{this.currentDisplayedRule.format.type}}
                           @searchEnabled={{false}}
                           @onChange={{this.updateFormat}}
-                          @renderInPlace={{true}}
+                          @renderInPlace={{false}}
                           as | format |
                         >
                           {{format}}
@@ -164,13 +172,13 @@
                       <PowerSelect
                         class="w-full"
                         @triggerClass="schedule__modal-frequency-trigger w-full"
-                        @dropdownClass="w-full"
+                        @dropdownClass="schedule__modal-frequency-dropdown"
                         @options={{this.frequencies}}
                         @selected={{this.currentDisplayedRule.frequency}}
                         @disabled={{this.errorWhileFetchingRules}}
                         @searchEnabled={{false}}
                         @onChange={{fn (mut this.currentDisplayedRule.frequency)}}
-                        @renderInPlace={{true}}
+                        @renderInPlace={{false}}
                         as | frequency |
                       >
                         {{capitalize frequency}}
@@ -209,9 +217,9 @@
                         @offLabel="Paused"
                       />
                     </DenaliInputGroup>
-                  </div>
+                  {{/if}}
                 {{/if}}
-              {{/if}}
+              </div>
               {{#if this.currentDisplayedRule}}
                 <div class="schedule__modal-buttons w-full p-24">
                   {{#if (or (and this.currentDisplayedRule.isNew (not (await this.isValidForSchedule))) this.errorWhileFetchingRules)}}

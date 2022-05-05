@@ -4,6 +4,13 @@
 */
 .schedule {
   &__modal {
+    &-unsaved-rule {
+      background-color: #198fff;
+      border-radius: 50%;
+      display: inline-block;
+      height: 10px;
+      width: 10px;
+    }
     /* stylelint-disable selector-no-qualifying-type */
     div.modal-container {
       height: 630px;
@@ -58,6 +65,17 @@
     &-delivery-list {
       border-right: 1px solid #e8e8e8;
 
+      li {
+        height: fit-content !important;
+        min-height: 40px;
+      }
+
+      &-name {
+        inline-size: 210px;
+        overflow-wrap: break-word;
+        white-space: normal;
+      }
+
       div.tabs ul {
         height: 521px;
         overflow-y: auto;
@@ -83,6 +101,11 @@
       .button {
         justify-content: left;
       }
+    }
+
+    &-frequency-dropdown,
+    &-format-dropdown {
+      z-index: 999;
     }
   }
 }
