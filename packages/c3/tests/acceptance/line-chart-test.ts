@@ -15,22 +15,14 @@ module('Acceptance | line chart', function (hooks) {
   setupMirage(hooks);
 
   test('row count passed to tooltip formatter', async function (assert) {
-    assert.expect(2);
-
     await visit('/line-chart');
 
     const metricCharts = findAll('.line-chart-widget.type-metric');
     // check text of the tooltip container
-    await showTooltip(getEmberComponent(metricCharts[0].id), 1);
+    await showTooltip(getEmberComponent(metricCharts[0].id), 0);
     assert
       .dom(metricCharts[0].querySelector('.chart-tooltip__value'))
       .includesText('rc=6', 'The row count is correct for the first metric chart.');
-
-    // check text of the tooltip container
-    await showTooltip(getEmberComponent(metricCharts[1].id), 1);
-    assert
-      .dom(metricCharts[1].querySelector('.chart-tooltip__value'))
-      .includesText('rc=2', 'The row count is correct for the second metric chart.');
   });
 
   test('tooltip updates', async function (assert) {

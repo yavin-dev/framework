@@ -13,7 +13,7 @@ import type { ResponseRow } from 'navi-data/models/navi-fact-response';
 
 export type MetricSeries = {
   type: 'metric';
-  config: {};
+  config: Record<string, unknown>;
 };
 
 export type DimensionSeries = {

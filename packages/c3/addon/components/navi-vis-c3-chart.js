@@ -9,7 +9,6 @@
  * {{navi-vis-c3-chart
  *   classNames=classNames
  *   data=dataConfig
- *   dataSelection=dataSelectionConfig // Promise which resolves to anomalous data
  *   axis=axisConfig
  *   grid=gridConfig
  *   legend=legendConfig

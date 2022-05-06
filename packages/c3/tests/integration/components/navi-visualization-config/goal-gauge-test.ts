@@ -86,6 +86,10 @@ module('Integration | Component | visualization config/goal gauge', function (ho
     await render(TEMPLATE);
 
     await fillIn('.goal-gauge-config__label-input', 'bottles');
-    assert.equal(this.request.metricColumns[0].alias, 'bottles', 'onUpdateConfig action is called by label input');
+    assert.strictEqual(
+      this.request.metricColumns[0].alias,
+      'bottles',
+      'onUpdateConfig action is called by label input'
+    );
   });
 });

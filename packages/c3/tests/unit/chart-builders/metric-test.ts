@@ -342,7 +342,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
       tooltipClass = EmberObject.extend(mixin, {}),
       tooltip = tooltipClass.create({ config, Request, tooltipData, x });
 
-    assert.equal(tooltip.layout, TooltipTemplate, 'Tooltip uses metric tooltip template');
+    assert.strictEqual(tooltip.layout, TooltipTemplate, 'Tooltip uses metric tooltip template');
 
     //@ts-expect-error
     assert.deepEqual(tooltip.rowData, [DATA.rows[3]], 'The correct response row is given to the tooltip');

@@ -9,6 +9,7 @@ import RequestFragment from 'navi-core/models/request';
 import StoreService from '@ember-data/store';
 import { PieChartConfig } from '@yavin/c3/models/pie-chart';
 import type YavinVisualizationsService from 'navi-core/services/visualization';
+import type { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
 
 export default class PieChartController extends Controller {
   @service('store')
@@ -67,7 +68,7 @@ export default class PieChartController extends Controller {
     };
   }
 
-  get multiDimensionModel() {
+  get multiDimensionModel(): VisualizationModel {
     return A([
       {
         request: this.multiDimensionRequest,

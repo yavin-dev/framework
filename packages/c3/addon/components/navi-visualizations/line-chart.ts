@@ -5,7 +5,6 @@
 import Component from '@ember/component';
 import { computed } from '@ember/object';
 import { assert } from '@ember/debug';
-import EmberArray from '@ember/array';
 import { readOnly } from '@ember/object/computed';
 import { getOwner } from '@ember/application';
 import { guidFor } from '@ember/object/internals';
@@ -63,8 +62,6 @@ const DEFAULT_OPTIONS = <const>{
   },
 };
 
-type InsightsData = { index: number; actual: number; predicted: number; standardDeviation: number };
-
 export type Args = {
   model: VisualizationModel;
   options: LineChartConfig['metadata'];
@@ -100,15 +97,7 @@ export default class LineChart extends ChartBuildersBase<Args> {
   /**
    * config options for the chart
    */
-  @computed(
-    'args.options',
-    'chartTooltip',
-    'dataConfig',
-    'dataSelectionConfig',
-    'xAxisTickValues',
-    'yAxisDataFormat',
-    'yAxisLabelConfig'
-  )
+  @computed('args.options', 'chartTooltip', 'dataConfig', 'xAxisTickValues', 'yAxisDataFormat', 'yAxisLabelConfig')
   get config() {
     const { pointConfig: point } = this;
     //deep merge DEFAULT_OPTIONS, custom options, and data
@@ -117,7 +106,6 @@ export default class LineChart extends ChartBuildersBase<Args> {
       DEFAULT_OPTIONS,
       this.args.options,
       this.dataConfig,
-      this.dataSelectionConfig,
       { tooltip: this.chartTooltip },
       { point },
       { axis: { x: { type: 'category' } } }, // Override old 'timeseries' config saved in db
@@ -255,16 +243,6 @@ export default class LineChart extends ChartBuildersBase<Args> {
     }
 
     return this.chartType;
-  }
-
-  /**
-   * config for selecting data points on chart
-   */
-  @computed('args.model.[]')
-  get dataSelectionConfig(): { dataSelection?: Promise<EmberArray<InsightsData>> } {
-    // model is an array, and object at index 1 is insights data promise
-    const insights = this.args.model.objectAt(1) as unknown as Promise<EmberArray<InsightsData>>;
-    return insights ? { dataSelection: insights } : {};
   }
 
   /**

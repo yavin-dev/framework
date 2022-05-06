@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
-import { Promise } from 'rsvp';
 import { A } from '@ember/array';
 import moment from 'moment';
 import { module, test } from 'qunit';
@@ -329,92 +327,6 @@ module('Integration | Component | line chart', function (hooks) {
     });
 
     assert.dom('.c3-axis-y-label').hasText('', 'The y axis label is not displayed for a metric chart.');
-  });
-
-  test('Highlight data points', async function (assert) {
-    // assert.expect(1);
-
-    let anomalousDataModel = A([
-      {
-        request: buildTestRequest(
-          [{ field: 'uniqueIdentifier' }],
-          [],
-          { start: '2017-09-01 00:00:00.000', end: '2017-09-07 00:00:00.000' },
-          'day'
-        ),
-        response: NaviFactResponse.create({
-          rows: [
-            {
-              'network.dateTime(grain=day)': '2017-09-01 00:00:00.000',
-              uniqueIdentifier: 155191081,
-            },
-            {
-              'network.dateTime(grain=day)': '2017-09-02 00:00:00.000',
-              uniqueIdentifier: 172724594,
-            },
-            {
-              'network.dateTime(grain=day)': '2017-09-03 00:00:00.000',
-              uniqueIdentifier: 183380921,
-            },
-            {
-              'network.dateTime(grain=day)': '2017-09-04 00:00:00.000',
-              uniqueIdentifier: 172933788,
-            },
-            {
-              'network.dateTime(grain=day)': '2017-09-05 00:00:00.000',
-              uniqueIdentifier: 183206656,
-            },
-            {
-              'network.dateTime(grain=day)': '2017-09-06 00:00:00.000',
-              uniqueIdentifier: 183380921,
-            },
-            {
-              'network.dateTime(grain=day)': '2017-09-07 00:00:00.000',
-              uniqueIdentifier: 180559793,
-            },
-          ],
-        }),
-      },
-      new Promise((resolve) => {
-        resolve(
-          A([
-            {
-              index: 1,
-              actual: 12,
-              predicted: 172724594.12345,
-              standardDeviation: 123.123456,
-            },
-            {
-              index: 3,
-              actual: 10,
-              predicted: 172933788.12345,
-              standardDeviation: 123.123456,
-            },
-            {
-              index: 5,
-              actual: 14,
-              predicted: 183380921.12345,
-              standardDeviation: 123.123456,
-            },
-          ])
-        );
-      }),
-    ]);
-
-    this.set('model', anomalousDataModel);
-    this.set('options', {
-      axis: {
-        y: {
-          series: {
-            type: 'metric',
-            config: {},
-          },
-        },
-      },
-    });
-    await render(TEMPLATE);
-
-    assert.dom('.c3-selected-circles circle').exists({ count: 3 }, 'Three data points are highlighted in chart');
   });
 
   test('dateTime model', async function (assert) {

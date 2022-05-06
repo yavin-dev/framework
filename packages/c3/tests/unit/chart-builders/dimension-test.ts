@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import EmberObject from '@ember/object';
@@ -386,7 +385,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
       tooltipClass = EmberObject.extend(mixin, {}),
       tooltip = tooltipClass.create({ config, REQUEST, tooltipData, x });
 
-    assert.equal(tooltip.layout, TooltipTemplate, 'Tooltip uses dimension tooltip template');
+    assert.strictEqual(tooltip.layout, TooltipTemplate, 'Tooltip uses dimension tooltip template');
 
     //@ts-expect-error
     assert.deepEqual(tooltip.rowData, [DATA.rows[1]], 'The correct response row is given to the tooltip');

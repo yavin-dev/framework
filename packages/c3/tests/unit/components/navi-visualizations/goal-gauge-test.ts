@@ -75,13 +75,17 @@ module('Unit | Component | Goal Gauge', function (hooks) {
   test('gauge', function (assert) {
     assert.expect(2);
 
-    assert.equal(
+    assert.strictEqual(
       Component.gauge.min,
       Component.config.baselineValue,
       'gauge.min is correctly set based on baseline property'
     );
 
-    assert.equal(Component.gauge.max, Component.config.goalValue, 'gauge.max is correctly set based on goal property');
+    assert.strictEqual(
+      Component.gauge.max,
+      Component.config.goalValue,
+      'gauge.max is correctly set based on goal property'
+    );
   });
 
   test('thresholdValues', function (assert) {
@@ -114,13 +118,13 @@ module('Unit | Component | Goal Gauge', function (hooks) {
   test('_formatNumber', function (assert) {
     assert.expect(2);
 
-    assert.equal(
+    assert.strictEqual(
       Component._formatNumber(123456789),
       '123.46M',
       '_formatNumber uses a precision of 2 for numbers under 1B'
     );
 
-    assert.equal(
+    assert.strictEqual(
       Component._formatNumber(9123456789),
       '9.123B',
       '_formatNumber uses a precision of 3 for numbers over 1B'

@@ -15,7 +15,7 @@ import { tracked } from '@glimmer/tracking';
 import { readOnly } from '@ember/object/computed';
 import { action, computed } from '@ember/object';
 import { groupBy } from 'lodash-es';
-import EmberArray from '@ember/array';
+import type EmberArray from '@ember/array';
 import { featureFlag } from 'navi-core/helpers/feature-flag';
 import type RequestFragment from 'navi-core/models/request';
 import type { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';

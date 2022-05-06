@@ -38,7 +38,7 @@
     "ember-cli-babel": "^7.23.1",
     "ember-cli-flash": "^1.9.1",
     "ember-cli-htmlbars": "^5.3.2",
-    "ember-cli-typescript": "^4.1.0"
+    "ember-cli-typescript": "^5.1.0"
   },
   "devDependencies": {
     "@denali-design/ember": "^1.0.0-alpha.34",
@@ -47,6 +47,8 @@
     "@glimmer/component": "^1.0.3",
     "@glimmer/tracking": "^1.0.3",
     "@types/ember": "^3.16.5",
+    "@types/ember__array": "^3.16.5",
+    "@types/ember__routing": "^3.16.16",
     "@types/ember__test-helpers": "^1.7.6",
     "@types/ember-data": "^3.16.16",
     "@types/ember-qunit": "^3.4.15",

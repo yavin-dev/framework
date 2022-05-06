@@ -3,6 +3,9 @@ import Route from '@ember/routing/route';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import { Grain } from 'navi-data/utils/date';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { inject as service } from '@ember/service';
+import type StoreService from '@ember-data/store';
+import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
 
 /*eslint max-len: ["error", { "code": 250 }]*/
 // prettier-ignore
@@ -170,17 +173,10 @@ const secondRows = [
   { 'network.dateTime(grain=second)': '2017-02-09 00:02:10.000', adClicks: 38197 },
 ];
 
-const anomalousRows = [
-  { 'network.dateTime(grain=day)': '2017-09-01 00:00:00.000', uniqueIdentifier: 155191081 },
-  { 'network.dateTime(grain=day)': '2017-09-02 00:00:00.000', uniqueIdentifier: 172724594 },
-  { 'network.dateTime(grain=day)': '2017-09-03 00:00:00.000', uniqueIdentifier: 183380921 },
-  { 'network.dateTime(grain=day)': '2017-09-04 00:00:00.000', uniqueIdentifier: 172933788 },
-  { 'network.dateTime(grain=day)': '2017-09-05 00:00:00.000', uniqueIdentifier: 183206656 },
-  { 'network.dateTime(grain=day)': '2017-09-06 00:00:00.000', uniqueIdentifier: 183380921 },
-  { 'network.dateTime(grain=day)': '2017-09-07 00:00:00.000', uniqueIdentifier: 180559793 },
-];
-
 export default class LineChartRoute extends Route {
+  @service
+  declare store: StoreService;
+
   buildRequest(
     metrics: { field: string; parameters?: Record<string, string> }[],
     dimensions: { field: string; parameters?: Record<string, string> }[],
@@ -284,38 +280,20 @@ export default class LineChartRoute extends Route {
     });
   }
 
-  get anomalousRequest() {
-    return this.buildRequest([{ field: 'uniqueIdentifier' }], [], 'day', {
-      start: '2017-09-01 00:00:00.000',
-      end: '2017-09-07 00:00:00.000',
-    });
-  }
-
-  model() {
-    const {
-      defaultRequest,
-      dimensionRequest,
-      hourGrainRequest,
-      minuteGrainRequest,
-      secondGrainRequest,
-      anomalousRequest,
-    } = this;
+  async model(): Promise<{
+    default: VisualizationModel;
+    dimension: VisualizationModel;
+    hourGrain: VisualizationModel;
+    minuteGrain: VisualizationModel;
+    secondGrain: VisualizationModel;
+  }> {
+    const { defaultRequest, dimensionRequest, hourGrainRequest, minuteGrainRequest, secondGrainRequest } = this;
     return {
       default: A([{ request: defaultRequest, response: NaviFactResponse.create({ rows: defaultRows }) }]),
       dimension: A([{ request: dimensionRequest, response: NaviFactResponse.create({ rows: dimensionRows }) }]),
       hourGrain: A([{ request: hourGrainRequest, response: NaviFactResponse.create({ rows: hourRows }) }]),
       minuteGrain: A([{ request: minuteGrainRequest, response: NaviFactResponse.create({ rows: minuteRows }) }]),
       secondGrain: A([{ request: secondGrainRequest, response: NaviFactResponse.create({ rows: secondRows }) }]),
-      anomalous: A([
-        { request: anomalousRequest, response: NaviFactResponse.create({ rows: anomalousRows }) },
-        Promise.resolve(
-          A([
-            { index: 1, actual: 12, predicted: 172724594.12345, standardDeviation: 123.123456 },
-            { index: 3, actual: 10, predicted: 172933788.12345, standardDeviation: 123.123456 },
-            { index: 5, actual: 14, predicted: 183380921.12345, standardDeviation: 123.123456 },
-          ])
-        ),
-      ]),
     };
   }
 }

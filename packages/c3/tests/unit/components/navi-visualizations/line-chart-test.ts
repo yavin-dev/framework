@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { Promise } from 'rsvp';
 import { TestContext } from 'ember-test-helpers';
 import { A } from '@ember/array';
 import { set } from '@ember/object';
@@ -162,38 +161,6 @@ module('Unit | Component | line chart', function (hooks) {
       [['series.0', 'series.1']],
       'Data config groups is array of series keys when chart is stacked'
     );
-  });
-
-  test('dataSelectionConfig', function (assert) {
-    assert.expect(2);
-
-    const insightsDataPromise = new Promise((resolve) => {
-      resolve(
-        A([
-          {
-            index: 1,
-            actual: 12,
-            predicted: 172724594.12345,
-            standardDeviation: 123.123456,
-          },
-        ])
-      );
-    });
-    const args: LineChart['args'] = {
-      model: A([{}, insightsDataPromise]),
-      options: undefined,
-    };
-    const component = createGlimmerComponent('component:navi-visualizations/line-chart', args) as LineChart;
-
-    assert.ok(component.dataSelectionConfig.dataSelection?.then, 'Data selection config returns a promise as expected');
-
-    component.dataSelectionConfig.dataSelection?.then((insightsData) => {
-      assert.deepEqual(
-        insightsData.mapBy('index'),
-        [1],
-        'dataSelectionConfig promise resovles to an array of indices to highlight data points'
-      );
-    });
   });
 
   test('config', function (assert) {
