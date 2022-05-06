@@ -31,6 +31,10 @@ $circle: '\eb0b';
 $information-circle: '\ec54';
 $arrow-back: '\ea52';
 $column-edit: '\ed32';
+$lock-open: '\ecac';
+$lock: '\eca8';
+$edit-off: '\ebde';
+$edit: '\ebd6';
 
 $info-background-color: rgb(map-get($denali-status-colors, 'info'), 0.4);
 
@@ -128,6 +132,10 @@ perspective-viewer[theme='Denali'],
   --column-style-close-button--content: #{meta.inspect($more-horizontal-circle)};
   --tree-label-collapse--content: #{meta.inspect($arrowhead-right)};
   --tree-label-expand--content: #{meta.inspect($arrowhead-down)};
+  --toolbar-scroll-lock--content: #{meta.inspect($lock-open)};
+  --toolbar-scroll-lock-active--content: #{meta.inspect($lock)};
+  --toolbar-edit-mode--content: #{meta.inspect($edit-off)};
+  --toolbar-edit-mode-active--content: #{meta.inspect($edit)};
   --overflow-hint-icon--content: #{meta.inspect($information-circle)};
   --warning--background: #{meta.inspect($info-background-color)};
   --overflow-hint-icon--color: #{map-get($denali-grey-colors, '800')};
