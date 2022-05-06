@@ -7,6 +7,7 @@ import hbs from 'htmlbars-inline-precompile';
 import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { get } from '@ember/object';
+import { A } from '@ember/array';
 
 module('Integration | Component | navi dashboard', function (hooks) {
   setupRenderingTest(hooks);
@@ -33,11 +34,11 @@ module('Integration | Component | navi dashboard', function (hooks) {
       widgets: [1, 2],
       presentation: {
         version: 1,
-        layout: [
+        layout: A([
           { column: 0, row: 0, height: 4, width: 3, widgetId: 1 },
           { column: 3, row: 0, height: 4, width: 6, widgetId: 2 },
           { column: 0, row: 5, height: 1, width: 1, widgetId: 123456 }, // Test a widget that doesn't exist
-        ],
+        ]),
         columns: 20,
         get(key) {
           return get(this, key);
