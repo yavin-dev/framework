@@ -2,7 +2,7 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Model, { attr, belongsTo } from '@ember-data/model';
+import Model, { AsyncBelongsTo, attr, belongsTo } from '@ember-data/model';
 import { computed } from '@ember/object';
 import { assert } from '@ember/debug';
 import FragmentArray from 'ember-data-model-fragments/FragmentArray';
@@ -29,7 +29,7 @@ const Validations = buildValidations({
 });
 
 export default class DashboardWidget extends Model.extend(hasVisualization, Validations) {
-  @belongsTo('dashboard') dashboard!: DashboardModel;
+  @belongsTo('dashboard') dashboard!: AsyncBelongsTo<DashboardModel>;
   @attr('string', { defaultValue: 'Untitled Widget' }) title!: string;
   @attr('moment') createdOn!: Moment;
   @attr('moment') updatedOn!: Moment;
