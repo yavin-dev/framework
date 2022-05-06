@@ -6,6 +6,8 @@ import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 //@ts-ignore
 import { reorder } from 'ember-sortable/test-support/helpers';
+//@ts-ignore
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
 
 module('Acceptance | table', function (hooks) {
   setupApplicationTest(hooks);
@@ -83,7 +85,7 @@ module('Acceptance | table', function (hooks) {
       .dom('.metric .number-format-dropdown__trigger')
       .isVisible('Metric field should have format dropdown trigger');
 
-    await click('.ember-basic-dropdown-trigger');
+    await clickTrigger('.table-header-cell__number-format-dropdown');
     assert.dom('.number-format-dropdown__container').isVisible('Table format dropdown should be visible');
   });
 
