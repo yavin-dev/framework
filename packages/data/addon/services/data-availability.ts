@@ -1,3 +1,7 @@
+/**
+ * Copyright 2022, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
 import Service from '@ember/service';
 import { hash, task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';

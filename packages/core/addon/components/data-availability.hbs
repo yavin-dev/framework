@@ -21,7 +21,7 @@
                 <span class="flex align-items-center">
                   <div class="data-availability__indicator has-bg-{{this.statusClass availability.result.status}} m-r-8"></div>
                 </span>
-                <div class="data-availability__info flex flex-1 space-between ">
+                <div class="data-availability__info flex flex-1 space-between">
                   <span class="data-availability__info__name-container flex">
                     <span class="data-availability__info__name ellipsis m-r-5" title={{availability.displayName}}>{{availability.displayName}}</span>
                   </span>
@@ -53,7 +53,7 @@
             </div>
           {{else}}
             <div class="row justify-content-center p-y-10">
-              <span class="flex">There was an error loading availability.</span>
+              <span class="flex">There was an error loading data source status.</span>
             </div>
           {{/if}}
         </div>
