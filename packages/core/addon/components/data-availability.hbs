@@ -1,3 +1,4 @@
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="data-availability" ...attributes {{did-insert this.setupElement}} {{did-update this.setupElement @dataSources}}>
   <BasicDropdown @horizontalPosition={{@position}} as |dd|>
     <dd.Trigger {{on "mouseenter" (fn this.open dd)}} {{on "mouseleave" (fn this.close dd)}}>
