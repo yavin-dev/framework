@@ -75,6 +75,10 @@ jobs:
     <<: *main-npm-test-job
     environment:
       PACKAGE: '@yavin/perspective'
+  main-c3:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: '@yavin/c3'
   main-webservice:
     steps:
       - *install-node
@@ -100,6 +104,7 @@ jobs:
         main-notifications,
         main-reports,
         main-perspective,
+        main-c3,
         main-webservice,
       ]
 

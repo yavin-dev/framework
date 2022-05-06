@@ -1,22 +1,21 @@
 /* eslint-disable ember/no-get */
 /* eslint-disable ember/require-computed-property-dependencies */
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Extend c3 to listen to incoming resize events
  * Usage:
- * {{navi-vis-c3-chart
- *   classNames=classNames
- *   data=dataConfig
- *   axis=axisConfig
- *   grid=gridConfig
- *   legend=legendConfig
- *   point=pointConfig
- *   tooltip=tooltipConfig
- *   containerComponent=container
- *   metrics=metrics
- *  }}
+ * <YavinC3Chart
+ *   @data={{dataConfig}}
+ *   @axis={{axisConfig}}
+ *   @grid={{gridConfig}}
+ *   @legend={{legendConfig}}
+ *   @point={{pointConfig}}
+ *   @tooltip={{tooltipConfig}}
+ *   @containerComponent={{container}}
+ *   @metrics={{metrics}}
+ * />
  */
 import { next, scheduleOnce } from '@ember/runloop';
 import { assign } from '@ember/polyfills';
@@ -29,7 +28,7 @@ export default C3Chart.extend({
   /**
    * @property {Array} classNames
    */
-  classNames: ['navi-vis-c3-chart'],
+  classNames: ['yavin-c3-chart'],
 
   /**
    * @property {Object} config

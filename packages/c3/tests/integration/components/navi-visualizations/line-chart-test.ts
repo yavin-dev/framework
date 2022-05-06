@@ -106,7 +106,7 @@ module('Integration | Component | line chart', function (hooks) {
 
     await render(TEMPLATE);
 
-    assert.dom('.navi-vis-c3-chart').isVisible('The line chart widget component is visible');
+    assert.dom('.yavin-c3-chart').isVisible('The line chart widget component is visible');
 
     assert.dom('.c3-chart-line').exists({ count: 3 }, 'All 3 metrics are shown on the chart');
   });

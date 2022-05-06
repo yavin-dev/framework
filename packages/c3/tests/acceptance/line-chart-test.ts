@@ -162,7 +162,7 @@ module('Acceptance | line chart', function (hooks) {
    * This will show the chart tooltip so that we can fetch its contents.
    */
   function getChartComponent(chartIndex: number) {
-    const chartElement = findAll('.navi-vis-c3-chart')[chartIndex];
+    const chartElement = findAll('.yavin-c3-chart')[chartIndex];
     return getEmberComponent(chartElement.id);
   }
   function getEmberComponent(id: string) {

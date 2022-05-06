@@ -164,7 +164,7 @@ module('Integration | Component | pie chart', function (hooks) {
     });
     await render(TEMPLATE);
 
-    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
+    assert.dom('.yavin-c3-chart').isVisible('The pie chart widget component is visible');
 
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
@@ -188,7 +188,7 @@ module('Integration | Component | pie chart', function (hooks) {
     });
     await render(TEMPLATE);
 
-    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
+    assert.dom('.yavin-c3-chart').isVisible('The pie chart widget component is visible');
 
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
@@ -383,7 +383,7 @@ module('Integration | Component | pie chart', function (hooks) {
 
     assert.dom('.c3-title').hasText('Revenue (USD)', 'The metric name is displayed in the metric label correctly');
 
-    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
+    assert.dom('.yavin-c3-chart').isVisible('The pie chart widget component is visible');
 
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 
@@ -521,7 +521,7 @@ module('Integration | Component | pie chart', function (hooks) {
 
     await render(TEMPLATE);
 
-    assert.dom('.navi-vis-c3-chart').isVisible('The pie chart widget component is visible');
+    assert.dom('.yavin-c3-chart').isVisible('The pie chart widget component is visible');
 
     assert.dom('.c3-chart-arc').exists({ count: 2 }, 'Two pie slices are present on the chart');
 

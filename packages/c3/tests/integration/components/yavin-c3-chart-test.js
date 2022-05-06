@@ -33,7 +33,7 @@ module('Integration | Component | navi vis c3 chart', function (hooks) {
     await render(hbs`
       {{#test-container as |container|}}
         <div class='container' style='height: 100px'>
-          {{navi-vis-c3-chart
+          {{yavin-c3-chart
             data=data
             containerComponent=container
           }}
@@ -65,7 +65,7 @@ module('Integration | Component | navi vis c3 chart', function (hooks) {
     });
 
     await render(hbs`
-      {{navi-vis-c3-chart
+      {{yavin-c3-chart
         data=data
         transition=0
       }}

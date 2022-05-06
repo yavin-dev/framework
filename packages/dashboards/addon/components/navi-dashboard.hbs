@@ -18,6 +18,7 @@
         <GridStack
           @options={{hash column=@width}}
           @onChange={{route-action "didUpdateLayout"}}
+          @onResizestop={{this.onResize}}
         >
           {{#each @dashboard.presentation.layout as |layout|}}
             {{#with (get-widget layout.widgetId) as |widget|}}
