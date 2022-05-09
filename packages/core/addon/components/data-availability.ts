@@ -51,13 +51,11 @@ export default class DataAvailability extends Component<DataAvailabilityArgs> {
 
   constructor(owner: unknown, args: DataAvailabilityArgs) {
     super(owner, args);
-    document.addEventListener('visibilitychange', () => {
-      this.isHidden = document.visibilityState === 'hidden';
-      if (!this.isHidden) {
-        this.availabilities = taskFor(this.updateAvailabilities).perform();
-        taskFor(this.pollAvailabilities).perform();
-      }
-    });
+    document.addEventListener('visibilitychange', this.onVisibilityChange);
+  }
+
+  willDestroy(): void {
+    document.removeEventListener('visibilitychange', this.onVisibilityChange);
   }
 
   statusClass = helper(([status]: [Status]) => {
@@ -70,6 +68,15 @@ export default class DataAvailability extends Component<DataAvailabilityArgs> {
   });
 
   closeTimer: Timer | null = null;
+
+  @action
+  onVisibilityChange() {
+    this.isHidden = document.visibilityState === 'hidden';
+    if (!this.isHidden) {
+      this.availabilities = taskFor(this.updateAvailabilities).perform();
+      taskFor(this.pollAvailabilities).perform();
+    }
+  }
 
   @action
   setupElement() {

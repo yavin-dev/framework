@@ -66,6 +66,9 @@ module.exports = function (environment) {
           type: 'elide',
         },
       ],
+      availability: {
+        timeoutMs: 1000,
+      },
       defaultDataSource: 'bardOne',
       cardinalities: {
         small: 600,

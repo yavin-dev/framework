@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
-import { hash, task } from 'ember-concurrency';
+import { hash, race, task, timeout } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import Cache from 'navi-data/utils/classes/cache';
 import config from 'ember-get-config';
@@ -59,7 +59,11 @@ export default class DataAvailabilityService extends Service {
       }
     }
     try {
-      const result: FetchedAvailabilityResult = yield fetcher();
+      const { timeoutMs = Infinity } = config.navi.availability ?? {};
+      const result: FetchedAvailabilityResult | undefined = yield race([fetcher(), timeout(timeoutMs)]);
+      if (!result) {
+        throw new Error('Availability Fetch timed out');
+      }
       this._cache.setItem(dataSourceName, result);
       return result;
     } catch (e) {

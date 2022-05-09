@@ -42,6 +42,7 @@ declare module 'navi-config' {
 
   export default interface NaviConfig {
     availability?: {
+      timeoutMs?: number;
       cacheMs?: number;
     };
     dataEpoch: string;
