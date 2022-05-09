@@ -30,14 +30,12 @@ You can install the individual packages via npm
 
 | Package                                                                                                                        | Description                                                          |
 | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
-| admin                                                                                                                          | 🚧 Under construction panel for managing users/roles/etc 🚧          |
 | [![navi-core](https://img.shields.io/npm/v/navi-core/beta?label=navi-core)][npm-navi-core]                                     | Library of visualizations and common components                      |
 | [![navi-dashboards](https://img.shields.io/npm/v/navi-dashboards/beta?label=navi-dashboards)][npm-navi-dashboards]             | Collection of components for creating collections of visualization   |
 | [![navi-data](https://img.shields.io/npm/v/navi-data/beta?label=navi-data)][npm-navi-data]                                     | Adapters and serializers for connecting to data sources (elide/fili) |
 | [![navi-directory](https://img.shields.io/npm/v/navi-directory/beta?label=navi-directory)][npm-navi-directory]                 | Overview of all saved/favorited reports and dashboards               |
 | [![navi-notifications](https://img.shields.io/npm/v/navi-notifications/beta?label=navi-notifications)][npm-navi-notifications] | Helper library for in app alerts                                     |
 | [![navi-reports](https://img.shields.io/npm/v/navi-reports/beta?label=navi-reports)][npm-navi-reports]                         | Collection of components for building advanced ad-hoc reports        |
-| [![navi-search](https://img.shields.io/npm/v/navi-search/beta?label=navi-search)][npm-navi-search]                             | Global search bar experience                                         |
 
 ## Contributing
 
@@ -72,4 +70,3 @@ This project is licensed under the [MIT License](LICENSE.md).
 [npm-navi-directory]: https://www.npmjs.com/package/navi-directory
 [npm-navi-notifications]: https://www.npmjs.com/package/navi-notifications
 [npm-navi-reports]: https://www.npmjs.com/package/navi-reports
-[npm-navi-search]: https://www.npmjs.com/package/navi-search
