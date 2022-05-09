@@ -43,10 +43,6 @@ jobs:
       - lint-pretty: npx prettier -c --config prettier.config.js packages/*/{addon,tests}/**/*.{js,ts};
       - lint-styles: npx stylelint "**/*.scss";
       - lint-addons: npx lerna run lint --stream;
-  main-admin:
-    <<: *main-npm-test-job
-    environment:
-      PACKAGE: navi-admin
   main-app:
     <<: *main-npm-test-job
     environment:
@@ -75,10 +71,6 @@ jobs:
     <<: *main-npm-test-job
     environment:
       PACKAGE: navi-reports
-  main-search:
-    <<: *main-npm-test-job
-    environment:
-      PACKAGE: navi-search
   main-perspective:
     <<: *main-npm-test-job
     environment:
@@ -100,7 +92,6 @@ jobs:
     requires:
       [
         lint,
-        main-admin,
         main-app,
         main-core,
         main-dashboards,
@@ -108,7 +99,6 @@ jobs:
         main-directory,
         main-notifications,
         main-reports,
-        main-search,
         main-perspective,
         main-webservice,
       ]
@@ -118,7 +108,6 @@ jobs:
       - *install-node
       - *npm-ci
       - *install-chrome
-      - test-navi-admin: npx lerna run test --scope navi-admin --stream;
       - test-navi-app: npx lerna run test --scope navi-app --stream;
       - test-navi-core: npx lerna run test --scope navi-core --stream;
       - test-navi-dashboards: npx lerna run test --scope navi-dashboards --stream;
@@ -126,7 +115,6 @@ jobs:
       - test-navi-directory: npx lerna run test --scope navi-directory --stream;
       - test-navi-notifications: npx lerna run test --scope navi-notifications --stream;
       - test-navi-reports: npx lerna run test --scope navi-reports --stream;
-      - test-navi-search: npx lerna run test --scope navi-search --stream;
       - test-navi-webservice: cd packages/webservice && ./gradlew check && cd -;
     requires:
       - ~commit:0.2.x-alpha
