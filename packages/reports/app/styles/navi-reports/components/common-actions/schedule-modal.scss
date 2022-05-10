@@ -83,12 +83,13 @@
     }
 
     &-no-schedule {
-      height: 200px;
+      height: 350px;
       left: 50%;
+      margin-top: 50px;
       position: absolute;
       top: 50%;
       transform: translate(-50%, -50%);
-      width: 200px;
+      width: 300px;
     }
 
     &-buttons {

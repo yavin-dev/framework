@@ -306,11 +306,13 @@ export default class ScheduleActionComponent extends Component<Args> {
           this.isSaving = false;
           this.showModal = false;
           this.notification = undefined;
+          this.revertAll();
         }
       } else {
         this.isSaving = false;
         this.showModal = false;
         this.notification = undefined;
+        this.revertAll();
       }
     }
   }

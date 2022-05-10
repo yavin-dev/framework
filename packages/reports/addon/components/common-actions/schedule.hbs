@@ -2,7 +2,7 @@
 {{yield (queue (toggle "showModal" this) this.onOpen)}}
 <DenaliModal
   @isOpen={{this.showModal}}
-  @onClose={{queue this.closeModal this.revertAll}}
+  @onClose={{this.closeModal}}
   class="schedule__modal"
   ...attributes
   as |Modal|
@@ -87,7 +87,7 @@
               {{else}}
                   {{#if (eq this.currentDisplayedRule undefined)}}
                     <div class="schedule__modal-no-schedule">
-                      <DenaliIcon class="flex justify-content-center m-t-200" @size="large" @icon="calendar-event" />
+                      <img class="d-icon m-x-80 justify-content-center" alt="schedule" src="{{this.rootURL}}/assets/images/schedule.svg"/>
                       <h3 class="flex justify-content-center">Let's Jump Right In!</h3>
                       <p class="flex justify-content-center">You currently have no schedules for this {{this.modelType}}.</p>
                       <DenaliButton
@@ -228,7 +228,7 @@
                       @style="ghost"
                       disabled={{this.isSaving}}
                       type="button"
-                      {{on "click" (queue this.closeModal this.revertAll)}}
+                      {{on "click" this.closeModal}}
                     > Cancel
                     </DenaliButton>
                   {{else}}
@@ -245,7 +245,7 @@
                       disabled={{this.isSaving}}
                       @style="ghost"
                       type="button"
-                      {{on "click" (queue this.closeModal this.revertAll)}}
+                      {{on "click" this.closeModal}}
                     >
                       Cancel
                     </DenaliButton>
