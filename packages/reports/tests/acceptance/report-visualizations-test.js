@@ -17,7 +17,7 @@ module('Acceptance | navi-report - report visualizations', function (hooks) {
 
     assert.deepEqual(
       findAll('.c3-legend-item').map((el) => el.textContent.trim()),
-      ['Property 1', 'Property 2', 'Property 3', 'Property 4'],
+      ['114', '100001', '100002', '101272'],
       'Without filters, four series are shown in the chart'
     );
 
@@ -27,7 +27,7 @@ module('Acceptance | navi-report - report visualizations', function (hooks) {
     await click('.navi-report__run-btn');
     assert.deepEqual(
       findAll('.c3-legend-item').map((el) => el.textContent.trim()),
-      ['Property 1'],
+      ['114'],
       'With filter, only the filtered series is shown'
     );
   });

@@ -14,20 +14,40 @@ export default [
     deliveryRuleIds: [],
     visualization: {
       type: 'line-chart',
-      version: 1,
+      version: 2,
       metadata: {
+        style: {},
         axis: {
           y: {
             series: {
               type: 'dimension',
               config: {
-                metric: 'adClicks',
-                dimensionOrder: ['property'],
+                metricCid: 'YLqKAtqCkg',
                 dimensions: [
-                  { name: 'Property 1', values: { property: '114' } },
-                  { name: 'Property 2', values: { property: '100001' } },
-                  { name: 'Property 3', values: { property: '100002' } },
-                  { name: 'Property 4', values: { property: '101272' } },
+                  {
+                    name: '114',
+                    values: {
+                      FG6KKIQKF_: '114',
+                    },
+                  },
+                  {
+                    name: '100001',
+                    values: {
+                      FG6KKIQKF_: '100001',
+                    },
+                  },
+                  {
+                    name: '100002',
+                    values: {
+                      FG6KKIQKF_: '100002',
+                    },
+                  },
+                  {
+                    name: '101272',
+                    values: {
+                      FG6KKIQKF_: '101272',
+                    },
+                  },
                 ],
               },
             },
@@ -36,28 +56,67 @@ export default [
       },
     },
     request: {
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day',
-      },
-      dataSource: 'bardOne',
-      metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-      dimensions: [{ dimension: 'property' }],
-      filters: [],
-      sort: [
+      filters: [
         {
-          metric: 'navClicks',
+          operator: 'bet',
+          values: ['2015-11-09T00:00:00.000Z', '2015-11-15T00:00:00.000Z'],
+          field: 'network.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+      ],
+      columns: [
+        {
+          cid: 'KpOdNIgM52',
+          alias: null,
+          field: 'network.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+        {
+          cid: 'FG6KKIQKF_',
+          alias: null,
+          field: 'property',
+          parameters: {
+            field: 'id',
+          },
+          type: 'dimension',
+        },
+        {
+          cid: 'YLqKAtqCkg',
+          alias: null,
+          field: 'adClicks',
+          parameters: {},
+          type: 'metric',
+        },
+        {
+          cid: 'oE4nrlZwR-',
+          alias: null,
+          field: 'navClicks',
+          parameters: {},
+          type: 'metric',
+        },
+      ],
+      table: 'network',
+      sorts: [
+        {
           direction: 'asc',
+          field: 'navClicks',
+          parameters: {},
+          type: 'metric',
         },
       ],
-      intervals: [
-        {
-          end: '2015-11-16 00:00:00.000',
-          start: '2015-11-09 00:00:00.000',
-        },
-      ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
+      rollup: {
+        columnCids: [],
+        grandTotal: false,
+      },
+      limit: null,
+      requestVersion: '2.0',
+      dataSource: 'bardOne',
     },
   },
   {
@@ -67,63 +126,84 @@ export default [
     updatedOn: '2016-04-01 11:00:00',
     ownerId: 'navi_user',
     deliveryRuleIds: [],
-    visualization: {
-      type: 'table',
-      version: 1,
-      metadata: {
-        columns: [
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Date',
-          },
-          {
-            field: 'property',
-            type: 'dimension',
-            displayName: 'Property',
-          },
-          {
-            field: 'adClicks',
-            type: 'metric',
-            displayName: 'Ad Clicks',
-          },
-          {
-            field: 'navClicks',
-            type: 'metric',
-            displayName: 'Nav Clicks',
-          },
-        ],
-      },
-    },
     request: {
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day',
-      },
-      dataSource: 'bardOne',
-      metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-      dimensions: [
-        {
-          dimension: 'property',
-        },
-      ],
       filters: [
         {
-          dimension: 'property',
-          operator: 'in',
-          field: 'id',
-          values: ['114', '100001'],
+          operator: 'bet',
+          values: ['2015-11-09T00:00:00.000Z', '2015-11-15T00:00:00.000Z'],
+          field: 'network.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
         },
-      ],
-      intervals: [
         {
-          end: '2015-11-16 00:00:00.000',
-          start: '2015-11-09 00:00:00.000',
+          operator: 'in',
+          values: ['114', '100001'],
+          field: 'property',
+          parameters: {
+            field: 'id',
+          },
+          type: 'dimension',
+        },
+        {
+          operator: 'gt',
+          values: [1000],
+          field: 'adClicks',
+          parameters: {},
+          type: 'metric',
         },
       ],
-      having: [{ metric: 'adClicks', operator: 'gt', values: [1000] }],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
+      columns: [
+        {
+          cid: 'n37Sjbv_2T',
+          alias: null,
+          field: 'network.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+        {
+          cid: 'CGZkVPE2NT',
+          alias: null,
+          field: 'property',
+          parameters: {
+            field: 'desc',
+          },
+          type: 'dimension',
+        },
+        {
+          cid: 'NLgyEKti-B',
+          alias: null,
+          field: 'adClicks',
+          parameters: {},
+          type: 'metric',
+        },
+        {
+          cid: 'Z95IR60TwU',
+          alias: null,
+          field: 'navClicks',
+          parameters: {},
+          type: 'metric',
+        },
+      ],
+      table: 'network',
+      sorts: [],
+      rollup: {
+        columnCids: [],
+        grandTotal: false,
+      },
+      limit: null,
+      requestVersion: '2.0',
+      dataSource: 'bardOne',
+    },
+    visualization: {
+      type: 'table',
+      version: 2,
+      metadata: {
+        columnAttributes: {},
+      },
     },
   },
   {
@@ -348,86 +428,6 @@ export default [
     },
   },
   {
-    id: 8,
-    title: 'Revenue report 2',
-    createdOn: '2015-03-01 00:00:00',
-    updatedOn: '2015-03-01 00:00:00',
-    ownerId: 'navi_user',
-    deliveryRuleIds: [],
-    visualization: {
-      type: 'table',
-      version: 1,
-      metadata: {
-        columns: [
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Date',
-          },
-          {
-            type: 'dimension',
-            attributes: { name: 'multiSystemId', field: 'desc' },
-            displayName: 'Multi System Id (desc)',
-          },
-          {
-            type: 'dimension',
-            attributes: { name: 'multiSystemId', field: 'other' },
-            displayName: 'Multi System Id (other)',
-          },
-          {
-            field: 'revenue(currency=USD)',
-            type: 'metric',
-            displayName: 'Revenue (USD)',
-          },
-          {
-            field: 'revenue(currency=EUR)',
-            type: 'metric',
-            displayName: 'Revenue (EUR)',
-          },
-        ],
-        showTotals: {
-          subtotal: 'multiSystemId',
-          grandTotal: true,
-        },
-      },
-    },
-    request: {
-      logicalTable: {
-        table: 'tableA',
-        timeGrain: 'day',
-      },
-      dataSource: 'bardOne',
-      metrics: [
-        {
-          metric: 'revenue',
-          parameters: {
-            currency: 'USD',
-          },
-        },
-        {
-          metric: 'revenue',
-          parameters: {
-            currency: 'EUR',
-          },
-        },
-      ],
-      dimensions: [
-        {
-          dimension: 'multiSystemId',
-        },
-      ],
-      filters: [],
-      intervals: [
-        {
-          end: '2018-02-16 00:00:00.000',
-          start: '2018-02-09 00:00:00.000',
-        },
-      ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
-    },
-  },
-  {
     id: 9,
     title: 'Report with unknown table',
     createdOn: '2015-02-01 00:00:00',
@@ -588,83 +588,92 @@ export default [
     deliveryRuleIds: [],
     visualization: {
       type: 'table',
-      version: 1,
+      version: 2,
       metadata: {
-        columns: [
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Date',
-          },
-          {
-            field: 'container',
-            type: 'dimension',
-            displayName: 'Container',
-          },
-          {
-            field: 'displayCurrency',
-            type: 'dimension',
-            displayName: 'Display Currency',
-          },
-          {
-            field: { metric: 'usedAmount', parameters: {} },
-            type: 'metric',
-            displayName: 'Used Amount',
-          },
-          {
-            field: { metric: 'revenue', parameters: { currency: 'GIL' } },
-            type: 'metric',
-            displayName: 'Revenue (GIL)',
-          },
-        ],
+        columnAttributes: {},
       },
     },
     request: {
-      logicalTable: {
-        table: 'inventory',
-        timeGrain: 'day',
-      },
-      metrics: [
-        {
-          metric: 'usedAmount',
-          parameters: {},
-        },
-        {
-          metric: 'revenue',
-          parameters: { currency: 'GIL' },
-        },
-      ],
-      dimensions: [
-        {
-          dimension: 'container',
-        },
-        {
-          dimension: 'displayCurrency',
-        },
-      ],
       filters: [
         {
-          dimension: 'container',
-          field: 'id',
+          operator: 'bet',
+          values: ['P3D', 'current'],
+          field: 'inventory.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+        {
           operator: 'in',
           values: ['2'],
+          field: 'container',
+          parameters: {
+            field: 'id',
+          },
+          type: 'dimension',
         },
-      ],
-      having: [
         {
-          metric: 'usedAmount',
           operator: 'gt',
           values: [50],
+          field: 'usedAmount',
+          parameters: {},
+          type: 'metric',
         },
       ],
-      intervals: [
+      columns: [
         {
-          end: 'current',
-          start: 'P3D',
+          cid: '8fRAf4_kRJ',
+          alias: null,
+          field: 'inventory.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+        {
+          cid: '_HipclSRk2',
+          alias: null,
+          field: 'container',
+          parameters: {
+            field: 'desc',
+          },
+          type: 'dimension',
+        },
+        {
+          cid: 'eXnVmcRidU',
+          alias: null,
+          field: 'displayCurrency',
+          parameters: {
+            field: 'desc',
+          },
+          type: 'dimension',
+        },
+        {
+          cid: 'NA-MqnxCRm',
+          alias: null,
+          field: 'usedAmount',
+          parameters: {},
+          type: 'metric',
+        },
+        {
+          cid: '5JHUPNr4p4',
+          alias: null,
+          field: 'revenue',
+          parameters: {
+            currency: 'GIL',
+          },
+          type: 'metric',
         },
       ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
+      table: 'inventory',
+      sorts: [],
+      rollup: {
+        columnCids: [],
+        grandTotal: false,
+      },
+      limit: null,
+      requestVersion: '2.0',
       dataSource: 'bardTwo',
     },
   },

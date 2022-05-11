@@ -19,7 +19,7 @@ module('Unit | Service | visualization', function (hooks) {
       Service.getVisualizations('Standard')
         .map((m) => m.typeName)
         .sort(),
-      ['c3:bar-chart', 'c3:goal-gauge', 'c3:line-chart', 'c3:pie-chart', 'yavin:metric-label', 'yavin:table'],
+      ['yavin:metric-label', 'yavin:table'],
       'legacy ones are loaded'
     );
   });

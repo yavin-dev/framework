@@ -1,0 +1,16 @@
+{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{page-title "Yavin C3"}}
+
+<DenaliNavbar @isResponsive={{true}} as |Nav|>
+  <Nav.Left as |Left|>
+    <Left.Item>Navi Core</Left.Item>
+  </Nav.Left>
+  <Nav.Center as |Center|>
+    <Center.LinkTo @route="bar-chart"><DenaliIcon @icon="chart-bar-vertical" /> Bar Chart</Center.LinkTo>
+    <Center.LinkTo @route="goal-gauge"><DenaliIcon @icon="dashboard" /> Goal Gauge</Center.LinkTo>
+    <Center.LinkTo @route="line-chart"><DenaliIcon @icon="chart-line" /> Line Chart</Center.LinkTo>
+    <Center.LinkTo @route="pie-chart"><DenaliIcon @icon="chart-pie" />Pie Chart</Center.LinkTo>
+  </Nav.Center>
+</DenaliNavbar>
+
+<div class="outlet">{{outlet}}</div>

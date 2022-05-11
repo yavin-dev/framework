@@ -1,0 +1,55 @@
+@import 'denali/denali';
+@import 'denali/ember-power-select';
+@import 'navi-core';
+@import 'yavin-c3';
+
+.nav-responsive {
+  z-index: 1;
+
+  &-menu {
+    cursor: pointer;
+  }
+}
+
+.table-example {
+  display: flex;
+  height: 450px;
+}
+
+h3 {
+  text-align: center;
+}
+
+.chart-container {
+  display: flex;
+  height: 500px;
+  width: 100%;
+
+  &.pie-chart-container {
+    .pie-chart-widget-container {
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+    }
+  }
+}
+
+.navi-visualization-config {
+  margin: 0 10px;
+  width: 400px;
+}
+
+/* Use `zoom` over `transform` since some tests depend on reading height and width */
+#ember-testing { /* stylelint-disable-line */
+  transform: none !important;
+  zoom: 50%;
+}
+
+.navi-visualization-config {
+  min-height: 500px;
+}
+
+.metric-label__container {
+  display: flex;
+  flex-flow: row wrap;
+}

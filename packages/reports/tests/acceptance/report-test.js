@@ -1315,17 +1315,13 @@ module('Acceptance | Navi Report', function (hooks) {
 
     let seriesLabels = findAll('.c3-legend-item').map((el) => el.textContent.trim());
     let hiddenLabels = findAll('.c3-legend-item-hidden').map((el) => el.textContent.trim());
-    assert.deepEqual(
-      seriesLabels,
-      ['Property 1', 'Property 2', 'Property 3', 'Property 4'],
-      '4 series are initially present'
-    );
+    assert.deepEqual(seriesLabels, ['114', '100001', '100002', '101272'], '4 series are initially present');
     assert.deepEqual(hiddenLabels, [], 'No series are initially hidden from chart');
 
     // Toggle off first series
     await click('.c3-legend-item');
     hiddenLabels = findAll('.c3-legend-item-hidden').map((el) => el.textContent.trim());
-    assert.deepEqual(hiddenLabels, ['Property 1'], 'Selected series has been hidden from chart');
+    assert.deepEqual(hiddenLabels, ['114'], 'Selected series has been hidden from chart');
 
     // Toggle on first series
     await click('.c3-legend-item');
@@ -1943,14 +1939,13 @@ module('Acceptance | Navi Report', function (hooks) {
   });
 
   test('Parameterized metrics with default displayname are not considered custom', async function (assert) {
-    assert.expect(2);
-    await visit('/reports/8');
+    await visit('/reports/2');
 
     assert
-      .dom('.table-header-row-vc--view .table-header-cell.metric > .table-header-cell__title')
-      .isVisible('renders metric columns');
+      .dom('.table-header-cell[data-name="property(field=desc)"] .table-header-cell__title')
+      .exists('renders metric columns');
     assert
-      .dom('.table-header-row-vc--view .table-header-cell.metric > .table-header-cell__title')
+      .dom('.table-header-cell[data-name="property(field=desc)"] .table-header-cell__title')
       .doesNotHaveClass(
         '.table-header-cell__title--custom-name',
         'Parameterized metrics with default display name should not be considered custom'

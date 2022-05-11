@@ -28,17 +28,13 @@ module('Unit | Initializer | visualization-v2-transform', function (hooks) {
   });
 
   test('it works', async function (assert) {
-    assert.expect(7);
+    assert.expect(3);
     await this.application.boot();
 
     const transform = this.owner.lookup('transform:-mf-fragment$visualization$vizModelType');
 
     const map = {
-      'line-chart': 'line-chart',
-      'bar-chart': 'bar-chart',
-      'goal-gauge': 'goal-gauge',
       'metric-label': 'metric-label',
-      'pie-chart': 'pie-chart',
       table: 'table',
       'model-that-does-not-exist': 'visualization-v2',
     };

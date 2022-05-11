@@ -46,4 +46,10 @@ export default class NaviDashboard extends Component<Args> {
   onScroll({ target: { scrollTop } }: { target: HTMLElement }) {
     this.showHeaderShadow = scrollTop > 0;
   }
+
+  @action
+  onResize(event: Event, gridStackItem: HTMLElement) {
+    // Dispatch event down to grid item
+    gridStackItem.dispatchEvent(new Event(event.type));
+  }
 }

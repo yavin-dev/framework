@@ -8,28 +8,75 @@ export default [
     dashboardId: 1,
     visualization: {
       type: 'line-chart',
-      version: 1,
-
+      version: 2,
       metadata: {
+        style: {},
         axis: {
           y: {
             series: {
               type: 'dimension',
               config: {
-                metric: 'wins',
-                dimensionOrder: ['character'],
+                metricCid: 'HcML68Uc50',
                 dimensions: [
                   {
-                    name: 'Dry Bowser',
-                    values: { character: '7' },
+                    name: '0',
+                    values: {
+                      YH_WpZHyvB: '0',
+                    },
                   },
                   {
-                    name: 'Daisy',
-                    values: { character: '4' },
+                    name: '1',
+                    values: {
+                      YH_WpZHyvB: '1',
+                    },
                   },
                   {
-                    name: 'Wario',
-                    values: { character: '8' },
+                    name: '2',
+                    values: {
+                      YH_WpZHyvB: '2',
+                    },
+                  },
+                  {
+                    name: '3',
+                    values: {
+                      YH_WpZHyvB: '3',
+                    },
+                  },
+                  {
+                    name: '4',
+                    values: {
+                      YH_WpZHyvB: '4',
+                    },
+                  },
+                  {
+                    name: '5',
+                    values: {
+                      YH_WpZHyvB: '5',
+                    },
+                  },
+                  {
+                    name: '6',
+                    values: {
+                      YH_WpZHyvB: '6',
+                    },
+                  },
+                  {
+                    name: '7',
+                    values: {
+                      YH_WpZHyvB: '7',
+                    },
+                  },
+                  {
+                    name: '8',
+                    values: {
+                      YH_WpZHyvB: '8',
+                    },
+                  },
+                  {
+                    name: '9',
+                    values: {
+                      YH_WpZHyvB: '9',
+                    },
                   },
                 ],
               },
@@ -40,17 +87,67 @@ export default [
     },
     requests: [
       {
-        logicalTable: {
-          table: 'gameStats',
-          timeGrain: 'day',
+        filters: [
+          {
+            operator: 'bet',
+            values: ['P7D', 'current'],
+            field: 'gameStats.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+          },
+        ],
+        columns: [
+          {
+            cid: 'rJ4YqurRXU',
+            alias: null,
+            field: 'gameStats.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+          },
+          {
+            cid: 'YH_WpZHyvB',
+            alias: null,
+            field: 'character',
+            parameters: {
+              field: 'id',
+            },
+            type: 'dimension',
+          },
+          {
+            cid: 'HcML68Uc50',
+            alias: null,
+            field: 'wins',
+            parameters: {},
+            type: 'metric',
+          },
+          {
+            cid: 'jUfeHpovLU',
+            alias: null,
+            field: 'timeSpent',
+            parameters: {},
+            type: 'metric',
+          },
+        ],
+        table: 'gameStats',
+        sorts: [
+          {
+            direction: 'asc',
+            field: 'wins',
+            parameters: {},
+            type: 'metric',
+          },
+        ],
+        rollup: {
+          columnCids: [],
+          grandTotal: false,
         },
-        metrics: [{ metric: 'wins' }, { metric: 'timeSpent' }],
-        dimensions: [{ dimension: 'character' }],
-        filters: [],
-        sort: [{ metric: 'wins', direction: 'asc' }],
-        intervals: [{ end: 'current', start: 'P7D' }],
-        bardVersion: 'v1',
-        requestVersion: 'v1',
+        limit: null,
+        requestVersion: '2.0',
+        dataSource: 'default',
       },
     ],
   },

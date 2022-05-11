@@ -371,7 +371,7 @@ module('Acceptance | Dashboards', function (hooks) {
 
     await click('.dashboard-header__clone-btn');
 
-    assert.equal(currentURL(), '/dashboards/8/view', 'Cloning a dashboard transitions to newly made dashboard');
+    assert.equal(currentURL(), '/dashboards/9/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     assert
       .dom('.dashboard-header__page-title .clickable')
@@ -603,7 +603,7 @@ module('Acceptance | Dashboards', function (hooks) {
     assert.expect(2);
 
     server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-    server.get('/data/network/day/os;show=desc', function () {
+    server.get('/data/network/day/os;show=id', function () {
       return new Response(403);
     });
     await visit('/dashboards/2/view');
@@ -725,7 +725,7 @@ module('Acceptance | Dashboards', function (hooks) {
 
     await click('.dashboard-header__clone-btn');
 
-    assert.equal(currentURL(), '/dashboards/8/view', 'Cloning a dashboard transitions to newly made dashboard');
+    assert.equal(currentURL(), '/dashboards/9/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     // Create new widget
     await click('.dashboard-header__add-widget-btn');
@@ -743,7 +743,7 @@ module('Acceptance | Dashboards', function (hooks) {
     // Save without running
     await click('.navi-report-widget__save-btn');
     assert.ok(
-      currentURL().endsWith('/dashboards/8/view'),
+      currentURL().endsWith('/dashboards/9/view'),
       'After saving without running, user is brought back to dashboard view'
     );
 
