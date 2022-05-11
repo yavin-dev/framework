@@ -1,0 +1,66 @@
+/**
+ * Copyright 2022, Yahoo Holdings Inc.
+ * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
+ */
+
+$indicator-size: 12px;
+
+.data-availability {
+  &__menu {
+    &.ember-basic-dropdown-content {
+      &.ember-basic-dropdown-content--left {
+        .menu-content {
+          transform: translateX(0%);
+          transition: transform 0s 0s;
+        }
+      }
+
+      &.ember-basic-dropdown-content--right {
+        .menu-content {
+          transform: translateX(-100%);
+          transition: transform 0s 0s;
+        }
+      }
+    }
+
+    .menu-content {
+      width: 350px !important;
+    }
+  }
+
+  &__indicator {
+    border-radius: 50%;
+    height: $indicator-size;
+    width: $indicator-size;
+  }
+
+  &__info {
+    overflow: hidden;
+
+    &__name-container {
+      min-width: 0;
+    }
+  }
+
+  &__status {
+    &--loading {
+      @keyframes waving-activity-line {
+        to {
+          background-position: 4500vh;
+        }
+      }
+      animation: waving-activity-line 2500s cubic-bezier(0, 0, 0.61, 0.84) infinite;
+      background-clip: text;
+
+      background-image: linear-gradient(to right,
+      map-get($denali-grey-colors, '100'),
+      map-get($denali-brand-colors, '200'),
+      map-get($denali-brand-colors, '300'),
+      map-get($denali-brand-colors, '400'));
+
+      // animation: color_change 1s infinite alternate;
+      color: map-get($denali-brand-colors, '300');
+      color: transparent;
+    }
+  }
+}

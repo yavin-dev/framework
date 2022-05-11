@@ -9,6 +9,7 @@ import PaginationUtils from './pagination';
 import type NativeArray from '@ember/array';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import MutableArray from '@ember/array/mutable';
+import { sortBy } from 'lodash-es';
 
 export default {
   /**
@@ -113,7 +114,7 @@ export default {
       }
     }
 
-    results = A(results).sortBy('relevance');
+    results = sortBy(results, (result) => result.relevance);
 
     return PaginationUtils.getPaginatedRecords(results, resultLimit, page);
   },

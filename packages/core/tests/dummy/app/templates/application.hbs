@@ -15,6 +15,9 @@
     <Center.LinkTo @route="buttons"><DenaliIcon @icon="cursor-arrow" /> Buttons</Center.LinkTo>
     <Center.LinkTo @route="date-pick"><DenaliIcon @icon="cursor-arrow" /> Date Pick</Center.LinkTo>
   </Nav.Center>
+  <Nav.Right as |Right|>
+    <Right.Item><DataAvailability @position="right" @dataSources={{array "bardOne"}} /></Right.Item>
+  </Nav.Right>
 </DenaliNavbar>
 
 <div class="outlet">{{outlet}}</div>

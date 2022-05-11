@@ -21,6 +21,9 @@ import { selectChoose } from 'ember-power-select/test-support';
 import { triggerCopySuccess } from 'ember-cli-clipboard/test-support';
 import Service from '@ember/service';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
+import { clickTrigger } from 'ember-basic-dropdown/test-support/helpers';
+import { getStatus, getDataSourceStatuses, DATE_FORMAT } from 'navi-core/test-support/data-availability';
+import moment from 'moment';
 
 // Regex to check that a string ends with "{uuid}/view"
 const TempIdRegex = /\/reports\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
@@ -363,6 +366,35 @@ module('Acceptance | Exploring Widgets', function (hooks) {
       findAll('.navi-report-widget__footer button').map((e) => e.textContent.trim()),
       ['Run', 'Save Changes', 'Revert'],
       'When not loading a widget, the standard footer buttons are available'
+    );
+  });
+
+  test('Data availability', async function (assert) {
+    await visit('/dashboards/1/widgets/2/view');
+
+    const bardOneDate = moment.utc().startOf('day').format(DATE_FORMAT);
+    const bardTwoDate = moment.utc().subtract(2, 'day').startOf('hour').format(DATE_FORMAT);
+
+    assert.strictEqual(getStatus(), 'delayed', 'Widget shows data as delayed from bard one');
+    await clickTrigger('.data-availability');
+
+    assert.deepEqual(
+      getDataSourceStatuses(),
+      [{ status: 'delayed', name: 'Bard One', date: bardOneDate }],
+      'availability summary shows bard one status'
+    );
+
+    await click('.report-builder-sidebar__breadcrumb-item[data-level="0"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Bard Two"]');
+    await click('.report-builder-source-selector__source-button[data-source-name="Inventory"]');
+
+    assert.strictEqual(getStatus(), 'late', 'Widget is updated to show data as late from bard two');
+    await clickTrigger('.data-availability');
+
+    assert.deepEqual(
+      getDataSourceStatuses(),
+      [{ status: 'late', name: 'Bard Two', date: bardTwoDate }],
+      'availability summary is updated to show bard two status'
     );
   });
 });

@@ -3,7 +3,6 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { A } from '@ember/array';
 import Component from '@glimmer/component';
 import NumberFormats from 'navi-core/utils/enums/number-formats';
 
@@ -25,9 +24,8 @@ export default class NumberFormatSelectorComponent extends Component<Args> {
    * is not one of the predefined formats
    */
   get isCustomFormat() {
-    const predefinedFormats = A(this.predefinedFormats);
     const { format } = this.args;
-    const match = predefinedFormats.findBy('format', format);
+    const match = this.predefinedFormats.toArray().find((predefined) => predefined.format === format);
 
     if (match === undefined) {
       return true;
