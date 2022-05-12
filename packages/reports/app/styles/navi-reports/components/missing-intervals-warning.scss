@@ -37,15 +37,15 @@
   }
 
   &__details-content {
-    height: 0;
+    max-height: 0;
     overflow-y: hidden;
-    transition: height 0.5s ease-out;
+    padding: 0 10px;
+    transition: max-height 0.5s ease-out;
     width: 100%;
 
     &-expanded {
-      height: 140px;
+      max-height: 140px;
       overflow-y: scroll;
-      padding: 10px;
     }
   }
 
@@ -53,6 +53,7 @@
     display: list-item;
     list-style-position: inside;
     list-style-type: square;
+    padding-top: 10px;
   }
 
   &__details-trigger {
@@ -68,6 +69,7 @@
 
   &__disclaimer {
     color: map-get($denali-grey-colors, '600');
+    padding-bottom: 10px;
   }
 
   &__message-text {

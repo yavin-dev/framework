@@ -17,22 +17,20 @@
         </span>
       </div>
       <div class="missing-intervals-warning__details-content {{if this.showDetails "missing-intervals-warning__details-content-expanded"}}">
-        {{#if this.showDetails}}
-          {{#each this.warningMessages as | message |}}
-            <div class="missing-intervals-warning__details-help-text">{{message}}</div>
-          {{/each}}
-          {{#if this.missingIntervals}}
-            <div class="missing-intervals-warning__details-help-text">The following intervals from the result set have missing data:</div>
-            <div class="missing-intervals-warning__dates">
-              {{#each this.missingIntervals as |interval|}}
-                <div class="missing-intervals-warning__date-row flex align-items-center">
-                  <DenaliIcon @icon="close" class="is-status-danger p-r-5" @size="extrasmall" />
-                  <span class="missing-intervals-warning__date-interval">{{interval}}</span>
-                </div>
-              {{/each}}
-            </div>
-            <div class="missing-intervals-warning__disclaimer">Note: Listed intervals include both the start and end dates.</div>
-          {{/if}}
+        {{#each this.warningMessages as | message |}}
+          <div class="missing-intervals-warning__details-help-text">{{message}}</div>
+        {{/each}}
+        {{#if this.missingIntervals}}
+          <div class="missing-intervals-warning__details-help-text">The following intervals from the result set have missing data:</div>
+          <div class="missing-intervals-warning__dates">
+            {{#each this.missingIntervals as |interval|}}
+              <div class="missing-intervals-warning__date-row flex align-items-center">
+                <DenaliIcon @icon="close" class="is-status-danger p-r-5" @size="extrasmall" />
+                <span class="missing-intervals-warning__date-interval">{{interval}}</span>
+              </div>
+            {{/each}}
+          </div>
+          <div class="missing-intervals-warning__disclaimer">Note: Listed intervals include both the start and end dates.</div>
         {{/if}}
       </div>
     </div>
