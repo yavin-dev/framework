@@ -1,13 +1,24 @@
 /**
- * Copyright 2018, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 .missing-intervals-warning {
-  background-color: map-get($denali-grey-colors, '100');
   bottom: 0;
-  overflow: hidden;
+  position: relative;
   width: 100%;
+
+  &__container {
+    background-color: rgba(map-get($denali-grey-colors, '100'), 0.9);
+    bottom: 0;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+
+    &-placeholder {
+      height: 45px;
+    }
+  }
 
   &__contents {
     border-bottom: 1px solid map-get($denali-grey-colors, '400');
@@ -15,6 +26,7 @@
     cursor: pointer;
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     padding: 10px;
     width: 100%;
   }
@@ -25,10 +37,16 @@
   }
 
   &__details-content {
-    max-height: 140px;
-    overflow-y: scroll;
-    padding: 10px;
+    height: 0;
+    overflow-y: hidden;
+    transition: height 0.5s ease-out;
     width: 100%;
+
+    &-expanded {
+      height: 140px;
+      overflow-y: scroll;
+      padding: 10px;
+    }
   }
 
   &__details-help-text {
@@ -39,8 +57,13 @@
 
   &__details-trigger {
     display: flex;
+    flex-wrap: nowrap;
     justify-content: space-between;
     width: 100%;
+  }
+
+  &__details-desc {
+    white-space: nowrap;
   }
 
   &__disclaimer {

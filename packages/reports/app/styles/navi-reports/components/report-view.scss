@@ -111,9 +111,10 @@
     display: flex;
     flex: 1;
     flex-flow: column;
+    margin: 10px;
     min-height: 0;
     min-width: 0;
-    padding: 10px;
+    position: relative;
   }
 }
 
