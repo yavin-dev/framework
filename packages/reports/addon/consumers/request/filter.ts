@@ -109,7 +109,7 @@ export default class FilterConsumer extends ActionConsumer {
     [RequestActions.DID_ADD_FILTER](this: FilterConsumer, route: Route, filter: FilterFragment) {
       const controller = route.controllerFor(route.routeName) as ReportsReportController;
       controller.isFiltersCollapsed = false;
-      controller.setLastAddedFilter(filter);
+      controller.setLastAddedFilter?.(filter);
     },
 
     [RequestActions.UPDATE_FILTER](_route: Route, originalFilter: FilterFragment, changeSet: object) {

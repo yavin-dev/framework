@@ -19,6 +19,7 @@ function addItem(type, item, dataSource, parameters = {}) {
 const TEMPLATE = hbs`
 <NaviColumnConfig
   @lastAddedColumn={{this.lastAddedColumn}}
+  @resetLastAddedColumn={{optional this.resetLastAddedColumn}}
   @report={{this.report}}
   @onAddColumn={{optional this.onAddColumn}}
   @onRemoveColumn={{optional this.onRemoveColumn}}
