@@ -1,4 +1,4 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-column-config" ...attributes>
   <div class="navi-column-config__panel">
     <div class="navi-column-config__panel-header">
@@ -21,6 +21,7 @@
         <NaviColumnConfig::Item
           @column={{column}}
           @isLastAdded={{eq column.fragment @lastAddedColumn}}
+          @resetLastAddedColumn={{@resetLastAddedColumn}}
           @isOpen={{eq column.fragment this.currentlyOpenColumn.fragment}}
           @onOpenColumn={{this.openColumn}}
           @onRemoveColumn={{fn @onRemoveColumn column.fragment}}

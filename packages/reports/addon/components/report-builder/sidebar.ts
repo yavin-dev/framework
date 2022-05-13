@@ -35,7 +35,8 @@ interface Args {
   disabled: boolean;
   onResize?: () => void;
   onCloseSidebar(): void;
-  lastAddedColumn?: ColumnFragment;
+  lastAddedColumn: ColumnFragment | null;
+  resetLastAddedColumn(): void;
   setTable(table: TableMetadataModel): void;
 }
 

@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: Request Column Config Item Component
@@ -16,6 +16,7 @@ import type { SortDirection } from 'navi-data/adapters/facts/interface';
 interface Args {
   column: ConfigColumn;
   isLastAdded: boolean;
+  resetLastAddedColumn(): void;
   isOpen: boolean;
   onOpenColumn(column: ConfigColumn | null): void;
   onRemoveColumn(): void;
@@ -59,6 +60,7 @@ export default class NaviColumnConfigItemComponent extends Component<Args> {
       next(() => {
         this.scrollToElement();
         this.highlightElement();
+        this.args.resetLastAddedColumn();
       });
     }
   }

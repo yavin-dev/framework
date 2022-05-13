@@ -1,4 +1,4 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-report navi-report-widget">
   {{!-- Header --}}
   <div class="navi-report-widget__header container-full p-y-10">
@@ -159,6 +159,9 @@
       @report={{@model}}
       @disabled={{this.isRunningReport}}
       @lastAddedColumn={{this.lastAddedColumn}}
+      @resetLastAddedColumn={{fn this.setLastAddedColumn null}}
+      @lastAddedFilter={{this.lastAddedFilter}}
+      @resetLastAddedFilter={{fn this.setLastAddedFilter null}}
       @isFiltersCollapsed={{this.isFiltersCollapsed}}
       @onUpdateFiltersCollapsed={{fn (mut this.isFiltersCollapsed)}}
     >

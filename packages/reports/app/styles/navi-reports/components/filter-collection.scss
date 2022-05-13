@@ -1,11 +1,17 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
 .filter-collection {
+  scroll-behavior: smooth;
+
   &__row {
     display: flex;
+
+    &--last-added {
+      animation: navi-pulse-once 0.75s;
+    }
   }
 
   &__remove {

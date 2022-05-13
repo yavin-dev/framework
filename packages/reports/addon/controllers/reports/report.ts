@@ -1,17 +1,16 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
 import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
-//@ts-ignore
-import fade from 'ember-animated/transitions/fade';
 import { tracked } from '@glimmer/tracking';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type ScreenService from 'navi-core/services/screen';
 import type ColumnFragment from 'navi-core/models/request/column';
+import type FilterFragment from 'navi-core/models/request/filter';
 
 const REPORT_STATE = <const>{
   RUNNING: 'running',
@@ -39,6 +38,11 @@ export default class ReportsReportController extends Controller {
    * the column that has been added last
    */
   @tracked lastAddedColumn: ColumnFragment | null = null;
+
+  /**
+   * the filter that has been added last
+   s*/
+  @tracked lastAddedFilter: FilterFragment | null = null;
 
   /**
    * The current state of the report
@@ -97,8 +101,17 @@ export default class ReportsReportController extends Controller {
    * @param column - the last added request column fragment
    */
   @action
-  setLastAddedColumn(column: ColumnFragment) {
+  setLastAddedColumn(column: ColumnFragment | null) {
     this.lastAddedColumn = column;
+  }
+
+  /**
+   * Updates the last added filter
+   * @param filter - the last added request filter fragment
+   */
+  @action
+  setLastAddedFilter(filter: FilterFragment | null) {
+    this.lastAddedFilter = filter;
   }
 }
 
