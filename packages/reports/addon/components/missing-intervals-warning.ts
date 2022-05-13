@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -77,8 +77,7 @@ export default class MissingIntervalWarning extends Component<Args> {
     yield Promise.all(
       insertedSprites.map((sprite) => {
         sprite.startAtPixel({ y });
-        sprite.applyStyles({ 'z-index': '1' });
-        return move(sprite, { easing: easeOut, duration: 1000 });
+        return move(sprite, { easing: easeOut, duration: 500 });
       })
     );
   }

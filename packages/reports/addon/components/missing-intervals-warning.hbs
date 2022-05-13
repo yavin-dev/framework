@@ -1,22 +1,23 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <AnimatedContainer class="missing-intervals-warning" @motion={{this.resizeMotion}}>
   {{#animated-if this.warningEnabled initialInsertion=true use=this.drawerTransition}}
-    <div class="missing-intervals-warning__contents" role="button" {{on "click" (toggle "showDetails" this)}} ...attributes>
-      <DenaliIcon @icon="warning" @size="small" class="missing-intervals-warning__warning-icon" />
-      <span class="missing-intervals-warning__message-text">Important message(s) about your results.</span>
-      <span class="missing-intervals-warning__details-trigger">
-        {{#animated-if this.showDetails use=this.fadeTransition}}
-          <span class="missing-intervals-warning__details-desc link">Click to close.</span>
-          <DenaliIcon class="m-r-10 p-t-3" @icon="arrowhead-down" @size="small" />
-        {{else}}
-          <span class="missing-intervals-warning__details-desc link">Click for more details.</span>
-          <DenaliIcon class="m-r-10 p-t-3" @icon="arrowhead-up" @size="small" />
-        {{/animated-if}}
-      </span>
-    </div>
-    {{#if this.showDetails}}
-      <div class="missing-intervals-warning__details-content">
-        {{#each this.warningMessages as | message | }}
+    <div class="missing-intervals-warning__container-placeholder"></div>
+    <div class="missing-intervals-warning__container">
+      <div class="missing-intervals-warning__contents" role="button" {{on "click" (toggle "showDetails" this)}} ...attributes>
+        <DenaliIcon @icon="warning" @size="small" class="missing-intervals-warning__warning-icon" />
+        <span class="missing-intervals-warning__message-text">Important message(s) about your results.</span>
+        <span class="missing-intervals-warning__details-trigger">
+          {{#animated-if this.showDetails use=this.fadeTransition}}
+            <span class="missing-intervals-warning__details-desc link">Click to close.</span>
+            <DenaliIcon class="m-r-10 p-t-3" @icon="arrowhead-down" @size="small" />
+          {{else}}
+            <span class="missing-intervals-warning__details-desc link">Click for more details.</span>
+            <DenaliIcon class="m-r-10 p-t-3" @icon="arrowhead-up" @size="small" />
+          {{/animated-if}}
+        </span>
+      </div>
+      <div class="missing-intervals-warning__details-content {{if this.showDetails "missing-intervals-warning__details-content-expanded"}}">
+        {{#each this.warningMessages as | message |}}
           <div class="missing-intervals-warning__details-help-text">{{message}}</div>
         {{/each}}
         {{#if this.missingIntervals}}
@@ -32,6 +33,6 @@
           <div class="missing-intervals-warning__disclaimer">Note: Listed intervals include both the start and end dates.</div>
         {{/if}}
       </div>
-    {{/if}}
+    </div>
   {{/animated-if}}
 </AnimatedContainer>
