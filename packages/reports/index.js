@@ -1,7 +1,5 @@
 'use strict';
-// eslint-disable-next-line node/no-extraneous-require
 let Funnel = require('broccoli-funnel');
-// eslint-disable-next-line node/no-extraneous-require
 let mergeTrees = require('broccoli-merge-trees');
 
 module.exports = {

@@ -50,7 +50,6 @@ export default class DeliveryRuleModel extends Model.extend(Validations) {
     return `${capitalize(this.delivery)} delivered ${this.format.type} every ${this.frequency}`;
   }
 
-  nameChanged = false;
   /* == Attributes == */
   @attr('moment')
   createdOn!: Moment;

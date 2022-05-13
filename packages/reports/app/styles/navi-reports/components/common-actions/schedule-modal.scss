@@ -13,7 +13,7 @@
     }
     /* stylelint-disable selector-no-qualifying-type */
     div.modal-container {
-      height: 630px;
+      height: fit-content;
       width: 901px;
     }
 
@@ -66,6 +66,8 @@
       border-right: 1px solid #e8e8e8;
 
       li {
+        //overrides the tab height that is set to 40 with no flex
+        //making more specific class doesnt have the same effect on it so the important is necessary
         height: fit-content !important;
         min-height: 40px;
       }
@@ -77,7 +79,7 @@
       }
 
       div.tabs ul {
-        height: 521px;
+        max-height: 521px;
         overflow-y: auto;
       }
     }

@@ -209,7 +209,7 @@ export default class ScheduleActionComponent extends Component<Args> {
   @action
   async doDelete(deliveryRule: DeliveryRuleModel) {
     assert('The currentDisplayedRule is defined', deliveryRule);
-    const name = deliveryRule.name ? deliveryRule.defaultName : deliveryRule.name;
+    const name = deliveryRule.name ? deliveryRule.name : deliveryRule.defaultName;
     const deletePromise = new RSVP.Promise((resolve, reject) => {
       this.args.onDelete(deliveryRule, { resolve, reject });
     });

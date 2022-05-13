@@ -32,6 +32,7 @@
           <DenaliSidebar class="has-bg-white w-full" as |Sidebar|>
             {{#each this.deliveryRules as |deliveryRule|}}
               <Sidebar.Tab
+                  class="schedule__modal-delivery-list-item"
 	                @isActive={{eq this.currentDisplayedRule deliveryRule}}
 	                {{on "click" (fn (mut this.currentDisplayedRule) deliveryRule)}}
 	              >
