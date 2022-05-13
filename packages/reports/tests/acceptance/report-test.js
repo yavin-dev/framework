@@ -1529,11 +1529,8 @@ module('Acceptance | Navi Report', function (hooks) {
     );
   });
 
-  skip('filters - collapse and expand', async function (assert) {
-    // TODO: Fix after https://github.com/yahoo/yavin/pull/1171 is merged
-    assert.expect(9);
-    //adding dimensions and metrics not currently expanding filter collection
-
+  test('filters - collapse and expand', async function (assert) {
+    assert.expect(6);
     await visit('/reports/1');
 
     //collapse filters
@@ -1560,27 +1557,62 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.report-builder__container-header__filters-toggle');
     assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (3)');
 
-    //remove the dimension filter
-    await clickItemFilter('dimension', 'Operating System');
-    assert
-      .dom('.filter-collection')
-      .hasClass('filter-collection--collapsed', 'Filters are still collapsed when removing a dimension filter');
-
     //add a metric filter
     await clickItemFilter('metric', 'Ad Clicks');
     assert
       .dom('.filter-collection')
       .doesNotHaveClass('filter-collection--collapsed', 'Adding a metric filter expands filters');
+  });
+
+  test('filters - last added filter', async function (assert) {
+    // assert.expect(6);
+    await visit('/reports/1');
+
+    assert.dom('.filter-collection__row--last-added').doesNotExist('No filter row is highlighted on page load');
+
+    await clickItemFilter('dimension', 'Operating System');
+    assert.deepEqual(
+      findAll('.filter-collection__row').map((el) => el.classList.contains('filter-collection__row--last-added')),
+      [false, true],
+      'Operating System is highlighted'
+    );
+
+    await clickItemFilter('metric', 'Ad Clicks');
+    assert.deepEqual(
+      findAll('.filter-collection__row').map((el) => el.classList.contains('filter-collection__row--last-added')),
+      [false, false, true],
+      'Ad Clicks is highlighted'
+    );
+
+    await clickItemFilter('dimension', 'Operating System');
+    assert.deepEqual(
+      findAll('.filter-collection__row').map((el) => el.classList.contains('filter-collection__row--last-added')),
+      [false, false, true, false],
+      'Second Operating System is highlighted'
+    );
+
+    //collapse and expand
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed');
+    await click('.report-builder__container-header__filters-toggle');
+    assert.dom('.filter-collection__row--last-added').doesNotExist('No filter row is highlighted after expanding');
 
     //collapse again
     await click('.report-builder__container-header__filters-toggle');
-    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (4)');
+    assert.dom('.filter-collection').hasClass('filter-collection--collapsed', 'Filters are collapsed (2)');
+    await clickItemFilter('dimension', 'Operating System');
+    assert.deepEqual(
+      findAll('.filter-collection__row').map((el) => el.classList.contains('filter-collection__row--last-added')),
+      [false, false, false, true, false],
+      'Row is highlighted after collapsing'
+    );
 
-    //remove the metric filter
     await clickItemFilter('metric', 'Ad Clicks');
-    assert
-      .dom('.filter-collection')
-      .hasClass('filter-collection--collapsed', 'Filters are still collapsed when removing a metric filter');
+    assert.deepEqual(
+      findAll('.filter-collection__row').map((el) => el.classList.contains('filter-collection__row--last-added')),
+      [false, false, false, false, false, true],
+      'Second Ad Clicks is highlighted'
+    );
   });
 
   test('Test filter "Is Empty" is accepted', async function (assert) {
