@@ -1,0 +1,13 @@
+{
+  "extends": "../tsconfig-base.json",
+  "compilerOptions": {
+    "rootDir": "..",
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@yavin/client": ["../src/"],
+      "@yavin/client/*": ["../src/*"]
+    }
+  },
+  "include": ["../src", "../test"]
+}
