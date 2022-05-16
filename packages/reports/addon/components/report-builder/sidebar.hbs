@@ -1,4 +1,4 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <AnimatedContainer class="report-builder-sidebar {{if (is-mobile) "report-builder-sidebar--float"}} column">
   <AnimatedIf @predicate={{@isOpen}} @use={{this.drawerTransition}} @duration={{100}}>
     <div class="report-builder-sidebar__header row align-items-center space-between p-l-18 p-y-7">
@@ -87,6 +87,7 @@
               <NaviColumnConfig
                 class={{if @disabled "navi-column-config--disabled"}}
                 @lastAddedColumn={{@lastAddedColumn}}
+                @resetLastAddedColumn={{@resetLastAddedColumn}}
                 @report={{@report}}
                 @onAddColumn={{update-report-action "ADD_COLUMN_WITH_PARAMS"}}
                 @onRemoveColumn={{update-report-action "REMOVE_COLUMN_FRAGMENT"}}

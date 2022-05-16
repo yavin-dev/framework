@@ -27,6 +27,7 @@ const TEMPLATE = hbs`
     @disabled={{this.disabled}}
     @onCloseSidebar={{this.onCloseSidebar}}
     @lastAddedColumn={{this.lastAddedColumn}}
+    @resetLastAddedColumn={{this.resetLastAddedColumn}}
     @setTable={{this.setTable}}
   />
 </div>
@@ -59,7 +60,8 @@ module('Integration | Component | report-builder/sidebar', function (hooks) {
     this.isOpen = true;
     this.onCloseSidebar = () => undefined;
     this.disabled = false;
-    this.lastAddedColumn = undefined;
+    this.lastAddedColumn = null;
+    this.resetLastAddedColumn = () => undefined;
     this.setTable = () => undefined;
   });
 

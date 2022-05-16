@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Component from '@glimmer/component';
@@ -14,10 +14,16 @@ import type ScreenService from 'navi-core/services/screen';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type ReportModel from 'navi-core/models/report';
 import type RequestFragment from 'navi-core/models/request';
+import type ColumnFragment from 'navi-core/models/request/column';
+import type FilterFragment from 'navi-core/models/request/filter';
 
 interface Args {
   report: ReportModel;
   disabled: boolean;
+  lastAddedColumn: ColumnFragment | null;
+  resetLastAddedColumn(): void;
+  lastAddedFilter: FilterFragment | null;
+  resetLastAddedFilter(): void;
   isFiltersCollapsed: boolean;
   onUpdateFiltersCollapsed?: (isFiltersCollapsed: boolean) => void;
 }

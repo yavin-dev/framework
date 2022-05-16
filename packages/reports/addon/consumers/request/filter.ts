@@ -106,9 +106,10 @@ export default class FilterConsumer extends ActionConsumer {
      * @param route - route that has a model that contains a request property
      * @param filter - filter fragment
      */
-    [RequestActions.DID_ADD_FILTER](this: FilterConsumer, route: Route, _filter: FilterFragment) {
+    [RequestActions.DID_ADD_FILTER](this: FilterConsumer, route: Route, filter: FilterFragment) {
       const controller = route.controllerFor(route.routeName) as ReportsReportController;
       controller.isFiltersCollapsed = false;
+      controller.setLastAddedFilter?.(filter);
     },
 
     [RequestActions.UPDATE_FILTER](_route: Route, originalFilter: FilterFragment, changeSet: object) {

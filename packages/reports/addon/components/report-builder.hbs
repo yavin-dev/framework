@@ -1,10 +1,11 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="report-builder" ...attributes {{did-insert this.setupElement}}>
   <ReportBuilder::Sidebar
     @isOpen={{this.isSidebarOpen}}
     @disabled={{@disabled}}
     @report={{@report}}
     @lastAddedColumn={{@lastAddedColumn}}
+    @resetLastAddedColumn={{@resetLastAddedColumn}}
     @onCloseSidebar={{toggle "isSidebarOpen" this}}
     @onResize={{this.resizeVisualization}}
     @setTable={{update-report-action "UPDATE_TABLE"}}
@@ -54,6 +55,8 @@
           @request={{this.request}}
           @onUpdateFilter={{update-report-action "UPDATE_FILTER"}}
           @onRemoveFilter={{update-report-action "REMOVE_FILTER"}}
+          @lastAddedFilter={{@lastAddedFilter}}
+          @resetLastAddedFilter={{@resetLastAddedFilter}}
           class="report-builder__filter-collection p-10"
         />
 

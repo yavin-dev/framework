@@ -83,6 +83,7 @@ export default class ReportsReportRoute extends Route {
     controller.setProperties({
       modifiedRequest: null,
       lastAddedColumn: null,
+      lastAddedFilter: null,
     });
   }
 

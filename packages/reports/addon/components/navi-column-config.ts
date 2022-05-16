@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Component from '@glimmer/component';
@@ -15,7 +15,8 @@ import type RequestConstrainer from 'navi-reports/services/request-constrainer';
 
 interface NaviColumnConfigArgs {
   report: ReportModel;
-  lastAddedColumn: ColumnFragment;
+  lastAddedColumn: ColumnFragment | null;
+  resetLastAddedColumn(): void;
   onAddColumn(metadata: ColumnMetadataModel, parameters: Parameters): void;
   onRemoveColumn(metadata: ColumnMetadataModel, parameters: Parameters): void;
   onAddFilter(column: ColumnFragment): void;
