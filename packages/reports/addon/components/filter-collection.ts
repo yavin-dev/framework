@@ -30,7 +30,7 @@ type FilterItem = {
 export default class FilterCollection extends Component<FilterCollectionArgs> {
   @service requestConstrainer!: RequestConstrainer;
 
-  componentElement!: HTMLElement;
+  lastAddedFilterElement: HTMLElement | undefined;
 
   /**
    * Ordered collection of date, metric, and dimension filters from request
@@ -68,7 +68,7 @@ export default class FilterCollection extends Component<FilterCollectionArgs> {
     const { lastAddedFilter, resetLastAddedFilter } = this.args;
 
     if (lastAddedFilter === filter) {
-      this.componentElement = element;
+      this.lastAddedFilterElement = element;
       next(() => {
         this.scrollToElement();
         this.highlightElement();
@@ -81,7 +81,7 @@ export default class FilterCollection extends Component<FilterCollectionArgs> {
    * sets the scroll position to the last added filter
    */
   scrollToElement() {
-    const { parentElement, offsetTop } = this.componentElement;
+    const { parentElement, offsetTop } = this.lastAddedFilterElement ?? { offsetTop: 0 };
     assert('Component should have a parent', parentElement);
     parentElement.scrollTop = offsetTop - parentElement.offsetTop;
   }
@@ -90,6 +90,6 @@ export default class FilterCollection extends Component<FilterCollectionArgs> {
    * adds a highlighting animation to the element
    */
   highlightElement() {
-    this.componentElement.classList.add('filter-collection__row--last-added');
+    this.lastAddedFilterElement?.classList.add('filter-collection__row--last-added');
   }
 }
