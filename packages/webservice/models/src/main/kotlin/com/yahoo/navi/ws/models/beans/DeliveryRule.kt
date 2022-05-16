@@ -90,7 +90,6 @@ class DeliveryRule : HasOwner {
     )
     var format: DeliveryFormat? = null
 
-    @NotNull
     var name: String? = null
 
     @NotNull

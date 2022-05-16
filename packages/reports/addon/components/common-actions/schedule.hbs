@@ -36,11 +36,11 @@
 	                @isActive={{eq this.currentDisplayedRule deliveryRule}}
 	                {{on "click" (fn (mut this.currentDisplayedRule) deliveryRule)}}
 	              >
-                <div class="w-full flex space-between align-items-center">
+                <div class="w-full flex align-items-center">
                   {{#if deliveryRule.hasDirtyAttributes}}
-                    <div class="schedule__modal-unsaved-rule" />
+                    <div class="schedule__modal-unsaved-rule m-r-10" />
                   {{/if}}
-                  <div class="schedule__modal-delivery-list-name">
+                  <div class="schedule__modal-delivery-list-name flex-1">
                     <p class="is-bold">{{unless deliveryRule.name deliveryRule.defaultName deliveryRule.name}}</p>
                     {{#if deliveryRule.hasDirtyAttributes}}
                       <p class="is-italic">&nbsp;unsaved</p>

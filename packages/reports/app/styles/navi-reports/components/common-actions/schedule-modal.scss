@@ -5,7 +5,7 @@
 .schedule {
   &__modal {
     &-unsaved-rule {
-      background-color: #198fff;
+      background-color: map-get($denali-brand-colors, '300');
       border-radius: 50%;
       display: inline-block;
       height: 10px;
@@ -63,7 +63,7 @@
     }
 
     &-delivery-list {
-      border-right: 1px solid #e8e8e8;
+      border-right: 1px solid map-get($denali-grey-colors, '400');
 
       li {
         //overrides the tab height that is set to 40 with no flex
@@ -95,11 +95,11 @@
     }
 
     &-buttons {
-      border-top: 1px solid #e8e8e8;
+      border-top: 1px solid map-get($denali-grey-colors, '400');
     }
 
     &-new-delivery {
-      border-bottom: 1px solid #e8e8e8;
+      border-bottom: 1px solid map-get($denali-grey-colors, '400');
 
       .button {
         justify-content: left;
