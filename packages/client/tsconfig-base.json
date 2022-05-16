@@ -1,0 +1,24 @@
+{
+  "compilerOptions": {
+    "target": "ES2015",
+    "module": "ES2020",
+    "declaration": true,
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    "moduleResolution": "node",
+    "baseUrl": "./",
+
+    "rootDirs": ["src"],
+
+    "sourceRoot": "./",
+    "inlineSourceMap": true,
+    "inlineSources": true
+  },
+  "include": ["src"],
+  "exclude": ["tests"]
+}

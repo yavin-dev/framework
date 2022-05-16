@@ -4,7 +4,7 @@
  */
 import NaviMetadataSerializer from './base';
 import config from 'ember-get-config';
-import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import { DataType } from 'navi-data/models/metadata/function-parameter';
 import { capitalize } from '@ember/string';
 import { getOwner } from '@ember/application';
@@ -25,7 +25,7 @@ import type { RequestConstraintMetadataPayload } from 'navi-data/models/metadata
 import type { MetadataModelMap, EverythingMetadataPayload } from './base';
 import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import type { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
-import type { Cardinality } from '../../utils/enums/cardinality-sizes';
+import type { Cardinality } from '@yavin/client/utils/enums/cardinality-sizes';
 import type { Grain } from 'navi-data/utils/date';
 import type { Factory } from 'navi-data/models/native-with-create';
 import type TableMetadataModel from 'navi-data/models/metadata/table';

@@ -1,0 +1,11 @@
+cat >lib/cjs/package.json <<!EOF
+{
+	"type": "commonjs"
+}
+!EOF
+
+cat >lib/es/package.json <<!EOF
+{
+	"type": "module"
+}
+!EOF

@@ -1,0 +1,47 @@
+{
+  "name": "@yavin/client",
+  "version": "0.4.0",
+  "description": "A node and web client for query fetching",
+  "keywords": [
+    "yavin",
+    "elide",
+    "fili"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yavin-dev/framework.git#master"
+  },
+  "license": "MIT",
+  "author": "yavin@yahooinc.com",
+  "homepage": "https://github.com/yavin-dev/framework/tree/master/packages/client#readme",
+  "bugs": {
+    "url": "https://github.com/yavin-dev/framework/issues"
+  },
+  "main": "lib/cjs/index.js",
+  "module": "lib/mjs/index.js",
+  "types": "lib/mjs/index.d.ts",
+  "exports": {
+    "./*": {
+      "import": "./lib/mjs/*.js",
+      "require": "./lib/cjs/*.js"
+    }
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "scripts": {
+    "build:clean": "rm -rf lib || rm -r *.d.ts || true",
+    "build:es": "tsc -p tsconfig-es.json",
+    "build:cjs": "tsc -p tsconfig-cjs.json",
+    "build:js": "npm run build:es && npm run build:cjs && ./fixup",
+    "build:types": "tsc -p tsconfig-base.json --declaration --outDir . --emitDeclarationOnly",
+    "build": "npm run build:clean && npm run build:js && npm run build:types && echo 'Build is successful!'",
+    "prepublishOnly": "npm run build",
+    "postpublish": "npm run build:clean",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "^16.4.2",
+    "typescript": "^4.6.4"
+  }
+}

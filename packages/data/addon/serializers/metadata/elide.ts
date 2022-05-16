@@ -4,13 +4,13 @@
  */
 import NaviMetadataSerializer from './base';
 import config from 'ember-get-config';
-import CARDINALITY_SIZES from '../../utils/enums/cardinality-sizes';
+import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import { assert } from '@ember/debug';
 import { getOwner } from '@ember/application';
 import { upperFirst } from 'lodash-es';
 import { DataType } from 'navi-data/models/metadata/function-parameter';
 import type { FunctionParameterMetadataPayload } from 'navi-data/models/metadata/function-parameter';
-import type { Cardinality } from '../../utils/enums/cardinality-sizes';
+import type { Cardinality } from '@yavin/client/utils/enums/cardinality-sizes';
 import type { RawColumnType } from '../../models/metadata/column';
 import type { TableMetadataPayload } from '../../models/metadata/table';
 import type MetricMetadataModel from '../../models/metadata/metric';
