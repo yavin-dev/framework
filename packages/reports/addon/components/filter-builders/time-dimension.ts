@@ -153,7 +153,11 @@ export function valuesForOperator(
 }
 
 export function internalOperatorForValues(filter: FilterLike): InternalOperatorType {
-  const { values, operator } = filter;
+  const {
+    values,
+    operator,
+    parameters: { grain },
+  } = filter;
   const [startStr, endStr] = values as string[];
 
   if (!startStr && !endStr && operator === 'bet') {
@@ -181,6 +185,7 @@ export function internalOperatorForValues(filter: FilterLike): InternalOperatorT
     lookbackDuration &&
     lookbackGrain &&
     ['day', 'week', 'month', 'year'].includes(lookbackGrain) &&
+    lookbackGrain === getPeriodForGrain(grain as Grain) &&
     end === 'current'
   ) {
     internalId = OPERATORS.lookback;
@@ -255,7 +260,7 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
    * Finds the appropriate interval operator to modify an existing interval
    * @returns the best supported operator for this interval
    */
-  @computed('args.filter.{values,operator}', 'supportedOperators')
+  @computed('args.filter.{values,operator,parameters.grain}', 'supportedOperators')
   get selectedValueBuilder(): InteralFilterBuilderOperators {
     const internalId = this.args.filter.validations.isValid
       ? internalOperatorForValues(this.args.filter)
