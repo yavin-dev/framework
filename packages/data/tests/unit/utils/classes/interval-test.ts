@@ -279,7 +279,7 @@ module('Unit | Utils | Interval Class', function () {
 
     let start = moment('2014-10-10', FORMAT),
       end = moment('2015-10-10', FORMAT),
-      newInterval = new Interval(start, end).asIntervalForTimePeriod('isoWeek').asMoments();
+      newInterval = new Interval(start, end).asIntervalForTimePeriod('isoWeek').asMoments('week');
 
     assert.ok(newInterval.start.isSame(start.startOf('isoWeek')), 'Start moment is at start of isoWeek');
 
@@ -291,7 +291,7 @@ module('Unit | Utils | Interval Class', function () {
 
     let start = moment('2017-10-10', FORMAT),
       end = moment('2017-10-10', FORMAT),
-      newInterval = new Interval(start, end).asIntervalForTimePeriod('isoWeek').asMoments();
+      newInterval = new Interval(start, end).asIntervalForTimePeriod('isoWeek').asMoments('week');
 
     assert.equal(newInterval.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoWeek');
 

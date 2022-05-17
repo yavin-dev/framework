@@ -65,6 +65,7 @@ export default class Interval {
 
   /**
    * Converts interval into a POJO with moments
+   * @param period - period to align to
    * @returns object with start and end properties
    */
   asMoments(period: DateTimePeriod): SerializedMoment {
