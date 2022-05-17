@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -7,7 +7,7 @@ import { assert } from '@ember/debug';
 import moment, { Moment } from 'moment';
 import Duration, { isIsoDurationString } from './duration';
 import DurationUtils from '../duration-utils';
-import { getPeriodForGrain, Grain } from '../date';
+import { DateTimePeriod, getPeriodForGrain, Grain } from '../date';
 
 const CURRENT = 'current';
 const NEXT = 'next';
@@ -18,7 +18,7 @@ function isMacro(property: unknown): property is typeof MACROS[number] {
   return typeof property === 'string' && allMacros.includes(property);
 }
 
-type SerializedMoment = { start: Moment; end: Moment | undefined };
+type SerializedMoment = { start: Moment; end: Moment };
 type SerializedWithEnd<T extends Moment | string> = { start: T; end: T };
 
 type IntervalStart = Duration | Moment | typeof CURRENT;
@@ -64,26 +64,10 @@ export default class Interval {
   }
 
   /**
-   * @returns whether or not start is before end
-   */
-  isAscending(): boolean {
-    /*
-     * Handle the Case when we are doing 'current/next'
-     * Value needs to be defined
-     */
-    if (this._start === CURRENT && this._end === NEXT) {
-      return true;
-    } else {
-      let moments = this.asMoments();
-      return moments.start.isBefore(moments.end);
-    }
-  }
-
-  /**
    * Converts interval into a POJO with moments
    * @returns object with start and end properties
    */
-  asMoments(): SerializedMoment {
+  asMoments(period: DateTimePeriod): SerializedMoment {
     let start = this._start;
     let end: IntervalEnd | undefined = this._end;
 
@@ -106,12 +90,12 @@ export default class Interval {
       end = moment.utc();
     }
     if (end === NEXT) {
-      end = undefined;
+      end = moment.utc().add(1, period);
     }
 
     // Duration substitution
     if (Duration.isDuration(start)) {
-      assert('interval end cannot be "next" if start is a duration', end);
+      assert('interval end must be defined if start is a duration', end);
       start = DurationUtils.subtractDurationFromDate(end, start);
     }
     // - end as duration not currently supported
@@ -130,12 +114,7 @@ export default class Interval {
   asMomentsForTimePeriod(grain: Grain, makeEndInclusiveIfSame = true): SerializedWithEnd<Moment> {
     const period = getPeriodForGrain(grain);
 
-    let { start, end } = this.asMoments();
-
-    // Handle the case where the end is undefined, hence it is 'next'
-    if (end === undefined) {
-      end = moment.utc().add(1, period);
-    }
+    let { start, end } = this.asMoments(period);
 
     // Make sure moments are start of time period
     start.startOf(grain);
@@ -174,7 +153,7 @@ export default class Interval {
   makeEndExclusiveFor(grain: Grain): Interval {
     const period = getPeriodForGrain(grain);
 
-    let { start, end } = this.asMoments();
+    let { start, end } = this.asMoments(period);
     assert('when making the end of an interval exclusive, the end should exist', end);
     end.startOf(grain).add(1, period);
 
