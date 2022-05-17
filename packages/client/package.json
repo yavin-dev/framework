@@ -18,7 +18,6 @@
     "url": "https://github.com/yavin-dev/framework/issues"
   },
   "type": "module",
-  "browser": "lib/esm/index.js",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "types": "lib/types/index.d.ts",
@@ -47,7 +46,7 @@
     "build:js": "npm run build:js:esm && npm run build:js:cjs",
     "build": "npm run build:prepare && npm run build:js",
     "watch": "npm run build:prepare && npm-run-all -l --parallel 'build:js:* -- --watch'",
-    "prepack": "npm run build",
+    "prepare": "npm run build",
     "lint": "echo \"Lint not configured\"",
     "test": "echo \"Tests not configured\""
   },
