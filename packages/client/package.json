@@ -18,6 +18,7 @@
     "url": "https://github.com/yavin-dev/framework/issues"
   },
   "type": "module",
+  "browser": "lib/esm/index.js",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
   "types": "lib/types/index.d.ts",
