@@ -1,10 +1,10 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "ES6",
     "rootDir": "..",
     "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
+    "allowJs": true,
     "baseUrl": ".",
     "paths": {
       "@yavin/client": ["../src/"],

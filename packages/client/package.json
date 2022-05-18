@@ -48,8 +48,8 @@
     "watch": "npm run build:prepare && npm-run-all -l --parallel 'build:js:* -- --watch'",
     "prepare": "npm run build",
     "lint": "echo \"Lint not configured\"",
-    "build:test:web": "webpack --config test/webpack.config.cjs",
-    "build:test:node": "tsc -p test/tsconfig.json && node set-package-type test/dist/build commonjs",
+    "build:test:web": "webpack --config test/webpack.config.js",
+    "build:test:node": "shx rm -rf test/dist/build && tsc -p test/tsconfig.json -m commonjs && node set-package-type test/dist/build commonjs",
     "test:web": "testem ci",
     "test:node": "npm run build:test:node && qunit --require ./test/dist/build/test/setup.js ./test/dist/build/test/tests/**/*",
     "test": "npm-run-all --aggregate-output --silent -n -p -c test:*"

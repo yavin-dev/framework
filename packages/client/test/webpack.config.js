@@ -1,15 +1,21 @@
-const path = require('path');
-var glob = require('glob');
-const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
+import path from 'path';
+import { fileURLToPath } from 'url';
+import glob from 'glob';
+import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const getTests = () => glob.sync(`${__dirname}/tests/**/*-test.{js,ts}`);
 
-module.exports = {
+export default {
   mode: 'development',
   entry: () => ['./tests.ts', ...getTests()],
   context: path.resolve(__dirname),
   target: 'web',
   devtool: 'inline-source-map',
+  experiments: {
+    outputModule: true,
+  },
   module: {
     rules: [
       {
