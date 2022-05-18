@@ -1,13 +1,16 @@
 {
   "extends": "../tsconfig-base.json",
   "compilerOptions": {
+    "module": "CommonJS",
     "rootDir": "..",
+    "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
     "paths": {
       "@yavin/client": ["../src/"],
       "@yavin/client/*": ["../src/*"]
-    }
+    },
+    "outDir": "dist/build"
   },
   "include": ["../src", "../test"]
 }
