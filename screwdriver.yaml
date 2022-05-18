@@ -28,7 +28,6 @@ shared:
         requires:
           - ~pr
           - ~commit
-          - ~pr:vis-v2
   environment:
     NODE_VERSION: 14.16.1
     JOBS: 4
@@ -47,10 +46,18 @@ jobs:
     <<: *main-npm-test-job
     environment:
       PACKAGE: navi-app
+  main-c3:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: '@yavin/c3'
   main-core:
     <<: *main-npm-test-job
     environment:
       PACKAGE: navi-core
+  main-client:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: '@yavin/client'
   main-dashboards:
     <<: *main-npm-test-job
     environment:
@@ -75,10 +82,6 @@ jobs:
     <<: *main-npm-test-job
     environment:
       PACKAGE: '@yavin/perspective'
-  main-c3:
-    <<: *main-npm-test-job
-    environment:
-      PACKAGE: '@yavin/c3'
   main-webservice:
     steps:
       - *install-node
@@ -97,38 +100,21 @@ jobs:
       [
         lint,
         main-app,
+        main-c3,
         main-core,
+        main-client,
         main-dashboards,
         main-data,
         main-directory,
         main-notifications,
         main-reports,
         main-perspective,
-        main-c3,
         main-webservice,
       ]
-
-  alpha-main:
-    steps:
-      - *install-node
-      - *npm-ci
-      - *install-chrome
-      - test-navi-app: npx lerna run test --scope navi-app --stream;
-      - test-navi-core: npx lerna run test --scope navi-core --stream;
-      - test-navi-dashboards: npx lerna run test --scope navi-dashboards --stream;
-      - test-navi-data: npx lerna run test --scope navi-data --stream;
-      - test-navi-directory: npx lerna run test --scope navi-directory --stream;
-      - test-navi-notifications: npx lerna run test --scope navi-notifications --stream;
-      - test-navi-reports: npx lerna run test --scope navi-reports --stream;
-      - test-navi-webservice: cd packages/webservice && ./gradlew check && cd -;
-    requires:
-      - ~commit:0.2.x-alpha
-      - ~pr:0.2.x-alpha
 
   publish-npm:
     requires:
       - ~main
-      - ~alpha-main
     environment:
       GIT_SHALLOW_CLONE: false
     steps:
@@ -144,7 +130,6 @@ jobs:
       screwdriver.cd/cpu: LOW
     requires:
       - ~main
-      - ~alpha-main
     steps:
       - decrypt: ./scripts/decrypt.sh
       - publish: ./scripts/maven-publish.sh

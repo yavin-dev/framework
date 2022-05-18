@@ -29,15 +29,10 @@
       "navi-data/*": ["addon/*"],
       "navi-data/test-support": ["addon-test-support"],
       "navi-data/test-support/*": ["addon-test-support/*"],
+      "@yavin/client": ["node_modules/@yavin/client/src"],
+      "@yavin/client/*": ["node_modules/@yavin/client/src/*"],
       "*": ["types/*"]
     }
   },
-  "include": [
-    "app/**/*",
-    "addon/**/*",
-    "tests/**/*",
-    "types/**/*",
-    "addon-test-support/**/*",
-    "../*/config/*"
-  ]
+  "include": ["app/**/*", "addon/**/*", "tests/**/*", "types/**/*", "addon-test-support/**/*", "../*/config/*"]
 }

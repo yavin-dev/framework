@@ -33,6 +33,8 @@
       "navi-core/*": ["node_modules/navi-core/addon/*"],
       "navi-data": ["node_modules/navi-data/addon"],
       "navi-data/*": ["node_modules/navi-data/addon/*"],
+      "@yavin/client": ["node_modules/@yavin/client/src"],
+      "@yavin/client/*": ["node_modules/@yavin/client/src/*"],
       "ember-power-select/*": ["node_modules/ember-power-select/addon/*"],
       "*": ["types/*"]
     }

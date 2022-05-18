@@ -34,6 +34,7 @@
     "@faker-js/faker": "^6.0.0",
     "@miragejs/graphql": "^0.1.13",
     "@rsql/parser": "^1.0.2",
+    "@yavin/client": "0.4.0",
     "apollo-link-context": "^1.0.19",
     "broccoli-funnel": "^3.0.8",
     "broccoli-merge-trees": "^4.2.0",

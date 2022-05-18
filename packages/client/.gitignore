@@ -1,0 +1,10 @@
+.DS_Store
+lib
+.idea
+.vscode
+
+# Dependency directories
+node_modules/
+
+# Optional eslint cache
+.eslintcache

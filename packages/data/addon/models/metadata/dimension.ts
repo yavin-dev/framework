@@ -4,7 +4,7 @@
  */
 import ColumnMetadataModel from 'navi-data/models/metadata/column';
 import type { ColumnInstance, ColumnMetadataPayload, ColumnType } from 'navi-data/models/metadata/column';
-import type { Cardinality } from '../../utils/enums/cardinality-sizes';
+import type { Cardinality } from '@yavin/client/utils/enums/cardinality-sizes';
 import type { Parameters } from 'navi-data/adapters/facts/interface';
 import { ValueSourceType } from './elide/dimension';
 

@@ -4,7 +4,7 @@
  */
 import NativeWithCreate from 'navi-data/models/native-with-create';
 import { inject as service } from '@ember/service';
-import { Cardinality } from '../../utils/enums/cardinality-sizes';
+import { Cardinality } from '@yavin/client/utils/enums/cardinality-sizes';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type MetricMetadataModel from 'navi-data/models/metadata/metric';

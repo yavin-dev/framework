@@ -9,7 +9,7 @@ import { getOwner } from '@ember/application';
 import { tracked } from '@glimmer/tracking';
 //@ts-ignore
 import { task, TaskGenerator, timeout } from 'ember-concurrency';
-import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
+import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import { sortBy } from 'lodash-es';
 import { taskFor } from 'ember-concurrency-ts';

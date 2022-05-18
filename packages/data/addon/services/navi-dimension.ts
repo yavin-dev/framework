@@ -14,7 +14,7 @@ import type { DimensionFilter } from 'navi-data/adapters/dimensions/interface';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
-import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
+import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import Cache from 'navi-data/utils/classes/cache';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import SearchUtils from 'navi-data/utils/search';

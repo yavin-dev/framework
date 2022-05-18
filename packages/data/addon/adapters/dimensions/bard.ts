@@ -21,7 +21,7 @@ import type { ServiceOptions } from 'navi-data/services/navi-dimension';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import SearchUtils from 'navi-data/utils/search';
-import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
+import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 

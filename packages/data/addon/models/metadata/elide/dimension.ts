@@ -2,7 +2,7 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import CARDINALITY_SIZES from 'navi-data/utils/enums/cardinality-sizes';
+import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import DimensionMetadataModel, { DimensionMetadataPayload } from '../dimension';
 
 export enum ValueSourceType {
