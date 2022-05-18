@@ -153,11 +153,8 @@ export function valuesForOperator(
 }
 
 export function internalOperatorForValues(filter: FilterLike): InternalOperatorType {
-  const {
-    values,
-    operator,
-    parameters: { grain },
-  } = filter;
+  const { values, operator } = filter;
+  const filterGrain = filter.parameters.grain as Grain;
   const [startStr, endStr] = values as string[];
 
   if (!startStr && !endStr && operator === 'bet') {
@@ -185,7 +182,10 @@ export function internalOperatorForValues(filter: FilterLike): InternalOperatorT
     lookbackDuration &&
     lookbackGrain &&
     ['day', 'week', 'month', 'year'].includes(lookbackGrain) &&
-    lookbackGrain === getPeriodForGrain(grain as Grain) &&
+    (lookbackGrain === getPeriodForGrain(filterGrain) ||
+      (filterGrain === 'quarter' && lookbackGrain === 'month' && lookbackDuration % MONTHS_IN_QUARTER === 0) ||
+      // TODO: Remove once sub day grain is supported
+      (['hour', 'minute', 'second'].includes(filterGrain) && lookbackGrain === 'day')) &&
     end === 'current'
   ) {
     internalId = OPERATORS.lookback;
