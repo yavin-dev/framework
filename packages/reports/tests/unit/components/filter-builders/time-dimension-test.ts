@@ -91,13 +91,74 @@ module('Unit | Component | filter-builders/time-dimension', function (hooks) {
       return internalId;
     };
 
-    assert.deepEqual(intervalId('current', 'next'), 'current', 'Use current operator for current/next interval');
+    assert.deepEqual(
+      intervalId('current', 'next'),
+      'current',
+      'Use current operator for current/next interval (isoWeek grain)'
+    );
 
-    assert.deepEqual(intervalId('P10W', 'current'), 'inPast', 'Use lookback operator for P10W/current interval');
+    assert.deepEqual(
+      intervalId('P10W', 'current'),
+      'inPast',
+      'Use lookback operator for P10W/current interval (isoWeek grain)'
+    );
 
-    assert.deepEqual(intervalId('P1D', 'current'), 'advanced', 'Use advanced operator for P1D/current interval');
-    assert.deepEqual(intervalId('P2M', 'current'), 'advanced', 'Use advanced operator for P2M/current interval');
-    assert.deepEqual(intervalId('P3Y', 'next'), 'advanced', 'Use advanced operator for P3Y/next interval');
+    assert.deepEqual(
+      intervalId('P1D', 'current'),
+      'advanced',
+      'Use advanced operator for P1D/current interval (isoWeek grain)'
+    );
+    assert.deepEqual(
+      intervalId('P2M', 'current'),
+      'advanced',
+      'Use advanced operator for P2M/current interval (isoWeek grain)'
+    );
+    assert.deepEqual(
+      intervalId('P3Y', 'next'),
+      'advanced',
+      'Use advanced operator for P3Y/next interval (isoWeek grain)'
+    );
+
+    filter.updateParameters({ grain: 'hour' });
+    assert.deepEqual(
+      intervalId('P3D', 'current'),
+      'inPast',
+      'Use lookback operator for P3D/current interval (hour grain)'
+    );
+    assert.deepEqual(
+      intervalId('P1M', 'current'),
+      'advanced',
+      'Use advanced operator for P1M/current interval (hour grain)'
+    );
+
+    filter.updateParameters({ grain: 'day' });
+    assert.deepEqual(
+      intervalId('P2D', 'current'),
+      'inPast',
+      'Use lookback operator for P2D/current interval (day grain)'
+    );
+    assert.deepEqual(
+      intervalId('P1M', 'current'),
+      'advanced',
+      'Use advanced operator for P1M/current interval (day grain)'
+    );
+
+    filter.updateParameters({ grain: 'quarter' });
+    assert.deepEqual(
+      intervalId('P12M', 'current'),
+      'inPast',
+      'Use lookback operator for P12M/current interval (quarter grain)'
+    );
+    assert.deepEqual(
+      intervalId('P4M', 'current'),
+      'advanced',
+      'Use advanced operator for P4M/current interval (quarter grain)'
+    );
+    assert.deepEqual(
+      intervalId('P1Y', 'current'),
+      'advanced',
+      'Use advanced operator for P1Y/current interval (quarter grain)'
+    );
 
     assert.deepEqual(intervalId('2019-01-01', '2019-01-02'), 'in', 'Use between operator for specific dates interval');
 
