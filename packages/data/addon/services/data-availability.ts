@@ -41,6 +41,10 @@ export default class DataAvailabilityService extends Service {
     return new Set([...this.fetchers.keys()]);
   }
 
+  @task *wait(time: number): TaskGenerator<void> {
+    return yield timeout(time);
+  }
+
   @task *fetchDataSource(dataSourceName: string): TaskGenerator<AvailabilityResult> {
     const cached = this._cache.getItem(dataSourceName);
     if (cached) {
@@ -60,7 +64,10 @@ export default class DataAvailabilityService extends Service {
     }
     try {
       const { timeoutMs = Infinity } = config.navi.availability ?? {};
-      const result: FetchedAvailabilityResult | undefined = yield race([fetcher(), timeout(timeoutMs)]);
+      const result: FetchedAvailabilityResult | undefined = yield race([
+        fetcher(),
+        taskFor(this.wait).perform(timeoutMs),
+      ]);
       if (!result) {
         throw new Error('Availability Fetch timed out');
       }
