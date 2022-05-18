@@ -241,7 +241,11 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     const { operator, values = [] } = this.dateTimeFilter || {};
     const [start, end] = values;
     if (operator === 'bet' && start && end) {
-      return Interval.parseFromStrings(`${start}`, `${end}`);
+      try {
+        return Interval.parseFromStrings(`${start}`, `${end}`);
+      } catch (e) {
+        return undefined;
+      }
     }
     return undefined;
   }
