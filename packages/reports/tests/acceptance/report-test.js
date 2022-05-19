@@ -1766,19 +1766,37 @@ module('Acceptance | Navi Report', function (hooks) {
     };
     await setInput(startInput(), '');
 
-    assert.dom('.filter-builder__values .message').exists({ count: 2 }, 'The start and end inputs are marked invalid');
-    assert.dom('.filter-builder__values .message').hasText('Invalid interval', 'The invalid message is shown');
+    assert
+      .dom('.filter-builder__values .message')
+      .exists({ count: 2 }, 'The start and end inputs are marked invalid (1)');
+    assert.dom('.filter-builder__values .message').hasText('Invalid interval', 'The invalid message is shown (1)');
 
     await click('.report-view-overlay__button--run');
     assert
       .dom('.navi-info-message__error-list-item')
       .hasText(
         `The 'Date Time' filter has invalid interval ["","2015-11-15T00:00:00.000Z"]`,
-        'Invalid interval message is shown'
+        'Invalid interval message is shown (1)'
+      );
+
+    await setInput(startInput(), '');
+    await setInput(endInput(), '');
+    await setInput(startInput(), '2020-04-01');
+    await setInput(endInput(), 'nextt');
+    assert
+      .dom('.filter-builder__values .message')
+      .exists({ count: 2 }, 'The start and end inputs are marked invalid (2)');
+    assert.dom('.filter-builder__values .message').hasText('Invalid interval', 'The invalid message is shown (2)');
+
+    await click('.navi-report__run-btn');
+    assert
+      .dom('.navi-info-message__error-list-item')
+      .hasText(
+        `The 'Date Time' filter has invalid interval ["2020-04-01T00:00:00.000Z","nextt"]`,
+        'Invalid interval message is shown (2)'
       );
 
     await setInput(endInput(), '');
-    await setInput(startInput(), '2020-04-01');
     await setInput(endInput(), '2020-04-03');
 
     assert.dom('.filter-builder__operator-trigger').hasText('Between', 'Operator is updated to between');
@@ -1847,6 +1865,23 @@ module('Acceptance | Navi Report', function (hooks) {
     assert
       .dom('.filter-values--lookback-input__value')
       .hasValue('3', 'The input value has the correct number of quarters');
+  });
+
+  test('Date picker advanced with end `next`', async function (assert) {
+    await visit('/reports/1/view');
+
+    const startInput = () => find('.filter-values--advanced-interval-input--start');
+    const endInput = () => find('.filter-values--advanced-interval-input--end');
+    const setInput = async (input, value) => {
+      await fillIn(input, value);
+      await blur(input);
+    };
+
+    await selectChoose('.filter-builder__operator-trigger', 'Advanced');
+    await setInput(startInput(), 'P3D');
+    await setInput(endInput(), 'next');
+    await click('.navi-report__run-btn');
+    assert.dom('.line-chart-widget').exists('Interval successfully updated');
   });
 
   test('Can switch operator after making advanced invalid', async function (assert) {

@@ -95,17 +95,25 @@ export function valuesForOperator(
     grain = 'day';
   }
   newOperator = newOperator || internalOperatorForValues(filter);
-  let [startStr = 'P1D', endStr = 'current'] = filter.values as TimeFilterValues;
+  const DEFAULT_START = 'P1D',
+    DEFAULT_END = 'current';
+
+  let [startStr = DEFAULT_START, endStr = DEFAULT_END] = filter.values as TimeFilterValues;
   if (isEmpty(startStr)) {
-    startStr = 'P1D';
+    startStr = DEFAULT_START;
   }
   if (isEmpty(endStr)) {
-    endStr = 'current';
+    endStr = DEFAULT_END;
   }
 
   const filterGrain = filter.parameters.grain as Grain;
   const minGrain = GrainOrdering[filterGrain] < GrainOrdering.day ? 'day' : filterGrain;
-  const interval = Interval.parseInclusive(startStr, endStr, minGrain);
+  let interval;
+  try {
+    interval = Interval.parseInclusive(startStr, endStr, minGrain);
+  } catch {
+    interval = Interval.parseInclusive(DEFAULT_START, DEFAULT_END, minGrain);
+  }
 
   if (newOperator === OPERATORS.current) {
     return ['current', 'next'];

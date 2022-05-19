@@ -68,9 +68,9 @@ export default class Interval {
    * @param period - period to align to
    * @returns object with start and end properties
    */
-  asMoments(period: DateTimePeriod): SerializedMoment {
+  private _asMoments(period: DateTimePeriod): SerializedMoment {
     let start = this._start;
-    let end: IntervalEnd | undefined = this._end;
+    let end = this._end;
 
     // Copy moments
     if (moment.isMoment(start)) {
@@ -96,7 +96,6 @@ export default class Interval {
 
     // Duration substitution
     if (Duration.isDuration(start)) {
-      assert('interval end must be defined if start is a duration', end);
       start = DurationUtils.subtractDurationFromDate(end, start);
     }
     // - end as duration not currently supported
@@ -115,7 +114,7 @@ export default class Interval {
   asMomentsForTimePeriod(grain: Grain, makeEndInclusiveIfSame = true): SerializedWithEnd<Moment> {
     const period = getPeriodForGrain(grain);
 
-    let { start, end } = this.asMoments(period);
+    let { start, end } = this._asMoments(period);
 
     // Make sure moments are start of time period
     start.startOf(grain);
@@ -154,7 +153,7 @@ export default class Interval {
   makeEndExclusiveFor(grain: Grain): Interval {
     const period = getPeriodForGrain(grain);
 
-    let { start, end } = this.asMoments(period);
+    let { start, end } = this._asMoments(period);
     assert('when making the end of an interval exclusive, the end should exist', end);
     end.startOf(grain).add(1, period);
 
