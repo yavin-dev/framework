@@ -95,17 +95,25 @@ export function valuesForOperator(
     grain = 'day';
   }
   newOperator = newOperator || internalOperatorForValues(filter);
-  let [startStr = 'P1D', endStr = 'current'] = filter.values as TimeFilterValues;
+  const DEFAULT_START = 'P1D',
+    DEFAULT_END = 'current';
+
+  let [startStr = DEFAULT_START, endStr = DEFAULT_END] = filter.values as TimeFilterValues;
   if (isEmpty(startStr)) {
-    startStr = 'P1D';
+    startStr = DEFAULT_START;
   }
   if (isEmpty(endStr)) {
-    endStr = 'current';
+    endStr = DEFAULT_END;
   }
 
   const filterGrain = filter.parameters.grain as Grain;
   const minGrain = GrainOrdering[filterGrain] < GrainOrdering.day ? 'day' : filterGrain;
-  const interval = Interval.parseInclusive(startStr, endStr, minGrain);
+  let interval;
+  try {
+    interval = Interval.parseInclusive(startStr, endStr, minGrain);
+  } catch {
+    interval = Interval.parseInclusive(DEFAULT_START, DEFAULT_END, minGrain);
+  }
 
   if (newOperator === OPERATORS.current) {
     return ['current', 'next'];
@@ -154,6 +162,7 @@ export function valuesForOperator(
 
 export function internalOperatorForValues(filter: FilterLike): InternalOperatorType {
   const { values, operator } = filter;
+  const filterGrain = filter.parameters.grain as Grain;
   const [startStr, endStr] = values as string[];
 
   if (!startStr && !endStr && operator === 'bet') {
@@ -181,6 +190,10 @@ export function internalOperatorForValues(filter: FilterLike): InternalOperatorT
     lookbackDuration &&
     lookbackGrain &&
     ['day', 'week', 'month', 'year'].includes(lookbackGrain) &&
+    (lookbackGrain === getPeriodForGrain(filterGrain) ||
+      (filterGrain === 'quarter' && lookbackGrain === 'month' && lookbackDuration % MONTHS_IN_QUARTER === 0) ||
+      // TODO: Remove once sub day grain is supported
+      (['hour', 'minute', 'second'].includes(filterGrain) && lookbackGrain === 'day')) &&
     end === 'current'
   ) {
     internalId = OPERATORS.lookback;
@@ -255,7 +268,7 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
    * Finds the appropriate interval operator to modify an existing interval
    * @returns the best supported operator for this interval
    */
-  @computed('args.filter.{values,operator}', 'supportedOperators')
+  @computed('args.filter.{values,operator,parameters.grain}', 'supportedOperators')
   get selectedValueBuilder(): InteralFilterBuilderOperators {
     const internalId = this.args.filter.validations.isValid
       ? internalOperatorForValues(this.args.filter)

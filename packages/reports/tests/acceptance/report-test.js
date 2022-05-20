@@ -1766,19 +1766,37 @@ module('Acceptance | Navi Report', function (hooks) {
     };
     await setInput(startInput(), '');
 
-    assert.dom('.filter-builder__values .message').exists({ count: 2 }, 'The start and end inputs are marked invalid');
-    assert.dom('.filter-builder__values .message').hasText('Invalid interval', 'The invalid message is shown');
+    assert
+      .dom('.filter-builder__values .message')
+      .exists({ count: 2 }, 'The start and end inputs are marked invalid (1)');
+    assert.dom('.filter-builder__values .message').hasText('Invalid interval', 'The invalid message is shown (1)');
 
     await click('.report-view-overlay__button--run');
     assert
       .dom('.navi-info-message__error-list-item')
       .hasText(
         `The 'Date Time' filter has invalid interval ["","2015-11-15T00:00:00.000Z"]`,
-        'Invalid interval message is shown'
+        'Invalid interval message is shown (1)'
+      );
+
+    await setInput(startInput(), '');
+    await setInput(endInput(), '');
+    await setInput(startInput(), '2020-04-01');
+    await setInput(endInput(), 'nextt');
+    assert
+      .dom('.filter-builder__values .message')
+      .exists({ count: 2 }, 'The start and end inputs are marked invalid (2)');
+    assert.dom('.filter-builder__values .message').hasText('Invalid interval', 'The invalid message is shown (2)');
+
+    await click('.navi-report__run-btn');
+    assert
+      .dom('.navi-info-message__error-list-item')
+      .hasText(
+        `The 'Date Time' filter has invalid interval ["2020-04-01T00:00:00.000Z","nextt"]`,
+        'Invalid interval message is shown (2)'
       );
 
     await setInput(endInput(), '');
-    await setInput(startInput(), '2020-04-01');
     await setInput(endInput(), '2020-04-03');
 
     assert.dom('.filter-builder__operator-trigger').hasText('Between', 'Operator is updated to between');
@@ -1791,6 +1809,78 @@ module('Acceptance | Navi Report', function (hooks) {
       .hasValue('Apr 03, 2020', 'The end date is correct');
 
     await click('.info-message__run-link');
+    assert.dom('.line-chart-widget').exists('Interval successfully updated');
+  });
+
+  test('Date picker advanced with end `current`', async function (assert) {
+    await visit('/reports/13/view');
+
+    const startInput = () => find('.filter-values--advanced-interval-input--start');
+    const endInput = () => find('.filter-values--advanced-interval-input--end');
+    const setInput = async (input, value) => {
+      await fillIn(input, value);
+      await blur(input);
+    };
+
+    await selectChoose('.filter-builder__operator-trigger', 'Advanced');
+    await setInput(startInput(), 'P3D');
+    await setInput(endInput(), 'current');
+    assert
+      .dom('.filter-builder__operator-trigger')
+      .hasText('In The Past', 'In The Past is displayed when filter grain and lookback period are the same');
+    assert.dom('.filter-values--lookback-input__value').hasValue('3', 'The input value has the correct number of days');
+
+    await selectChoose('.filter-builder__operator-trigger', 'Advanced');
+    await setInput(startInput(), 'P1M');
+    await setInput(endInput(), 'current');
+    assert.dom(startInput()).hasValue('P1M', 'The start input is still displayed');
+    assert.dom(endInput()).hasValue('current', 'The end input is still displayed');
+
+    await selectChoose('.dropdown-parameter-picker', 'Hour');
+    assert.dom(startInput()).hasValue('P1M', 'The start input is not changed');
+    assert.dom(endInput()).hasValue('current', 'The end input is not changed');
+
+    await setInput(startInput(), 'P2D');
+    assert
+      .dom('.filter-builder__operator-trigger')
+      .hasText('In The Past', 'In The Past is displayed for < `day` filter grain and `day` lookback period');
+    assert.dom('.filter-values--lookback-input__value').hasValue('2', 'The input value has the correct number of days');
+
+    await selectChoose('.dropdown-parameter-picker', 'Quarter');
+    await setInput(startInput(), 'P4M');
+    await setInput(endInput(), 'current');
+    assert
+      .dom(startInput())
+      .hasValue('P4M', `The start input is still displayed when lookback duration can't be displayed as full quarters`);
+    assert
+      .dom(endInput())
+      .hasValue(
+        'current',
+        `The end input is still displayed when lookback duration can't be displayed as full quarters`
+      );
+    await setInput(startInput(), 'P9M');
+    assert
+      .dom('.filter-builder__operator-trigger')
+      .hasText('In The Past', 'In The Past is displayed when lookback duration can be displayed as full quarters');
+    assert
+      .dom('.filter-values--lookback-input__value')
+      .hasValue('3', 'The input value has the correct number of quarters');
+  });
+
+  test('Date picker advanced with end `next`', async function (assert) {
+    await visit('/reports/1/view');
+
+    const startInput = () => find('.filter-values--advanced-interval-input--start');
+    const endInput = () => find('.filter-values--advanced-interval-input--end');
+    const setInput = async (input, value) => {
+      await fillIn(input, value);
+      await blur(input);
+    };
+
+    await selectChoose('.filter-builder__operator-trigger', 'Advanced');
+    await setInput(startInput(), 'P3D');
+    await setInput(endInput(), 'next');
+    await click('.navi-report__run-btn');
     assert.dom('.line-chart-widget').exists('Interval successfully updated');
   });
 

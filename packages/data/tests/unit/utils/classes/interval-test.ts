@@ -51,25 +51,6 @@ module('Unit | Utils | Interval Class', function () {
     assert.ok(interval.isEqual(interval), 'Interval equals one with matching start/end');
   });
 
-  test('isAscending', function (assert) {
-    assert.expect(3);
-
-    assert.ok(
-      new Interval(new Duration('P7D'), 'current').isAscending(),
-      'Interval is ascending when start is before end using duration and macro'
-    );
-
-    assert.ok(
-      new Interval(moment('2014-10-10', FORMAT), moment('2015-10-10', FORMAT)).isAscending(),
-      'Interval is ascending when start is before end using moments'
-    );
-
-    assert.notOk(
-      new Interval(moment('2015-10-10', FORMAT), moment('2012-10-10', FORMAT)).isAscending(),
-      'Interval is not ascending when start is after end'
-    );
-  });
-
   test('diffForTimePeriod', function (assert) {
     assert.expect(7);
 
@@ -129,23 +110,29 @@ module('Unit | Utils | Interval Class', function () {
     );
   });
 
-  test('asMoments', function (assert) {
-    assert.expect(3);
-
-    let moments = new Interval(new Duration('P7D'), 'current').asMoments(),
+  test('_asMoments', function (assert) {
+    let moments = new Interval(new Duration('P7D'), 'current')['_asMoments']('day'),
       current = moment(),
       sevenDaysAgo = current.clone().subtract(7, 'days');
 
-    assert.ok(moments.start.isSame(sevenDaysAgo, 'day'), 'Duration is correctly subtracted from end');
+    assert.ok(moments.start.isSame(sevenDaysAgo, 'day'), 'Duration is correctly subtracted from end (1)');
 
-    assert.ok(moments.end?.isSame(current, 'day'), 'Macro is correctly substituted');
+    assert.ok(moments.end?.isSame(current, 'day'), 'Current macro is correctly substituted');
 
     let start = moment('2014-10-10', FORMAT),
       end = moment('2015-10-10', FORMAT);
 
-    moments = new Interval(start, end).asMoments();
+    moments = new Interval(start, end)['_asMoments']('day');
 
     assert.ok(moments.start.isSame(start) && moments.end?.isSame(end), 'Given moments are correctly returned');
+
+    moments = new Interval(new Duration('P2M'), 'next')['_asMoments']('day');
+    let next = moment().add(1, 'days'),
+      twoMonthsBeforeNext = next.clone().subtract(2, 'months');
+
+    assert.ok(moments.start.isSame(twoMonthsBeforeNext, 'day'), 'Duration is correctly subtracted from end (2)');
+
+    assert.ok(moments.end?.isSame(next, 'day'), 'Next macro is correctly substituted');
   });
 
   test('asMomentsForTimePeriod', function (assert) {
@@ -244,44 +231,44 @@ module('Unit | Utils | Interval Class', function () {
     const interval = new Interval(start, end);
 
     assert.equal(
-      interval.makeEndExclusiveFor('second').asMoments().end?.toISOString(),
+      interval.makeEndExclusiveFor('second')['_asMoments']('second').end?.toISOString(),
       '2017-10-12T01:02:04.000Z',
       'interval is inclusive of the second'
     );
     assert.equal(
-      interval.makeEndExclusiveFor('minute').asMoments().end?.toISOString(),
+      interval.makeEndExclusiveFor('minute')['_asMoments']('minute').end?.toISOString(),
       '2017-10-12T01:03:00.000Z',
       'interval is inclusive of the minute'
     );
 
     assert.equal(
-      interval.makeEndExclusiveFor('hour').asMoments().end?.toISOString(),
+      interval.makeEndExclusiveFor('hour')['_asMoments']('hour').end?.toISOString(),
       '2017-10-12T02:00:00.000Z',
       'interval is inclusive of the hour'
     );
 
     assert.equal(
-      interval.makeEndExclusiveFor('day').asMoments().end?.toISOString(),
+      interval.makeEndExclusiveFor('day')['_asMoments']('day').end?.toISOString(),
       '2017-10-13T00:00:00.000Z',
       'interval is inclusive of the day'
     );
     assert.equal(
-      interval.makeEndExclusiveFor('isoWeek').asMoments().end?.toISOString(),
+      interval.makeEndExclusiveFor('isoWeek')['_asMoments']('week').end?.toISOString(),
       '2017-10-16T00:00:00.000Z',
       'interval is inclusive of the isoWeek'
     );
     assert.equal(
-      interval.makeEndExclusiveFor('month').asMoments().end?.toISOString(),
+      interval.makeEndExclusiveFor('month')['_asMoments']('month').end?.toISOString(),
       '2017-11-01T00:00:00.000Z',
       'interval is inclusive of the month'
     );
     assert.equal(
-      interval.makeEndExclusiveFor('quarter').asMoments().end?.toISOString(),
+      interval.makeEndExclusiveFor('quarter')['_asMoments']('quarter').end?.toISOString(),
       '2018-01-01T00:00:00.000Z',
       'interval is inclusive of the quarter'
     );
     assert.equal(
-      interval.makeEndExclusiveFor('year').asMoments().end?.toISOString(),
+      interval.makeEndExclusiveFor('year')['_asMoments']('year').end?.toISOString(),
       '2018-01-01T00:00:00.000Z',
       'interval is inclusive of the year'
     );
@@ -292,7 +279,7 @@ module('Unit | Utils | Interval Class', function () {
 
     let start = moment('2014-10-10', FORMAT),
       end = moment('2015-10-10', FORMAT),
-      newInterval = new Interval(start, end).asIntervalForTimePeriod('isoWeek').asMoments();
+      newInterval = new Interval(start, end).asIntervalForTimePeriod('isoWeek')['_asMoments']('week');
 
     assert.ok(newInterval.start.isSame(start.startOf('isoWeek')), 'Start moment is at start of isoWeek');
 
@@ -304,7 +291,7 @@ module('Unit | Utils | Interval Class', function () {
 
     let start = moment('2017-10-10', FORMAT),
       end = moment('2017-10-10', FORMAT),
-      newInterval = new Interval(start, end).asIntervalForTimePeriod('isoWeek').asMoments();
+      newInterval = new Interval(start, end).asIntervalForTimePeriod('isoWeek')['_asMoments']('week');
 
     assert.equal(newInterval.start.format(FORMAT), '2017-10-09', 'Start moment is at start of isoWeek');
 
