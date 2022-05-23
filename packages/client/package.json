@@ -42,19 +42,32 @@
     "build:prepare": "npm run build:clean && npm run build:fixup",
     "build:js:esm": "tsc -p tsconfig-esm.json",
     "build:js:cjs": "tsc -p tsconfig-cjs.json",
-    "build:fixup": "node fixup.js",
+    "build:fixup": "node set-package-type.js lib/cjs commonjs && node set-package-type.js lib/esm module",
     "build:js": "npm run build:js:esm && npm run build:js:cjs",
     "build": "npm run build:prepare && npm run build:js",
     "watch": "npm run build:prepare && npm-run-all -l --parallel 'build:js:* -- --watch'",
     "prepare": "npm run build",
     "lint": "echo \"Lint not configured\"",
-    "test": "echo \"Tests not configured\""
+    "build:test:web": "webpack --config test/webpack.config.js",
+    "build:test:node": "shx rm -rf test/dist/build && tsc -p test/tsconfig.json -m commonjs && node set-package-type test/dist/build commonjs",
+    "test:web": "testem ci --file testem.cjs",
+    "test:node": "npm run build:test:node && qunit --require ./test/dist/build/test/setup.js ./test/dist/build/test/tests/**/*",
+    "test": "npm-run-all --aggregate-output --silent -n -p -c test:*"
   },
   "devDependencies": {
+    "@types/module-alias": "^2.0.1",
     "@types/node": "^16.4.2",
+    "@types/qunit": "^2.11.3",
+    "module-alias": "^2.2.2",
     "npm-run-all": "^4.1.5",
+    "qunit": "^2.19.1",
     "shx": "^0.3.4",
-    "typescript": "^4.6.4"
+    "testem": "^3.6.0",
+    "ts-loader": "^9.3.0",
+    "tsconfig-paths-webpack-plugin": "^3.5.2",
+    "typescript": "^4.6.4",
+    "webpack": "^5.72.1",
+    "webpack-cli": "^4.9.2"
   },
   "publishConfig": {
     "access": "public"
