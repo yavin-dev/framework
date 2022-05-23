@@ -1,4 +1,4 @@
-import Duration, { parseDuration, isIsoDurationString } from 'navi-data/utils/classes/duration';
+import Duration, { parseDuration, isIsoDurationString } from '@yavin/client/utils/classes/duration';
 import { module, test } from 'qunit';
 
 const ALL = Duration.ALL;

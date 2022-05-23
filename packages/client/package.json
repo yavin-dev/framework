@@ -17,6 +17,7 @@
   "bugs": {
     "url": "https://github.com/yavin-dev/framework/issues"
   },
+  "sideEffects": false,
   "type": "module",
   "main": "lib/cjs/index.js",
   "module": "lib/esm/index.js",
@@ -54,7 +55,12 @@
     "test:node": "npm run build:test:node && qunit --require ./test/dist/build/test/setup.js ./test/dist/build/test/tests/**/*",
     "test": "npm-run-all --aggregate-output --silent -n -p -c test:*"
   },
+  "dependencies": {
+    "lodash": "^4.17.21",
+    "tiny-invariant": "^1.2.0"
+  },
   "devDependencies": {
+    "@types/lodash": "^4.14.182",
     "@types/module-alias": "^2.0.1",
     "@types/node": "^16.4.2",
     "@types/qunit": "^2.11.3",
