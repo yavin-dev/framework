@@ -18,16 +18,13 @@ export default class Cache<T> {
   private _maxCacheSize;
   private _cacheTimeout;
   private _cache;
-  getCacheKey;
 
   /**
-   * @param {function (params:type) => string} cacheKeyFunction - a function that returns unique strings associated with specific items in cache
    * @param {number} maxCacheSize - the maximum number of items that can be stored in the cache (default 10)
    * @param {number} cacheTimeout - the maximum amount of milliseconds a record should be allowed to stay in the cache (default 1 hour)
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(cacheKeyFunction: (args: any) => string, maxCacheSize = 10, cacheTimeout = 60 * 60 * 1000) {
-    this.getCacheKey = cacheKeyFunction;
+  constructor(maxCacheSize = 10, cacheTimeout = 60 * 60 * 1000) {
     this._maxCacheSize = maxCacheSize;
     this._cacheTimeout = cacheTimeout;
     this._cache = new Map<string, CacheRecord<T>>();
@@ -83,12 +80,13 @@ export default class Cache<T> {
    * @returns {boolean} boolean indicating presence of given key in cache
    */
   has(cacheKey: string): boolean {
+    this._removeStaleItems();
     return this._cache.has(cacheKey);
   }
 
   /**
    * adds a given key/value pair to the cache
-   * @param {string} cacheKey - the unique identifier associated with the thing you're putting into the cache (result of getCacheKey function)
+   * @param {string} cacheKey - the unique identifier associated with the thing you're putting into the cache
    * @param {any} records - the thing you want to store in the cache
    * @returns void
    */
@@ -105,7 +103,7 @@ export default class Cache<T> {
 
   /**
    * looks for and returns a specific record in the cache
-   * @param {string} cacheKey - the unique identifier associated with the thing you're looking for (result of getCacheKey function)
+   * @param {string} cacheKey - the unique identifier associated with the thing you're looking for
    * @param {(string) => T} fallbackFn - a function that will run if the cache misses (results added to cache)
    * @returns the thing you're looking for (or undefined, if it's not in the cache)
    */
@@ -132,5 +130,13 @@ export default class Cache<T> {
     }
 
     return results;
+  }
+
+  /**
+   * removes a given key/record pair from the cache
+   * @param {string} cacheKey - the unique identifier you want to remove from the cache
+   */
+  removeItem(cacheKey: string): void {
+    this._cache.delete(cacheKey);
   }
 }

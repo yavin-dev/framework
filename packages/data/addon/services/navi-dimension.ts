@@ -38,16 +38,17 @@ type RequestType = 'all' | 'search' | 'find';
  * dimension cache, however, is "give me query X and I'll format result Y from what I have"
  */
 class DimensionCache extends Cache<NaviDimensionResponse> {
-  // set this.getCacheKey() function
   constructor() {
-    function getDimensionCacheId(dimension: DimensionColumn): string {
-      const cannonicalName = canonicalizeMetric({
-        metric: dimension?.columnMetadata?.name,
-        parameters: dimension.parameters,
-      });
-      return cannonicalName;
-    }
-    super(getDimensionCacheId, DIMENSION_CACHE.maxSize, DIMENSION_CACHE.timeoutMs);
+    super(DIMENSION_CACHE.maxSize, DIMENSION_CACHE.timeoutMs);
+  }
+
+  // given a dimension column, return that column's cache key
+  getCacheKey(dimension: DimensionColumn): string {
+    const cannonicalName = canonicalizeMetric({
+      metric: dimension?.columnMetadata?.name,
+      parameters: dimension.parameters,
+    });
+    return cannonicalName;
   }
 
   /**

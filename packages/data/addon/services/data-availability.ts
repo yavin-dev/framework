@@ -30,7 +30,7 @@ type Fetcher = () =>
 const AVAILABILITY_CACHE_MS = config.navi.availability?.cacheMs ?? 5 * 60 * 1000;
 
 export default class DataAvailabilityService extends Service {
-  _cache = new Cache<FetchedAvailabilityResult>((i) => i, 100, AVAILABILITY_CACHE_MS);
+  _cache = new Cache<FetchedAvailabilityResult>(100, AVAILABILITY_CACHE_MS);
   fetchers = new Map<string, Fetcher>();
 
   registerDataSourceAvailability(dataSourceName: string, fetcher: Fetcher) {
