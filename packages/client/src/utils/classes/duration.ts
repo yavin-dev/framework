@@ -4,7 +4,7 @@
  */
 
 import capitalize from 'lodash/capitalize';
-import invariant from 'invariant';
+import invariant from 'tiny-invariant';
 
 /**
  * Enum for supported date units
