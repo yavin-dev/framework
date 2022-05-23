@@ -3,8 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { capitalize } from '@ember/string';
-import { assert } from '@ember/debug';
+import capitalize from 'lodash/capitalize';
+import invariant from 'invariant';
 
 /**
  * Enum for supported date units
@@ -94,7 +94,7 @@ export default class Duration {
    */
   constructor(isoDuration: string) {
     const duration = parseDuration(isoDuration);
-    assert(`${isoDuration} is an Invalid ISO duration`, duration);
+    invariant(duration, `${isoDuration} is an Invalid ISO duration`);
 
     const [value, unit] = duration;
     this._value = value;
@@ -164,8 +164,8 @@ export default class Duration {
    */
   compare(durationString: string): -1 | 0 | 1 {
     let [value, unit] = parseDuration(durationString) || [];
-    assert('The duration must have a value', value);
-    assert('Duration units need to match', this._unit === unit || value === ALL || Duration.isAll(this));
+    invariant(value, 'The duration must have a value');
+    invariant(this._unit === unit || value === ALL || Duration.isAll(this), 'Duration units need to match');
 
     let instanceValue = this._value;
 

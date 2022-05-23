@@ -1,6 +1,6 @@
 import DurationUtils from 'navi-data/utils/duration-utils';
 import { getFirstDayEpochForGrain, PARAM_DATE_FORMAT_STRING } from 'navi-data/utils/date';
-import Duration from 'navi-data/utils/classes/duration';
+import Duration from '@yavin/client/utils/classes/duration';
 import { module, test } from 'qunit';
 import moment from 'moment';
 import config from 'ember-get-config';

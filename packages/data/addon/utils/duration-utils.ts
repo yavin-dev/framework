@@ -5,7 +5,7 @@
 
 import { assert } from '@ember/debug';
 import moment, { Moment } from 'moment';
-import Duration from './classes/duration';
+import Duration from '@yavin/client/utils/classes/duration';
 import { DateTimePeriod, getFirstDayEpochForGrain, getPeriodForGrain } from './date';
 
 /**

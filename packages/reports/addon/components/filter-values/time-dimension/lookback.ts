@@ -11,7 +11,7 @@
  */
 import BaseIntervalComponent from './base-interval';
 import { computed, action } from '@ember/object';
-import Duration from 'navi-data/utils/classes/duration';
+import Duration from '@yavin/client/utils/classes/duration';
 import Interval from 'navi-data/utils/classes/interval';
 import { isEmpty } from '@ember/utils';
 import { intervalPeriodForGrain, MONTHS_IN_QUARTER } from '../../filter-builders/time-dimension';
