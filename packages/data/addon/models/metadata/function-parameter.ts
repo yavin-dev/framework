@@ -5,10 +5,9 @@
  * Column function parameters are named and have rules for what values are valid
  * The values control configuration for an parameters on a base metric
  */
-import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { taskFor } from 'ember-concurrency-ts';
-import NativeWithCreate from 'navi-data/models/native-with-create';
+import NativeWithCreate, { ClientService, Injector } from 'navi-data/models/native-with-create';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { DimensionColumn, TableSource } from './dimension';
@@ -48,14 +47,14 @@ export interface FunctionParameterMetadataPayload {
 }
 
 export default class FunctionParameterMetadataModel extends NativeWithCreate {
-  constructor(owner: unknown, args: FunctionParameterMetadataPayload) {
-    super(owner, args);
+  constructor(injector: Injector, args: FunctionParameterMetadataPayload) {
+    super(injector, args);
   }
 
-  @service('navi-dimension')
+  @ClientService('navi-dimension')
   declare dimensionService: NaviDimensionService;
 
-  @service('navi-metadata')
+  @ClientService('navi-metadata')
   declare metadataService: NaviMetadataService;
 
   declare id: string;

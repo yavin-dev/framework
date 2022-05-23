@@ -871,16 +871,13 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
 
   hooks.beforeEach(function (this: TestContext) {
     Serializer = this.owner.lookup('serializer:metadata/bard');
-    Tables = TablePayloads.map((p) => this.owner.factoryFor('model:metadata/bard/table').create(p));
-    Dimensions = DimensionsPayloads.map((p) => this.owner.factoryFor('model:metadata/dimension').create(p));
-    TimeDimensions = TimeDimensionPayloads.map((p) => this.owner.factoryFor('model:metadata/time-dimension').create(p));
-    Metrics = MetricPayloads.map((p) => this.owner.factoryFor('model:metadata/metric').create(p));
-    ColumnFunctions = ColumnFunctionPayloads.map((p) =>
-      this.owner.factoryFor('model:metadata/column-function').create(p)
-    );
-    RequestConstraints = RequestConstraintPayloads.map((p) =>
-      this.owner.factoryFor('model:metadata/request-constraint').create(p)
-    );
+    const injector = this.owner.lookup('service:client-injector');
+    Tables = TablePayloads.map((p) => new BardTableMetadataModel(injector, p));
+    Dimensions = DimensionsPayloads.map((p) => new DimensionMetadataModel(injector, p));
+    TimeDimensions = TimeDimensionPayloads.map((p) => new TimeDimensionMetadataModel(injector, p));
+    Metrics = MetricPayloads.map((p) => new MetricMetadataModel(injector, p));
+    ColumnFunctions = ColumnFunctionPayloads.map((p) => new ColumnFunctionMetadataModel(injector, p));
+    RequestConstraints = RequestConstraintPayloads.map((p) => new RequestConstraintMetadataModel(injector, p));
   });
 
   test('normalize `everything` with metric legacy `parameters`', function (assert) {
@@ -990,7 +987,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
 
     assert.deepEqual(
       metrics,
-      expectedMetricPayloads.map((p) => this.owner.factoryFor('model:metadata/metric').create(p)),
+      expectedMetricPayloads.map((p) => new MetricMetadataModel(this.owner.lookup('service:client-injector'), p)),
       'The metric with parameters has a columnFunctionId provided by the raw data'
     );
 
@@ -1043,7 +1040,9 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
     ];
     assert.deepEqual(
       columnFunctions,
-      expectedColumnFunctionPayloads.map((p) => this.owner.factoryFor('model:metadata/column-function').create(p)),
+      expectedColumnFunctionPayloads.map(
+        (p) => new ColumnFunctionMetadataModel(this.owner.lookup('service:client-injector'), p)
+      ),
       'Raw column functions are normalized correctly'
     );
   });
@@ -1090,7 +1089,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
 
     assert.deepEqual(
       Serializer['normalizeDimensions']([rawDimension], source),
-      [this.owner.factoryFor('model:metadata/dimension').create(expectedDimensionPayload)],
+      [new DimensionMetadataModel(this.owner.lookup('service:client-injector'), expectedDimensionPayload)],
       'New dimension is constructed correctly normalized'
     );
   });
@@ -1121,7 +1120,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
 
     assert.deepEqual(
       Serializer['normalizeMetrics']([rawMetric], source),
-      [this.owner.factoryFor('model:metadata/metric').create(expectedMetricPayload)],
+      [new MetricMetadataModel(this.owner.lookup('service:client-injector'), expectedMetricPayload)],
       'Metric is constructed correctly with no new column function id or parameter'
     );
   });

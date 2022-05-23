@@ -2,26 +2,43 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { getOwner } from '@ember/application';
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-type PayloadType<T> = T extends new (...args: infer U) => unknown ? U[1] : never;
+type Services = 'navi-dimension' | 'navi-facts' | 'navi-metadata' | 'navi-formatter';
+type LookupType = 'service';
+export interface Injector {
+  lookup<T extends Services>(type: LookupType, name: T): any;
+}
 
-type InstanceType<T extends new (...args: unknown[]) => unknown> = T extends new (...args: unknown[]) => infer R
-  ? R
-  : unknown;
+const INJECTOR = Symbol.for('injector');
 
 export default class NativeWithCreate {
-  constructor(_owner: unknown, args: object) {
+  declare [INJECTOR]?: Injector;
+  constructor(injector: Injector, args: object) {
+    this[INJECTOR] = injector;
     Object.assign(this, args);
-  }
-
-  static create<T extends typeof NativeWithCreate>(this: T, args: PayloadType<T>): InstanceType<T> {
-    const owner = getOwner(args);
-    return new this(owner, args) as InstanceType<T>;
   }
 }
 
-export interface Factory<T extends NativeWithCreate> {
-  class: T;
-  create<C extends typeof NativeWithCreate & T>(args?: PayloadType<T>): InstanceType<C>;
+function createGetter(
+  _target: NativeWithCreate,
+  _key: string,
+  _descriptor: unknown,
+  dependencyId: Services
+): PropertyDescriptor {
+  return {
+    enumerable: false,
+    get(this: NativeWithCreate): unknown {
+      return this[INJECTOR]?.lookup('service', dependencyId);
+    },
+    set(value: unknown) {
+      Object.defineProperty(this, _key, { value });
+    },
+  };
+}
+
+export function ClientService<T extends NativeWithCreate, S extends Services>(dependencyId: S): Function {
+  return function getter(...args: any[]) {
+    return createGetter(...(args as [T, string, any]), dependencyId);
+  };
 }

@@ -61,7 +61,7 @@ module('Integration | Component | navi-visualization/metric-label', function (ho
           dataSource: 'bardOne',
           table: 'network',
         }),
-        response: NaviFactResponse.create({ rows: [] }),
+        response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [] }),
       },
     ]);
     const MetadataService = this.owner.lookup('service:navi-metadata');

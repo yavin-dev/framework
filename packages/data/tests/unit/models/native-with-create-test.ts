@@ -1,15 +1,20 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { getOwner } from '@ember/application';
+import NativeWithCreate, { ClientService } from 'navi-data/models/native-with-create';
 
 module('Unit | Model | native with create', function (hooks) {
   setupTest(hooks);
 
   test('it exists', function (assert) {
-    const factory = this.owner.factoryFor('model:native-with-create');
-    assert.ok(factory, 'Factory is found');
-    const instance = factory.create({});
+    const instance = new NativeWithCreate(this.owner.lookup('service:client-injector'), {});
     assert.ok(instance, 'Factory can create classes');
-    assert.ok(getOwner(instance), 'Classes have owners');
+  });
+
+  test('it injects services', function (assert) {
+    class Custom extends NativeWithCreate {
+      @ClientService('navi-dimension') dims: unknown;
+    }
+    const instance = new Custom(this.owner.lookup('service:client-injector'), {});
+    assert.deepEqual(instance.dims, this.owner.lookup('service:navi-dimension'), 'Services are injected');
   });
 });

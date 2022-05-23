@@ -1,12 +1,9 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
+import BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import type { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
-import type { Factory } from 'navi-data/models/native-with-create';
 
-let Payload: BardTableMetadataPayload,
-  Table: BardTableMetadataModel,
-  TableFactory: Factory<typeof BardTableMetadataModel>;
+let Payload: BardTableMetadataPayload, Table: BardTableMetadataModel;
 
 module('Unit | Model | metadata/bard/table', function (hooks) {
   setupTest(hooks);
@@ -29,8 +26,7 @@ module('Unit | Model | metadata/bard/table', function (hooks) {
       tags: ['DISPLAY'],
     };
 
-    TableFactory = this.owner.factoryFor('model:metadata/bard/table');
-    Table = TableFactory.create(Payload);
+    Table = new BardTableMetadataModel(this.owner.lookup('service:client-injector'), Payload);
   });
 
   test('it properly hydrates properties', function (assert) {

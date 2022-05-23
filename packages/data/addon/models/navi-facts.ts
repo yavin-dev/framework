@@ -4,8 +4,7 @@
  *
  * Description: A model that holds the response from a Fact query.
  */
-import NativeWithCreate from 'navi-data/models/native-with-create';
-import { inject as service } from '@ember/service';
+import NativeWithCreate, { ClientService, Injector } from 'navi-data/models/native-with-create';
 import { taskFor } from 'ember-concurrency-ts';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type { RequestV2 } from 'navi-data/adapters/facts/interface';
@@ -17,11 +16,11 @@ interface NaviFactsPayload {
 }
 
 export default class NaviFacts extends NativeWithCreate {
-  constructor(owner: unknown, args: NaviFactsPayload) {
-    super(owner, args);
+  constructor(injector: Injector, args: NaviFactsPayload) {
+    super(injector, args);
   }
 
-  @service('navi-facts')
+  @ClientService('navi-facts')
   protected declare factService: NaviFactsService;
 
   declare request: RequestV2;

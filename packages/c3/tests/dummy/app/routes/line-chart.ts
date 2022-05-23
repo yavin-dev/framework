@@ -6,6 +6,7 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { inject as service } from '@ember/service';
 import type StoreService from '@ember-data/store';
 import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
+import type ClientInjector from 'navi-data/services/client-injector';
 
 /*eslint max-len: ["error", { "code": 250 }]*/
 // prettier-ignore
@@ -177,6 +178,9 @@ export default class LineChartRoute extends Route {
   @service
   declare store: StoreService;
 
+  @service
+  declare clientInjector: ClientInjector;
+
   buildRequest(
     metrics: { field: string; parameters?: Record<string, string> }[],
     dimensions: { field: string; parameters?: Record<string, string> }[],
@@ -289,11 +293,21 @@ export default class LineChartRoute extends Route {
   }> {
     const { defaultRequest, dimensionRequest, hourGrainRequest, minuteGrainRequest, secondGrainRequest } = this;
     return {
-      default: A([{ request: defaultRequest, response: NaviFactResponse.create({ rows: defaultRows }) }]),
-      dimension: A([{ request: dimensionRequest, response: NaviFactResponse.create({ rows: dimensionRows }) }]),
-      hourGrain: A([{ request: hourGrainRequest, response: NaviFactResponse.create({ rows: hourRows }) }]),
-      minuteGrain: A([{ request: minuteGrainRequest, response: NaviFactResponse.create({ rows: minuteRows }) }]),
-      secondGrain: A([{ request: secondGrainRequest, response: NaviFactResponse.create({ rows: secondRows }) }]),
+      default: A([
+        { request: defaultRequest, response: new NaviFactResponse(this.clientInjector, { rows: defaultRows }) },
+      ]),
+      dimension: A([
+        { request: dimensionRequest, response: new NaviFactResponse(this.clientInjector, { rows: dimensionRows }) },
+      ]),
+      hourGrain: A([
+        { request: hourGrainRequest, response: new NaviFactResponse(this.clientInjector, { rows: hourRows }) },
+      ]),
+      minuteGrain: A([
+        { request: minuteGrainRequest, response: new NaviFactResponse(this.clientInjector, { rows: minuteRows }) },
+      ]),
+      secondGrain: A([
+        { request: secondGrainRequest, response: new NaviFactResponse(this.clientInjector, { rows: secondRows }) },
+      ]),
     };
   }
 }

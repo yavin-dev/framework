@@ -6,6 +6,7 @@
  */
 
 import EmberObject from '@ember/object';
+import { getOwner } from '@ember/application';
 import NaviFactSerializer, { ResponseV1 } from './interface';
 import { RequestV2, Column } from 'navi-data/adapters/facts/interface';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
@@ -71,7 +72,7 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
       }
     }
 
-    return NaviFactResponse.create({ rows, meta });
+    return new NaviFactResponse(getOwner(this).lookup('service:client-injector'), { rows, meta });
   }
 
   normalize(payload: ResponseV1, request: RequestV2): NaviFactResponse | undefined {

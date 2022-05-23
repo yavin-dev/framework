@@ -22,7 +22,8 @@ const DimensionChartBuilder = BuilderClass.create();
 
 /*eslint max-len: ["error", { "code": 200 }]*/
 // prettier-ignore
-const DATA = NaviFactResponse.create({
+//@ts-ignore - skip injector
+const DATA = new NaviFactResponse(null, {
   rows: [
     { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 3669828357 },
     { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 4088487125 },
@@ -33,7 +34,8 @@ const DATA = NaviFactResponse.create({
   ]
 });
 // prettier-ignore
-const DATA2 = NaviFactResponse.create({
+//@ts-ignore - skip injector
+const DATA2 = new NaviFactResponse(null, {
   rows: [
     { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': '-1', totalPageViews: 176267792438 },
     { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': 'f', totalPageViews: 76735188 },
@@ -104,7 +106,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
       table: 'network',
     });
 
-    const data = NaviFactResponse.create({
+    const data = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { totalPageViews: 10, age: '-2', gender: 'm' },
         { totalPageViews: 12, age: '1', gender: 'f' },
@@ -194,7 +196,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
       { start: '2016-05-30 00:00:00.000', end: '2016-05-30 02:00:00.000' },
       'hour'
     );
-    const data = NaviFactResponse.create({
+    const data = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       //prettier-ignore
       rows: [
         { 'network.dateTime(grain=hour)': '2016-05-30 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 3669828357 },
@@ -247,7 +249,7 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
       { start: '2016-12-01 00:00:00.000', end: '2017-02-01 00:00:00.000' },
       'month'
     );
-    const data = NaviFactResponse.create({
+    const data = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       //prettier-ignore
       rows: [
         { 'network.dateTime(grain=month)': '2016-12-01 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 3669828357 },

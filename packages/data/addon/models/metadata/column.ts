@@ -2,10 +2,9 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { inject as service } from '@ember/service';
 import { isNone } from '@ember/utils';
 import TableMetadataModel from './table';
-import NativeWithCreate from 'navi-data/models/native-with-create';
+import NativeWithCreate, { ClientService, Injector } from 'navi-data/models/native-with-create';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import type ColumnFunction from './column-function';
 import type FunctionParameter from './function-parameter';
@@ -39,11 +38,11 @@ export interface ColumnInstance<T extends ColumnMetadataModel> {
 }
 
 export default class ColumnMetadataModel extends NativeWithCreate {
-  constructor(owner: unknown, args: ColumnMetadataPayload) {
-    super(owner, args);
+  constructor(injector: Injector, args: ColumnMetadataPayload) {
+    super(injector, args);
   }
 
-  @service
+  @ClientService('navi-metadata')
   protected declare naviMetadata: NaviMetadataService;
 
   /**

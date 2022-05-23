@@ -74,7 +74,11 @@ module('Unit | Service | visualization', function (hooks) {
       },
     };
     assert.deepEqual(
-      table.dataDidUpdate(settings, request, NaviFactResponse.create({ rows: [] })),
+      table.dataDidUpdate(
+        settings,
+        request,
+        new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [] })
+      ),
       settings,
       'it succesfully rebuilds config and keeps valid settings'
     );
@@ -89,7 +93,7 @@ module('Unit | Service | visualization', function (hooks) {
           },
         },
         request,
-        NaviFactResponse.create({ rows: [] })
+        new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [] })
       ),
       {
         columnAttributes: {},

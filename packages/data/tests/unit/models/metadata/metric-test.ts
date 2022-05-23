@@ -6,10 +6,8 @@ import { TestContext } from 'ember-test-helpers';
 import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
 import ColumnFunctionMetadataModel from 'navi-data/models/metadata/column-function';
-import type { Factory } from 'navi-data/models/native-with-create';
 
 let Payload: MetricMetadataPayload,
-  MetricFactory: Factory<typeof MetricMetadataModel>,
   Metric: MetricMetadataModel,
   MoneyMetric: MetricMetadataModel,
   ClicksMetric: MetricMetadataModel,
@@ -32,8 +30,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       source: 'bardOne',
     };
 
-    MetricFactory = this.owner.factoryFor('model:metadata/metric');
-    Metric = MetricFactory.create(Payload);
+    Metric = new MetricMetadataModel(this.owner.lookup('service:client-injector'), Payload);
     const moneyMetricPayload: MetricMetadataPayload = {
       id: 'metricOne',
       name: 'Metric One',
@@ -43,7 +40,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       isSortable: true,
       type: 'field',
     };
-    MoneyMetric = MetricFactory.create(moneyMetricPayload);
+    MoneyMetric = new MetricMetadataModel(this.owner.lookup('service:client-injector'), moneyMetricPayload);
     const clicksMetric: MetricMetadataPayload = {
       id: 'metricTwo',
       name: 'Metric Two',
@@ -53,7 +50,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       isSortable: true,
       type: 'field',
     };
-    ClicksMetric = MetricFactory.create(clicksMetric);
+    ClicksMetric = new MetricMetadataModel(this.owner.lookup('service:client-injector'), clicksMetric);
   });
 
   hooks.afterEach(function () {
@@ -90,7 +87,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       isSortable: true,
       type: 'field',
     };
-    const metricOne = MetricFactory.create(payload);
+    const metricOne = new MetricMetadataModel(this.owner.lookup('service:client-injector'), payload);
 
     const columnFunction = metricOne.columnFunction;
     const expectedColumnFunc = this.owner
@@ -124,7 +121,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
         isSortable: true,
         source: 'bardOne',
       },
-      metric = MetricFactory.create(payload);
+      metric = new MetricMetadataModel(this.owner.lookup('service:client-injector'), payload);
 
     assert.deepEqual(metric.parameters, [], 'parameters is an empty array when metric has no column function');
 
@@ -155,7 +152,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
         isSortable: true,
         source: 'bardOne',
       },
-      metric = MetricFactory.create(payload);
+      metric = new MetricMetadataModel(this.owner.lookup('service:client-injector'), payload);
 
     assert.strictEqual(
       metric.getDefaultParameters(),
@@ -173,7 +170,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
   test('extended property', async function (assert) {
     assert.expect(3);
     //@ts-expect-error
-    const metricOne = MetricFactory.create({
+    const metricOne = new MetricMetadataModel(this.owner.lookup('service:client-injector'), {
       id: 'metricOne',
       source: 'bardOne',
     });

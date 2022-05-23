@@ -123,7 +123,7 @@ module('Integration | Component | navi-visualizations/wrapper', function (hooks)
         },
       })
     );
-    this.set('response', NaviFactResponse.create({ rows: [] }));
+    this.set('response', new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [] }));
 
     this.set('isPrint', true);
     await render(TEMPLATE);

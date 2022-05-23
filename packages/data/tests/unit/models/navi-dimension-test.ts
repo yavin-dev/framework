@@ -8,11 +8,9 @@ import NaviMetadataService from 'navi-data/services/navi-metadata';
 import DimensionMetadataModel, { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import ElideOneScenario from 'navi-data/mirage/scenarios/elide-one';
 import type { Server } from 'miragejs';
-import type { Factory } from 'navi-data/models/native-with-create';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
-  dimensionModelFactory: Factory<typeof NaviDimensionModel>;
   server: Server;
 }
 
@@ -24,7 +22,6 @@ module('Unit | Model | navi dimension', function (hooks) {
     this.metadataService = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     ElideOneScenario(this.server);
     await this.metadataService.loadMetadata({ dataSourceName: 'elideOne' });
-    this.dimensionModelFactory = this.owner.factoryFor('model:navi-dimension');
   });
 
   test('it exists', function (this: TestContext, assert) {
@@ -35,7 +32,7 @@ module('Unit | Model | navi dimension', function (hooks) {
     ) as DimensionMetadataModel;
     const dimensionColumn: DimensionColumn = { columnMetadata };
     const value = 'link';
-    const model = this.dimensionModelFactory.create({ dimensionColumn, value });
+    const model = new NaviDimensionModel(this.owner.lookup('service:client-injector'), { dimensionColumn, value });
 
     assert.equal(model.value, value, '`NaviDimensionModel` has a `value` field');
     assert.equal(
@@ -53,7 +50,11 @@ module('Unit | Model | navi dimension', function (hooks) {
     ) as DimensionMetadataModel;
     const dimensionColumn: DimensionColumn = { columnMetadata };
     const value = 'link';
-    const model = this.dimensionModelFactory.create({ dimensionColumn, value, suggestions: {} });
+    const model = new NaviDimensionModel(this.owner.lookup('service:client-injector'), {
+      dimensionColumn,
+      value,
+      suggestions: {},
+    });
 
     assert.equal(
       model.displayValue,
@@ -72,16 +73,19 @@ module('Unit | Model | navi dimension', function (hooks) {
     const value = 'link';
     const dimensionColumn: DimensionColumn = { columnMetadata, parameters };
 
-    const model1 = this.dimensionModelFactory.create({ dimensionColumn, value });
+    const model1 = new NaviDimensionModel(this.owner.lookup('service:client-injector'), { dimensionColumn, value });
     assert.ok(model1.isEqual(model1), '`isEqual` returns true for the same object reference');
 
-    const model2 = this.dimensionModelFactory.create({ dimensionColumn: { columnMetadata, parameters }, value });
+    const model2 = new NaviDimensionModel(this.owner.lookup('service:client-injector'), {
+      dimensionColumn: { columnMetadata, parameters },
+      value,
+    });
     assert.ok(
       model1.isEqual(model2),
       '`isEqual` returns true for models that have the same DimensionColumn values and dimension value'
     );
 
-    const model2WithSuggestions = this.dimensionModelFactory.create({
+    const model2WithSuggestions = new NaviDimensionModel(this.owner.lookup('service:client-injector'), {
       dimensionColumn: { columnMetadata, parameters },
       value,
       suggestions: { col1: 'Ignore me' },
@@ -91,7 +95,10 @@ module('Unit | Model | navi dimension', function (hooks) {
       '`isEqual` returns true for models that have the same DimensionColumn values and dimension value but different suggestions'
     );
 
-    const model3 = this.dimensionModelFactory.create({ dimensionColumn, value: 'zelda' });
+    const model3 = new NaviDimensionModel(this.owner.lookup('service:client-injector'), {
+      dimensionColumn,
+      value: 'zelda',
+    });
     assert.notOk(
       model1.isEqual(model3),
       '`isEqual` returns false for models that do not that have the same dimension value'
@@ -102,7 +109,7 @@ module('Unit | Model | navi dimension', function (hooks) {
       'table0.dimension1',
       'elideOne'
     ) as DimensionMetadataModel;
-    const model4 = this.dimensionModelFactory.create({
+    const model4 = new NaviDimensionModel(this.owner.lookup('service:client-injector'), {
       dimensionColumn: {
         columnMetadata: otherColumnMetadata,
         parameters,
@@ -114,7 +121,7 @@ module('Unit | Model | navi dimension', function (hooks) {
       '`isEqual` returns false for models that do not that have the same column metadata object'
     );
 
-    const model5 = this.dimensionModelFactory.create({
+    const model5 = new NaviDimensionModel(this.owner.lookup('service:client-injector'), {
       dimensionColumn: {
         columnMetadata: otherColumnMetadata,
         parameters: { heroOf: 'twilight' },

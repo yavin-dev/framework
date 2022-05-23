@@ -33,7 +33,7 @@ module('Unit | Component | line chart', function (hooks) {
   });
 
   test('dataConfig', function (assert) {
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       //prettier-ignore
       rows: [
         { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', uniqueIdentifier: 172933788, totalPageViews: 3669828357 },
@@ -178,7 +178,7 @@ module('Unit | Component | line chart', function (hooks) {
       model: A([
         {
           request: buildTestRequest([{ cid: 'cid_totalPageViews', field: 'totalPageViews' }]),
-          response: new NaviFactResponse(this.owner, { rows: [] }),
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [] }),
         },
       ]),
     }) as TestLineChart;
@@ -308,7 +308,7 @@ module('Unit | Component | line chart', function (hooks) {
           { start: 'P1D', end: '2016-05-31 00:00:00.000' },
           'day'
         ),
-        response: NaviFactResponse.create({
+        response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
           rows: [
             {
               'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -355,7 +355,7 @@ module('Unit | Component | line chart', function (hooks) {
             { start: 'P2D', end: '2016-06-01 00:00:00.000' },
             'day'
           ),
-          response: NaviFactResponse.create({
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
             rows: [
               {
                 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -386,7 +386,7 @@ module('Unit | Component | line chart', function (hooks) {
   });
 
   test('tooltips', function (assert) {
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       //prettier-ignore
       rows: [
         { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', uniqueIdentifier: 172933788, totalPageViews: 3669828357 },
@@ -445,7 +445,7 @@ module('Unit | Component | line chart', function (hooks) {
     assert.ok('uniqueIdentifier' in tooltip.rowData[0], 'Initial tooltip render has the right rowData');
 
     //new data
-    let response2 = NaviFactResponse.create({
+    let response2 = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', navClicks: 172933788 },
         { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', navClicks: 4088487125 },
@@ -485,7 +485,7 @@ module('Unit | Component | line chart', function (hooks) {
     let component = createGlimmerComponent('component:navi-visualizations/line-chart', {
       model: A([
         {
-          response: NaviFactResponse.create({
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
             rows: [
               {
                 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -536,7 +536,7 @@ module('Unit | Component | line chart', function (hooks) {
 
     const getModelDataFor = (start: string, end: string, timeGrain: string) => {
       return {
-        response: NaviFactResponse.create({
+        response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
           rows: [
             { [`network.dateTime(grain=${timeGrain})`]: start, uniqueIdentifier: 172933788 },
             { [`network.dateTime(grain=${timeGrain})`]: end, uniqueIdentifier: 183206656 },

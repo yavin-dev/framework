@@ -22,7 +22,7 @@ interface Factory {
 }
 
 type Options = {
-  modelFactory: string; // name of explicit modelFactory to store
+  modelFactory: string | Factory; // name of explicit modelFactory to store
   namespace: string; // namespace to store data under, defaults to 'navi'
 };
 

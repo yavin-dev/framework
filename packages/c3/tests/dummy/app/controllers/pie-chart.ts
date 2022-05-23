@@ -1,3 +1,4 @@
+import { getOwner } from '@ember/application';
 import { A } from '@ember/array';
 import Controller from '@ember/controller';
 import { inject as service } from '@ember/service';
@@ -140,7 +141,7 @@ export default class PieChartController extends Controller {
     });
   }
 
-  multiDimensionResponse = NaviFactResponse.create({
+  multiDimensionResponse = new NaviFactResponse(getOwner(this).lookup('service:client-injector'), {
     rows: [
       {
         'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',

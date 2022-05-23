@@ -105,7 +105,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function (hooks) {
   });
 
   test('rebuildConfig - dimension series - less than max series', function (assert) {
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       //prettier-ignore
       rows: [
         { m1: 1, 'd1(field=id)': 'foo1', 'd1(field=desc)': 'Foo1', 'd2(field=id)': 'bar1', 'd2(field=desc)': 'Bar1' },
@@ -152,7 +152,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function (hooks) {
   });
 
   test('rebuildConfig - dimension series - greater than maxSeries', function (assert) {
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       //prettier-ignore
       rows: [
         { m1: 1, 'd1(field=id)': 'foo1', 'd1(field=desc)': 'Foo1', 'd2(field=id)': 'bar1', 'd2(field=desc)': 'Bar1' },
@@ -210,7 +210,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function (hooks) {
   });
 
   test('rebuildConfig - dimension series - only metric', function (assert) {
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         {
           requestMetric: 1,
@@ -276,7 +276,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function (hooks) {
   });
 
   test('rebuildConfig - dimension series - dimensions', function (assert) {
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         {
           requestMetric: 1,
@@ -330,7 +330,7 @@ module('Unit | Model | Pie Chart Visualization Fragment', function (hooks) {
   });
 
   test('rebuildConfig - dimension series - zero dimension series', function (assert) {
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         {
           m1: 1,

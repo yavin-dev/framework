@@ -4,10 +4,8 @@ import ElideDimensionMetadataModel, {
   ElideDimensionMetadataPayload,
   ValueSourceType,
 } from 'navi-data/models/metadata/elide/dimension';
-import type { Factory } from 'navi-data/models/native-with-create';
 
 let PayloadBase: ElideDimensionMetadataPayload;
-let DimensionFactory: Factory<typeof ElideDimensionMetadataModel>;
 
 module('Unit | Model | metadata/elide/dimension', function (hooks) {
   setupTest(hooks);
@@ -25,12 +23,10 @@ module('Unit | Model | metadata/elide/dimension', function (hooks) {
       cardinality: undefined,
       values: [],
     };
-
-    DimensionFactory = this.owner.factoryFor('model:metadata/elide/dimension');
   });
 
   test('it properly hydrates properties', function (assert) {
-    const Model = DimensionFactory.create(PayloadBase);
+    const Model = new ElideDimensionMetadataModel(this.owner.lookup('service:client-injector'), PayloadBase);
     assert.deepEqual(Model.valueSourceType, 'ENUM', 'valueSourceType property is hydrated properly');
     assert.deepEqual(Model.hasEnumValues, true, 'hasEnumValues property is hydrated properly');
     assert.deepEqual(Model.values, [], 'values property is hydrated properly');
@@ -38,14 +34,17 @@ module('Unit | Model | metadata/elide/dimension', function (hooks) {
     assert.deepEqual(Model.tableSource, undefined, 'tableSource property is hydrated properly');
     assert.deepEqual(Model.valueSource, Model, 'valueSource property is hydrated properly');
 
-    const ModelWithCardinality = DimensionFactory.create({ ...PayloadBase, cardinality: 'MEDIUM' });
+    const ModelWithCardinality = new ElideDimensionMetadataModel(this.owner.lookup('service:client-injector'), {
+      ...PayloadBase,
+      cardinality: 'MEDIUM',
+    });
     assert.deepEqual(ModelWithCardinality.cardinality, 'MEDIUM', 'cardinality property is not overridden if provided');
   });
 
   test('it looks up tableSource', function (assert) {
     assert.expect(4);
 
-    const Model = DimensionFactory.create({
+    const Model = new ElideDimensionMetadataModel(this.owner.lookup('service:client-injector'), {
       ...PayloadBase,
       valueSourceType: ValueSourceType.TABLE,
       tableSource: {

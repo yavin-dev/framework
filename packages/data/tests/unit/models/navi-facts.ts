@@ -38,7 +38,7 @@ module('Unit | Model | navi facts', function (hooks) {
 
   hooks.beforeEach(function () {
     //@ts-expect-error mock response
-    Response = NaviFactsModel.create(Payload);
+    Response = new NaviFactsModel(this.owner.lookup('service:client-injector'), Payload);
 
     //Mocking facts service
     Response['factService'] = {

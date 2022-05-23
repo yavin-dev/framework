@@ -2,8 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import NativeWithCreate from 'navi-data/models/native-with-create';
-import { inject as service } from '@ember/service';
+import NativeWithCreate, { ClientService, Injector } from 'navi-data/models/native-with-create';
 import { Cardinality } from '@yavin/client/utils/enums/cardinality-sizes';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
@@ -32,12 +31,12 @@ function isPresent<T>(t: T | undefined | null | void): t is T {
 }
 
 export default class TableMetadataModel extends NativeWithCreate {
-  constructor(owner: unknown, args: TableMetadataPayload) {
-    super(owner, args);
+  constructor(injector: Injector, args: TableMetadataPayload) {
+    super(injector, args);
   }
   static identifierField = 'id';
 
-  @service
+  @ClientService('navi-metadata')
   declare naviMetadata: NaviMetadataService;
 
   declare id: string;

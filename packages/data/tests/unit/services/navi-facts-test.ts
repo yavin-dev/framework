@@ -257,7 +257,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
     });
     const service: NaviFactsService = this.owner.lookup('service:navi-facts');
 
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [],
       meta: {
         pagination: {
@@ -288,7 +288,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
     });
     const service: NaviFactsService = this.owner.lookup('service:navi-facts');
 
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [],
       meta: {
         pagination: {

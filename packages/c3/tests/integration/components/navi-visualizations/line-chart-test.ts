@@ -44,7 +44,7 @@ module('Integration | Component | line chart', function (hooks) {
           { start: '2016-05-30 00:00:00.000', end: '2016-06-04 00:00:00.000' },
           'day'
         ),
-        response: NaviFactResponse.create({
+        response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
           rows: [
             {
               'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -124,7 +124,7 @@ module('Integration | Component | line chart', function (hooks) {
             { start: '2016-05-30 00:00:00.000', end: '2016-06-02 00:00:00.000' },
             'day'
           ),
-          response: NaviFactResponse.create({
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
             rows: [
               {
                 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -181,7 +181,7 @@ module('Integration | Component | line chart', function (hooks) {
             { start: '2016-05-30 00:00:00.000', end: '2016-06-02 00:00:00.000' },
             'day'
           ),
-          response: NaviFactResponse.create({
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
             rows: [
               {
                 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -355,7 +355,7 @@ module('Integration | Component | line chart', function (hooks) {
             { start: start.format(API_DATE_FORMAT_STRING), end: end.format(API_DATE_FORMAT_STRING) },
             'month'
           ),
-          response: NaviFactResponse.create({
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
             rows,
           }),
         },
@@ -461,7 +461,7 @@ module('Integration | Component | line chart', function (hooks) {
             dataSource: 'bardTwo',
             requestVersion: '2.0',
           }),
-          response: NaviFactResponse.create({
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
             rows: [
               {
                 'inventory.dateTime(grain=day)': '2016-05-30 00:00:00.000',

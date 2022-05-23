@@ -23,11 +23,10 @@ import type { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/tim
 import type RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
 import type { RequestConstraintMetadataPayload } from 'navi-data/models/metadata/request-constraint';
 import type { MetadataModelMap, EverythingMetadataPayload } from './base';
-import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
+import BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import type { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
 import type { Cardinality } from '@yavin/client/utils/enums/cardinality-sizes';
 import type { Grain } from '@yavin/client/utils/date';
-import type { Factory } from 'navi-data/models/native-with-create';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
 import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 import { constructFunctionParameters } from './column-function';
@@ -125,12 +124,8 @@ function grainForDataType(dataType: RawDimensionPayload['datatype']): Grain | ne
 export default class BardMetadataSerializer extends NaviMetadataSerializer {
   private namespace = 'normalizer-generated';
 
-  private bardTableFactory = getOwner(this).factoryFor('model:metadata/bard/table') as Factory<
-    typeof BardTableMetadataModel
-  >;
-
   protected createTableModel(payload: BardTableMetadataPayload): TableMetadataModel {
-    return this.bardTableFactory.create(payload);
+    return new BardTableMetadataModel(getOwner(this).lookup('service:client-injector'), payload);
   }
 
   /**

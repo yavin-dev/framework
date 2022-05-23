@@ -13,7 +13,7 @@ const TEMPLATE = hbs`
   @response={{this.response}}
 />`;
 
-const RESPONSE = NaviFactResponse.create({
+const RESPONSE = new NaviFactResponse(null, {
   rows: [
     {
       adClicks: 1707077,

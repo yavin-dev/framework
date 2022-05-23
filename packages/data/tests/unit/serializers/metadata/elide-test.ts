@@ -13,11 +13,14 @@ import type {
 } from 'navi-data/serializers/metadata/elide';
 import { DataType } from 'navi-data/models/metadata/function-parameter';
 import { capitalize } from 'lodash-es';
-import { TableMetadataPayload } from 'navi-data/models/metadata/table';
-import { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
-import { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
-import { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
-import { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import TableMetadataModel, { TableMetadataPayload } from 'navi-data/models/metadata/table';
+import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
+import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
+import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
+import ElideDimensionMetadataModel, {
+  ElideDimensionMetadataPayload,
+  ValueSourceType,
+} from 'navi-data/models/metadata/elide/dimension';
 
 let Serializer: ElideMetadataSerializer;
 
@@ -476,20 +479,15 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
       },
     ];
 
+    const injector = this.owner.lookup('service:client-injector');
     assert.deepEqual(
       Serializer.normalize('everything', tableConnectionPayload, 'bardOne'),
       {
-        tables: expectedTablePayloads.map((p) => this.owner.factoryFor('model:metadata/table').create(p)),
-        metrics: expectedMetricPayloads.map((p) => this.owner.factoryFor('model:metadata/metric').create(p)),
-        dimensions: expectedDimensionPayloads.map((p) =>
-          this.owner.factoryFor('model:metadata/elide/dimension').create(p)
-        ),
-        timeDimensions: expectedTimeDimensionPayloads.map((p) =>
-          this.owner.factoryFor('model:metadata/time-dimension').create(p)
-        ),
-        columnFunctions: expectedColumnFunctionsPayloads.map((p) =>
-          this.owner.factoryFor('model:metadata/column-function').create(p)
-        ),
+        tables: expectedTablePayloads.map((p) => new TableMetadataModel(injector, p)),
+        metrics: expectedMetricPayloads.map((p) => new MetricMetadataModel(injector, p)),
+        dimensions: expectedDimensionPayloads.map((p) => new ElideDimensionMetadataModel(injector, p)),
+        timeDimensions: expectedTimeDimensionPayloads.map((p) => new TimeDimensionMetadataModel(injector, p)),
+        columnFunctions: expectedColumnFunctionsPayloads.map((p) => new ColumnFunctionMetadataModel(injector, p)),
         requestConstraints: [],
       },
       'Table 0'
@@ -673,13 +671,17 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
 
     assert.deepEqual(
       metricModels,
-      expectedMetricPayloads.map((p) => this.owner.factoryFor('model:metadata/metric').create(p)),
+      expectedMetricPayloads.map((p) => new MetricMetadataModel(this.owner.lookup('service:client-injector'), p)),
       'metric models are normalized properly'
     );
 
     assert.deepEqual(
       columnFunctions,
-      [...expectedFunctionPayloads.map((p) => this.owner.factoryFor('model:metadata/column-function').create(p))],
+      [
+        ...expectedFunctionPayloads.map(
+          (p) => new ColumnFunctionMetadataModel(this.owner.lookup('service:client-injector'), p)
+        ),
+      ],
       'metric column functions are normalized properly'
     );
 
@@ -856,13 +858,20 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
 
     assert.deepEqual(
       dimensionModels,
-      expectedDimensionPayloads.map((p) => this.owner.factoryFor('model:metadata/elide/dimension').create(p)),
+      expectedDimensionPayloads.map(
+        (p) => new ElideDimensionMetadataModel(this.owner.lookup('service:client-injector'), p)
+      ),
       'dimension models are normalized properly'
     );
 
     assert.deepEqual(
       columnFunctions,
-      [null, ...expectedFunctionPayloads.map((p) => this.owner.factoryFor('model:metadata/column-function').create(p))],
+      [
+        null,
+        ...expectedFunctionPayloads.map(
+          (p) => new ColumnFunctionMetadataModel(this.owner.lookup('service:client-injector'), p)
+        ),
+      ],
       'dimension column functions are normalized properly'
     );
 
@@ -1043,8 +1052,8 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
     assert.deepEqual(
       Serializer._normalizeTableTimeDimensions(timeDimensionPayload, tableId, source),
       expected.map(({ timeDimension, columnFunction }) => ({
-        timeDimension: this.owner.factoryFor('model:metadata/time-dimension').create(timeDimension),
-        columnFunction: this.owner.factoryFor('model:metadata/column-function').create(columnFunction),
+        timeDimension: new TimeDimensionMetadataModel(this.owner.lookup('service:client-injector'), timeDimension),
+        columnFunction: new ColumnFunctionMetadataModel(this.owner.lookup('service:client-injector'), columnFunction),
       })),
       'Time Dimension connection payload is normalized properly for a table'
     );

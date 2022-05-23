@@ -4,7 +4,7 @@
  */
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import { isEqual } from 'lodash-es';
-import NativeWithCreate from 'navi-data/models/native-with-create';
+import NativeWithCreate, { Injector } from 'navi-data/models/native-with-create';
 
 interface NaviDimensionModelPayload {
   dimensionColumn: DimensionColumn;
@@ -13,8 +13,8 @@ interface NaviDimensionModelPayload {
 }
 
 export default class NaviDimensionModel extends NativeWithCreate implements NaviDimensionModel {
-  constructor(owner: unknown, args: NaviDimensionModelPayload) {
-    super(owner, args);
+  constructor(injector: Injector, args: NaviDimensionModelPayload) {
+    super(injector, args);
   }
 
   /**

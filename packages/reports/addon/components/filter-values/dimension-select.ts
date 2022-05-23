@@ -5,7 +5,6 @@
 import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { action } from '@ember/object';
-import { getOwner } from '@ember/application';
 import { tracked } from '@glimmer/tracking';
 //@ts-ignore
 import { task, TaskGenerator, timeout } from 'ember-concurrency';
@@ -21,6 +20,7 @@ import type FilterFragment from 'navi-core/models/request/filter';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
+import type ClientInjector from 'navi-data/services/client-injector';
 
 const SEARCH_DEBOUNCE_MS = 250;
 const SEARCH_DEBOUNCE_OFFLINE_MS = 100;
@@ -60,6 +60,8 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
 
   @service declare naviMetadata: NaviMetadataService;
 
+  @service declare clientInjector: ClientInjector;
+
   @tracked
   searchTerm?: string;
 
@@ -84,10 +86,9 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     const { dimensionColumn } = this;
     const { values } = this.args.filter;
     if (values !== undefined) {
-      const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
       return values.map(
         (value) =>
-          new DimModelWrapper(dimensionModelFactory.create({ value, dimensionColumn }), {
+          new DimModelWrapper(new NaviDimensionModel(this.clientInjector, { value, dimensionColumn }), {
             manualInputEntry: undefined,
           })
       );
@@ -162,9 +163,8 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
       return dimensionResponseModel;
     }
 
-    const dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension');
     const value = searchTerm as string | number;
-    const manualQuery = dimensionModelFactory.create({
+    const manualQuery = new NaviDimensionModel(this.clientInjector, {
       value,
       dimensionColumn,
     });

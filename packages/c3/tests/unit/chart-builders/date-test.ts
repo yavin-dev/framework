@@ -30,7 +30,7 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
       'isoWeek'
     );
     const config = { timeGrain: 'year', metricCid: 'cid_pageViews' };
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=isoWeek)': '2016-01-04 00:00:00.000', pageViews: 2 }, // Week 1, 2016
         { 'network.dateTime(grain=isoWeek)': '2016-01-01 00:00:00.000', pageViews: 1 }, // Week 53, 2015
@@ -61,7 +61,7 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
       'day'
     );
     const config = { timeGrain: 'month', metricCid: 'cid_pageViews' };
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=day)': '2016-02-01 00:00:00.000', pageViews: 2 },
@@ -100,7 +100,7 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
       'day'
     );
     const config = { timeGrain: 'year', metricCid: 'cid_pageViews' };
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=day)': '2016-02-01 00:00:00.000', pageViews: 2 },
@@ -133,7 +133,7 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
       'month'
     );
     const config = { timeGrain: 'year', metricCid: 'cid_pageViews' };
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=month)': '2016-01-01 00:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=month)': '2016-02-01 00:00:00.000', pageViews: 2 },
@@ -171,7 +171,7 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
       'hour'
     );
     const config = { timeGrain: 'day', metricCid: 'cid_pageViews' };
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=hour)': '2016-01-01 01:00:00.000', pageViews: 1 },
         { 'network.dateTime(grain=hour)': '2016-01-02 01:00:00.000', pageViews: 2 },
@@ -208,7 +208,7 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
       'minute'
     );
     const config = { timeGrain: 'hour', metricCid: 'cid_pageViews' };
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=minute)': '2016-01-01 00:04:00.000', pageViews: 1 },
         { 'network.dateTime(grain=minute)': '2016-01-01 01:04:00.000', pageViews: 2 },
@@ -245,7 +245,7 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
       'second'
     );
     const config = { timeGrain: 'minute', metricCid: 'cid_pageViews' };
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=second)': '2016-01-01 00:00:20.000', pageViews: 1 },
         { 'network.dateTime(grain=second)': '2016-01-01 00:01:20.000', pageViews: 2 },
@@ -282,7 +282,7 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
       'day'
     );
     const config = { timeGrain: 'month', metricCid: 'cid_pageViews' };
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [{ 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', pageViews: 0 }],
     });
     const data = DateChartBuilder.buildData(response, config, request);
@@ -312,7 +312,7 @@ module('Unit | Chart Builders | Date Time', function (hooks) {
       timeGrain: 'month',
       metricCid: 'cid_pageViews',
     };
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=day)': '2016-01-01 00:00:20.000', pageViews: 1 },
         { 'network.dateTime(grain=day)': '2016-01-02 00:01:20.000', pageViews: 2 },
