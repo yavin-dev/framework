@@ -3,14 +3,18 @@ import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import type StoreService from '@ember-data/store';
+import type ClientInjector from 'navi-data/services/client-injector';
+import type { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
 
 export default class extends Route {
   @service
   declare store: StoreService;
 
-  async model() {
-    return;
-    A([
+  @service
+  declare clientInjector: ClientInjector;
+
+  async model(): Promise<VisualizationModel> {
+    return A([
       {
         request: this.store.createFragment('request', {
           columns: [
@@ -65,7 +69,7 @@ export default class extends Route {
           dataSource: 'bardOne',
           table: 'network',
         }),
-        response: NaviFactResponse.create({
+        response: new NaviFactResponse(this.clientInjector, {
           rows: [
             {
               'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',

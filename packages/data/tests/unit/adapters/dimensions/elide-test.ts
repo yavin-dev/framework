@@ -239,7 +239,7 @@ module('Unit | Adapter | Dimensions | Elide', function (hooks) {
     const suggestionColumn = 'table0.dimension1';
 
     const factDim = this.metadataService.getById('dimension', factDimColumn, 'elideTwo') as ElideDimensionMetadataModel;
-    const suggestionsDim = new ElideDimensionMetadataModel(this.owner, {
+    const suggestionsDim = new ElideDimensionMetadataModel(this.owner.lookup('service:client-injector'), {
       ...factDim,
       tableSource: {
         valueSource: lookupDimColumn,

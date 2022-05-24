@@ -5,6 +5,7 @@
 import { Grain, Grains } from '@yavin/client/utils/date';
 import TableMetadataModel, { TableMetadataPayload } from '../table';
 import { upperFirst, sortBy } from 'lodash-es';
+import type { Injector } from 'navi-data/models/native-with-create';
 
 export type TimeGrain = {
   id: Grain;
@@ -19,8 +20,8 @@ export interface BardTableMetadataPayload extends TableMetadataPayload {
 export const GrainOrdering = Object.fromEntries(Grains.map((g, i) => [g, i])) as Record<Grain, number>;
 
 export default class BardTableMetadataModel extends TableMetadataModel {
-  constructor(owner: unknown, args: BardTableMetadataPayload) {
-    super(owner, args);
+  constructor(injector: Injector, args: BardTableMetadataPayload) {
+    super(injector, args);
     this.timeGrainIds = sortBy(this.timeGrainIds, (g) => GrainOrdering[g]);
   }
 

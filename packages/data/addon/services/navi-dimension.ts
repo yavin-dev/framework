@@ -57,7 +57,10 @@ class DimensionCache extends Cache<NaviDimensionResponse> {
    * @returns {NaviDimensionResponse | undefined} the search request dimension request
    */
   getSearchFromAll(allResponse: NaviDimensionResponse, query: string): NaviDimensionResponse {
-    return SearchUtils.searchNaviDimensionRecords(A(allResponse.values), query);
+    return new NaviDimensionResponse(
+      getOwner(this),
+      SearchUtils.searchNaviDimensionRecords(A(allResponse.values), query)
+    );
   }
 
   checkDimensionCache(
@@ -153,7 +156,7 @@ export default class NaviDimensionService extends Service {
         moreResults = false;
       }
     }
-    const results = NaviDimensionResponse.create({ values });
+    const results = new NaviDimensionResponse(getOwner(this).lookup('service:client-injector'), { values });
 
     // if small, cache results
     if (dimension.columnMetadata.cardinality === CARDINALITY_SIZES[0]) {

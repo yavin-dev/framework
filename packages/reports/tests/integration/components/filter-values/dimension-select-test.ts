@@ -12,20 +12,18 @@ import config from 'ember-get-config';
 import Service from '@ember/service';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import { task, TaskGenerator } from 'ember-concurrency';
-import type NaviDimensionModel from 'navi-data/models/navi-dimension';
+import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type FilterFragment from 'navi-core/models/request/filter';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 import type { Server, Request } from 'miragejs';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import type { Factory } from 'navi-data/models/native-with-create';
 
 interface TestContext extends Context {
   server: Server;
   fragmentFactory: FragmentFactory;
   filter: FilterFragment;
   onUpdateFilter(changeSet: Partial<FilterFragment>): void;
-  dimensionModelFactory: Factory<typeof NaviDimensionModel>;
 }
 
 const HOST = config.navi.dataSources[0].uri;
@@ -51,7 +49,6 @@ module('Integration | Component | filter values/dimension select', function (hoo
     ]);
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardOne' });
     await this.owner.lookup('service:navi-metadata').loadMetadata({ dataSourceName: 'bardTwo' });
-    this.dimensionModelFactory = this.owner.factoryFor('model:navi-dimension');
   });
 
   test('it renders', async function (this: TestContext, assert) {
@@ -235,13 +232,13 @@ module('Integration | Component | filter values/dimension select', function (hoo
   test('sort is applied numerically', async function (this: TestContext, assert) {
     assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
-    const factory = this.dimensionModelFactory;
+    const { owner } = this;
 
     class MockDimensions extends Service {
       @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
         const rawValues = ['1', '3', '2', '11', '111'];
-        const values = rawValues.map((value) => factory.create({ value, dimensionColumn }));
-        return yield NaviDimensionResponse.create({ values });
+        const values = rawValues.map((value) => new NaviDimensionModel(owner, { value, dimensionColumn }));
+        return yield new NaviDimensionResponse(owner, { values });
       }
     }
 
@@ -260,13 +257,13 @@ module('Integration | Component | filter values/dimension select', function (hoo
   test('sort is applied lexicographically', async function (this: TestContext, assert) {
     assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
-    const factory = this.dimensionModelFactory;
+    const { owner } = this;
 
     class MockDimensions extends Service {
       @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
         const rawValues = ['1', '3', '2', '11', '111', 'stringvalue'];
-        const values = rawValues.map((value) => factory.create({ value, dimensionColumn }));
-        return yield NaviDimensionResponse.create({ values });
+        const values = rawValues.map((value) => new NaviDimensionModel(owner, { value, dimensionColumn }));
+        return yield new NaviDimensionResponse(owner, { values });
       }
     }
 
@@ -285,13 +282,15 @@ module('Integration | Component | filter values/dimension select', function (hoo
   test('sort is NOT applied to search', async function (this: TestContext, assert) {
     assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'property', { field: 'id' }, 'in', []);
-    const factory = this.dimensionModelFactory;
+    const { owner } = this;
 
     class MockDimensions extends Service {
       @task *search(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
         const rawValues = ['1', '3', '2', '11', '111'];
-        const values = rawValues.map((value) => factory.create({ value: `Property ${value}`, dimensionColumn }));
-        return yield NaviDimensionResponse.create({ values });
+        const values = rawValues.map(
+          (value) => new NaviDimensionModel(owner, { value: `Property ${value}`, dimensionColumn })
+        );
+        return yield new NaviDimensionResponse(owner, { values });
       }
     }
 

@@ -6,6 +6,7 @@ import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
 import type { ColumnInstance, ColumnType } from 'navi-data/models/metadata/column';
 import { Grain } from '@yavin/client/utils/date';
+import { Injector } from '../native-with-create';
 
 interface TimeDimensionGrain {
   id: Grain;
@@ -22,8 +23,8 @@ export interface TimeDimensionMetadataPayload extends DimensionMetadataPayload {
 export type TimeDimensionColumn = ColumnInstance<TimeDimensionMetadataModel>;
 
 export default class TimeDimensionMetadataModel extends DimensionMetadataModel {
-  constructor(owner: unknown, args: TimeDimensionMetadataPayload) {
-    super(owner, args);
+  constructor(injector: Injector, args: TimeDimensionMetadataPayload) {
+    super(injector, args);
   }
   metadataType: ColumnType = 'timeDimension';
 

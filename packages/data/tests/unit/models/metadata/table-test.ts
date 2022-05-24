@@ -2,12 +2,12 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import TableMetadataModel, { TableMetadataPayload } from 'navi-data/models/metadata/table';
 import type KegService from 'navi-data/services/keg';
-import type { Factory } from 'navi-data/models/native-with-create';
+import MetricMetadataModel from 'navi-data/models/metadata/metric';
+import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
+import RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
 
-let Payload: TableMetadataPayload,
-  Model: TableMetadataModel,
-  Keg: KegService,
-  TableFactory: Factory<typeof TableMetadataModel>;
+let Payload: TableMetadataPayload, Model: TableMetadataModel, Keg: KegService;
 
 module('Unit | Metadata Model | Table', function (hooks) {
   setupTest(hooks);
@@ -28,11 +28,15 @@ module('Unit | Metadata Model | Table', function (hooks) {
       tags: ['DISPLAY'],
     };
 
-    TableFactory = this.owner.factoryFor('model:metadata/table');
-    Model = TableFactory.create(Payload);
+    Model = new TableMetadataModel(this.owner.lookup('service:client-injector'), Payload);
 
     //Looking up and injecting keg into the model
     Keg = this.owner.lookup('service:keg');
+
+    const modelFactory = (Class: any) => ({
+      identifierField: 'id',
+      create: (p: object) => new Class(this.owner.lookup('service:client-injector'), p as any),
+    });
 
     Keg.push(
       'metadata/metric',
@@ -43,7 +47,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
         category: 'Page Views',
         source: 'bardOne',
       },
-      { namespace: 'bardOne' }
+      { namespace: 'bardOne', modelFactory: modelFactory(MetricMetadataModel) }
     );
     Keg.push(
       'metadata/dimension',
@@ -54,7 +58,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
         category: 'category',
         source: 'bardOne',
       },
-      { namespace: 'bardOne' }
+      { namespace: 'bardOne', modelFactory: modelFactory(DimensionMetadataModel) }
     );
     Keg.push(
       'metadata/timeDimension',
@@ -65,7 +69,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
         category: 'category',
         source: 'bardOne',
       },
-      { namespace: 'bardOne' }
+      { namespace: 'bardOne', modelFactory: modelFactory(TimeDimensionMetadataModel) }
     );
     Keg.push(
       'metadata/requestConstraint',
@@ -77,14 +81,14 @@ module('Unit | Metadata Model | Table', function (hooks) {
         constraint: {},
         source: 'bardOne',
       },
-      { namespace: 'bardOne' }
+      { namespace: 'bardOne', modelFactory: modelFactory(RequestConstraintMetadataModel) }
     );
   });
 
   test('factory has identifierField defined', function (assert) {
     assert.expect(1);
 
-    assert.equal(TableFactory.class.identifierField, 'id', 'identifierField property is set to `id`');
+    assert.equal(TableMetadataModel.identifierField, 'id', 'identifierField property is set to `id`');
   });
 
   test('it properly hydrates properties', function (assert) {

@@ -23,7 +23,7 @@ module('Unit | Component | Goal Gauge', function (hooks) {
     const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadata;
     await naviMetadata.loadMetadata();
 
-    const response = NaviFactResponse.create({
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       //prettier-ignore
       rows: [{ m1: 75 }],
     });

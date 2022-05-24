@@ -103,7 +103,7 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
     };
 
     const container = this.metadataService.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel;
-    const noSuggestions = new DimensionMetadataModel(this.owner, {
+    const noSuggestions = new DimensionMetadataModel(this.owner.lookup('service:client-injector'), {
       ...container,
       tableSource: { suggestionColumns: [] },
     });
@@ -114,7 +114,7 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
       '`normalize` dimension with no suggestion columns gives empty array'
     );
 
-    const withSuggestions = new DimensionMetadataModel(this.owner, {
+    const withSuggestions = new DimensionMetadataModel(this.owner.lookup('service:client-injector'), {
       ...container,
       tableSource: {
         suggestionColumns: [
@@ -148,7 +148,7 @@ module('Unit | Serializer | Dimensions | Bard', function (hooks) {
     const payload: FiliDimensionResponse = { rows: cloneDeep(ContainerDimValues) };
 
     const container = this.metadataService.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel;
-    const columnMetadata = new DimensionMetadataModel(this.owner, {
+    const columnMetadata = new DimensionMetadataModel(this.owner.lookup('service:client-injector'), {
       ...container,
       tableSource: {
         suggestionColumns: [

@@ -20,7 +20,8 @@ const TEMPLATE = hbs`
 
 /*eslint max-len: ["error", { "code": 250 }]*/
 
-const metricResponse = NaviFactResponse.create({
+//@ts-ignore -- skip injector
+const metricResponse = new NaviFactResponse(null, {
   //prettier-ignore
   rows: [
     { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', uniqueIdentifier: 172933788, totalPageViews: 3669828357 },
@@ -31,7 +32,8 @@ const metricResponse = NaviFactResponse.create({
   ],
 });
 
-const dimensionReponse = NaviFactResponse.create({
+//@ts-ignore -- skip injector
+const dimensionReponse = new NaviFactResponse(null, {
   //prettier-ignore
   rows: [
     { 'network.dateTime(grain=week)': '2016-02-15 00:00:00.000', 'age(field=id)': '-3', uniqueIdentifier: 155191081, totalPageViews: 3072620639 },

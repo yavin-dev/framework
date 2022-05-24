@@ -5,13 +5,11 @@ import FunctionParameterMetadataModel, {
 } from 'navi-data/models/metadata/function-parameter';
 import { setupTest } from 'ember-qunit';
 import type { TestContext } from 'ember-test-helpers';
-import type { Factory } from 'navi-data/models/native-with-create';
 import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 
 let Payload: FunctionParameterMetadataPayload;
-let FunctionParameterFactory: Factory<typeof FunctionParameterMetadataModel>;
 let FunctionParameter: FunctionParameterMetadataModel;
 
 module('Unit | Metadata Model | Function Parameter', function (hooks) {
@@ -34,8 +32,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
       defaultValue: 'USD',
     };
 
-    FunctionParameterFactory = this.owner.factoryFor('model:metadata/function-parameter');
-    FunctionParameter = FunctionParameterFactory.create(Payload);
+    FunctionParameter = new FunctionParameterMetadataModel(this.owner.lookup('service:client-injector'), Payload);
   });
 
   test('it properly hydrates properties', function (assert) {

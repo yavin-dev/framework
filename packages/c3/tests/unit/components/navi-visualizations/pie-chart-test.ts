@@ -12,6 +12,7 @@ import RequestFragment from 'navi-core/models/request';
 import { C3Row } from '@yavin/c3/chart-builders/base';
 
 let Request: RequestFragment;
+let RESPONSE: NaviFactResponse;
 
 module('Unit | Component | pie chart', function (hooks) {
   setupTest(hooks);
@@ -69,46 +70,46 @@ module('Unit | Component | pie chart', function (hooks) {
       sorts: [],
       requestVersion: '2.0',
     });
-  });
 
-  const RESPONSE = NaviFactResponse.create({
-    rows: [
-      {
-        'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
-        'age(field=id)': '-3',
-        'age(field=desc)': 'All Other',
-        uniqueIdentifier: 155191081,
-        totalPageViews: 3072620639,
-      },
-      {
-        'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
-        'age(field=id)': '1',
-        'age(field=desc)': 'under 13',
-        uniqueIdentifier: 55191081,
-        totalPageViews: 2072620639,
-      },
-      {
-        'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
-        'age(field=id)': '2',
-        'age(field=desc)': '13 - 25',
-        uniqueIdentifier: 55191081,
-        totalPageViews: 2620639,
-      },
-      {
-        'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
-        'age(field=id)': '3',
-        'age(field=desc)': '25 - 35',
-        uniqueIdentifier: 55191081,
-        totalPageViews: 72620639,
-      },
-      {
-        'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
-        'age(field=id)': '4',
-        'age(field=desc)': '35 - 45',
-        uniqueIdentifier: 55191081,
-        totalPageViews: 72620639,
-      },
-    ],
+    RESPONSE = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
+      rows: [
+        {
+          'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
+          'age(field=id)': '-3',
+          'age(field=desc)': 'All Other',
+          uniqueIdentifier: 155191081,
+          totalPageViews: 3072620639,
+        },
+        {
+          'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
+          'age(field=id)': '1',
+          'age(field=desc)': 'under 13',
+          uniqueIdentifier: 55191081,
+          totalPageViews: 2072620639,
+        },
+        {
+          'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
+          'age(field=id)': '2',
+          'age(field=desc)': '13 - 25',
+          uniqueIdentifier: 55191081,
+          totalPageViews: 2620639,
+        },
+        {
+          'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
+          'age(field=id)': '3',
+          'age(field=desc)': '25 - 35',
+          uniqueIdentifier: 55191081,
+          totalPageViews: 72620639,
+        },
+        {
+          'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
+          'age(field=id)': '4',
+          'age(field=desc)': '35 - 45',
+          uniqueIdentifier: 55191081,
+          totalPageViews: 72620639,
+        },
+      ],
+    });
   });
 
   const DIMENSION_SERIES_OPTIONS: PieChartOptions = {

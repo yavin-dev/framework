@@ -4,8 +4,8 @@
  *
  * A collection of function parameters that has a one to many relationship to columns
  */
-import NativeWithCreate, { Factory } from 'navi-data/models/native-with-create';
-import type FunctionParameter from 'navi-data/models/metadata/function-parameter';
+import NativeWithCreate, { Injector } from 'navi-data/models/native-with-create';
+import FunctionParameter from 'navi-data/models/metadata/function-parameter';
 import type { FunctionParameterMetadataPayload } from 'navi-data/models/metadata/function-parameter';
 
 export interface ColumnFunctionMetadataPayload {
@@ -17,11 +17,9 @@ export interface ColumnFunctionMetadataPayload {
 }
 
 export default class ColumnFunctionMetadataModel extends NativeWithCreate {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  constructor(owner: any, args: ColumnFunctionMetadataPayload) {
-    super(owner, args);
-    const parameterFactory = owner.factoryFor('model:metadata/function-parameter') as Factory<typeof FunctionParameter>;
-    const parameters = (this._parametersPayload || []).map((param) => parameterFactory.create(param));
+  constructor(injector: Injector, args: ColumnFunctionMetadataPayload) {
+    super(injector, args);
+    const parameters = (this._parametersPayload || []).map((param) => new FunctionParameter(injector, param));
     this.parameters = parameters;
   }
 

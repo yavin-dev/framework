@@ -11,9 +11,8 @@ import config from 'ember-get-config';
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type StoreService from '@ember-data/store';
-import { Factory } from 'navi-data/models/native-with-create';
 
-let MetadataService: NaviMetadataService, Store: StoreService, TableFactory: Factory<typeof TableMetadataModel>;
+let MetadataService: NaviMetadataService, Store: StoreService;
 
 const mockDataSourceA = {
   name: 'bardOne',
@@ -44,8 +43,6 @@ module('Integration | Component | report builder', function (hooks) {
       'helper:update-report-action',
       helper(() => () => undefined)
     );
-
-    TableFactory = this.owner.factoryFor('model:metadata/table');
 
     await MetadataService.loadMetadata({ dataSourceName: mockDataSourceA.name });
     await MetadataService.loadMetadata({ dataSourceName: mockDataSourceB.name });
@@ -78,9 +75,18 @@ module('Integration | Component | report builder', function (hooks) {
       'table',
       [
         //@ts-expect-error
-        TableFactory.create({ id: 'tableA', name: 'Table A', source: mockDataSourceA.name, isFact: true }),
+        new TableMetadataModel(this.owner.lookup('service:client-injector'), {
+          id: 'tableA',
+          name: 'Table A',
+          source: mockDataSourceA.name,
+          isFact: true,
+        }),
         //@ts-expect-error
-        TableFactory.create({ id: 'notFactTable', source: mockDataSourceA.name, isFact: false }),
+        new TableMetadataModel(this.owner.lookup('service:client-injector'), {
+          id: 'notFactTable',
+          source: mockDataSourceA.name,
+          isFact: false,
+        }),
       ],
       mockDataSourceA.name
     );
@@ -135,11 +141,25 @@ module('Integration | Component | report builder', function (hooks) {
       'table',
       [
         //@ts-expect-error
-        TableFactory.create({ id: 'tableA', name: 'Table A', source: mockDataSourceB.name, isFact: true }),
+        new TableMetadataModel(this.owner.lookup('service:client-injector'), {
+          id: 'tableA',
+          name: 'Table A',
+          source: mockDataSourceB.name,
+          isFact: true,
+        }),
         //@ts-expect-error
-        TableFactory.create({ id: 'tableB', name: 'Table B', source: mockDataSourceB.name, isFact: true }),
+        new TableMetadataModel(this.owner.lookup('service:client-injector'), {
+          id: 'tableB',
+          name: 'Table B',
+          source: mockDataSourceB.name,
+          isFact: true,
+        }),
         //@ts-expect-error
-        TableFactory.create({ id: 'notFactTable', source: mockDataSourceB.name, isFact: false }),
+        new TableMetadataModel(this.owner.lookup('service:client-injector'), {
+          id: 'notFactTable',
+          source: mockDataSourceB.name,
+          isFact: false,
+        }),
       ],
       mockDataSourceB.name
     );
@@ -193,9 +213,18 @@ module('Integration | Component | report builder', function (hooks) {
       'table',
       [
         //@ts-expect-error
-        TableFactory.create({ id: 'tableA', name: 'Table A', source: mockDataSourceA.name, isFact: true }),
+        new TableMetadataModel(this.owner.lookup('service:client-injector'), {
+          id: 'tableA',
+          name: 'Table A',
+          source: mockDataSourceA.name,
+          isFact: true,
+        }),
         //@ts-expect-error
-        TableFactory.create({ id: 'notFactTable', source: mockDataSourceA.name, isFact: false }),
+        new TableMetadataModel(this.owner.lookup('service:client-injector'), {
+          id: 'notFactTable',
+          source: mockDataSourceA.name,
+          isFact: false,
+        }),
       ],
       mockDataSourceA.name
     );
@@ -203,9 +232,19 @@ module('Integration | Component | report builder', function (hooks) {
       'table',
       [
         //@ts-expect-error
-        TableFactory.create({ id: 'tableA', name: 'Table A', source: mockDataSourceB.name, isFact: true }),
+        new TableMetadataModel(this.owner.lookup('service:client-injector'), {
+          id: 'tableA',
+          name: 'Table A',
+          source: mockDataSourceB.name,
+          isFact: true,
+        }),
         //@ts-expect-error
-        TableFactory.create({ id: 'tableB', name: 'Table B', source: mockDataSourceB.name, isFact: true }),
+        new TableMetadataModel(this.owner.lookup('service:client-injector'), {
+          id: 'tableB',
+          name: 'Table B',
+          source: mockDataSourceB.name,
+          isFact: true,
+        }),
       ],
       mockDataSourceB.name
     );

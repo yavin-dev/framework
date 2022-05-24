@@ -5,12 +5,16 @@ import { inject as service } from '@ember/service';
 import type StoreService from '@ember-data/store';
 import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type ClientInjector from 'navi-data/services/client-injector';
 export default class GoalGaugeRoute extends Route {
   @service
   declare store: StoreService;
 
   @service
   declare fragmentFactory: FragmentFactory;
+
+  @service
+  declare clientInjector: ClientInjector;
 
   async model(): Promise<VisualizationModel> {
     const column = this.fragmentFactory.createColumn('metric', 'bardOne', 'pageViews', {}, '');
@@ -23,7 +27,7 @@ export default class GoalGaugeRoute extends Route {
       dataSource: 'bardOne',
       requestVersion: '2.0',
     });
-    const response = NaviFactResponse.create({ rows: [{ pageViews: 3060000000 }] });
+    const response = new NaviFactResponse(this.clientInjector, { rows: [{ pageViews: 3060000000 }] });
 
     return A([{ response, request }]);
   }

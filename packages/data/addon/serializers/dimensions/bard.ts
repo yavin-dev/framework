@@ -7,13 +7,10 @@ import { getOwner } from '@ember/application';
 import { FiliDimensionResponse, DefaultField } from 'navi-data/adapters/dimensions/bard';
 import type NaviDimensionSerializer from './interface';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import type NaviDimensionModel from '../../models/navi-dimension';
-import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
-import type { Factory } from 'navi-data/models/native-with-create';
+import NaviDimensionModel from '../../models/navi-dimension';
+import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 
 export default class BardDimensionSerializer extends EmberObject implements NaviDimensionSerializer {
-  dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension') as Factory<typeof NaviDimensionModel>;
-  responseFactory = getOwner(this).factoryFor('model:navi-dimension-response') as Factory<typeof NaviDimensionResponse>;
   //TODO remove when https://github.com/yahoo/fili/issues/1088 lands
   private fieldMap: Record<string, string | undefined> = {
     desc: 'description',
@@ -33,19 +30,21 @@ export default class BardDimensionSerializer extends EmberObject implements Navi
     const suggestionFields = suggestionColumns.map((c) =>
       this.mapField((c.parameters?.field as string | undefined) ?? '')
     );
+    const injector = getOwner(this).lookup('service:client-injector');
 
     if (rawPayload?.rows.length) {
       const requestedField = this.mapField((dimensionColumn.parameters?.field as string | undefined) ?? DefaultField);
       const otherFields = suggestionFields.filter((f) => f !== requestedField);
-      const values = rawPayload.rows.map((row) =>
-        this.dimensionModelFactory.create({
-          dimensionColumn,
-          value: row[requestedField],
-          suggestions: otherFields.reduce((obj, field) => ({ ...obj, [field]: row[field] }), {}),
-        })
+      const values = rawPayload.rows.map(
+        (row) =>
+          new NaviDimensionModel(injector, {
+            dimensionColumn,
+            value: row[requestedField],
+            suggestions: otherFields.reduce((obj, field) => ({ ...obj, [field]: row[field] }), {}),
+          })
       );
-      return this.responseFactory.create({ values, meta: rawPayload.meta });
+      return new NaviDimensionResponse(injector, { values, meta: rawPayload.meta });
     }
-    return this.responseFactory.create();
+    return new NaviDimensionResponse(injector, { values: [] });
   }
 }

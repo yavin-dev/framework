@@ -8,9 +8,8 @@ import EmberObject from '@ember/object';
 import type { AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
-import type { Factory } from 'navi-data/models/native-with-create';
-import type NaviDimensionModel from 'navi-data/models/navi-dimension';
-import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
+import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import type { ServiceOptions } from 'navi-data/services/navi-dimension';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { getPaginationFromPageInfo } from '../facts/elide';
@@ -21,9 +20,6 @@ export type ResponseEdge = {
 };
 
 export default class ElideDimensionSerializer extends EmberObject implements NaviDimensionSerializer {
-  dimensionModelFactory = getOwner(this).factoryFor('model:navi-dimension') as Factory<typeof NaviDimensionModel>;
-  responseFactory = getOwner(this).factoryFor('model:navi-dimension-response') as Factory<typeof NaviDimensionResponse>;
-
   normalize(
     dimension: DimensionColumn,
     rawPayload?: AsyncQueryResponse,
@@ -34,29 +30,31 @@ export default class ElideDimensionSerializer extends EmberObject implements Nav
     const { tableId } = valueSource;
     assert('The tableId is defined', tableId);
 
+    const injector = getOwner(this).lookup('service:client-injector');
     if (responseStr) {
       const response = JSON.parse(responseStr);
       const { edges, pageInfo } = response.data[tableId];
-      const values = edges.map((edge: ResponseEdge) =>
-        this.dimensionModelFactory.create({
-          value: edge.node.col0,
-          suggestions: suggestionColumns.reduce(
-            (obj, col, idx) => ({
-              ...obj,
-              [canonicalizeMetric({ metric: col.id, parameters: col.parameters })]: edge.node[`col${idx + 1}`],
-            }),
-            {}
-          ),
-          dimensionColumn: dimension,
-        })
+      const values = edges.map(
+        (edge: ResponseEdge) =>
+          new NaviDimensionModel(injector, {
+            value: edge.node.col0,
+            suggestions: suggestionColumns.reduce(
+              (obj, col, idx) => ({
+                ...obj,
+                [canonicalizeMetric({ metric: col.id, parameters: col.parameters })]: edge.node[`col${idx + 1}`],
+              }),
+              {}
+            ),
+            dimensionColumn: dimension,
+          })
       );
-      return this.responseFactory.create({
+      return new NaviDimensionResponse(injector, {
         values,
         meta: {
           pagination: getPaginationFromPageInfo(pageInfo, options),
         },
       });
     }
-    return this.responseFactory.create();
+    return new NaviDimensionResponse(injector, { values: [] });
   }
 }

@@ -6,7 +6,6 @@ import NaviMetadataSerializer from './base';
 import config from 'ember-get-config';
 import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import { assert } from '@ember/debug';
-import { getOwner } from '@ember/application';
 import { upperFirst } from 'lodash-es';
 import { DataType } from 'navi-data/models/metadata/function-parameter';
 import type { FunctionParameterMetadataPayload } from 'navi-data/models/metadata/function-parameter';
@@ -21,9 +20,8 @@ import type { TimeDimensionMetadataPayload } from '../../models/metadata/time-di
 import type ColumnFunctionMetadataModel from '../../models/metadata/column-function';
 import type { ColumnFunctionMetadataPayload } from '../../models/metadata/column-function';
 import type { MetadataModelMap, EverythingMetadataPayload } from './base';
-import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
+import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 import { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
-import type { Factory } from 'navi-data/models/native-with-create';
 import type { Grain } from '@yavin/client/utils/date';
 import { TableSource } from '../../models/metadata/dimension';
 
@@ -116,12 +114,8 @@ function isPresent<T>(t: T | undefined | null | void): t is T {
 export default class ElideMetadataSerializer extends NaviMetadataSerializer {
   private namespace = 'normalizer-generated';
 
-  private elideDimensionFactory = getOwner(this).factoryFor('model:metadata/elide/dimension') as Factory<
-    typeof ElideDimensionMetadataModel
-  >;
-
   protected createDimensionModel(payload: ElideDimensionMetadataPayload): DimensionMetadataModel {
-    return this.elideDimensionFactory.create(payload);
+    return new ElideDimensionMetadataModel(this.clientInjector, payload);
   }
 
   /**

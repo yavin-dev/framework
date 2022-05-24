@@ -4,7 +4,7 @@
  *
  * A collection of function parameters that has a one to many relationship to columns
  */
-import NativeWithCreate from 'navi-data/models/native-with-create';
+import NativeWithCreate, { Injector } from 'navi-data/models/native-with-create';
 import { RequestV2 } from 'navi-data/adapters/facts/interface';
 import { matches } from 'lodash-es';
 
@@ -26,8 +26,8 @@ export interface RequestConstraintMetadataPayload {
 }
 
 export default class RequestConstraintMetadataModel extends NativeWithCreate {
-  constructor(owner: unknown, args: RequestConstraintMetadataPayload) {
-    super(owner, args);
+  constructor(injector: Injector, args: RequestConstraintMetadataPayload) {
+    super(injector, args);
   }
   declare id: string;
   declare name: string;

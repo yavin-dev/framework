@@ -53,7 +53,13 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
     this.set(
       'model',
       arr([
-        { request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 3030000000 }], meta: {} }) },
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
+            rows: [{ pageViews: 3030000000 }],
+            meta: {},
+          }),
+        },
       ])
     );
   });
@@ -103,7 +109,14 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
 
     this.set(
       'model',
-      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ available: 3030000000 }] }) }])
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
+            rows: [{ available: 3030000000 }],
+          }),
+        },
+      ])
     );
     await render(TEMPLATE);
 
@@ -130,7 +143,14 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
 
     this.set(
       'model',
-      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ available: 3030000000 }] }) }])
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
+            rows: [{ available: 3030000000 }],
+          }),
+        },
+      ])
     );
     await render(TEMPLATE);
 
@@ -142,7 +162,12 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
 
     this.set(
       'model',
-      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 75 }] }) }])
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [{ pageViews: 75 }] }),
+        },
+      ])
     );
     this.set('options', { metricCid: 'cid_pageViews', baselineValue: 50, goalValue: 100, unit: '%' });
     await render(TEMPLATE);
@@ -163,7 +188,12 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
   test('goal-gauge renders correctly with prefix', async function (this: TestContext, assert) {
     this.set(
       'model',
-      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ pageViews: 75 }] }) }])
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [{ pageViews: 75 }] }),
+        },
+      ])
     );
     this.set('options', { metricCid: 'cid_pageViews', baselineValue: 50, goalValue: 100, prefix: '$' });
     await render(TEMPLATE);
@@ -204,16 +234,40 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
       requestVersion: '2.0',
     });
 
-    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 150 }] }) }]));
+    this.set(
+      'model',
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [{ m1: 150 }] }),
+        },
+      ])
+    );
     this.options = { metricCid: 'cid_m1', baselineValue: 100, goalValue: 200 };
     await render(TEMPLATE);
     assert.ok(!!findAll('.value-title.pos').length, 'pos class is added when actualValue is above baselineValue');
 
-    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 50 }] }) }]));
+    this.set(
+      'model',
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [{ m1: 50 }] }),
+        },
+      ])
+    );
     await render(TEMPLATE);
     assert.ok(!!findAll('.value-title.neg').length, 'neg class is added when actualValue is below baselineValue');
 
-    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 100 }] }) }]));
+    this.set(
+      'model',
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [{ m1: 100 }] }),
+        },
+      ])
+    );
     await render(TEMPLATE);
     assert.ok(!!findAll('.value-title.neg').length, 'neg class is added when actualValue equals baselineValue');
   });
@@ -248,7 +302,12 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
     this.set(
       'model',
       arr([
-        { request: this.request, response: NaviFactResponse.create({ rows: [{ 'revenue(currency=USD)': '300' }] }) },
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
+            rows: [{ 'revenue(currency=USD)': '300' }],
+          }),
+        },
       ])
     );
 
@@ -292,7 +351,15 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
       goalValue: 1234567,
       metricCid: 'cid_m1',
     });
-    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 1234567 }] }) }]));
+    this.set(
+      'model',
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [{ m1: 1234567 }] }),
+        },
+      ])
+    );
 
     await render(TEMPLATE);
 
@@ -309,7 +376,12 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
     });
     this.set(
       'model',
-      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 9123456789 }] }) }])
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [{ m1: 9123456789 }] }),
+        },
+      ])
     );
     await render(TEMPLATE);
 
@@ -349,7 +421,12 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
     });
     this.set(
       'model',
-      arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ revenue: '75' }] }) }])
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [{ revenue: '75' }] }),
+        },
+      ])
     );
     await render(TEMPLATE);
     assert.dom('.metric-title').hasText('A real good metric', 'custom metric title is correctly displayed');
@@ -377,7 +454,15 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
       dataSource: 'bardOne',
       requestVersion: '2.0',
     });
-    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 75 }] }) }]));
+    this.set(
+      'model',
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [{ m1: 75 }] }),
+        },
+      ])
+    );
     this.set('options', {
       baselineValue: 50,
       goalValue: 100,
@@ -406,7 +491,15 @@ module('Integration | Component | navi-visualization/goal gauge ', function (hoo
       dataSource: 'bardOne',
       requestVersion: '2.0',
     });
-    this.set('model', arr([{ request: this.request, response: NaviFactResponse.create({ rows: [{ m1: 75 }] }) }]));
+    this.set(
+      'model',
+      arr([
+        {
+          request: this.request,
+          response: new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: [{ m1: 75 }] }),
+        },
+      ])
+    );
     this.set('options', {
       baselineValue: 0,
       goalValue: 1,

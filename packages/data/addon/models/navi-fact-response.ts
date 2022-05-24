@@ -2,7 +2,7 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import NativeWithCreate from 'navi-data/models/native-with-create';
+import NativeWithCreate, { Injector } from 'navi-data/models/native-with-create';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import moment, { Moment, MomentInput } from 'moment';
 import Interval from '@yavin/client/utils/classes/interval';
@@ -20,8 +20,8 @@ interface NaviFactResponsePayload {
 }
 
 export default class NaviFactResponse extends NativeWithCreate implements ResponseV1 {
-  constructor(owner: unknown, args: NaviFactResponsePayload) {
-    super(owner, args);
+  constructor(injector: Injector, args: NaviFactResponsePayload) {
+    super(injector, args);
     this.rows = this.rows ?? [];
     this.meta = this.meta ?? {};
   }

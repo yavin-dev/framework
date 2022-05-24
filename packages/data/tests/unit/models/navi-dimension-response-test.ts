@@ -1,16 +1,13 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
-import type { Factory } from 'navi-data/models/native-with-create';
+import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 
 module('Unit | Model | navi dimension response', function (hooks) {
   setupTest(hooks);
 
   test('it exists', function (assert) {
-    const responseFactory = this.owner.factoryFor('model:navi-dimension-response') as Factory<
-      typeof NaviDimensionResponse
-    >;
-    const response = responseFactory.create();
+    //@ts-expect-error
+    const response = new NaviDimensionResponse(this.owner.lookup('service:client-injector'), undefined);
     assert.deepEqual(response.values, [], 'Stores dimension values');
     assert.deepEqual(response.meta, {}, 'Stores meta information');
   });

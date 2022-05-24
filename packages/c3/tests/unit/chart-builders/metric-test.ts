@@ -19,7 +19,8 @@ interface TestContext extends Context {
   store: StoreService;
 }
 
-const DATA = NaviFactResponse.create({
+//@ts-ignore - skip injector
+const DATA = new NaviFactResponse(null, {
   rows: [
     {
       'network.dateTime(grain=day)': '2016-05-30 00:00:00.000',
@@ -141,7 +142,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
       { start: '2016-06-01 00:00:00.000', end: '2016-06-10 00:00:00.000' },
       'day'
     );
-    const data = NaviFactResponse.create({
+    const data = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=day)': '2016-06-03 00:00:00.000', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=day)': '2016-06-05 00:00:00.000', totalPageViews: 3669823211 },
@@ -186,7 +187,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
       { start: '2016-05-31 00:00:00.000', end: '2016-05-31 02:00:00.000' },
       'hour'
     );
-    const data = NaviFactResponse.create({
+    const data = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=hour)': '2016-05-31 00:00:00.000', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=hour)': '2016-05-31 01:00:00.000', totalPageViews: 4088487125 },
@@ -223,7 +224,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
       { start: '2016-12-01 00:00:00.000', end: '2017-02-01 01:00:00.000' },
       'month'
     );
-    const data = NaviFactResponse.create({
+    const data = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         { 'network.dateTime(grain=month)': '2016-12-01 00:00:00.000', totalPageViews: 3669828357 },
         { 'network.dateTime(grain=month)': '2017-01-01 00:00:00.000', totalPageViews: 4088487125 },
@@ -260,7 +261,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
       { start: '2016-06-02 00:00:00.000', end: '2016-06-03 00:00:00.000' },
       'day'
     );
-    const data = NaviFactResponse.create({
+    const data = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [{ 'network.dateTime(grain=day)': '2016-06-02 00:00:00.000', totalPageViews: 0 }],
     });
 
@@ -296,7 +297,7 @@ module('Unit | Chart Builders | Metric', function (hooks) {
       table: 'network',
     });
 
-    const data = NaviFactResponse.create({
+    const data = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [{ pageViews: 10, uniqueIdentifier: 22 }],
     });
 

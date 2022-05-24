@@ -29,7 +29,7 @@ module('Unit | Model | navi fact response', function (hooks) {
     const rows = [{ 'table1.eventTimeDay': '2014-04-02 00:00:00.000' }];
     const meta = {};
 
-    const response = NaviFactResponse.create({ rows, meta });
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows, meta });
     assert.equal(rows, response.rows, '`NaviFactResponse` can be hydrated with `rows`');
     assert.equal(meta, response.meta, '`NaviFactResponse` can be hydrated with `meta`');
   });
@@ -40,7 +40,7 @@ module('Unit | Model | navi fact response', function (hooks) {
       { 'table1.eventTimeDay': '2014-04-03 00:00:00.000', 'table1.eventTimeMonth': '2014-04-01 00:00:00.000' },
       { 'table1.eventTimeDay': '2014-04-04 00:00:00.000', 'table1.eventTimeMonth': '2014-04-01 00:00:00.000' },
     ];
-    const response = NaviFactResponse.create({ rows });
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows });
 
     const dayColumnMetadata = this.metadataService.getById(
       'timeDimension',
@@ -77,7 +77,7 @@ module('Unit | Model | navi fact response', function (hooks) {
       { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
       { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
     ];
-    const response = NaviFactResponse.create({ rows });
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows });
     const columnMetadata = this.metadataService.getById(
       'timeDimension',
       'table1.eventTimeDay',
@@ -96,7 +96,7 @@ module('Unit | Model | navi fact response', function (hooks) {
       { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
       { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
     ];
-    const response = NaviFactResponse.create({ rows });
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows });
     const columnMetadata = this.metadataService.getById(
       'timeDimension',
       'table1.eventTimeDay',
@@ -111,7 +111,7 @@ module('Unit | Model | navi fact response', function (hooks) {
 
   test('getMaxTimeDimension/getMinTimeDimension - empty rows', function (this: TestContext, assert) {
     const rows: ResponseV1['rows'] = [];
-    const response = NaviFactResponse.create({ rows });
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows });
     const columnMetadata = this.metadataService.getById(
       'timeDimension',
       'table1.eventTimeDay',
@@ -130,7 +130,7 @@ module('Unit | Model | navi fact response', function (hooks) {
       { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
       { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
     ];
-    const response = NaviFactResponse.create({ rows });
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows });
     const columnMetadata = this.metadataService.getById(
       'timeDimension',
       'table1.eventTimeMonth',
@@ -155,7 +155,7 @@ module('Unit | Model | navi fact response', function (hooks) {
       { 'table1.eventTimeDay': null },
       { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
     ];
-    const maxResponse = NaviFactResponse.create({ rows: maxRows });
+    const maxResponse = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: maxRows });
     const max = maxResponse.getMaxTimeDimension({ columnMetadata });
     assert.ok(
       moment.parseZone(maxRows[2]['table1.eventTimeDay']).isSame(max),
@@ -167,7 +167,7 @@ module('Unit | Model | navi fact response', function (hooks) {
       { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
       { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
     ];
-    const minResponse = NaviFactResponse.create({ rows: minRows });
+    const minResponse = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows: minRows });
 
     const min = minResponse.getMinTimeDimension({ columnMetadata });
     assert.ok(
@@ -188,7 +188,7 @@ module('Unit | Model | navi fact response', function (hooks) {
       { 'table1.eventTimeDay': 'not-a-date' },
       { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
     ];
-    const response = NaviFactResponse.create({ rows });
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows });
     const max = response.getMaxTimeDimension({ columnMetadata });
     assert.strictEqual(null, max, '`getMaxTimeDimension` returns null when encountering an invalid date');
 
@@ -211,7 +211,7 @@ module('Unit | Model | navi fact response', function (hooks) {
       { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
       { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
     ];
-    const response = NaviFactResponse.create({ rows });
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows });
     const interval = response.getIntervalForTimeDimension({ columnMetadata });
     assert.deepEqual(
       interval?.asStrings(),
@@ -229,7 +229,7 @@ module('Unit | Model | navi fact response', function (hooks) {
       { 'table1.eventTimeDay': '2014-04-03 00:00:00.000' },
       { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
     ];
-    const response = NaviFactResponse.create({ rows });
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows });
     const columnMetadata = this.metadataService.getById(
       'timeDimension',
       'table1.eventTimeMonth',
@@ -247,7 +247,7 @@ module('Unit | Model | navi fact response', function (hooks) {
     ) as TimeDimensionMetadataModel;
 
     const rows: ResponseV1['rows'] = [];
-    const response = NaviFactResponse.create({ rows });
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows });
     const interval = response.getIntervalForTimeDimension({ columnMetadata });
     assert.strictEqual(interval, null, '`getIntervalForTimeDimension` returns null for an empty response');
   });
@@ -264,7 +264,7 @@ module('Unit | Model | navi fact response', function (hooks) {
       { 'table1.eventTimeDay': 'not-a-date' },
       { 'table1.eventTimeDay': '2014-04-04 00:00:00.000' },
     ];
-    const response = NaviFactResponse.create({ rows });
+    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), { rows });
     const interval = response.getIntervalForTimeDimension({ columnMetadata });
     assert.strictEqual(interval, null, '`getIntervalForTimeDimension` returns null when encountering an invalid date');
   });

@@ -7,6 +7,7 @@ import type { ColumnInstance, ColumnMetadataPayload, ColumnType } from 'navi-dat
 import type { Cardinality } from '@yavin/client/utils/enums/cardinality-sizes';
 import type { Parameters } from 'navi-data/adapters/facts/interface';
 import { ValueSourceType } from './elide/dimension';
+import { Injector } from '../native-with-create';
 
 interface Field {
   name: string;
@@ -34,8 +35,8 @@ export type DimensionColumn = ColumnInstance<DimensionMetadataModel>;
 export default class DimensionMetadataModel extends ColumnMetadataModel {
   static identifierField = 'id';
 
-  constructor(owner: unknown, args: DimensionMetadataPayload) {
-    super(owner, args);
+  constructor(injector: Injector, args: DimensionMetadataPayload) {
+    super(injector, args);
   }
 
   metadataType: ColumnType = 'dimension';

@@ -84,7 +84,7 @@ module('Integration | Component | pie chart', function (hooks) {
     MetadataService = this.owner.lookup('service:navi-metadata');
     await MetadataService.loadMetadata();
     Request = this.owner.lookup('service:store').createFragment('request', RequestJSON);
-    Response = NaviFactResponse.create({
+    Response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
       rows: [
         {
           'network.dateTime(grain=day)': '2015-12-14 00:00:00.000',
@@ -440,7 +440,7 @@ module('Integration | Component | pie chart', function (hooks) {
         filters: newFilters,
         dataSource: 'bardTwo',
       }),
-      response: NaviFactResponse.create({
+      response: new NaviFactResponse(this.owner.lookup('service:client-injector'), {
         rows: [
           {
             'inventory.dateTime(grain=day)': '2015-12-14 00:00:00.000',

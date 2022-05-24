@@ -6,6 +6,7 @@
  */
 
 import EmberObject from '@ember/object';
+import { getOwner } from '@ember/application';
 import NaviFactSerializer, { ResponseV1 } from './interface';
 import {
   AsyncQueryResponse,
@@ -86,7 +87,7 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
       }
     }
 
-    return NaviFactResponse.create({
+    return new NaviFactResponse(getOwner(this).lookup('service:client-injector'), {
       rows,
       meta: {
         pagination: getPaginationFromPageInfo(pageInfo, options),

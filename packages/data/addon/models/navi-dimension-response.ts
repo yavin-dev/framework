@@ -2,7 +2,7 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import NativeWithCreate from 'navi-data/models/native-with-create';
+import NativeWithCreate, { Injector } from 'navi-data/models/native-with-create';
 import type NaviDimensionModel from 'navi-data/models/navi-dimension';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 
@@ -12,8 +12,8 @@ interface NaviDimensionResponsePayload {
 }
 
 export default class NaviDimensionResponse extends NativeWithCreate {
-  constructor(owner: unknown, args: NaviDimensionResponsePayload) {
-    super(owner, args);
+  constructor(injector: Injector, args: NaviDimensionResponsePayload) {
+    super(injector, args);
     this.values = this.values ?? [];
     this.meta = this.meta ?? {};
   }
