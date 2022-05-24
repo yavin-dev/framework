@@ -46,7 +46,7 @@ module('Acceptance | Add New Widget', function (hooks) {
 
     assert.equal(
       currentURL(),
-      '/dashboards/1/view?lastAddedWidgetId=14',
+      `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
       'visiting dashboards/1/widgets/add route redirects to dashboards/1/view'
     );
 
