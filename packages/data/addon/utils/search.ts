@@ -23,11 +23,28 @@ import { sortBy } from 'lodash-es';
 export function getPartialMatchWeight(string: string, query: string): number | undefined {
   // Split search query into individual words
   let searchTokens = w(query.trim()),
+    origString = string,
+    stringTokens = w(string),
     allTokensFound = true;
+
+  // ignore special characters unless query also contains them
+  const specChar = new RegExp(/[^\w\s]/gi);
+  if (!specChar.test(query)) {
+    origString = origString.replaceAll(specChar, '');
+    stringTokens = stringTokens.map((token) => token.replaceAll(specChar, ''));
+  }
 
   // Check that all words in the search query can be found in the given string
   for (let i = 0; i < searchTokens.length; i++) {
     if (string.indexOf(searchTokens[i]) === -1) {
+      allTokensFound = false;
+      break;
+      // Remove matched tokens from string as they have already matched
+    } else if (stringTokens.includes(searchTokens[i])) {
+      string = string.replace(searchTokens[i], '');
+      // Partial match of a token must start with the search-token
+      // (avoid age matching language)
+    } else if (stringTokens.every((token) => !token.startsWith(searchTokens[i]))) {
       allTokensFound = false;
       break;
     }
@@ -35,7 +52,7 @@ export function getPartialMatchWeight(string: string, query: string): number | u
 
   if (allTokensFound) {
     // Compute match weight
-    return string.length - query.trim().length + 1;
+    return origString.length - query.trim().length + 1;
   }
 
   // Undefined weight if no match at all
