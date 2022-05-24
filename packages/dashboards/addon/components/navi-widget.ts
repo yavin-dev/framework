@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -8,46 +8,47 @@
  *     @taskInstance={{taskInstance}}
  *     @layoutOptions={{layoutObject}}
  *     @canEdit={{true}}
+ *     @isLastAdded={{true}}
+ *     @index={{index}}
  *   />
  */
-import Component from '@ember/component';
+import Component from '@glimmer/component';
 import { A as arr } from '@ember/array';
-import { computed } from '@ember/object';
-import layout from '../templates/components/navi-widget';
-import { layout as templateLayout, tagName } from '@ember-decorators/component';
+import { action } from '@ember/object';
+import { assert } from '@ember/debug';
+import type EmberArray from '@ember/array';
+import type DashboardWidget from 'navi-core/models/dashboard-widget';
+import type LayoutFragment from 'navi-core/models/fragments/layout';
+import type {
+  FilterError,
+  NaviFactsWithRequestFragment,
+  WidgetData,
+  WidgetDataTask,
+} from 'navi-dashboards/services/dashboard-data';
 
-@templateLayout(layout)
-@tagName('')
-export default class NaviWidget extends Component {
+interface NaviWidgetArgs {
+  model: DashboardWidget;
+  layoutOptions: LayoutFragment;
+  taskInstance: WidgetDataTask;
+  canEdit: boolean;
+  isLastAdded?: boolean;
+  index?: number;
+}
+
+export default class NaviWidget extends Component<NaviWidgetArgs> {
   /**
    * @property {String} visualizationPrefix - prefix for all visualizations types
    */
   visualizationPrefix = 'navi-visualizations/';
 
   /**
-   * @property {Object} model - widget model
-   */
-  model = undefined;
-
-  /**
-   * @property {TaskInstance} taskInstance - data task instance
-   */
-  taskInstance = undefined;
-
-  /**
-   * @property {Object} layoutOptions - layout for dashboard presentation
-   */
-  layoutOptions = undefined;
-
-  /**
    * @property {Object} options - object for grid-stack-item
    */
-  @computed('layoutOptions.@each.{width,height,row,column,widgetId}', 'model.id')
   get options() {
     const {
       layoutOptions: layout,
       model: { id },
-    } = this;
+    } = this.args;
 
     if (layout) {
       // Map layout to gridstack options
@@ -61,9 +62,8 @@ export default class NaviWidget extends Component {
   /**
    * @property {Boolean} isLoading - whether widget data is loading
    */
-  @computed('taskInstance.isRunning')
   get isLoading() {
-    const { taskInstance } = this;
+    const { taskInstance } = this.args;
 
     return !taskInstance || taskInstance.isRunning;
   }
@@ -71,10 +71,10 @@ export default class NaviWidget extends Component {
   /**
    * @property {String} filterErrors - Error messaging for filters that couldn't be applied to the widget
    */
-  @computed('data.firstObject.response.meta.errors')
   get filterErrors() {
+    //@ts-ignore
     const filterErrors = this.data?.firstObject?.response?.meta?.errors ?? [];
-    const filterErrorMessages = filterErrors
+    const filterErrorMessages = (filterErrors as FilterError[])
       .filter((e) => e.title === 'Invalid Filter')
       .map((e) => e.detail)
       .join('\n');
@@ -85,10 +85,15 @@ export default class NaviWidget extends Component {
   /**
    * @property {EmberArray|Null} data - widget data
    */
-  @computed('taskInstance.{isSuccessful,value}')
-  get data() {
-    const { isSuccessful, value } = this.taskInstance || {};
+  get data(): EmberArray<NaviFactsWithRequestFragment> | null {
+    const { isSuccessful, value } = this.args.taskInstance || {};
+    return isSuccessful ? arr(value as WidgetData) : null;
+  }
 
-    return isSuccessful ? arr(value) : null;
+  @action
+  scrollContainerToBottom(element: HTMLElement) {
+    const containerElement = element.closest('.navi-dashboard__widgets');
+    assert('Component should have a container', containerElement);
+    containerElement.scrollTop = containerElement.scrollHeight;
   }
 }

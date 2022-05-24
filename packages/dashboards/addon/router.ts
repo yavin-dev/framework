@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -17,6 +17,7 @@ export function dashboardRoutes(router: RouterDSL) {
         this.route('add');
         this.route('new');
         this.route('widget', { path: '/:widget_id' }, function () {
+          this.route('clone');
           this.route('clone-to-report');
           this.route('edit');
           this.route('view');

@@ -34,7 +34,9 @@ export default class DashboardsDashboardWidgetsAddRoute extends Route {
         widget.set('dashboard', dashboard);
         await widget.save();
         const { layout } = dashboard.presentation;
-        this._addToLayout(layout, Number(widget.id));
+        const widgetId = Number(widget.id);
+        this._addToLayout(layout, widgetId);
+        return widgetId;
       } else {
         return reject('Unable to find unsaved widget');
       }
@@ -46,9 +48,13 @@ export default class DashboardsDashboardWidgetsAddRoute extends Route {
    * Transitions to dashboard
    * @override
    */
-  afterModel(): Transition {
+  afterModel(widgetId: number): Transition {
     const dashboard = this.modelFor('dashboards.dashboard') as ModelFrom<DashboardsDashboardRoute>;
-    return this.replaceWith('dashboards.dashboard', dashboard.id);
+    return this.transitionTo('dashboards.dashboard', dashboard.id, {
+      queryParams: {
+        lastAddedWidgetId: widgetId,
+      },
+    });
   }
 
   /**

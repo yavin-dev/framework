@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { inject as service } from '@ember/service';
@@ -9,7 +9,7 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import type DashboardModel from 'navi-core/models/dashboard';
 import type DashboardDataService from 'navi-dashboards/services/dashboard-data';
-import type { WidgetRequests } from 'navi-dashboards/services/dashboard-data';
+import type { WidgetDataTaskByWidgetId } from 'navi-dashboards/services/dashboard-data';
 import type { Filter } from 'navi-data/adapters/facts/interface';
 import type CompressionService from 'navi-core/services/compression';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
@@ -41,7 +41,7 @@ export default class DashboardsDashboardViewRoute extends Route {
   /**
    * stores most recent widget data
    */
-  @tracked _widgetDataCache: WidgetRequests | null = null;
+  @tracked _widgetDataCache: WidgetDataTaskByWidgetId | null = null;
 
   /**
    * any time the filters query params changes, rerun the model hook
@@ -168,6 +168,16 @@ export default class DashboardsDashboardViewRoute extends Route {
     this.controller.set('filters', null);
 
     this._widgetDataCache = null;
+  }
+
+  /**
+   * @override
+   * @param controller
+   */
+  resetController(controller: DashboardsDashboardViewController, isExiting: boolean) {
+    if (isExiting) {
+      controller.set('lastAddedWidgetId', null);
+    }
   }
 
   @action
