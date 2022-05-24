@@ -8,7 +8,6 @@ import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { get } from '@ember/object';
 import { A } from '@ember/array';
-import find from '@ember/test-helpers/dom/find';
 
 module('Integration | Component | navi dashboard', function (hooks) {
   setupRenderingTest(hooks);
