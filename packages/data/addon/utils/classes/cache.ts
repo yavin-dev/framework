@@ -80,7 +80,12 @@ export default class Cache<T> {
    * @returns {boolean} boolean indicating presence of given key in cache
    */
   has(cacheKey: string): boolean {
-    this._removeStaleItems();
+    // if item is stale, remove it
+    const item = this._cache.get(cacheKey);
+    if (item && Date.now() - item.creationTime >= this._cacheTimeout) {
+      this._cache.delete(cacheKey);
+    }
+
     return this._cache.has(cacheKey);
   }
 
