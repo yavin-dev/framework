@@ -155,7 +155,6 @@ export default class Interval {
     const period = getPeriodForGrain(grain);
 
     let { start, end } = this._asMoments(period);
-    invariant(end, 'when making the end of an interval exclusive, the end should exist');
     end.startOf(grain).add(1, period);
 
     return new Interval(start, end);
