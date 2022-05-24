@@ -31,6 +31,17 @@ export default class Cache<T> {
   }
 
   /**
+   * checks if an item was created too long ago, if so removes it from the cache
+   * @param cacheKey - the unique identifier you're checking the age of
+   */
+  private _removeStaleItem(cacheKey: string): void {
+    const item = this._cache.get(cacheKey);
+    if (item && Date.now() - item.creationTime >= this._cacheTimeout) {
+      this._cache.delete(cacheKey);
+    }
+  }
+
+  /**
    * removes items that were created too long ago from the cache
    */
   private _removeStaleItems(): void {
@@ -44,27 +55,19 @@ export default class Cache<T> {
   }
 
   /**
-   * makes space for a given cacheKey by removing the least recently accessed item if cache is at max size
-   * @param {string} cacheKey - the unique identifier you want to make space for in the cache
-   * @returns {number} the number of items removed from the cache
+   * removes the least recently accessed item in the cache
    */
-  private _makeSpaceFor(cacheKey: string): number {
+  private _removeLRU(): void {
     const cache = this._cache;
-    let removedCount = 0;
-    if (!cache.has(cacheKey) && cache.size === this._maxCacheSize) {
-      let oldestDate = Date.now();
-      let oldestKey = '';
-      cache.forEach((value: CacheRecord<T>, key: string) => {
-        if (value.lastAccessed < oldestDate) {
-          oldestDate = value.lastAccessed;
-          oldestKey = key;
-        }
-      });
-      cache.delete(oldestKey);
-
-      removedCount = removedCount + 1;
-    }
-    return removedCount;
+    let oldestDate = Date.now();
+    let oldestKey = '';
+    cache.forEach((value: CacheRecord<T>, key: string) => {
+      if (value.lastAccessed < oldestDate) {
+        oldestDate = value.lastAccessed;
+        oldestKey = key;
+      }
+    });
+    cache.delete(oldestKey);
   }
 
   /**
@@ -80,12 +83,7 @@ export default class Cache<T> {
    * @returns {boolean} boolean indicating presence of given key in cache
    */
   has(cacheKey: string): boolean {
-    // if item is stale, remove it
-    const item = this._cache.get(cacheKey);
-    if (item && Date.now() - item.creationTime >= this._cacheTimeout) {
-      this._cache.delete(cacheKey);
-    }
-
+    this._removeStaleItem(cacheKey);
     return this._cache.has(cacheKey);
   }
 
@@ -96,13 +94,24 @@ export default class Cache<T> {
    * @returns void
    */
   setItem(cacheKey: string, records: T): void {
-    this._removeStaleItems();
     if (!cacheKey) {
       return;
     }
 
-    this._makeSpaceFor(cacheKey);
+    // if there's already in entry with this cacheKey, remove it
+    this.removeItem(cacheKey);
+
+    // if the cache is at max capacity, remove stale items first
     const cache = this._cache;
+    if (cache.size >= this._maxCacheSize) {
+      this._removeStaleItems();
+    }
+
+    // if the cache is still at max capacity, then remove least recently used item
+    if (cache.size >= this._maxCacheSize) {
+      this._removeLRU();
+    }
+
     cache.set(cacheKey, { creationTime: Date.now(), lastAccessed: Date.now(), records });
   }
 
@@ -114,10 +123,12 @@ export default class Cache<T> {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   getItem(cacheKey: string, fallbackFn?: (args?: any) => T): T | undefined {
-    this._removeStaleItems();
     if (!cacheKey) {
       return;
     }
+
+    // if the item is stale, remove it
+    this._removeStaleItem(cacheKey);
 
     const cache = this._cache;
     let cacheResponse = cache.get(cacheKey);
