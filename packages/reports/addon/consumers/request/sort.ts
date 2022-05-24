@@ -10,7 +10,7 @@ import { isEqual } from 'lodash-es';
 import Route from '@ember/routing/route';
 import ColumnFragment from 'navi-core/models/request/column';
 import ReportModel from 'navi-core/models/report';
-import { SortDirection } from 'navi-data/adapters/facts/interface';
+import { SortDirection } from '@yavin/client/request';
 import Base, { ColumnMetadataModels } from 'navi-core/models/request/base';
 import { ColumnType } from 'navi-data/models/metadata/column';
 

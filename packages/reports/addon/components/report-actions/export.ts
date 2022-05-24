@@ -10,7 +10,7 @@ import { taskFor } from 'ember-concurrency-ts';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
 import type ReportModel from 'navi-core/models/report';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import { RequestV2 } from '@yavin/client/request';
 import Ember from 'ember';
 import { dasherize } from '@ember/string';
 import moment from 'moment';

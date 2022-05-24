@@ -10,7 +10,7 @@ import { tracked } from '@glimmer/tracking';
 import type DashboardModel from 'navi-core/models/dashboard';
 import type DashboardDataService from 'navi-dashboards/services/dashboard-data';
 import type { WidgetRequests } from 'navi-dashboards/services/dashboard-data';
-import type { Filter } from 'navi-data/adapters/facts/interface';
+import type { Filter } from '@yavin/client/request';
 import type CompressionService from 'navi-core/services/compression';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';

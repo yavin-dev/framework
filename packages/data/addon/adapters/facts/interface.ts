@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import type { TaskGenerator } from 'ember-concurrency';
-import type { ColumnType } from 'navi-data/models/metadata/column';
+import type { Request } from '@yavin/client/request';
 
 export type RequestOptions = {
   clientId?: string;
@@ -17,69 +17,6 @@ export type RequestOptions = {
   queryParams?: Record<string, string | number>;
   dataSourceName?: string;
   fileName?: string;
-};
-
-export type FilterOperator =
-  | 'eq'
-  | 'neq'
-  | 'ini'
-  | 'in'
-  | 'notin'
-  | 'lt'
-  | 'lte'
-  | 'gt'
-  | 'gte'
-  | 'isnull'
-  | 'bet'
-  | 'nbet'
-  | 'contains'
-  | 'intervals';
-
-export const SORT_DIRECTIONS = <const>['desc', 'asc'];
-
-export type Parameters = Record<string, ParameterValue>;
-export type ParameterValue = string | number | boolean;
-
-export type SortDirection = typeof SORT_DIRECTIONS[number];
-
-export type Column = {
-  cid?: string;
-  field: string;
-  parameters: Parameters;
-  type: ColumnType;
-  alias?: string | null;
-};
-
-export type Filter = {
-  field: string;
-  parameters: Parameters;
-  type: ColumnType;
-  operator: FilterOperator;
-  values: (string | number | boolean)[];
-};
-
-export type Sort = {
-  field: string;
-  parameters: Parameters;
-  type: ColumnType;
-  direction: SortDirection;
-};
-
-export type Rollup = {
-  columnCids: string[];
-  grandTotal: boolean;
-};
-
-// TODO: Remove V2 once V1 is no longer in use
-export type RequestV2 = {
-  filters: Filter[];
-  columns: Column[];
-  table: string;
-  dataSource: string;
-  rollup?: Rollup;
-  sorts: Sort[];
-  limit?: number | null;
-  requestVersion: '2.0';
 };
 
 export enum QueryStatus {
@@ -147,7 +84,7 @@ export interface TableExportResult {
   message: string;
 }
 export default interface NaviFactAdapter {
-  fetchDataForRequest(request: RequestV2, options: RequestOptions): TaskGenerator<unknown>;
-  urlForFindQuery(request: RequestV2, options: RequestOptions): string;
-  urlForDownloadQuery(request: RequestV2, options: RequestOptions): TaskGenerator<string>;
+  fetchDataForRequest(request: Request, options: RequestOptions): TaskGenerator<unknown>;
+  urlForFindQuery(request: Request, options: RequestOptions): string;
+  urlForDownloadQuery(request: Request, options: RequestOptions): TaskGenerator<string>;
 }

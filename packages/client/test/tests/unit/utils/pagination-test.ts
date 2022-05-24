@@ -1,7 +1,7 @@
-import { getPaginatedRecords } from 'navi-core/utils/pagination';
+import { getPaginatedRecords } from '@yavin/client/utils/pagination';
 import { module, test } from 'qunit';
 
-module('Unit | Utils | Pagination Utils', function () {
+module('Unit - Utils - Pagination Utils', function () {
   test('getPaginatedRecords', function (assert) {
     assert.expect(9);
 
@@ -38,25 +38,36 @@ module('Unit | Utils | Pagination Utils', function () {
     );
 
     assert.throws(
-      () => getPaginatedRecords(),
+      function () {
+        //@ts-expect-error - no args
+        getPaginatedRecords();
+      },
       /allRecords param must be defined/,
       'getPaginatedRecords throws error when allRecords param is not defined'
     );
 
     assert.throws(
-      () => getPaginatedRecords(records, '2'),
+      function () {
+        //@ts-expect-error - wrong type
+        getPaginatedRecords(records, '2');
+      },
       /Limit must be of type number/,
       'getPaginatedRecords throws error when limit param is invalid'
     );
 
     assert.throws(
-      () => getPaginatedRecords(records, 2, '3'),
+      function () {
+        //@ts-expect-error - wrong type
+        getPaginatedRecords(records, 2, '3');
+      },
       /Invalid page\/limit specified/,
       'getPaginatedRecords throws error when page param is invalid'
     );
 
     assert.throws(
-      () => getPaginatedRecords(records, undefined, 2),
+      function () {
+        getPaginatedRecords(records, undefined, 2);
+      },
       /Invalid page\/limit specified/,
       'getPaginatedRecords throws error when limit is invalid and page valid'
     );

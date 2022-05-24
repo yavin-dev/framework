@@ -7,7 +7,7 @@ import { RequestActions } from './request-action-dispatcher';
 import { matches } from 'lodash-es';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 import type RequestFragment from 'navi-core/models/request';
-import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type Route from '@ember/routing/route';
 import type ReportModel from 'navi-core/models/report';

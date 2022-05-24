@@ -12,7 +12,7 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import Args from './args-interface';
-import { Filter } from 'navi-data/adapters/facts/interface';
+import { Filter } from '@yavin/client/request';
 
 export default class MultiValueInput extends Component<Args> {
   @tracked tags: Filter['values'] = [];

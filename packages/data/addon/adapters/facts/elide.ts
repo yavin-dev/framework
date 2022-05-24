@@ -16,17 +16,8 @@ import { v1 } from 'ember-uuid';
 import moment from 'moment';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { omitBy } from 'lodash-es';
-import type {
-  RequestOptions,
-  AsyncQueryResponse,
-  TableExportResponse,
-  Parameters,
-  RequestV2,
-  FilterOperator,
-  Filter,
-  Column,
-  Sort,
-} from './interface';
+import type { RequestOptions, AsyncQueryResponse, TableExportResponse } from './interface';
+import type { Parameters, Request, FilterOperator, Filter, Column, Sort } from '@yavin/client/request';
 import type { DocumentNode } from 'graphql';
 import type { Moment } from 'moment';
 import type { Grain } from '@yavin/client/utils/date';
@@ -181,7 +172,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param request
    * @returns graphql query string for a v2 request
    */
-  private dataQueryFromRequest(request: RequestV2, pagination?: PaginationOptions | null): string {
+  private dataQueryFromRequest(request: Request, pagination?: PaginationOptions | null): string {
     const args = [];
     const { table, columns, sorts, limit, filters } = request;
     const columnCanonicalToAlias = columns.reduce((canonicalToAlias: Record<string, string>, column, idx) => {
@@ -251,7 +242,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param options
    * @returns Promise that resolves to the result of the AsyncQuery creation mutation
    */
-  createAsyncQuery(request: RequestV2, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
+  createAsyncQuery(request: Request, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
     let pagination: PaginationOptions | undefined;
     if (options.perPage) {
@@ -307,7 +298,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _request
    * @param _options
    */
-  urlForFindQuery(request: RequestV2, _options: RequestOptions): string {
+  urlForFindQuery(request: Request, _options: RequestOptions): string {
     return this.dataQueryFromRequest(request, null);
   }
 
@@ -316,7 +307,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param options
    * @returns Promise that resolves to the result of the TableExport creation mutation
    */
-  createTableExport(request: RequestV2, options: RequestOptions = {}): Promise<TableExportResponse> {
+  createTableExport(request: Request, options: RequestOptions = {}): Promise<TableExportResponse> {
     const headers = options.customHeaders || {};
     const mutation: DocumentNode = GQLQueries['tableExportFactsMutation'];
     const query = this.dataQueryFromRequest(request);
@@ -341,7 +332,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _request
    * @param _options
    */
-  @task *urlForDownloadQuery(request: RequestV2, options: RequestOptions): TaskGenerator<string> {
+  @task *urlForDownloadQuery(request: Request, options: RequestOptions): TaskGenerator<string> {
     const response = yield taskFor(this.fetchDataForExportTask).perform(request, options);
     const status: QueryStatus = response.tableExport.edges[0]?.node.status;
     if (status !== QueryStatus.COMPLETE) {
@@ -360,7 +351,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    */
   @task *fetchDataForExportTask(
     this: ElideFactsAdapter,
-    request: RequestV2,
+    request: Request,
     options: RequestOptions = {}
   ): TaskGenerator<TableExportResponse> {
     let tableExportPayload = yield this.createTableExport(request, options);
@@ -399,7 +390,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    */
   @task *fetchDataForRequestTask(
     this: ElideFactsAdapter,
-    request: RequestV2,
+    request: Request,
     options: RequestOptions
   ): TaskGenerator<AsyncQueryResponse> {
     let asyncQueryPayload = yield this.createAsyncQuery(request, options);
@@ -428,7 +419,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    */
   @task *fetchDataForRequest(
     this: ElideFactsAdapter,
-    request: RequestV2,
+    request: Request,
     options: RequestOptions = {}
   ): TaskGenerator<AsyncQueryResponse> {
     const payload: AsyncQueryResponse = yield taskFor(this.fetchDataForRequestTask).perform(request, options);

@@ -4,7 +4,7 @@
  */
 import VisualizationSerializer from 'navi-core/serializers/visualization';
 import type { MetricLabelConfig } from 'navi-core/models/metric-label';
-import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 
 export type LegacyMetricLabelConfig = {
   type: 'metric-label';

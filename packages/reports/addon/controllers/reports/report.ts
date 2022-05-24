@@ -7,7 +7,7 @@ import { action } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { tracked } from '@glimmer/tracking';
-import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 import type ScreenService from 'navi-core/services/screen';
 import type ColumnFragment from 'navi-core/models/request/column';
 import type FilterFragment from 'navi-core/models/request/filter';

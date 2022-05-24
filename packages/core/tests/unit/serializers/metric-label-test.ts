@@ -8,7 +8,7 @@ import MetricLabelSerializer, {
   normalizeMetricLabelV2,
 } from 'navi-core/serializers/metric-label';
 import { MetricLabelConfig } from 'navi-core/models/metric-label';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import { RequestV2 } from '@yavin/client/request';
 
 module('Unit | Serializer | metric label', function (hooks) {
   setupTest(hooks);

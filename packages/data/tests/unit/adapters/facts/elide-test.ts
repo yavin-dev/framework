@@ -9,7 +9,7 @@ import Pretender from 'pretender';
 import config from 'ember-get-config';
 import moment from 'moment';
 import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
-import type { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { Filter, RequestV2 } from '@yavin/client/request';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import { taskFor } from 'ember-concurrency-ts';
 

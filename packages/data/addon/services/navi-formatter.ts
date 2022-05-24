@@ -5,7 +5,7 @@
 import Service from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import numbro from 'numbro';
-import type { Parameters } from 'navi-data/adapters/facts/interface';
+import type { Parameters } from '@yavin/client/request';
 import type ColumnMetadataModel from 'navi-data/models/metadata/column';
 import type { MetricColumn } from 'navi-data/models/metadata/metric';
 import type { ResponseRow } from 'navi-data/models/navi-fact-response';

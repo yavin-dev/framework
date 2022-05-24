@@ -14,7 +14,7 @@ import type UpdateReportActionDispatcher from 'navi-reports/services/update-repo
 import type RequestConstrainer from 'navi-reports/services/request-constrainer';
 import type ReportModel from 'navi-core/models/report';
 import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
-import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 import type ReportsReportController from 'navi-reports/controllers/reports/report';
 import type DashboardWidget from 'navi-core/models/dashboard-widget';
 import type YavinVisualizationsService from 'navi-core/services/visualization';

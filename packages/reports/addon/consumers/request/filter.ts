@@ -16,7 +16,7 @@ import type MetricMetadataModel from 'navi-data/models/metadata/metric';
 import type ColumnFragment from 'navi-core/models/request/column';
 import type ReportModel from 'navi-core/models/report';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import type { Parameters } from 'navi-data/adapters/facts/interface';
+import type { Parameters } from '@yavin/client/request';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
 import type ReportsReportController from 'navi-reports/controllers/reports/report';
 

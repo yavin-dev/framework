@@ -11,7 +11,7 @@ import { assert } from '@ember/debug';
 import { isPresent } from '@ember/utils';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
-import { Parameters } from 'navi-data/adapters/facts/interface';
+import { Parameters } from '@yavin/client/request';
 import { ColumnType } from 'navi-data/models/metadata/column';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import NaviFormatterService from 'navi-data/services/navi-formatter';

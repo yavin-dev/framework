@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import EmberObject from '@ember/object';
-import type { FilterOperator } from '../facts/interface';
+import type { FilterOperator } from '@yavin/client/request';
 import type { ServiceOptions } from 'navi-data/services/navi-dimension';
 import type { TaskGenerator } from 'ember-concurrency';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';

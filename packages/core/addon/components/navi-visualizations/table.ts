@@ -22,7 +22,7 @@ import type { TableVisualizationMetadata, TableColumnAttributes } from 'navi-cor
 import type ColumnFragment from 'navi-core/models/request/column';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import type { ResponseRow } from 'navi-data/models/navi-fact-response';
-import type { SortDirection } from 'navi-data/adapters/facts/interface';
+import type { SortDirection } from '@yavin/client/request';
 
 const HEADER_TITLE = {
   grandTotal: 'Grand Total',

@@ -8,7 +8,7 @@ import { inject as service } from '@ember/service';
 import { camelize } from '@ember/string';
 import { pluralize } from 'ember-inflector';
 import { configHost } from '../../utils/adapter';
-import NaviMetadataAdapter, { MetadataOptions } from './interface';
+import NaviMetadataAdapter, { MetadataOptions } from '@yavin/client/adapters/metadata/interface';
 import { MetadataModelTypes } from 'navi-data/services/navi-metadata';
 
 export default class BardMetadataAdapter extends EmberObject implements NaviMetadataAdapter {

@@ -5,7 +5,7 @@
 import { isEmpty } from '@ember/utils';
 import FunctionParameterMetadataModel, { DataType } from 'navi-data/models/metadata/function-parameter';
 import { isPresent } from '@ember/utils';
-import type { Parameters, ParameterValue } from 'navi-data/adapters/facts/interface';
+import type { Parameters, ParameterValue } from '@yavin/client/request';
 
 interface ColumnAttributes {
   name: string;

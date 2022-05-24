@@ -5,7 +5,7 @@ import RequestConstrainerService, { TemplateDispatcherAction } from 'navi-report
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import RequestFragment from 'navi-core/models/request';
 import RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import { RequestV2 } from '@yavin/client/request';
 import ColumnFragment from 'navi-core/models/request/column';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';

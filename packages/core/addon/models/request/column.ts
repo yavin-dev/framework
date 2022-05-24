@@ -4,7 +4,7 @@
  */
 import { attr } from '@ember-data/model';
 import BaseFragment from '../request/base';
-import { Column, SortDirection } from 'navi-data/adapters/facts/interface';
+import { Column, SortDirection } from '@yavin/client/request';
 import { nanoid } from 'nanoid';
 import { inject as service } from '@ember/service';
 import { computed } from '@ember/object';

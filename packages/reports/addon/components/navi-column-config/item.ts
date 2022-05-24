@@ -11,7 +11,7 @@ import { next } from '@ember/runloop';
 import { assert } from '@ember/debug';
 import type { ConfigColumn } from '../navi-column-config';
 import type ColumnFragment from 'navi-core/models/request/column';
-import type { SortDirection } from 'navi-data/adapters/facts/interface';
+import type { SortDirection } from '@yavin/client/request';
 
 interface Args {
   column: ConfigColumn;

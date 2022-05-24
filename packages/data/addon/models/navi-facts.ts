@@ -7,7 +7,7 @@
 import NativeWithCreate, { ClientService, Injector } from 'navi-data/models/native-with-create';
 import { taskFor } from 'ember-concurrency-ts';
 import type NaviFactsService from 'navi-data/services/navi-facts';
-import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 
 interface NaviFactsPayload {

@@ -11,11 +11,11 @@ import NaviMetadataSerializer, {
   EverythingMetadataPayload,
   MetadataModelMap,
 } from 'navi-data/serializers/metadata/base';
-import KegService from './keg';
+import type KegService from './keg';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
-import NaviMetadataAdapter from '../adapters/metadata/interface';
-import { NaviDataSource } from 'navi-config';
-import { RequestOptions } from 'navi-data/adapters/facts/interface';
+import type NaviMetadataAdapter from '@yavin/client/adapters/metadata/interface';
+import type { NaviDataSource } from 'navi-config';
+import type { RequestOptions } from 'navi-data/adapters/facts/interface';
 
 export type MetadataModelTypes = keyof MetadataModelRegistry;
 
