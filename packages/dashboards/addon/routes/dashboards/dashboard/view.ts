@@ -9,7 +9,7 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import type DashboardModel from 'navi-core/models/dashboard';
 import type DashboardDataService from 'navi-dashboards/services/dashboard-data';
-import type { WidgetDataTaskByWidgetId } from 'navi-dashboards/services/dashboard-data';
+import type { WidgetDataTasksByWidgetId } from 'navi-dashboards/services/dashboard-data';
 import type { Filter } from 'navi-data/adapters/facts/interface';
 import type CompressionService from 'navi-core/services/compression';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
@@ -41,7 +41,7 @@ export default class DashboardsDashboardViewRoute extends Route {
   /**
    * stores most recent widget data
    */
-  @tracked _widgetDataCache: WidgetDataTaskByWidgetId | null = null;
+  @tracked _widgetDataCache: WidgetDataTasksByWidgetId | null = null;
 
   /**
    * any time the filters query params changes, rerun the model hook
@@ -173,6 +173,7 @@ export default class DashboardsDashboardViewRoute extends Route {
   /**
    * @override
    * @param controller
+   * @param isExiting
    */
   resetController(controller: DashboardsDashboardViewController, isExiting: boolean) {
     if (isExiting) {

@@ -31,7 +31,7 @@ type RequestDecorator = (request: RequestV2) => RequestV2;
 export type NaviFactsWithRequestFragment = NaviFactsModel & { request: RequestFragment };
 export type WidgetData = NaviFactsWithRequestFragment[];
 export type WidgetDataTask = TaskInstance<WidgetData>;
-export type WidgetDataTaskByWidgetId = Record<string, WidgetDataTask>;
+export type WidgetDataTasksByWidgetId = Record<string, WidgetDataTask>;
 
 export default class DashboardDataService extends Service {
   @service
@@ -69,9 +69,9 @@ export default class DashboardDataService extends Service {
     layout: LayoutFragment[] = [],
     decorators: RequestDecorator[] = [],
     options = {}
-  ): WidgetDataTaskByWidgetId {
+  ): WidgetDataTasksByWidgetId {
     const uuid = v1();
-    const taskByWidget: WidgetDataTaskByWidgetId = {};
+    const taskByWidget: WidgetDataTasksByWidgetId = {};
 
     // sort widgets by order in layout
     const sortedWidgets = arr(layout)

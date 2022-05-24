@@ -15,7 +15,7 @@ module('Acceptance | Dashboard Editor', function (hooks) {
   setupAnimationTest(hooks);
   setupMirage(hooks);
 
-  test('As an dashboard editor, add & remove a widget', async function (assert) {
+  test('As an dashboard editor, add, clone & remove a widget', async function (assert) {
     //Initial state
     await visit('/dashboards/3');
     assert.deepEqual(
@@ -61,6 +61,14 @@ module('Acceptance | Dashboard Editor', function (hooks) {
       findAll('.navi-widget__title').map((el) => el.textContent?.trim()),
       ['Untitled Widget'],
       'An editor can remove a widget'
+    );
+
+    await click('.navi-widget__clone-btn');
+
+    assert.deepEqual(
+      findAll('.navi-widget__title').map((el) => el.textContent?.trim()),
+      ['Untitled Widget', 'Copy of Untitled Widget'],
+      'An editor can clone a widget'
     );
   });
 

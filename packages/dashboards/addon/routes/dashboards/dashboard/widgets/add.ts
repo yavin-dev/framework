@@ -47,6 +47,7 @@ export default class DashboardsDashboardWidgetsAddRoute extends Route {
   /**
    * Transitions to dashboard
    * @override
+   * @param widgetId - id of the added widget
    */
   afterModel(widgetId: number): Transition {
     const dashboard = this.modelFor('dashboards.dashboard') as ModelFrom<DashboardsDashboardRoute>;

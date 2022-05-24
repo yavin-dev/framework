@@ -93,7 +93,7 @@ export default class NaviWidget extends Component<NaviWidgetArgs> {
   @action
   scrollContainerToBottom(element: HTMLElement) {
     const containerElement = element.closest('.navi-dashboard__widgets');
-    assert('Component should have a container', containerElement);
+    assert('Widgets container element should exist', containerElement);
     containerElement.scrollTop = containerElement.scrollHeight;
   }
 }

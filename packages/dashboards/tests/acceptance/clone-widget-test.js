@@ -96,39 +96,12 @@ module('Acceptance | Clone Widget', function (hooks) {
     await visit('/dashboards/1/');
     assert.dom('.navi-widget').exists({ count: 3 }, 'dashboard 1 initially has 3 widgets');
 
-    let NEW_WIDGET_ID = 14;
-
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
-
     //Clone widget
     await click(findAll('.navi-widget__clone-btn')[1]);
 
-    assert.equal(
-      currentURL(),
-      `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
-      'cloning widget stays in dashboard view and adds query param correctly (1)'
-    );
-
-    assert.dom('.navi-widget').exists({ count: 4 }, 'cloning adds a widget to the dashboard (1)');
-
-    assert.deepEqual(
-      findAll('.navi-widget__title').map((el) => el.textContent?.trim()),
-      ['Mobile DAU Goal', 'Mobile DAU Graph', 'Mobile DAU Table', 'Copy of Mobile DAU Graph'],
-      'Dashboard widgets have correct titles (1)'
-    );
-
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present (1)');
-
-    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once (1)');
-
     const { scrollTop } = find('.navi-dashboard__widgets');
-    assert.true(scrollTop > 0, 'page is scrolled down');
 
-    assert
-      .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
-      .hasAttribute('data-gs-y', '8', '4th widget was added to the next available row');
-
-    NEW_WIDGET_ID++;
+    const NEW_WIDGET_ID = 15;
 
     //Clone cloned widget
     await click(findAll('.navi-widget__clone-btn')[3]);
@@ -136,10 +109,10 @@ module('Acceptance | Clone Widget', function (hooks) {
     assert.equal(
       currentURL(),
       `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
-      'cloning widget stays in dashboard view and adds query param correctly (2)'
+      'cloning widget stays in dashboard view and adds query param correctly'
     );
 
-    assert.dom('.navi-widget').exists({ count: 5 }, 'cloning adds a widget to the dashboard (2)');
+    assert.dom('.navi-widget').exists({ count: 5 }, 'cloning adds a widget to the dashboard');
 
     assert.deepEqual(
       findAll('.navi-widget__title').map((el) => el.textContent?.trim()),
@@ -150,12 +123,12 @@ module('Acceptance | Clone Widget', function (hooks) {
         'Copy of Mobile DAU Graph',
         'Copy of Copy of Mobile DAU Graph',
       ],
-      'Dashboard widgets have correct titles (2)'
+      'Dashboard widgets have correct titles'
     );
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present (2)');
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
 
-    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once (2)');
+    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
 
     assert.true(find('.navi-dashboard__widgets').scrollTop > scrollTop, 'page is scrolled further down');
 
@@ -164,7 +137,7 @@ module('Acceptance | Clone Widget', function (hooks) {
       .hasAttribute('data-gs-y', '12', '5th widget was added to the next available row');
   });
 
-  test('clone new widget', async function (assert) {
+  test('clone newly added widget', async function (assert) {
     await visit('/dashboards/1/');
     assert.dom('.navi-widget').exists({ count: 3 }, 'dashboard 1 initially has 3 widgets');
 
@@ -268,6 +241,6 @@ module('Acceptance | Clone Widget', function (hooks) {
 
     assert
       .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
-      .hasAttribute('data-gs-y', '11', '5th widget was added to the next available row');
+      .hasAttribute('data-gs-y', '11', '3rd widget was added to the next available row');
   });
 });
