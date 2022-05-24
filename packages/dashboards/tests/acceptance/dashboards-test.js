@@ -400,7 +400,7 @@ module('Acceptance | Dashboards', function (hooks) {
   });
 
   test('New widget', async function (assert) {
-    assert.expect(17);
+    assert.expect(23);
 
     // Check original set of widgets
     await visit('/dashboards/1');
@@ -430,10 +430,15 @@ module('Acceptance | Dashboards', function (hooks) {
 
     // Save without running
     await click('.navi-report-widget__save-btn');
-    assert.ok(
-      currentURL().endsWith('/dashboards/1/view'),
+    let NEW_WIDGET_ID = 14;
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
       'After saving without running, user is brought back to dashboard view'
     );
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
+    assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
 
     let widgetsAfter = findAll('.navi-widget__title').map((el) => el.textContent.trim());
 
@@ -473,7 +478,15 @@ module('Acceptance | Dashboards', function (hooks) {
 
     // Save
     await click('.navi-report-widget__save-btn');
-    assert.ok(currentURL().endsWith('/dashboards/1/view'), 'After saving, user is brought back to dashboard view');
+    NEW_WIDGET_ID++;
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
+      'After saving, user is brought back to dashboard view'
+    );
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
+    assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
 
     widgetsAfter = findAll('.navi-widget__title').map((el) => el.textContent.trim());
 
@@ -719,7 +732,7 @@ module('Acceptance | Dashboards', function (hooks) {
   });
 
   test('New widget after clone', async function (assert) {
-    assert.expect(4);
+    assert.expect(7);
 
     await visit('/dashboards/1');
 
@@ -742,10 +755,15 @@ module('Acceptance | Dashboards', function (hooks) {
 
     // Save without running
     await click('.navi-report-widget__save-btn');
-    assert.ok(
-      currentURL().endsWith('/dashboards/9/view'),
+    const NEW_WIDGET_ID = 17;
+    assert.equal(
+      currentURL(),
+      `/dashboards/9/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
       'After saving without running, user is brought back to dashboard view'
     );
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
+    assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
 
     let widgetsAfter = findAll('.navi-widget__title').map((el) => el.textContent.trim());
 

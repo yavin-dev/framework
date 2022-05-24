@@ -1,4 +1,4 @@
-import { currentURL, visit } from '@ember/test-helpers';
+import { currentURL, find, visit } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -8,7 +8,7 @@ module('Acceptance | Add New Widget', function (hooks) {
   setupApplicationTest(hooks);
   setupMirage(hooks);
 
-  test('visiting /dashboards/dashboard/widgets/Adds without param', async function (assert) {
+  test('visiting /dashboards/dashboard/widgets/add without param', async function (assert) {
     assert.expect(1);
 
     //Initial state
@@ -24,7 +24,7 @@ module('Acceptance | Add New Widget', function (hooks) {
   });
 
   test('visiting /dashboards/dashboard/widgets/add with unsavedWidgetId param', async function (assert) {
-    assert.expect(6);
+    assert.expect(8);
 
     //Check initial state
     await visit('/dashboards/1/');
@@ -46,13 +46,17 @@ module('Acceptance | Add New Widget', function (hooks) {
 
     assert.equal(
       currentURL(),
-      '/dashboards/1/view',
+      '/dashboards/1/view?lastAddedWidgetId=14',
       'visiting dashboards/1/widgets/add route redirects to dashboards/1/view'
     );
 
     assert.dom('.navi-widget').exists({ count: 4 }, 'visiting the add route adds a widget to dashboard 1');
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"]`).exists('next widget is present');
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+
+    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
+
+    assert.true(find('.navi-dashboard__widgets').scrollTop > 0, 'page is scrolled down');
 
     assert
       .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
