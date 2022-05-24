@@ -23,6 +23,37 @@ import { sortBy } from 'lodash-es';
 export function getPartialMatchWeight(string: string, query: string): number | undefined {
   // Split search query into individual words
   let searchTokens = w(query.trim()),
+    allTokensFound = true;
+
+  // Check that all words in the search query can be found in the given string
+  for (let i = 0; i < searchTokens.length; i++) {
+    if (string.indexOf(searchTokens[i]) === -1) {
+      allTokensFound = false;
+      break;
+    }
+  }
+
+  if (allTokensFound) {
+    // Compute match weight
+    return string.length - query.trim().length + 1;
+  }
+
+  // Undefined weight if no match at all
+  return undefined;
+}
+
+/**
+ * Computes how closely two strings match but the
+ * matching strings must start with the search token
+ *
+ * @param string - text being search
+ * @param query - search query
+ * @returns Number representing how close query matches string
+ *           undefined if no match
+ */
+export function getStrictPartialMatchWeight(string: string, query: string): number | undefined {
+  // Split search query into individual words
+  let searchTokens = w(query.trim()),
     origString = string,
     stringTokens = w(string),
     allTokensFound = true;
@@ -92,7 +123,7 @@ export function searchRecords(records: object[], query: string, searchField: str
 
   for (let i = 0; i < records.length; i++) {
     let record = records[i] as Record<string, string>;
-    const relevance = getPartialMatchWeight(record[searchField].toLowerCase(), query);
+    const relevance = getStrictPartialMatchWeight(record[searchField].toLowerCase(), query);
 
     if (relevance) {
       results.push({ relevance, record });
