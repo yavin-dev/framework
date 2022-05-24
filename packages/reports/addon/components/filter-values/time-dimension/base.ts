@@ -5,7 +5,7 @@
 import Component from '@glimmer/component';
 import { computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
-import { Grain } from 'navi-data/utils/date';
+import { Grain } from '@yavin/client/utils/date';
 import Args from '../args-interface';
 import FilterFragment from 'navi-core/models/request/filter';
 

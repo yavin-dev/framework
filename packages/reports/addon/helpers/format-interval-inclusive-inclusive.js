@@ -6,7 +6,7 @@ import { helper as buildHelper } from '@ember/component/helper';
 import { assert } from '@ember/debug';
 import { capitalize } from '@ember/string';
 import Duration from '@yavin/client/utils/classes/duration';
-import { getPeriodForGrain } from 'navi-data/utils/date';
+import { getPeriodForGrain } from '@yavin/client/utils/date';
 
 /**
  * Converts a duration into string representing how long ago duration is from today

@@ -5,7 +5,7 @@
 import { helper as buildHelper } from '@ember/component/helper';
 import { isValidMoment } from 'navi-core/helpers/is-valid-moment';
 import moment from 'moment';
-import { DateTimePeriod, getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import { DateTimePeriod, getPeriodForGrain, Grain } from '@yavin/client/utils/date';
 
 export const DATE_TIME_FORMATS: Record<DateTimePeriod, string> = {
   second: 'MM/DD/YYYY HH:mm:ss',

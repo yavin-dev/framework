@@ -2,7 +2,7 @@
  * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { Grain } from 'navi-data/utils/date';
+import { Grain } from '@yavin/client/utils/date';
 declare module 'navi-config' {
   export type DataSourceNamespace = {
     name: string;

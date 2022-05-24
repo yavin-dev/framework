@@ -23,7 +23,7 @@ import NaviFactAdapter, {
   ParameterValue,
 } from './interface';
 import { omit, capitalize } from 'lodash-es';
-import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import { getPeriodForGrain, Grain } from '@yavin/client/utils/date';
 import moment from 'moment';
 import config from 'ember-get-config';
 import { task } from 'ember-concurrency';
@@ -32,7 +32,7 @@ import type RequestDecoratorService from 'navi-data/services/request-decorator';
 import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import type { TaskGenerator } from 'ember-concurrency';
-import Interval from 'navi-data/utils/classes/interval';
+import Interval from '@yavin/client/utils/classes/interval';
 import { FiliDataSource } from 'navi-config';
 
 export type Query = Record<string, string | number | boolean>;

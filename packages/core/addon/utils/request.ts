@@ -5,7 +5,7 @@
 import { hasParameters, getAliasedMetrics, canonicalizeMetric } from 'navi-data/utils/metric';
 import { nanoid } from 'nanoid';
 import moment from 'moment';
-import { getPeriodForGrain } from 'navi-data/utils/date';
+import { getPeriodForGrain } from '@yavin/client/utils/date';
 import type { Parameters, SortDirection, RequestV2, FilterOperator } from 'navi-data/adapters/facts/interface';
 import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';

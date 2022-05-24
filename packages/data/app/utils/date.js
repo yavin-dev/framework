@@ -1,1 +1,1 @@
-export { default } from 'navi-data/utils/date';
+export { default } from '@yavin/client/utils/date';

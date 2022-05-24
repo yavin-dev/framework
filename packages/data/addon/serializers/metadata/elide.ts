@@ -24,7 +24,7 @@ import type { MetadataModelMap, EverythingMetadataPayload } from './base';
 import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 import { ElideDimensionMetadataPayload, ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
 import type { Factory } from 'navi-data/models/native-with-create';
-import type { Grain } from 'navi-data/utils/date';
+import type { Grain } from '@yavin/client/utils/date';
 import { TableSource } from '../../models/metadata/dimension';
 
 type Edge<T> = {

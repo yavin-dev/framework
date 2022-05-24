@@ -17,8 +17,8 @@ import {
   parseHavings,
   parseMetrics,
 } from './bard-lite-parsers';
-import { getPeriodForGrain, Grains } from 'navi-data/utils/date';
-import type { Grain } from 'navi-data/utils/date';
+import { getPeriodForGrain, Grains } from '@yavin/client/utils/date';
+import type { Grain } from '@yavin/client/utils/date';
 import { groupBy, difference } from 'lodash-es';
 import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 

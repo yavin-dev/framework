@@ -5,7 +5,7 @@
 import NativeWithCreate from 'navi-data/models/native-with-create';
 import { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import moment, { Moment, MomentInput } from 'moment';
-import Interval from 'navi-data/utils/classes/interval';
+import Interval from '@yavin/client/utils/classes/interval';
 import type { TimeDimensionColumn } from 'navi-data/models/metadata/time-dimension';
 
 function notNull<T>(t: T | null): t is T {

@@ -12,7 +12,7 @@ import { PerspectiveSettings } from '../manifest';
 import { isEqual } from 'lodash-es';
 import { task, TaskGenerator } from 'ember-concurrency';
 import type { HTMLPerspectiveViewerElement, PerspectiveViewerConfig } from '@finos/perspective-viewer';
-import type { Grain } from 'navi-data/utils/date';
+import type { Grain } from '@yavin/client/utils/date';
 
 const worker = perspective.shared_worker();
 

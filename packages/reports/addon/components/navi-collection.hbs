@@ -69,7 +69,7 @@
             {{/if}}
 
             <Row.Cell>{{item.owner.id}}</Row.Cell>
-            <Row.Cell>{{moment-format item.updatedOn "MM/DD/YYYY - hh:mm:ss a z" timeZone=(guess-timezone)}}</Row.Cell>
+            <Row.Cell>{{moment-format item.updatedOn "MM/DD/YYYY - hh:mm:ss a z"}}</Row.Cell>
           </Body.Row>
         {{else}}
           <Body.Row class="no-results" as |Row|>

@@ -6,7 +6,7 @@ import { attr } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
 import BaseFragment from '../request/base';
 import { Filter } from 'navi-data/adapters/facts/interface';
-import Interval from 'navi-data/utils/classes/interval';
+import Interval from '@yavin/client/utils/classes/interval';
 
 export function isIntervalValid(values: Filter['values'], filter: FilterFragment) {
   if (filter.type === 'timeDimension' && filter.operator === 'bet') {

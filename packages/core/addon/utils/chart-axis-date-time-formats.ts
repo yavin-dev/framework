@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { Grain } from 'navi-data/utils/date';
+import { Grain } from '@yavin/client/utils/date';
 
 const grainFormats: Record<Grain, string> = {
   second: 'HH:mm:ss',

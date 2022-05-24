@@ -1,7 +1,7 @@
-import Interval from 'navi-data/utils/classes/interval';
+import Interval from '@yavin/client/utils/classes/interval';
 import Duration from '@yavin/client/utils/classes/duration';
 import { module, test } from 'qunit';
-import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import { getPeriodForGrain, Grain } from '@yavin/client/utils/date';
 import moment, { Moment } from 'moment';
 
 const FORMAT = 'YYYY-MM-DD';

@@ -2,7 +2,7 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { Grain, Grains } from 'navi-data/utils/date';
+import { Grain, Grains } from '@yavin/client/utils/date';
 import TableMetadataModel, { TableMetadataPayload } from '../table';
 import { upperFirst, sortBy } from 'lodash-es';
 

@@ -17,7 +17,7 @@ import moment, { MomentInput } from 'moment';
 import tooltipLayout from '../templates/chart-tooltips/metric';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
+import { API_DATE_FORMAT_STRING } from '@yavin/client/utils/date';
 import EmberObject, { computed } from '@ember/object';
 import RequestFragment from 'navi-core/models/request';
 import { BaseChartBuilder, C3Row, EmptyC3Data } from './base';
