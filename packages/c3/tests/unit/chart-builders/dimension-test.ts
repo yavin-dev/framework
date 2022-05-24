@@ -21,36 +21,8 @@ interface TestContext extends Context {
 const DimensionChartBuilder = BuilderClass.create();
 
 /*eslint max-len: ["error", { "code": 200 }]*/
-// prettier-ignore
-//@ts-ignore - skip injector
-const DATA = new NaviFactResponse(null, {
-  rows: [
-    { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 3669828357 },
-    { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 4088487125 },
-    { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 4024700302 },
-    { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', 'age(field=id)': '1', totalPageViews: 2669828357 },
-    { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3088487125 },
-    { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3024700302 }
-  ]
-});
-// prettier-ignore
-//@ts-ignore - skip injector
-const DATA2 = new NaviFactResponse(null, {
-  rows: [
-    { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': '-1', totalPageViews: 176267792438 },
-    { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': 'f', totalPageViews: 76735188 },
-    { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': 'm', totalPageViews: 74621538 },
-    { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': '-1', totalPageViews: 2306935 },
-    { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': 'f', totalPageViews: 158591335 },
-    { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': 'm', totalPageViews: 293462742 },
-    { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': '-1', totalPageViews: 163354994741 },
-    { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': 'f', totalPageViews: 74006011 },
-    { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': 'm', totalPageViews: 72011227 },
-    { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': '-1', totalPageViews: 5630202 },
-    { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': 'f', totalPageViews: 156664890 },
-    { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': 'm', totalPageViews: 289431575 }
-  ]
-});
+let DATA: NaviFactResponse;
+let DATA2: NaviFactResponse;
 
 const metrics = [{ cid: 'cid_totalPageViews', field: 'totalPageViews' }];
 const ageDim = { cid: 'cid_age', field: 'age', parameters: { field: 'id' } };
@@ -73,6 +45,35 @@ module('Unit | Chart Builders | Dimension', function (hooks) {
     REQUEST2 = buildTestRequest(metrics, [ageDim, genderDim], { start: 'P2D', end: '2016-01-03 00:00:00.000' }, 'day');
     const naviMetadata = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
+
+    DATA = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
+      rows: [
+        { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 3669828357 },
+        { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 4088487125 },
+        { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', 'age(field=id)': '-3', totalPageViews: 4024700302 },
+        { 'network.dateTime(grain=day)': '2016-05-30 00:00:00.000', 'age(field=id)': '1', totalPageViews: 2669828357 },
+        { 'network.dateTime(grain=day)': '2016-05-31 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3088487125 },
+        { 'network.dateTime(grain=day)': '2016-06-01 00:00:00.000', 'age(field=id)': '1', totalPageViews: 3024700302 },
+      ],
+    });
+
+    // prettier-ignore
+    DATA2 = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
+      rows: [
+        { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': '-1', totalPageViews: 176267792438 },
+        { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': 'f', totalPageViews: 76735188 },
+        { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': 'm', totalPageViews: 74621538 },
+        { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': '-1', totalPageViews: 2306935 },
+        { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': 'f', totalPageViews: 158591335 },
+        { 'network.dateTime(grain=day)': '2016-01-01 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': 'm', totalPageViews: 293462742 },
+        { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': '-1', totalPageViews: 163354994741 },
+        { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': 'f', totalPageViews: 74006011 },
+        { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '-2', 'gender(field=id)': 'm', totalPageViews: 72011227 },
+        { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': '-1', totalPageViews: 5630202 },
+        { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': 'f', totalPageViews: 156664890 },
+        { 'network.dateTime(grain=day)': '2016-01-02 00:00:00.000', 'age(field=id)': '1', 'gender(field=id)': 'm', totalPageViews: 289431575 }
+      ]
+    });
   });
 
   test('buildData - no dimensions', function (assert) {

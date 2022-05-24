@@ -4,10 +4,10 @@
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-type Services = 'navi-dimension' | 'navi-facts' | 'navi-metadata' | 'navi-formatter';
+export type ClientServices = 'navi-dimension' | 'navi-facts' | 'navi-metadata' | 'navi-formatter';
 type LookupType = 'service';
 export interface Injector {
-  lookup<T extends Services>(type: LookupType, name: T): any;
+  lookup<T extends ClientServices>(type: LookupType, name: T): any;
 }
 
 const INJECTOR = Symbol.for('injector');
@@ -24,7 +24,7 @@ function createGetter(
   _target: NativeWithCreate,
   _key: string,
   _descriptor: unknown,
-  dependencyId: Services
+  dependencyId: ClientServices
 ): PropertyDescriptor {
   return {
     enumerable: false,
@@ -37,7 +37,7 @@ function createGetter(
   };
 }
 
-export function ClientService<T extends NativeWithCreate, S extends Services>(dependencyId: S): Function {
+export function ClientService<T extends NativeWithCreate, S extends ClientServices>(dependencyId: S): Function {
   return function getter(...args: any[]) {
     return createGetter(...(args as [T, string, any]), dependencyId);
   };
