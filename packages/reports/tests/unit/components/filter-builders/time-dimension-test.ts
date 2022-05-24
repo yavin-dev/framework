@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import Interval from 'navi-data/utils/classes/interval';
+import Interval from '@yavin/client/utils/classes/interval';
 import { set } from '@ember/object';
 //@ts-ignore
 import { createGlimmerComponent } from 'navi-core/test-support';
@@ -8,7 +8,7 @@ import TimeDimensionFilterBuilder, { valuesForOperator } from 'navi-reports/comp
 import StoreService from '@ember-data/store';
 import { TestContext } from 'ember-test-helpers';
 import RequestFragment from 'navi-core/models/request';
-import { Grain } from 'navi-data/utils/date';
+import { Grain } from '@yavin/client/utils/date';
 
 let Request: RequestFragment;
 module('Unit | Component | filter-builders/time-dimension', function (hooks) {

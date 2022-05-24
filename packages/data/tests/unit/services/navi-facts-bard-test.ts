@@ -8,7 +8,7 @@ import type { RequestV2 } from 'navi-data/adapters/facts/interface';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import type { Grain } from 'navi-data/utils/date';
+import type { Grain } from '@yavin/client/utils/date';
 
 interface TestContext extends Context {
   service: NaviFactsService;

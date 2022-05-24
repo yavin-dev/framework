@@ -3,11 +3,12 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import { assert } from '@ember/debug';
-import moment, { Moment } from 'moment';
-import Duration, { isIsoDurationString } from '@yavin/client/utils/classes/duration';
-import DurationUtils from '../duration-utils';
+import moment from 'moment';
+import type { Moment } from 'moment';
+import Duration, { isIsoDurationString } from './duration';
+import { subtractDurationFromDate } from '../duration-utils';
 import { DateTimePeriod, getPeriodForGrain, Grain } from '../date';
+import invariant from 'tiny-invariant';
 
 const CURRENT = 'current';
 const NEXT = 'next';
@@ -39,8 +40,8 @@ export default class Interval {
    * @param end - exclusive interval boundary
    */
   constructor(start: IntervalStart, end: IntervalEnd) {
-    assert('Interval start must be: Duration, moment, or macro', this._isAcceptedType(start));
-    assert('Interval end must be: moment, or macro', this._isAcceptedType(end) && !Duration.isDuration(end));
+    invariant(this._isAcceptedType(start), 'Interval start must be: Duration, moment, or macro');
+    invariant(this._isAcceptedType(end) && !Duration.isDuration(end), 'Interval end must be: moment, or macro');
 
     this._start = start;
     this._end = end;
@@ -96,7 +97,7 @@ export default class Interval {
 
     // Duration substitution
     if (Duration.isDuration(start)) {
-      start = DurationUtils.subtractDurationFromDate(end, start);
+      start = subtractDurationFromDate(end, start);
     }
     // - end as duration not currently supported
     return {
@@ -154,7 +155,7 @@ export default class Interval {
     const period = getPeriodForGrain(grain);
 
     let { start, end } = this._asMoments(period);
-    assert('when making the end of an interval exclusive, the end should exist', end);
+    invariant(end, 'when making the end of an interval exclusive, the end should exist');
     end.startOf(grain).add(1, period);
 
     return new Interval(start, end);
@@ -241,8 +242,8 @@ export default class Interval {
   static parseFromStrings(start: string, end: string): Interval {
     const intervalEnd = Interval.fromString(end);
     const intervalStart = Interval.fromString(start);
-    assert('Interval start must not be "next"', intervalStart !== 'next');
-    assert('Interval end must be: moment string or macro', !Duration.isDuration(intervalEnd));
+    invariant(intervalStart !== 'next', 'Interval start must not be "next"');
+    invariant(!Duration.isDuration(intervalEnd), 'Interval end must be: moment string or macro');
 
     return new Interval(intervalStart, intervalEnd);
   }
@@ -260,8 +261,8 @@ export default class Interval {
       intervalEnd.add(1, getPeriodForGrain(grain));
     }
 
-    assert('Interval start must not be "next"', intervalStart !== 'next');
-    assert('Interval end must be: moment string or macro', !Duration.isDuration(intervalEnd));
+    invariant(intervalStart !== 'next', 'Interval start must not be "next"');
+    invariant(!Duration.isDuration(intervalEnd), 'Interval end must be: moment string or macro');
     return new Interval(intervalStart, intervalEnd);
   }
 
@@ -271,7 +272,7 @@ export default class Interval {
    * @returns object most closely represented by string
    */
   static fromString(property: string, format?: string): IntervalStart | IntervalEnd {
-    assert('Argument must be a string', typeof property === 'string');
+    invariant(typeof property === 'string', 'Argument must be a string');
 
     if (isMacro(property)) {
       return property;

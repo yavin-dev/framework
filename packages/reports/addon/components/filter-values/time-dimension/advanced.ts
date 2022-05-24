@@ -3,9 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import BaseIntervalComponent from './base-interval';
-import { PARAM_DATE_FORMAT_STRING } from 'navi-data/utils/date';
+import { PARAM_DATE_FORMAT_STRING } from '@yavin/client/utils/date';
 import moment from 'moment';
-import Interval from 'navi-data/utils/classes/interval';
+import Interval from '@yavin/client/utils/classes/interval';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { isIntervalValid } from 'navi-core/models/request/filter';

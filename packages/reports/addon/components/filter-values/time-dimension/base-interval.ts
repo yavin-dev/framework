@@ -4,7 +4,7 @@
  */
 import { computed } from '@ember/object';
 import { Moment } from 'moment';
-import Interval from 'navi-data/utils/classes/interval';
+import Interval from '@yavin/client/utils/classes/interval';
 //@ts-ignore
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
 import BaseTimeDimensionFilter from './base';

@@ -1,7 +1,7 @@
 import { A } from '@ember/array';
 import Route from '@ember/routing/route';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import { Grain } from 'navi-data/utils/date';
+import { Grain } from '@yavin/client/utils/date';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 
 /*eslint max-len: ["error", { "code": 250 }]*/

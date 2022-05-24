@@ -9,7 +9,7 @@ import type { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
 import type BardFactsAdapter from 'navi-data/adapters/facts/bard';
 import type { TestContext } from 'ember-test-helpers';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
-import { Grain } from 'navi-data/utils/date';
+import { Grain } from '@yavin/client/utils/date';
 
 const HOST = config.navi.dataSources[0].uri;
 const HOST2 = config.navi.dataSources[1].uri;

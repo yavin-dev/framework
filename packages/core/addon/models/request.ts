@@ -12,7 +12,7 @@ import { validator, buildValidations } from 'ember-cp-validations';
 //@ts-ignore
 import { isEqual } from 'lodash-es';
 //@ts-ignore
-import Interval from 'navi-data/utils/classes/interval';
+import Interval from '@yavin/client/utils/classes/interval';
 import { assert } from '@ember/debug';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import type { RequestV2, SortDirection, Parameters, Rollup } from 'navi-data/adapters/facts/interface';
@@ -26,7 +26,7 @@ import type FilterFragment from 'navi-core/models/request/filter';
 import type SortFragment from 'navi-core/models/request/sort';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
 import type { ColumnType } from 'navi-data/models/metadata/column';
-import type { Grain } from 'navi-data/utils/date';
+import type { Grain } from '@yavin/client/utils/date';
 
 type BaseLiteral = {
   type: ColumnType;

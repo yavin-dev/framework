@@ -1,6 +1,6 @@
 import FilterFragment from 'navi-core/models/request/filter';
-import Interval from 'navi-data/utils/classes/interval';
-import { getPeriodForGrain, Grain } from 'navi-data/utils/date';
+import Interval from '@yavin/client/utils/classes/interval';
+import { getPeriodForGrain, Grain } from '@yavin/client/utils/date';
 //@ts-ignore
 import { formatDateRange } from 'navi-reports/helpers/format-interval-inclusive-inclusive';
 

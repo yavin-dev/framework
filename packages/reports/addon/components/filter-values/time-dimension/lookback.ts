@@ -12,12 +12,12 @@
 import BaseIntervalComponent from './base-interval';
 import { computed, action } from '@ember/object';
 import Duration from '@yavin/client/utils/classes/duration';
-import Interval from 'navi-data/utils/classes/interval';
+import Interval from '@yavin/client/utils/classes/interval';
 import { isEmpty } from '@ember/utils';
 import { intervalPeriodForGrain, MONTHS_IN_QUARTER } from '../../filter-builders/time-dimension';
 import config from 'ember-get-config';
 import { capitalize } from '@ember/string';
-import { Grain } from 'navi-data/utils/date';
+import { Grain } from '@yavin/client/utils/date';
 
 export default class LookbackInput extends BaseIntervalComponent {
   /**

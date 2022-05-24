@@ -18,7 +18,7 @@ import { VisualizationModel } from 'navi-core/components/navi-visualizations/tab
 import { BaseChartBuilder } from '@yavin/c3/chart-builders/base';
 import RequestFragment from 'navi-core/models/request';
 import { LineChartConfig } from '@yavin/c3/models/line-chart';
-import { Grain } from 'navi-data/utils/date';
+import { Grain } from '@yavin/client/utils/date';
 import { ChartSeries } from '@yavin/c3/models/chart-visualization';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 

@@ -26,7 +26,7 @@ import type { MetadataModelMap, EverythingMetadataPayload } from './base';
 import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import type { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
 import type { Cardinality } from '@yavin/client/utils/enums/cardinality-sizes';
-import type { Grain } from 'navi-data/utils/date';
+import type { Grain } from '@yavin/client/utils/date';
 import type { Factory } from 'navi-data/models/native-with-create';
 import type TableMetadataModel from 'navi-data/models/metadata/table';
 import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';

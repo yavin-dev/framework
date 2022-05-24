@@ -11,7 +11,7 @@
  */
 import Component from '@glimmer/component';
 import type { Moment } from 'moment';
-import type { Grain } from 'navi-data/utils/date';
+import type { Grain } from '@yavin/client/utils/date';
 
 type Args = {
   date: Moment;

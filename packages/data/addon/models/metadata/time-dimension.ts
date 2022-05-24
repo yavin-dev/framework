@@ -5,7 +5,7 @@
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
 import type { ColumnInstance, ColumnType } from 'navi-data/models/metadata/column';
-import { Grain } from 'navi-data/utils/date';
+import { Grain } from '@yavin/client/utils/date';
 
 interface TimeDimensionGrain {
   id: Grain;

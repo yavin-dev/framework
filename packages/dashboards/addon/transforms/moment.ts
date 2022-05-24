@@ -4,7 +4,7 @@
  */
 import Transform from '@ember-data/serializer/transform';
 import moment, { Moment } from 'moment';
-import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
+import { API_DATE_FORMAT_STRING } from '@yavin/client/utils/date';
 
 export default class MomentTransform extends Transform {
   /**

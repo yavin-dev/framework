@@ -27,7 +27,7 @@ import EmberObject, { computed } from '@ember/object';
 import { assert } from '@ember/debug';
 import moment, { MomentInput } from 'moment';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
+import { API_DATE_FORMAT_STRING } from '@yavin/client/utils/date';
 //@ts-ignore
 import tooltipLayout from '../templates/chart-tooltips/dimension';
 import ChartAxisDateTimeFormats from 'navi-core/utils/chart-axis-date-time-formats';

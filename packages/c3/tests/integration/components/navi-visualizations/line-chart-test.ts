@@ -6,7 +6,7 @@ import { render, findAll } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { initialize as injectC3Enhancements } from '@yavin/c3/initializers/inject-c3-enhancements';
-import { API_DATE_FORMAT_STRING } from 'navi-data/utils/date';
+import { API_DATE_FORMAT_STRING } from '@yavin/client/utils/date';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviMetadataService from 'navi-data/services/navi-metadata';

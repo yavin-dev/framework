@@ -13,7 +13,7 @@ import { timeout } from 'ember-concurrency';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import type { Grain } from 'navi-data/utils/date';
+import type { Grain } from '@yavin/client/utils/date';
 
 type ComponentArgs = YavinVisualizationArgs<PerspectiveSettings>;
 interface TestContext extends Context, Omit<ComponentArgs, 'container'> {

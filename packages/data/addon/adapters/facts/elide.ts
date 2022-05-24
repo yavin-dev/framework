@@ -7,7 +7,7 @@ import { queryManager } from 'ember-apollo-client';
 import NaviFactAdapter, { QueryStatus, FactAdapterError } from './interface';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
-import Interval from '../../utils/classes/interval';
+import Interval from '@yavin/client/utils/classes/interval';
 import { getDefaultDataSource } from '../../utils/adapter';
 import GQLQueries from 'navi-data/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
@@ -29,7 +29,7 @@ import type {
 } from './interface';
 import type { DocumentNode } from 'graphql';
 import type { Moment } from 'moment';
-import type { Grain } from 'navi-data/utils/date';
+import type { Grain } from '@yavin/client/utils/date';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { TaskGenerator } from 'ember-concurrency';
 

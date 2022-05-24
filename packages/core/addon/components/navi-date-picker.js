@@ -16,14 +16,14 @@ import { action } from '@ember/object';
 import { assert } from '@ember/debug';
 import moment from 'moment';
 import { range } from 'lodash-es';
+import { getFirstDayEpochForGrain } from 'navi-data/utils/date';
 import {
-  getFirstDayEpochForGrain,
   getFirstDayOfGrain,
   getLastDayOfGrain,
   getPeriodForGrain,
   getFirstDayOfGrainSince,
   getLastDayOfGrainUntil,
-} from 'navi-data/utils/date';
+} from '@yavin/client/utils/date';
 
 const isValidCalendarDateMessage = 'The date is UTC and aligned to the start of the day grain';
 function isValidCalendarDate(date, dateTimePeriod) {
