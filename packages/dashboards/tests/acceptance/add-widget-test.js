@@ -13,7 +13,6 @@ module('Acceptance | Add New Widget', function (hooks) {
 
     //Initial state
     await visit('/dashboards/2');
-
     await visit('/dashboards/1/widgets/add');
 
     assert.equal(
@@ -32,7 +31,7 @@ module('Acceptance | Add New Widget', function (hooks) {
 
     const NEW_WIDGET_ID = 14;
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
 
     //Make a new widget
     const store = getContext().owner.lookup('service:store');
@@ -52,14 +51,14 @@ module('Acceptance | Add New Widget', function (hooks) {
 
     assert.dom('.navi-widget').exists({ count: 4 }, 'visiting the add route adds a widget to dashboard 1');
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
 
     assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
 
     assert.true(find('.navi-dashboard__widgets').scrollTop > 0, 'page is scrolled down');
 
     assert
-      .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
-      .hasAttribute('data-gs-y', '8', '4th widget was added to the next available row');
+      .dom(`[gs-id="${NEW_WIDGET_ID}"]`)
+      .hasAttribute('gs-y', '8', '4th widget was added to the next available row');
   });
 });

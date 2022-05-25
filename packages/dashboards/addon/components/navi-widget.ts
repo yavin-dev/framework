@@ -25,6 +25,7 @@ import type {
   WidgetData,
   WidgetDataTask,
 } from 'navi-dashboards/services/dashboard-data';
+import { guidFor } from '@ember/object/internals';
 
 interface NaviWidgetArgs {
   model: DashboardWidget;
@@ -36,6 +37,8 @@ interface NaviWidgetArgs {
 }
 
 export default class NaviWidget extends Component<NaviWidgetArgs> {
+  guid = guidFor(this);
+
   /**
    * @property {String} visualizationPrefix - prefix for all visualizations types
    */
@@ -52,8 +55,8 @@ export default class NaviWidget extends Component<NaviWidgetArgs> {
 
     if (layout) {
       // Map layout to gridstack options
-      const { column: x, row: y, height, width } = layout;
-      return { id, x, y, height, width };
+      const { column: x, row: y, height: h, width: w } = layout;
+      return { id, x, y, h, w };
     }
 
     return {};

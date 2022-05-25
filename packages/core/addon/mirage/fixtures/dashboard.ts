@@ -66,7 +66,7 @@ export default [
         { column: 0, row: 0, height: 6, width: 9, widgetId: 4 },
         { column: 0, row: 6, height: 5, width: 9, widgetId: 5 },
       ],
-      columns: 40,
+      columns: 12,
     },
   },
   {
@@ -81,7 +81,7 @@ export default [
     presentation: {
       version: 1,
       layout: [{ column: 0, row: 0, height: 6, width: 9, widgetId: 12 }],
-      columns: 40,
+      columns: 12,
     },
   },
   {
@@ -104,7 +104,7 @@ export default [
     presentation: {
       version: 1,
       layout: [{ column: 0, row: 0, height: 6, width: 9, widgetId: 6 }],
-      columns: 40,
+      columns: 12,
     },
   },
   {
@@ -119,7 +119,7 @@ export default [
     presentation: {
       version: 1,
       layout: [],
-      columns: 15,
+      columns: 12,
     },
   },
   {

@@ -33,15 +33,15 @@ module('Acceptance | Clone Widget', function (hooks) {
       'Dashboard widgets have correct titles'
     );
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
 
     assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
 
     assert.true(find('.navi-dashboard__widgets').scrollTop > 0, 'page is scrolled down');
 
     assert
-      .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
-      .hasAttribute('data-gs-y', '8', '4th widget was added to the next available row');
+      .dom(`[gs-id="${NEW_WIDGET_ID}"]`)
+      .hasAttribute('gs-y', '8', '4th widget was added to the next available row');
   });
 
   test('visiting the clone widget route with no edit permissions', async function (assert) {
@@ -68,7 +68,7 @@ module('Acceptance | Clone Widget', function (hooks) {
 
     const NEW_WIDGET_ID = 14;
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
 
     //Clone widget
     await click(findAll('.navi-widget__clone-btn')[1]);
@@ -89,15 +89,15 @@ module('Acceptance | Clone Widget', function (hooks) {
       'Dashboard widgets have correct titles'
     );
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
 
     assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
 
     assert.true(find('.navi-dashboard__widgets').scrollTop > 0, 'page is scrolled down');
 
     assert
-      .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
-      .hasAttribute('data-gs-y', '8', '4th widget was added to the next available row');
+      .dom(`[gs-id="${NEW_WIDGET_ID}"]`)
+      .hasAttribute('gs-y', '8', '4th widget was added to the next available row');
   });
 
   test('clone cloned widget', async function (assert) {
@@ -134,15 +134,19 @@ module('Acceptance | Clone Widget', function (hooks) {
       'Dashboard widgets have correct titles'
     );
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
 
     assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
 
     assert.true(find('.navi-dashboard__widgets').scrollTop > scrollTop, 'page is scrolled further down');
 
     assert
-      .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
-      .hasAttribute('data-gs-y', '12', '5th widget was added to the next available row');
+      .dom(`[gs-id="${NEW_WIDGET_ID}"]`)
+      .hasAttribute('gs-y', '8', '5th widget was added to the next available space');
+
+    assert
+      .dom(`[gs-id="${NEW_WIDGET_ID}"]`)
+      .hasAttribute('gs-x', '5', '5th widget was added to the next available space');
   });
 
   test('clone newly added widget', async function (assert) {
@@ -151,7 +155,7 @@ module('Acceptance | Clone Widget', function (hooks) {
 
     let NEW_WIDGET_ID = 14;
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
 
     //Add new widget
     await click('.dashboard-header__add-widget-btn');
@@ -166,7 +170,7 @@ module('Acceptance | Clone Widget', function (hooks) {
 
     assert.dom('.navi-widget').exists({ count: 4 }, 'widget is added to the dashboard (1)');
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present (1)');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present (1)');
 
     assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once (1)');
 
@@ -174,8 +178,8 @@ module('Acceptance | Clone Widget', function (hooks) {
     assert.true(scrollTop > 0, 'page is scrolled down');
 
     assert
-      .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
-      .hasAttribute('data-gs-y', '8', '4th widget was added to the next available row');
+      .dom(`[gs-id="${NEW_WIDGET_ID}"]`)
+      .hasAttribute('gs-y', '8', '4th widget was added to the next available row');
 
     assert.deepEqual(
       findAll('.navi-widget__title').map((el) => el.textContent?.trim()),
@@ -202,15 +206,19 @@ module('Acceptance | Clone Widget', function (hooks) {
       'Dashboard widgets have correct titles (2)'
     );
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present (2)');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present (2)');
 
     assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once (2)');
 
     assert.true(find('.navi-dashboard__widgets').scrollTop > scrollTop, 'page is scrolled further down');
 
     assert
-      .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
-      .hasAttribute('data-gs-y', '12', '5th widget was added to the next available row');
+      .dom(`[gs-id="${NEW_WIDGET_ID}"]`)
+      .hasAttribute('gs-y', '8', '5th widget was added to the next available space');
+
+    assert
+      .dom(`[gs-id="${NEW_WIDGET_ID}"]`)
+      .hasAttribute('gs-x', '5', '5th widget was added to the next available space');
   });
 
   test('clone after changing filters', async function (assert) {
@@ -223,7 +231,7 @@ module('Acceptance | Clone Widget', function (hooks) {
 
     let NEW_WIDGET_ID = 14;
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
 
     //Clone widget
     await click('.navi-widget__clone-btn');
@@ -241,15 +249,19 @@ module('Acceptance | Clone Widget', function (hooks) {
       'Dashboard widgets have correct titles'
     );
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
 
     assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
 
     assert.true(find('.navi-dashboard__widgets').scrollTop > 0, 'page is scrolled down');
 
     assert
-      .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
-      .hasAttribute('data-gs-y', '11', '3rd widget was added to the next available row');
+      .dom(`[gs-id="${NEW_WIDGET_ID}"]`)
+      .hasAttribute('gs-y', '11', '3rd widget was added to the next available space');
+
+    assert
+      .dom(`[gs-id="${NEW_WIDGET_ID}"]`)
+      .hasAttribute('gs-x', '0', '3rd widget was added to the next available space');
   });
 
   test('delete cloned widget', async function (assert) {
@@ -258,7 +270,7 @@ module('Acceptance | Clone Widget', function (hooks) {
 
     let NEW_WIDGET_ID = 14;
 
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
 
     //Clone widget
     await click('.navi-widget__clone-btn');

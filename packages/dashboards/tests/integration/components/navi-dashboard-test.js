@@ -8,6 +8,8 @@ import config from 'ember-get-config';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { get } from '@ember/object';
 import { A } from '@ember/array';
+import Ember from 'ember';
+import { guidFor } from '@ember/object/internals';
 
 module('Integration | Component | navi dashboard', function (hooks) {
   setupRenderingTest(hooks);
@@ -87,15 +89,13 @@ module('Integration | Component | navi dashboard', function (hooks) {
 
     assert
       .dom(findAll('.grid-stack .grid-stack-item')[1])
-      .hasAttribute('data-gs-x', '3', 'Widget x position is based on layout');
+      .hasAttribute('gs-x', '3', 'Widget x position is based on layout');
 
-    assert
-      .dom(findAll('.grid-stack .grid-stack-item')[1])
-      .hasAttribute('data-gs-width', '6', 'Widget width is based on layout');
+    assert.dom(findAll('.grid-stack .grid-stack-item')[1]).hasAttribute('gs-w', '6', 'Widget width is based on layout');
   });
 
   test('widget tasks', async function (assert) {
-    assert.expect(3);
+    assert.expect(2);
 
     const taskByWidget = {
       1: { isRunning: true },
@@ -103,26 +103,33 @@ module('Integration | Component | navi dashboard', function (hooks) {
     };
     this.set('taskByWidget', taskByWidget);
 
-    await render(hbs`<NaviDashboard
-      @dashboard={{this.dashboardModel}}
-      @taskByWidget={{this.taskByWidget}}
-      @onUpdateFilter={{this.onUpdateFilter}}
-      @onRemoveFilter={{this.onRemoveFilter}}
-      @onAddFilter={{this.onAddFilter}}
-    />`);
+    await render(hbs`
+      <NaviDashboard
+        @dashboard={{this.dashboardModel}}
+        @taskByWidget={{this.taskByWidget}}
+        @onUpdateFilter={{this.onUpdateFilter}}
+        @onRemoveFilter={{this.onRemoveFilter}}
+        @onAddFilter={{this.onAddFilter}}
+      />
+    `);
 
-    assert.deepEqual(
-      findAll('.navi-widget').map((el) => el.getAttribute('data-gs-id')),
-      ['1', '2'],
-      'widgets get correct models'
-    );
-    assert.dom(`[data-gs-id="1"] .navi-loader__container`).exists('first widget gets correct task instance');
-    assert
-      .dom(`[data-gs-id="2"] .navi-widget__content`)
-      .hasText(
-        `There was an error with your request: It's 11:00pm. Do you know where your children are?`,
-        'second widget gets correct task instance'
-      );
+    function findComponentInstance(node, guid) {
+      if (guidFor(node.instance) === guid) {
+        return node.instance;
+      }
+      const { children = [] } = node;
+      return children.map((c) => findComponentInstance(c, guid)).find((c) => c);
+    }
+
+    const renderTree = Ember._captureRenderTree(this.owner);
+
+    findAll('.navi-widget').forEach((el) => {
+      const guid = el.getAttribute('data-widget-guid');
+      const widget = findComponentInstance(renderTree[0], guid);
+      const { id } = widget.args.model;
+      const { taskInstance } = widget.args;
+      assert.equal(taskInstance, taskByWidget[id], 'widget gets matching model and task instance');
+    });
   });
 
   test('dashboard export', async function (assert) {

@@ -16,7 +16,8 @@
         {{on "scroll" this.onScroll}}
       >
         <GridStack
-          @options={{hash column=@width}}
+          {{!-- TODO enable animation after determining how to do c3 resize + gs animation --}}
+          @options={{hash column=@width animate=false}}
           @onChange={{route-action "didUpdateLayout"}}
           @onResizestop={{this.onResize}}
         >

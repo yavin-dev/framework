@@ -99,7 +99,7 @@ module('Acceptance | Dashboards', function (hooks) {
     const { gridstack } = find('.grid-stack');
     const item = findAll('.grid-stack-item')[0];
     run(() => {
-      gridstack.resize(item, 12, 4);
+      gridstack.update(item, { h: 12, w: 4 });
     });
 
     assert
@@ -129,7 +129,7 @@ module('Acceptance | Dashboards', function (hooks) {
     const items = findAll('.grid-stack-item');
 
     run(() => {
-      grid.move(items[2], 0, 0);
+      grid.update(items[2], { x: 0, y: 0 });
     });
 
     assert.deepEqual(
@@ -520,7 +520,7 @@ module('Acceptance | Dashboards', function (hooks) {
       `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
       'After saving without running, user is brought back to dashboard view'
     );
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
     assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
     assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
 
@@ -568,7 +568,7 @@ module('Acceptance | Dashboards', function (hooks) {
       `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
       'After saving, user is brought back to dashboard view'
     );
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
     assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
     assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
 
@@ -706,11 +706,11 @@ module('Acceptance | Dashboards', function (hooks) {
     await visit('/dashboards/2/view');
 
     assert
-      .dom('[data-gs-id="4"] .navi-widget__content')
+      .dom('[gs-id="4"] .navi-widget__content')
       .hasClass('visualization-container', 'Widget shows visualization for authorized table');
 
     assert
-      .dom('[data-gs-id="5"]')
+      .dom('[gs-id="5"]')
       .includesText('You do not have access to run this query.', 'Unauthorized widget loaded unauthorized component');
   });
 
@@ -845,7 +845,7 @@ module('Acceptance | Dashboards', function (hooks) {
       `/dashboards/9/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
       'After saving without running, user is brought back to dashboard view'
     );
-    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
     assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
     assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
 

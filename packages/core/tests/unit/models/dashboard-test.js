@@ -74,7 +74,7 @@ module('Unit | Model | dashboard', function (hooks) {
             },
           ],
           presentation: {
-            columns: 40,
+            columns: 12,
             layout: [
               {
                 column: 0,
