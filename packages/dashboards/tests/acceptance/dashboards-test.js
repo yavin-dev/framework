@@ -261,6 +261,22 @@ module('Acceptance | Dashboards', function (hooks) {
       `/dashboards/1/view?filters=${filters}`,
       `zero lastAddedWidgetId query param is removed (view route)`
     );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=100`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `lastAddedWidgetId query param that is not in the dashboad is removed`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=100`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `zero lastAddedWidgetId query param that is not in the dashboad is removed (view route)`
+    );
   });
 
   test('add widget button', async function (assert) {

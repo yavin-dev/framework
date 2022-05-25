@@ -251,4 +251,32 @@ module('Acceptance | Clone Widget', function (hooks) {
       .dom(`[data-gs-id="${NEW_WIDGET_ID}"]`)
       .hasAttribute('data-gs-y', '11', '3rd widget was added to the next available row');
   });
+
+  test('delete cloned widget', async function (assert) {
+    await visit('/dashboards/2/');
+    assert.dom('.navi-widget').exists({ count: 2 }, 'dashboard initially has 2 widgets');
+
+    let NEW_WIDGET_ID = 14;
+
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
+
+    //Clone widget
+    await click('.navi-widget__clone-btn');
+
+    assert.equal(
+      currentURL(),
+      `/dashboards/2/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
+      'cloning widget stays in dashboard view and adds query param correctly'
+    );
+
+    assert.dom('.navi-widget').exists({ count: 3 }, 'cloning adds a widget to the dashboard');
+
+    //remove cloned widget
+    await click(findAll('.navi-widget__delete-btn')[2]);
+    await click('.delete__modal-delete-btn');
+
+    assert.equal(currentURL(), `/dashboards/2/view`, 'query param is removed');
+
+    assert.dom('.navi-widget').exists({ count: 2 }, 'dashboard is back to 2 widgets');
+  });
 });

@@ -53,18 +53,19 @@ export default class DashboardsDashboardViewRoute extends Route {
   };
 
   /**
-   * validates lastAddedWidgetId query param
+   * validates that lastAddedWidgetId query param exists in the dashboard
    */
   beforeModel(transition: Transition) {
     const { filters, lastAddedWidgetId } = transition.to.queryParams;
 
-    if (
-      lastAddedWidgetId !== undefined &&
-      !(Number.isInteger(Number(lastAddedWidgetId)) && Number(lastAddedWidgetId) > 0)
-    ) {
-      this.transitionTo('dashboards.dashboard', {
-        queryParams: { filters, lastAddedWidgetId: null },
-      });
+    if (lastAddedWidgetId !== undefined) {
+      const dashboard = this.modelFor('dashboards.dashboard') as ModelFrom<DashboardsDashboardRoute>;
+      const widgetIds = dashboard.presentation.layout.map((widget) => widget.widgetId);
+      if (!widgetIds.includes(Number(lastAddedWidgetId))) {
+        this.transitionTo('dashboards.dashboard', {
+          queryParams: { filters, lastAddedWidgetId: null },
+        });
+      }
     }
   }
 
