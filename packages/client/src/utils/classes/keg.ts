@@ -7,7 +7,7 @@ type Identifier = string | number;
 type InternalProps = { partialData?: boolean };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type KegRecord = Record<string, any> & InternalProps;
-type DefaultRegistry = Record<string, KegRecord & InternalProps>;
+type DefaultRegistry = Record<string, KegRecord>;
 
 type InsertOptions = {
   identifierField: string; // id field for record, defaults to 'id'
