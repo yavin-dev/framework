@@ -26,10 +26,12 @@ import type { TaskInstance, TaskGenerator } from 'ember-concurrency';
 
 const FETCH_MAX_CONCURRENCY = config.navi.widgetsRequestsMaxConcurrency || Infinity;
 
-type FilterError = { title: string; detail: string };
+export type FilterError = { title: string; detail: string };
 type RequestDecorator = (request: RequestV2) => RequestV2;
-type NaviFactsWithRequestFragment = NaviFactsModel & { request: RequestFragment };
-export type WidgetRequests = Record<string, TaskInstance<TaskInstance<NaviFactsWithRequestFragment>[]>>;
+export type NaviFactsWithRequestFragment = NaviFactsModel & { request: RequestFragment };
+export type WidgetData = NaviFactsWithRequestFragment[];
+export type WidgetDataTask = TaskInstance<WidgetData>;
+export type WidgetDataTasksByWidgetId = Record<string, WidgetDataTask>;
 
 export default class DashboardDataService extends Service {
   @service
@@ -67,9 +69,9 @@ export default class DashboardDataService extends Service {
     layout: LayoutFragment[] = [],
     decorators: RequestDecorator[] = [],
     options = {}
-  ): WidgetRequests {
+  ): WidgetDataTasksByWidgetId {
     const uuid = v1();
-    const taskByWidget: WidgetRequests = {};
+    const taskByWidget: WidgetDataTasksByWidgetId = {};
 
     // sort widgets by order in layout
     const sortedWidgets = arr(layout)
@@ -107,7 +109,7 @@ export default class DashboardDataService extends Service {
     decorators: RequestDecorator[],
     options: RequestOptions,
     uuid: string
-  ): TaskGenerator<TaskInstance<NaviFactsWithRequestFragment>[]> {
+  ): TaskGenerator<WidgetData> {
     const { requests, id: widgetId } = widget;
     const dashboard: DashboardModel = yield widget.dashboard;
     const fetchTasks: TaskInstance<NaviFactsWithRequestFragment>[] = [];

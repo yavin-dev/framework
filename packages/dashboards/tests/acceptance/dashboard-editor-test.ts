@@ -1,4 +1,4 @@
-import { click, findAll, currentURL, visit, fillIn, blur } from '@ember/test-helpers';
+import { click, find, findAll, currentURL, visit, fillIn, blur } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 //@ts-ignore
@@ -15,7 +15,7 @@ module('Acceptance | Dashboard Editor', function (hooks) {
   setupAnimationTest(hooks);
   setupMirage(hooks);
 
-  test('As an dashboard editor, add & remove a widget', async function (assert) {
+  test('As an dashboard editor, add, clone & remove a widget', async function (assert) {
     //Initial state
     await visit('/dashboards/3');
     assert.deepEqual(
@@ -38,10 +38,15 @@ module('Acceptance | Dashboard Editor', function (hooks) {
     await clickItem('metric', 'Total Clicks');
 
     await click('.navi-report-widget__save-btn');
-    assert.ok(
-      currentURL().endsWith('/dashboards/3/view'),
+    const NEW_WIDGET_ID = 14;
+    assert.equal(
+      currentURL(),
+      `/dashboards/3/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
       'After saving without running, user is brought back to dashboard view'
     );
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
+    assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
 
     assert.deepEqual(
       findAll('.navi-widget__title').map((el) => el.textContent?.trim()),
@@ -56,6 +61,14 @@ module('Acceptance | Dashboard Editor', function (hooks) {
       findAll('.navi-widget__title').map((el) => el.textContent?.trim()),
       ['Untitled Widget'],
       'An editor can remove a widget'
+    );
+
+    await click('.navi-widget__clone-btn');
+
+    assert.deepEqual(
+      findAll('.navi-widget__title').map((el) => el.textContent?.trim()),
+      ['Untitled Widget', 'Copy of Untitled Widget'],
+      'An editor can clone a widget'
     );
   });
 

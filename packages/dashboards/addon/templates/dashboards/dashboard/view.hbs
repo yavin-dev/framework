@@ -1,4 +1,4 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <NaviDashboard
   @dashboard={{@model.dashboard}}
   @taskByWidget={{@model.taskByWidget}}
@@ -7,9 +7,10 @@
   @onUpdateFilter={{this.updateFilter}}
   @onRemoveFilter={{this.removeFilter}}
   @onAddFilter={{this.addFilter}}
-  @onModelSaveOrRevert={{this.clearFilterQueryParams}}
+  @onModelSaveOrRevert={{this.clearQueryParams}}
   {{!-- template-lint-disable no-action --}}
   {{!-- TODO: Replace mixin --}}
   @addWidgetToDashboard={{action "addToDashboard"}}
   @width={{@model.dashboard.presentation.columns}}
+  @lastAddedWidgetId={{this.lastAddedWidgetId}}
 />
