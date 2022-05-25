@@ -1,8 +1,6 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
- *
- * Ember service that can store and fetch records
  */
 type Identifier = string | number;
 
@@ -18,9 +16,14 @@ type FilterFn = (value: KegRecord, index: number, array: KegRecord[]) => boolean
 
 export default class Keg {
   /**
+   * default namespace to store records in
+   */
+  defaultNamespace: string;
+
+  /**
    * field name of the id field
    */
-  static identifierField = 'id';
+  defaultIdField: string;
 
   /**
    * Object of record arrays
@@ -32,16 +35,15 @@ export default class Keg {
    */
   idIndexes: Record<string, Record<string, KegRecord>> = {};
 
-  defaultNamespace: string;
-
-  constructor(defaultNamespace = 'yavin') {
-    this.defaultNamespace = defaultNamespace;
+  constructor(options: Partial<InsertOptions> = {}) {
+    this.defaultNamespace = options.namespace ?? 'yavin';
+    this.defaultIdField = options.identifierField ?? 'id';
   }
 
   /**
    * Resets internal data structures
    *
-   * @returns {undefined}
+   * @returns
    */
   reset(): void {
     this.recordKegs = {};
@@ -74,14 +76,14 @@ export default class Keg {
    * Inserts an array of records into the store
    *
    * @param type - type name of the model type
-   * @param record - record to be inserted into the keg
+   * @param records - records to be inserted into the keg
    * @param options - config object
    */
   insertMany(type: string, records: Array<KegRecord>, options: Partial<InsertOptions> = {}): KegRecord[] {
     const recordKeg = this._getRecordKegForType(type);
     const idIndex = this._getIdIndexForType(type);
     const namespace = options.namespace || this.defaultNamespace;
-    const identifierField = options.identifierField || Keg.identifierField;
+    const identifierField = options.identifierField || this.defaultIdField;
 
     const returnedRecords: KegRecord[] = [];
     for (let i = 0; i < records.length; i++) {
