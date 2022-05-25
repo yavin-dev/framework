@@ -5,9 +5,10 @@ import { TestContext } from 'ember-test-helpers';
 //@ts-ignore
 import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
-import ColumnFunctionMetadataModel from 'navi-data/models/metadata/column-function';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
-let Payload: MetricMetadataPayload,
+let MetadataService: NaviMetadataService,
+  Payload: MetricMetadataPayload,
   Metric: MetricMetadataModel,
   MoneyMetric: MetricMetadataModel,
   ClicksMetric: MetricMetadataModel,
@@ -18,7 +19,8 @@ module('Unit | Metadata Model | Metric', function (hooks) {
 
   hooks.beforeEach(async function (this: TestContext) {
     server = new Pretender(metadataRoutes);
-    await this.owner.lookup('service:navi-metadata').loadMetadata();
+    MetadataService = this.owner.lookup('service:navi-metadata');
+    await MetadataService.loadMetadata();
 
     Payload = {
       type: 'field',
@@ -90,9 +92,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
     const metricOne = new MetricMetadataModel(this.owner.lookup('service:client-injector'), payload);
 
     const columnFunction = metricOne.columnFunction;
-    const expectedColumnFunc = this.owner
-      .lookup('service:keg')
-      .getById('metadata/columnFunction', 'moneyMetric', 'bardOne') as ColumnFunctionMetadataModel;
+    const expectedColumnFunc = MetadataService.getById('columnFunction', 'moneyMetric', 'bardOne');
     assert.equal(columnFunction, expectedColumnFunc, 'Column function is returned correctly');
     assert.ok(metricOne.hasParameters, 'hasParameters property is computed');
 
@@ -104,7 +104,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
 
     assert.deepEqual(
       metricOne.getParameter('currency'),
-      expectedColumnFunc.parameters.find((param) => param.id === 'currency'),
+      expectedColumnFunc?.parameters.find((param) => param.id === 'currency'),
       'the queried column function parameter object is retrieved from parameters'
     );
   });
