@@ -4,8 +4,8 @@
  */
 
 import invariant from 'tiny-invariant';
-import Duration from './classes/duration';
-import { getPeriodForGrain } from './date';
+import Duration from './classes/duration.js';
+import { getPeriodForGrain } from './date.js';
 import type { Moment } from 'moment';
 
 /**

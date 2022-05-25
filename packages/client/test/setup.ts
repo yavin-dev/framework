@@ -1,3 +1,3 @@
 import moduleAlias from 'module-alias';
 
-moduleAlias.addAlias('@yavin/client', __dirname + '/../src/');
+moduleAlias.addAlias('@yavin/client', __dirname + '/../../../../lib/cjs/');

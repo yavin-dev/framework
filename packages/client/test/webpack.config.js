@@ -29,7 +29,7 @@ export default {
     extensions: ['.ts', '.js'],
     plugins: [new TsconfigPathsPlugin({ configFile: './tsconfig.json' })],
     alias: {
-      '@yavin/client': path.resolve(__dirname, '../src'),
+      '@yavin/client': path.resolve(__dirname, '../lib/esm'),
     },
   },
   output: {

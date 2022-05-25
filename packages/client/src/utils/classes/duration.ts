@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import capitalize from 'lodash/capitalize';
+import capitalize from 'lodash/capitalize.js';
 import invariant from 'tiny-invariant';
 
 /**

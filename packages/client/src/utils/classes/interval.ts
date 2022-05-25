@@ -5,10 +5,10 @@
 
 import moment from 'moment';
 import type { Moment } from 'moment';
-import Duration, { isIsoDurationString } from './duration';
-import { subtractDurationFromDate } from '../duration-utils';
-import { DateTimePeriod, getPeriodForGrain, Grain } from '../date';
 import invariant from 'tiny-invariant';
+import Duration, { isIsoDurationString } from './duration.js';
+import { subtractDurationFromDate } from '../duration-utils.js';
+import { DateTimePeriod, getPeriodForGrain, Grain } from '../date.js';
 
 const CURRENT = 'current';
 const NEXT = 'next';
