@@ -275,7 +275,7 @@ module('Acceptance | Dashboards', function (hooks) {
     assert.equal(
       currentURL(),
       `/dashboards/1/view?filters=${filters}`,
-      `zero lastAddedWidgetId query param that is not in the dashboad is removed (view route)`
+      `lastAddedWidgetId query param that is not in the dashboad is removed (view route)`
     );
   });
 
