@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Component from '@glimmer/component';
-import type { SortDirection } from 'navi-data/adapters/facts/interface';
+import type { SortDirection } from '@yavin/client/request';
 
 const SORT_ICONS = {
   asc: 'navi-table-sort-icon--asc',

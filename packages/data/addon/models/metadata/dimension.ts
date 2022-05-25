@@ -5,7 +5,7 @@
 import ColumnMetadataModel from 'navi-data/models/metadata/column';
 import type { ColumnInstance, ColumnMetadataPayload, ColumnType } from 'navi-data/models/metadata/column';
 import type { Cardinality } from '@yavin/client/utils/enums/cardinality-sizes';
-import type { Parameters } from 'navi-data/adapters/facts/interface';
+import type { Parameters } from '@yavin/client/request';
 import { ValueSourceType } from './elide/dimension';
 import { Injector } from '../native-with-create';
 

@@ -5,7 +5,7 @@ import config from 'ember-get-config';
 import { taskFor } from 'ember-concurrency-ts';
 import moment from 'moment';
 import { cloneDeep } from 'lodash-es';
-import type { Filter, RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { Filter, RequestV2 } from '@yavin/client/request';
 import type BardFactsAdapter from 'navi-data/adapters/facts/bard';
 import type { TestContext } from 'ember-test-helpers';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';

@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
-import { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 
 export default class RequestDecoratorService extends Service {
   /**

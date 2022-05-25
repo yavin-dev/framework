@@ -10,7 +10,7 @@ import { guidFor } from '@ember/object/internals';
 import { parseParameterValue } from 'navi-data/utils/metric';
 import type FunctionParameterMetadataModel from 'navi-data/models/metadata/function-parameter';
 import type { ConfigColumn } from '../navi-column-config';
-import type { ParameterValue, SortDirection } from 'navi-data/adapters/facts/interface';
+import type { ParameterValue, SortDirection } from '@yavin/client/request';
 
 interface NaviColumnConfigBaseArgs {
   column: ConfigColumn;

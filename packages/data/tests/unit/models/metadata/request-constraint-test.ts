@@ -7,7 +7,7 @@ import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import RequestConstraintMetadataModel, {
   RequestConstraintMetadataPayload,
 } from 'navi-data/models/metadata/request-constraint';
-import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 
 let server: Server;
 let Payload: RequestConstraintMetadataPayload;

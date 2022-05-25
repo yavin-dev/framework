@@ -9,7 +9,7 @@ import type Store from '@ember-data/store';
 import type ColumnFragment from '../models/request/column';
 import type FilterFragment from '../models/request/filter';
 import type SortFragment from '../models/request/sort';
-import type { Parameters, SortDirection } from 'navi-data/adapters/facts/interface';
+import type { Parameters, SortDirection } from '@yavin/client/request';
 
 export default class FragmentFactory extends Service {
   @service

@@ -4,7 +4,7 @@
  */
 import Service from '@ember/service';
 import { task } from 'ember-concurrency';
-import { getOwner } from '@ember/application';
+import { setOwner, getOwner } from '@ember/application';
 import { getDataSource } from 'navi-data/utils/adapter';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskGenerator } from 'ember-concurrency';
@@ -17,7 +17,7 @@ import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import Cache from 'navi-data/utils/classes/cache';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import SearchUtils from 'navi-data/utils/search';
+import { searchNaviDimensionRecords } from 'navi-data/utils/search';
 import { A } from '@ember/array';
 import config from 'ember-get-config';
 
@@ -38,7 +38,6 @@ type RequestType = 'all' | 'search' | 'find';
  * dimension cache, however, is "give me query X and I'll format result Y from what I have"
  */
 class DimensionCache extends Cache<NaviDimensionResponse> {
-  // set this.getCacheKey() function
   constructor() {
     function getDimensionCacheId(dimension: DimensionColumn): string {
       const cannonicalName = canonicalizeMetric({
@@ -58,8 +57,8 @@ class DimensionCache extends Cache<NaviDimensionResponse> {
    */
   getSearchFromAll(allResponse: NaviDimensionResponse, query: string): NaviDimensionResponse {
     return new NaviDimensionResponse(
-      getOwner(this),
-      SearchUtils.searchNaviDimensionRecords(A(allResponse.values), query)
+      getOwner(this).lookup('service:client-injector'),
+      searchNaviDimensionRecords(A(allResponse.values), query)
     );
   }
 
@@ -96,6 +95,11 @@ export default class NaviDimensionService extends Service {
    * @property {DimensionCache} _dimensionCache - local cache for dimensions
    */
   private _dimensionCache = new DimensionCache();
+
+  constructor() {
+    super(...arguments);
+    setOwner(this._dimensionCache, getOwner(this));
+  }
 
   clearCache(): void {
     this._dimensionCache.clear();

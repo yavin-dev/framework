@@ -15,7 +15,7 @@ import { isEqual } from 'lodash-es';
 import Interval from '@yavin/client/utils/classes/interval';
 import { assert } from '@ember/debug';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import type { RequestV2, SortDirection, Parameters, Rollup } from 'navi-data/adapters/facts/interface';
+import type { RequestV2, SortDirection, Parameters, Rollup } from '@yavin/client/request';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type Store from '@ember-data/store';

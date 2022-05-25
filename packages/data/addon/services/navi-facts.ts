@@ -13,7 +13,8 @@ import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskGenerator } from 'ember-concurrency';
 import type NaviFactAdapter from 'navi-data/adapters/facts/interface';
-import type { RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestOptions } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 import type NaviFactSerializer from 'navi-data/serializers/facts/interface';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 

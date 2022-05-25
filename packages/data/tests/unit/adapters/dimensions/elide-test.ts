@@ -1,7 +1,8 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import ElideDimensionAdapter from 'navi-data/adapters/dimensions/elide';
-import { RequestV2, AsyncQueryResponse, QueryStatus, RequestOptions } from 'navi-data/adapters/facts/interface';
+import { type AsyncQueryResponse, QueryStatus, type RequestOptions } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 import DimensionMetadataModel, { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 import NaviMetadataService from 'navi-data/services/navi-metadata';

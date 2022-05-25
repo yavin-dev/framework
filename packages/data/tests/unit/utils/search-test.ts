@@ -1,6 +1,11 @@
 import EmberObject from '@ember/object';
 import { A } from '@ember/array';
-import SearchUtils from 'navi-data/utils/search';
+import {
+  getPartialMatchWeight,
+  getExactMatchWeight,
+  searchRecords,
+  searchDimensionRecords,
+} from 'navi-data/utils/search';
 import { module, test } from 'qunit';
 
 module('Unit - Utils - Search Utils', function () {
@@ -8,25 +13,25 @@ module('Unit - Utils - Search Utils', function () {
     assert.expect(4);
 
     assert.equal(
-      SearchUtils.getPartialMatchWeight('heavy green character', 'kart weight'),
+      getPartialMatchWeight('heavy green character', 'kart weight'),
       undefined,
       'No match weight when query does not match'
     );
 
     assert.equal(
-      SearchUtils.getPartialMatchWeight('heavy green character', 'heavy yellow character'),
+      getPartialMatchWeight('heavy green character', 'heavy yellow character'),
       undefined,
       'No match weight when not all words are found'
     );
 
     assert.equal(
-      SearchUtils.getPartialMatchWeight('heavy green character', 'character heavy'),
+      getPartialMatchWeight('heavy green character', 'character heavy'),
       7,
       'Match is found despite word order'
     );
 
-    const weight1 = SearchUtils.getPartialMatchWeight('heavy green character', 'character'),
-      weight2 = SearchUtils.getPartialMatchWeight('heavy green character', 'heavy character');
+    const weight1 = getPartialMatchWeight('heavy green character', 'character'),
+      weight2 = getPartialMatchWeight('heavy green character', 'heavy character');
 
     assert.ok(weight1 && weight2 && weight1 > weight2, 'Closer match has smaller match weight');
   });
@@ -34,18 +39,44 @@ module('Unit - Utils - Search Utils', function () {
   test('getExactMatchWeight', function (assert) {
     assert.expect(3);
 
-    assert.equal(
-      SearchUtils.getExactMatchWeight('158', 'karts'),
-      undefined,
-      'No match weight when query does not match'
-    );
+    assert.equal(getExactMatchWeight('158', 'karts'), undefined, 'No match weight when query does not match');
 
-    assert.equal(SearchUtils.getExactMatchWeight('15897', '158'), 3, 'Match is found when string contains query');
+    assert.equal(getExactMatchWeight('15897', '158'), 3, 'Match is found when string contains query');
 
-    const weight1 = SearchUtils.getExactMatchWeight('15897', '158'),
-      weight2 = SearchUtils.getExactMatchWeight('158', '158');
+    const weight1 = getExactMatchWeight('15897', '158'),
+      weight2 = getExactMatchWeight('158', '158');
 
     assert.ok(weight1 && weight2 && weight1 > weight2, 'Closer match has smaller match weight');
+  });
+
+  test('searchRecords', function (assert) {
+    assert.expect(2);
+
+    let records = [
+      { id: 'bike', description: 'All Bikes' },
+      { id: '123456', description: 'Sport Bike' },
+      { id: '1234567', description: 'Bowser' },
+      { id: '123', description: 'Standard Kart' },
+    ];
+
+    assert.deepEqual(
+      searchRecords(records, 'Bike', 'description'),
+      [
+        { description: 'All Bikes', id: 'bike' },
+        { description: 'Sport Bike', id: '123456' },
+      ],
+      'The matching records are returned and sorted by relevance of description'
+    );
+
+    assert.deepEqual(
+      searchRecords(records, '123', 'id'),
+      [
+        { description: 'Standard Kart', id: '123' },
+        { description: 'Sport Bike', id: '123456' },
+        { description: 'Bowser', id: '1234567' },
+      ],
+      'The matching records are returned now sorted by relevance of ids'
+    );
   });
 
   test('searchDimensionRecords', function (assert) {
@@ -70,7 +101,7 @@ module('Unit - Utils - Search Utils', function () {
       }),
     ]);
 
-    const results = A(SearchUtils.searchDimensionRecords(records, 'Bike', 100));
+    const results = A(searchDimensionRecords(records, 'Bike', 100));
 
     assert.equal(results[0].record.description, 'All Bikes', 'First result is most relevant dimension');
 
@@ -78,20 +109,20 @@ module('Unit - Utils - Search Utils', function () {
 
     assert.equal(results.length, 2, 'Correct number of matching results are returned');
 
-    const results2 = SearchUtils.searchDimensionRecords(records, '123', 2);
+    const results2 = searchDimensionRecords(records, '123', 2);
     assert.equal(results2.length, 2, 'Search results are correctly limited');
 
-    const results3 = A(SearchUtils.searchDimensionRecords(records, '123', 2, 2));
+    const results3 = A(searchDimensionRecords(records, '123', 2, 2));
     assert.deepEqual(
       results3.mapBy('record'),
       [records[2]],
       'Pagination for search results returns records as expected'
     );
 
-    const results4 = SearchUtils.searchDimensionRecords(records, 'moible', 100);
+    const results4 = searchDimensionRecords(records, 'moible', 100);
     assert.equal(results4.length, 0, 'No results are returned when query does not match any record');
 
-    const results5 = A(SearchUtils.searchDimensionRecords(records, '123', 100));
+    const results5 = A(searchDimensionRecords(records, '123', 100));
 
     assert.deepEqual(
       results5.mapBy('record.id'),
@@ -137,7 +168,7 @@ module('Unit - Utils - Search Utils', function () {
       },
     ]);
 
-    let results = A(SearchUtils.searchDimensionRecords(records, 'bike', 100));
+    let results = A(searchDimensionRecords(records, 'bike', 100));
 
     assert.deepEqual(
       results.mapBy('record'),
@@ -145,7 +176,7 @@ module('Unit - Utils - Search Utils', function () {
       'Pagination for search results returns records even when records do not have description fields'
     );
 
-    results = A(SearchUtils.searchDimensionRecords(records, '123456', 100));
+    results = A(searchDimensionRecords(records, '123456', 100));
 
     assert.deepEqual(
       results.mapBy('record.id'),

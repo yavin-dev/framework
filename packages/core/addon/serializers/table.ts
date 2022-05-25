@@ -6,7 +6,7 @@ import VisualizationSerializer from './visualization';
 import { parseMetricName, canonicalizeMetric } from 'navi-data/utils/metric';
 import { assert } from '@ember/debug';
 import { isEmpty } from '@ember/utils';
-import type { RequestV2, Column, Parameters } from 'navi-data/adapters/facts/interface';
+import type { RequestV2, Column, Parameters } from '@yavin/client/request';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import { getRealDimensionType } from 'navi-core/utils/request';
 

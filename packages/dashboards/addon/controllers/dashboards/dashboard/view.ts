@@ -12,7 +12,7 @@ import type CompressionService from 'navi-core/services/compression';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type DashboardModel from 'navi-core/models/dashboard';
 import type FilterFragment from 'navi-core/models/request/filter';
-import type { Filter } from 'navi-data/adapters/facts/interface';
+import type { Filter } from '@yavin/client/request';
 import {
   findDefaultOperator,
   getDefaultValuesForTimeFilter,

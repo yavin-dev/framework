@@ -16,7 +16,7 @@ import type RequestActionDispatcher from 'navi-reports/services/request-action-d
 import type ColumnFragment from 'navi-core/models/request/column';
 import type ReportModel from 'navi-core/models/report';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import type { Filter, Parameters } from 'navi-data/adapters/facts/interface';
+import type { Filter, Parameters } from '@yavin/client/request';
 import type Route from '@ember/routing/route';
 import type { Grain } from '@yavin/client/utils/date';
 import type FilterFragment from 'navi-core/models/request/filter';

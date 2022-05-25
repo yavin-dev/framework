@@ -5,7 +5,7 @@
 import { attr } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
 import BaseFragment from '../request/base';
-import { Filter } from 'navi-data/adapters/facts/interface';
+import type { Filter } from '@yavin/client/request';
 import Interval from '@yavin/client/utils/classes/interval';
 
 export function isIntervalValid(values: Filter['values'], filter: FilterFragment) {

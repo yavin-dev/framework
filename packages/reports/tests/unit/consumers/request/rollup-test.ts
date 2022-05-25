@@ -7,7 +7,7 @@ import { run } from '@ember/runloop';
 import type StoreService from '@ember-data/store';
 import type RollupConsumer from 'navi-reports/consumers/request/rollup';
 import type RequestFragment from 'navi-core/models/request';
-import type { Column } from 'navi-data/adapters/facts/interface';
+import type { Column } from '@yavin/client/request';
 
 let Store: StoreService;
 let Consumer: RollupConsumer;

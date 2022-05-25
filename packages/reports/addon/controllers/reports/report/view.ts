@@ -6,7 +6,7 @@ import { computed } from '@ember/object';
 import { isEqual, omit } from 'lodash-es';
 import Controller, { inject as controller } from '@ember/controller';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
-import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 import type ReportsReportController from '../report';
 import type { ModelFrom } from 'navi-core/utils/type-utils';
 import type ReportsReportViewRoute from 'navi-reports/routes/reports/report/view';

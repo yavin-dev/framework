@@ -13,14 +13,14 @@ import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskGenerator } from 'ember-concurrency';
-import type { Filter } from '../facts/interface';
+import type { Filter } from '@yavin/client/request';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type NaviDimensionAdapter from './interface';
 import type { DimensionFilter } from './interface';
 import type { ServiceOptions } from 'navi-data/services/navi-dimension';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import SearchUtils from 'navi-data/utils/search';
+import { searchDimensionRecords } from 'navi-data/utils/search';
 import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
@@ -92,7 +92,7 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
   }
 
   _searchDimensions(dimensions: FiliDimensionResponse, query: string): FiliDimensionResponse {
-    const results = SearchUtils.searchDimensionRecords(arr(dimensions.rows), query, 5000, 1) as SearchUtilResult[];
+    const results = searchDimensionRecords(arr(dimensions.rows), query, 5000, 1) as SearchUtilResult[];
     return {
       rows: results.map((result: SearchUtilResult) => result.record),
       ...(dimensions.meta ? { meta: dimensions.meta } : {}),

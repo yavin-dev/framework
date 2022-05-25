@@ -11,17 +11,15 @@ import { A as array } from '@ember/array';
 import EmberObject from '@ember/object';
 import { canonicalizeMetric } from '../../utils/metric';
 import { configHost, getDataSource } from '../../utils/adapter';
-import NaviFactAdapter, {
-  Filter,
-  RequestOptions,
-  RequestV2,
+import NaviFactAdapter, { type RequestOptions, type AsyncQueryResponse, FactAdapterError } from './interface';
+import {
   SORT_DIRECTIONS,
-  AsyncQueryResponse,
-  Column,
-  Sort,
-  FactAdapterError,
-  ParameterValue,
-} from './interface';
+  type Request,
+  type Filter,
+  type Column,
+  type Sort,
+  type ParameterValue,
+} from '@yavin/client/request';
 import { omit, capitalize } from 'lodash-es';
 import { getPeriodForGrain, Grain } from '@yavin/client/utils/date';
 import moment from 'moment';
@@ -214,7 +212,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Builds the dimensions path for a request
    */
-  _buildDimensionsPath(request: RequestV2 /*options*/): string {
+  _buildDimensionsPath(request: Request /*options*/): string {
     const dimensionToFields = request.columns
       .filter((c) => c.type === 'dimension' || (c.type === 'timeDimension' && !isDateTime(c)))
       .reduce((dimensionToFields: Record<string, ParameterValue[]>, dim) => {
@@ -240,7 +238,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Builds a dateTime param string for a request
    */
-  _buildDateTimeParam(request: RequestV2): string {
+  _buildDateTimeParam(request: Request): string {
     const dateTimeFilters = request.filters.filter(isDateTime);
     if (dateTimeFilters.length !== 1) {
       throw new FactAdapterError(
@@ -261,7 +259,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Builds a metrics param string for a request
    */
-  _buildMetricsParam(request: RequestV2): string {
+  _buildMetricsParam(request: Request): string {
     const metrics = request.columns.filter((col) => col.type === 'metric');
     const metricIds = metrics.map((metric) =>
       canonicalizeMetric({ metric: metric.field, parameters: metric.parameters })
@@ -273,7 +271,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Builds a filters param string for a request
    */
-  _buildFiltersParam(request: RequestV2): string | undefined {
+  _buildFiltersParam(request: Request): string | undefined {
     const filters = request.filters
       .filter((fil) => fil.type === 'dimension' || (fil.type === 'timeDimension' && !isDateTime(fil)))
       .filter((fil) => fil.values.length !== 0);
@@ -287,7 +285,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Builds a sort param string for a request
    */
-  _buildSortParam(request: RequestV2): string | undefined {
+  _buildSortParam(request: Request): string | undefined {
     const { sorts, table } = request;
 
     if (sorts.length) {
@@ -320,7 +318,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Builds a having param string for a request
    */
-  _buildHavingParam(request: RequestV2): string | undefined {
+  _buildHavingParam(request: Request): string | undefined {
     const having = request.filters.filter((fil) => fil.type === 'metric' && fil.values.length !== 0);
 
     if (having?.length) {
@@ -336,10 +334,10 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
   /**
    * Builds rollup query params
-   * @param {RequestV2} request
+   * @param {Request} request
    * @return {String}
    */
-  _buildRollupParam(request: RequestV2): string {
+  _buildRollupParam(request: Request): string {
     const columns = request.columns;
     const rollupColumnCids = request.rollup?.columnCids || [];
     return [
@@ -355,7 +353,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Builds a URL path for a request
    */
-  _buildURLPath(request: RequestV2, options: RequestOptions = {}): string {
+  _buildURLPath(request: Request, options: RequestOptions = {}): string {
     const host = configHost(options);
     const { namespace } = this;
     const table = request.table;
@@ -388,7 +386,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Builds a query object for a request
    */
-  _buildQuery(request: RequestV2, options?: RequestOptions): Query {
+  _buildQuery(request: Request, options?: RequestOptions): Query {
     const filters = this._buildFiltersParam(request);
     const having = this._buildHavingParam(request);
     const sort = this._buildSortParam(request);
@@ -427,7 +425,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Returns URL String for a request
    */
-  urlForFindQuery(request: RequestV2, options?: RequestOptions): string {
+  urlForFindQuery(request: Request, options?: RequestOptions): string {
     // Decorate and translate the request
     const decoratedRequest = this._decorate(request);
     const path = this._buildURLPath(decoratedRequest, options);
@@ -442,21 +440,21 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Returns URL String for a request
    */
-  @task *urlForDownloadQuery(request: RequestV2, options?: RequestOptions): TaskGenerator<string> {
+  @task *urlForDownloadQuery(request: Request, options?: RequestOptions): TaskGenerator<string> {
     return yield this.urlForFindQuery(request, options);
   }
 
   /**
    * Decorates a requestV2 object
    */
-  _decorate(request: RequestV2): RequestV2 {
+  _decorate(request: Request): Request {
     return this.requestDecorator.applyGlobalDecorators(request);
   }
 
   /**
    * Uses the url generated using the adapter to make an ajax request
    */
-  @task *fetchDataForRequest(request: RequestV2, options?: RequestOptions): TaskGenerator<unknown> {
+  @task *fetchDataForRequest(request: Request, options?: RequestOptions): TaskGenerator<unknown> {
     assert('Fact request for fili adapter must be version 2', (request.requestVersion || '').startsWith('2.'));
 
     // Decorate and translate the request
@@ -497,7 +495,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     });
   }
 
-  asyncFetchDataForRequest(_request: RequestV2, _options: RequestOptions): Promise<AsyncQueryResponse> {
+  asyncFetchDataForRequest(_request: Request, _options: RequestOptions): Promise<AsyncQueryResponse> {
     throw new FactAdapterError('Method not implemented.');
   }
 }

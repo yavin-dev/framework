@@ -8,7 +8,8 @@ import GQLQueries from 'navi-data/gql/metadata-queries';
 import { assert } from '@ember/debug';
 import { DocumentNode } from 'graphql';
 import { isPresent } from '@ember/utils';
-import NaviMetadataAdapter, { MetadataOptions } from './interface';
+import type NaviMetadataAdapter from '@yavin/client/adapters/metadata/interface';
+import type { MetadataOptions } from '@yavin/client/adapters/metadata/interface';
 
 export type MetadataQueryType = keyof typeof GQLQueries;
 

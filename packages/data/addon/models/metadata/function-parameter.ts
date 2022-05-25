@@ -12,7 +12,7 @@ import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { DimensionColumn, TableSource } from './dimension';
 import type { ValueSourceType } from './elide/dimension';
-import type { ParameterValue } from 'navi-data/adapters/facts/interface';
+import type { ParameterValue } from '@yavin/client/request';
 
 export const INTRINSIC_VALUE_EXPRESSION = 'self';
 

@@ -4,7 +4,7 @@ import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { taskFor } from 'ember-concurrency-ts';
 import type { Server } from 'miragejs';
-import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';

@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2017",
-    "lib": ["es2020", "dom"],
+    "lib": ["es2021", "dom"],
     "allowJs": true,
     "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
@@ -37,6 +37,8 @@
       "navi-reports/*": ["node_modules/navi-reports/addon/*"],
       "navi-dashboards": ["node_modules/navi-dashboards/addon"],
       "navi-dashboards/*": ["node_modules/navi-dashboards/addon/*"],
+      "@yavin/client": ["node_modules/@yavin/client/src"],
+      "@yavin/client/*": ["node_modules/@yavin/client/src/*"],
       "*": ["types/*"]
     }
   },

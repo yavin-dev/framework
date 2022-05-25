@@ -10,7 +10,7 @@ import type ColumnFunction from './column-function';
 import type FunctionParameter from './function-parameter';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { MetadataModelTypes } from 'navi-data/services/navi-metadata';
-import type { Parameters } from 'navi-data/adapters/facts/interface';
+import type { Parameters } from '@yavin/client/request';
 
 export type RawColumnType = 'ref' | 'formula' | 'field';
 export type ColumnType = Extract<MetadataModelTypes, 'metric' | 'dimension' | 'timeDimension'>;

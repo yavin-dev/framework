@@ -2,7 +2,8 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import type { RequestOptions, RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestOptions } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 import type NaviFactResponse from 'navi-data/models/navi-fact-response';
 import type NaviAdapterError from 'navi-data/errors/navi-adapter-error';
 

@@ -7,7 +7,7 @@ import AssetSerializer from './asset';
 import { inject as service } from '@ember/service';
 import type Model from '@ember-data/model';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import type { RequestV2 } from 'navi-data/adapters/facts/interface';
+import type { RequestV2 } from '@yavin/client/request';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function normalizeVisualization(_request: RequestV2, visualization: any, _metadata: NaviMetadataService) {

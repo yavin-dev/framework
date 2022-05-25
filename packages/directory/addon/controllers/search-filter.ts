@@ -6,8 +6,7 @@ import Controller, { inject as controller } from '@ember/controller';
 import { computed } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import DirectoryController from './directory';
-// @ts-ignore
-import { searchRecords } from 'navi-core/utils/search';
+import { searchRecords } from 'navi-data/utils/search';
 
 export default abstract class SearchFilterController extends Controller {
   /**
