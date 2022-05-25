@@ -2,8 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Service, { inject as service } from '@ember/service';
-import EmberArray from '@ember/array';
+import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
 import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
@@ -11,7 +10,7 @@ import NaviMetadataSerializer, {
   EverythingMetadataPayload,
   MetadataModelMap,
 } from 'navi-data/serializers/metadata/base';
-import KegService from './keg';
+import Keg from '@yavin/client/utils/classes/keg';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
 import NaviMetadataAdapter from '../adapters/metadata/interface';
 import { NaviDataSource } from 'navi-config';
@@ -20,8 +19,7 @@ import { RequestOptions } from 'navi-data/adapters/facts/interface';
 export type MetadataModelTypes = keyof MetadataModelRegistry;
 
 export default class NaviMetadataService extends Service {
-  @service
-  private keg!: KegService;
+  private keg = new Keg();
 
   /**
    * @property {Array} loadedDataSources - list of data sources in which meta data has already been loaded
@@ -73,10 +71,10 @@ export default class NaviMetadataService extends Service {
     type: K,
     metadataObjects: MetadataModelMap[K],
     dataSourceName: string
-  ): EmberArray<MetadataModelRegistry[K]> {
+  ): Array<MetadataModelRegistry[K]> {
     return this.keg.insertMany(`metadata/${type}`, metadataObjects, {
       namespace: dataSourceName,
-    }) as EmberArray<MetadataModelRegistry[K]>;
+    }) as Array<MetadataModelRegistry[K]>;
   }
 
   private async loadAndProcessMetadata(dataSource: NaviDataSource, options: RequestOptions): Promise<void> {
@@ -112,12 +110,12 @@ export default class NaviMetadataService extends Service {
    * @param type - model type
    * @param dataSourceName - optional name of data source
    */
-  all<K extends keyof MetadataModelRegistry>(type: K, dataSourceName?: string): EmberArray<MetadataModelRegistry[K]> {
+  all<K extends keyof MetadataModelRegistry>(type: K, dataSourceName?: string): Array<MetadataModelRegistry[K]> {
     assert(
       `Metadata must have the requested data source loaded: ${dataSourceName}`,
       !dataSourceName || this.loadedDataSources.has(dataSourceName)
     );
-    return this.keg.all(`metadata/${type}`, dataSourceName) as EmberArray<MetadataModelRegistry[K]>;
+    return this.keg.all(`metadata/${type}`, dataSourceName) as Array<MetadataModelRegistry[K]>;
   }
 
   /**
@@ -155,7 +153,7 @@ export default class NaviMetadataService extends Service {
 
     if (normalized) {
       const model = this.loadMetadataForType(type, normalized, dataSourceName);
-      return model?.firstObject as MetadataModelRegistry[K];
+      return model[0];
     }
     return undefined;
   }
