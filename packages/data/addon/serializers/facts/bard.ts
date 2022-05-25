@@ -8,7 +8,7 @@
 import EmberObject from '@ember/object';
 import { getOwner } from '@ember/application';
 import NaviFactSerializer, { ResponseV1 } from './interface';
-import { RequestV2, Column } from '@yavin/client/request';
+import type { RequestV2, Column } from '@yavin/client/request';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import NaviAdapterError, { NaviErrorDetails } from 'navi-data/errors/navi-adapter-error';

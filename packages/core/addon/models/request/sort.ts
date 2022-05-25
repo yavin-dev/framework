@@ -5,7 +5,7 @@
 import { attr } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
 import BaseFragment from '../request/base';
-import { SortDirection, Sort } from '@yavin/client/request';
+import type { SortDirection, Sort } from '@yavin/client/request';
 
 const Validations = buildValidations({
   direction: validator('inclusion', {

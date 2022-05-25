@@ -12,7 +12,7 @@ import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskGenerator } from 'ember-concurrency';
 import type { AsyncQueryResponse } from '../facts/interface';
-import { FilterOperator } from '@yavin/client/request';
+import type { FilterOperator } from '@yavin/client/request';
 import type { Column, RequestV2 } from '@yavin/client/request';
 import type NaviDimensionAdapter from './interface';
 import type { DimensionFilter } from './interface';

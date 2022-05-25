@@ -6,7 +6,7 @@ import { inject as service } from '@ember/service';
 import Component from '@glimmer/component';
 import NaviFactsService from 'navi-data/services/navi-facts';
 import RequestFragment from 'navi-core/models/request';
-import { RequestV2 } from '@yavin/client/request';
+import type { RequestV2 } from '@yavin/client/request';
 
 /**
  * Returns true if a string is a URL

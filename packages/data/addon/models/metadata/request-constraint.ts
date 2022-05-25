@@ -5,7 +5,7 @@
  * A collection of function parameters that has a one to many relationship to columns
  */
 import NativeWithCreate, { Injector } from 'navi-data/models/native-with-create';
-import { RequestV2 } from '@yavin/client/request';
+import type { RequestV2 } from '@yavin/client/request';
 import { matches } from 'lodash-es';
 
 type ConstrainableProperties = 'filters' | 'columns';

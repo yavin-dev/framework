@@ -3,7 +3,7 @@ import { setupTest } from 'ember-qunit';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { normalizeTableV2, TableVisMetadataPayloadV1, TableVisualizationMetadata } from 'navi-core/serializers/table';
-import { RequestV2 } from '@yavin/client/request';
+import type { RequestV2 } from '@yavin/client/request';
 import { normalizeV1toV2, RequestV1 } from 'navi-core/utils/request';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
