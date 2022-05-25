@@ -4,8 +4,10 @@
  */
 type Identifier = string | number;
 
+type InternalProps = { partialData?: boolean };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type KegRecord = Record<string, any>;
+export type KegRecord = Record<string, any> & InternalProps;
+type DefaultRegistry = Record<string, KegRecord & InternalProps>;
 
 type InsertOptions = {
   identifierField: string; // id field for record, defaults to 'id'
@@ -14,7 +16,15 @@ type InsertOptions = {
 
 type FilterFn = (value: KegRecord, index: number, array: KegRecord[]) => boolean;
 
-export default class Keg {
+type RecordsByType<Registry extends DefaultRegistry> = Partial<{
+  [P in keyof Registry]: Array<Registry[P]>;
+}>;
+
+type RecordsById<Registry extends DefaultRegistry> = Partial<{
+  [P in keyof Registry]: Record<Identifier, Registry[P]>;
+}>;
+
+export default class Keg<Registry extends DefaultRegistry = DefaultRegistry> {
   /**
    * default namespace to store records in
    */
@@ -28,15 +38,15 @@ export default class Keg {
   /**
    * Object of record arrays
    */
-  recordKegs: Record<string, KegRecord[]> = {};
+  recordKegs: RecordsByType<Registry> = {};
 
   /**
    * Object of record indexes
    */
-  idIndexes: Record<string, Record<string, KegRecord>> = {};
+  idIndexes: RecordsById<Registry> = {};
 
   constructor(options: Partial<InsertOptions> = {}) {
-    this.defaultNamespace = options.namespace ?? 'yavin';
+    this.defaultNamespace = options.namespace ?? 'default';
     this.defaultIdField = options.identifierField ?? 'id';
   }
 
@@ -55,7 +65,7 @@ export default class Keg {
    *
    * @param type - model type to reset
    */
-  resetByType(type: string): void {
+  resetByType<T extends keyof Registry>(type: T): void {
     const { recordKegs, idIndexes } = this;
     idIndexes[type] = {};
     recordKegs[type] = [];
@@ -68,7 +78,7 @@ export default class Keg {
    * @param record - record to be inserted into the keg
    * @param options - config object
    */
-  insert(type: string, record: KegRecord, options: Partial<InsertOptions> = {}): KegRecord {
+  insert<T extends keyof Registry>(type: T, record: Registry[T], options: Partial<InsertOptions> = {}): Registry[T] {
     return this.insertMany(type, [record], options)[0];
   }
 
@@ -79,13 +89,17 @@ export default class Keg {
    * @param records - records to be inserted into the keg
    * @param options - config object
    */
-  insertMany(type: string, records: Array<KegRecord>, options: Partial<InsertOptions> = {}): KegRecord[] {
+  insertMany<T extends keyof Registry>(
+    type: T,
+    records: Array<Registry[T]>,
+    options: Partial<InsertOptions> = {}
+  ): Array<Registry[T]> {
     const recordKeg = this._getRecordKegForType(type);
     const idIndex = this._getIdIndexForType(type);
     const namespace = options.namespace || this.defaultNamespace;
     const identifierField = options.identifierField || this.defaultIdField;
 
-    const returnedRecords: KegRecord[] = [];
+    const returnedRecords: Array<Registry[T]> = [];
     for (let i = 0; i < records.length; i++) {
       const id = records[i][identifierField] as Identifier;
       const existingRecord = this.getById(type, id, namespace);
@@ -114,7 +128,7 @@ export default class Keg {
    * @param namespace - (optional) namespace for the id
    * @returns the found record
    */
-  getById(type: string, id: Identifier, namespace?: string): KegRecord | undefined {
+  getById<T extends keyof Registry>(type: T, id: Identifier, namespace?: string): Registry[T] | undefined {
     let idIndex = this._getIdIndexForType(type) || {};
     let source = namespace || this.defaultNamespace;
     return idIndex[`${source}.${id}`];
@@ -127,9 +141,12 @@ export default class Keg {
    * @param clause
    * @returns array of found records
    */
-  getBy(type: string, clause: Record<string, unknown | Array<unknown>> | FilterFn): KegRecord[] {
+  getBy<T extends keyof Registry>(
+    type: T,
+    clause: Record<string, unknown | Array<unknown>> | FilterFn
+  ): Array<Registry[T]> {
     const recordKeg = this._getRecordKegForType(type);
-    let foundRecords: KegRecord[] = [];
+    let foundRecords: Array<Registry[T]> = [];
 
     if (typeof clause === 'object') {
       foundRecords = recordKeg;
@@ -157,7 +174,7 @@ export default class Keg {
    * @param namespace - (optional) namespace for the id
    * @returns array of records of the provided type
    */
-  all(type: string, namespace?: string): KegRecord[] {
+  all<T extends keyof Registry>(type: T, namespace?: string): Array<Registry[T]> {
     const all = this._getRecordKegForType(type);
     if (namespace && all.some((item) => !!item.source)) {
       return all.filter((item) => item.source === namespace);
@@ -171,9 +188,9 @@ export default class Keg {
    * @param type - type name of the model type
    * @returns record keg
    */
-  _getRecordKegForType(type: string): KegRecord[] {
+  _getRecordKegForType<T extends keyof Registry>(type: T): Array<Registry[T]> {
     const { recordKegs } = this;
-    let recordKegForType = recordKegs[type] ?? [];
+    const recordKegForType = recordKegs[type] ?? [];
     recordKegs[type] = recordKegForType;
     return recordKegForType;
   }
@@ -184,10 +201,10 @@ export default class Keg {
    * @param type - type name of the model type
    * @returns record id index
    */
-  _getIdIndexForType(type: string): Record<string, KegRecord> {
+  _getIdIndexForType<T extends keyof Registry>(type: T): Record<Identifier, Registry[T]> {
     const { idIndexes } = this;
-
-    idIndexes[type] = idIndexes[type] || {};
-    return idIndexes[type];
+    const idx = idIndexes[type] ?? {};
+    idIndexes[type] = idx;
+    return idx;
   }
 }

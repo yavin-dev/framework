@@ -19,6 +19,9 @@ import { RequestOptions } from 'navi-data/adapters/facts/interface';
 export type MetadataModelTypes = keyof MetadataModelRegistry;
 
 export default class NaviMetadataService extends Service {
+  /**
+   * TODO: define keg registry types to remove casting in this class
+   */
   private keg = new Keg();
 
   /**

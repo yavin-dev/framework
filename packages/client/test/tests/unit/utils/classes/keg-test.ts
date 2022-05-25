@@ -1,22 +1,21 @@
 import { module, test } from 'qunit';
-import Keg from '@yavin/client/utils/classes/keg';
+import Keg, { KegRecord } from '@yavin/client/utils/classes/keg';
 
 interface RecordValue extends Record<string, any> {
   id: number;
   description: string;
   meta: string;
 }
-class MyRecord extends Object implements RecordValue {
+class MyRecord implements RecordValue {
   declare id: number;
   declare description: string;
   declare meta: string;
   constructor(value: unknown) {
-    super();
     Object.assign(this, value);
   }
 }
 
-let KegInstance: Keg;
+let KegInstance: Keg<{ [K: string]: KegRecord; record: MyRecord }>;
 let Record1: MyRecord, Record2: MyRecord, Record3: MyRecord;
 let RawRecord1: RecordValue, RawRecord2: RecordValue, RawRecord3: RecordValue;
 
@@ -38,11 +37,12 @@ module('Unit | Utils | Classes | keg', function (hooks) {
     assert.deepEqual(recordKeg, [], '_getRecordKegForType returns an empty array when called the first time');
 
     //Mock a record insert
-    recordKeg.push({ id: 1 });
+    const mockRecord = new MyRecord({ id: 1 });
+    recordKeg.push(mockRecord);
 
     assert.deepEqual(
       KegInstance._getRecordKegForType('record'),
-      [{ id: 1 }],
+      [mockRecord],
       '_getRecordKegForType returns the existing array when called after initially'
     );
   });
@@ -52,11 +52,12 @@ module('Unit | Utils | Classes | keg', function (hooks) {
     assert.deepEqual(idIndex, {}, '_getIdIndexForType returns an empty object when called the first time');
 
     //Mock a record insert
-    idIndex[1] = { id: 1 };
+    const mockRecord = new MyRecord({ id: 1 });
+    idIndex[1] = mockRecord;
 
     assert.deepEqual(
       KegInstance._getIdIndexForType('record'),
-      { 1: { id: 1 } },
+      { 1: mockRecord },
       '_getIdIndexForType returns the existing object when called after initially'
     );
   });
@@ -100,7 +101,7 @@ module('Unit | Utils | Classes | keg', function (hooks) {
     const insertedRecord = KegInstance.insert('record', Record1);
     assert.equal(Record1, insertedRecord, '`insert` returns the inserted record');
 
-    const foundRecord = KegInstance.getById('record', 1, 'yavin');
+    const foundRecord = KegInstance.getById('record', 1, 'default');
     assert.equal(Record1, foundRecord, 'after inserting a record it can be found');
   });
 
@@ -138,15 +139,15 @@ module('Unit | Utils | Classes | keg', function (hooks) {
     );
 
     assert.ok(
-      KegInstance.recordKegs.record.every((rec, idx) => rec === records[idx]),
+      KegInstance.recordKegs.record?.every((rec, idx) => rec === records[idx]),
       'The inserted records are registered in recordKeg'
     );
 
     assert.deepEqual(
       KegInstance.idIndexes.record,
       {
-        'yavin.1': records[0],
-        'yavin.2': records[1],
+        'default.1': records[0],
+        'default.2': records[1],
       },
       'The inserted records are registered in idIndexes'
     );
@@ -187,6 +188,7 @@ module('Unit | Utils | Classes | keg', function (hooks) {
     );
 
     assert.notOk(
+      //@ts-ignore
       KegInstance.getById('record', 4)?.partialData,
       'Partial flag is removed when partial record is updated without flag in update set'
     );
@@ -201,8 +203,8 @@ module('Unit | Utils | Classes | keg', function (hooks) {
     assert.deepEqual(
       KegInstance.idIndexes.record,
       {
-        'yavin.foo': records[0],
-        'yavin.bar': records[1],
+        'default.foo': records[0],
+        'default.bar': records[1],
       },
       'The inserted records are registered in idIndexes using the `identifierField` option'
     );
