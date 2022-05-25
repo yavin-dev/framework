@@ -42,7 +42,11 @@ module('Unit | Service | navi-metadata', function (hooks) {
       tables.every((table) => table instanceof TableMetadataModel),
       '`bardTwo` `TableMetadataModel`s are loaded into the keg'
     );
-    assert.deepEqual(tables.mapBy('id'), ['inventory'], 'All `bardTwo` tables are loaded');
+    assert.deepEqual(
+      tables.map((r) => r.id),
+      ['inventory'],
+      'All `bardTwo` tables are loaded'
+    );
 
     const dimensions = keg.all('metadata/dimension', 'bardTwo');
     assert.ok(
@@ -50,7 +54,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
       '`bardTwo` `DimensionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
-      dimensions.mapBy('id'),
+      dimensions.map((r) => r.id),
       [
         'item',
         'container',
@@ -70,7 +74,11 @@ module('Unit | Service | navi-metadata', function (hooks) {
       timeDimensions.every((dim) => dim instanceof TimeDimensionMetadataModel),
       '`bardTwo` `TimeDimensionMetadataModel`s are loaded into the keg'
     );
-    assert.deepEqual(timeDimensions.mapBy('id'), ['inventory.dateTime'], 'All `bardTwo` time dimensions are loaded');
+    assert.deepEqual(
+      timeDimensions.map((r) => r.id),
+      ['inventory.dateTime'],
+      'All `bardTwo` time dimensions are loaded'
+    );
 
     const metrics = keg.all('metadata/metric', 'bardTwo');
     assert.ok(
@@ -78,7 +86,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
       '`bardTwo` `MetricMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
-      metrics.mapBy('id'),
+      metrics.map((r) => r.id),
       ['ownedQuantity', 'usedAmount', 'personalSold', 'available', 'globallySold', 'revenue', 'seconds'],
       'All `bardTwo` metrics are loaded'
     );
@@ -88,7 +96,11 @@ module('Unit | Service | navi-metadata', function (hooks) {
       columnFunctions.every((fn) => fn instanceof ColumnFunctionMetadataModel),
       '`bardTwo` `ColumnFunctionMetadataModel`s are loaded into the keg'
     );
-    assert.deepEqual(columnFunctions.mapBy('id'), [], 'All `bardTwo` column functions are loaded');
+    assert.deepEqual(
+      columnFunctions.map((r) => r.id),
+      [],
+      'All `bardTwo` column functions are loaded'
+    );
 
     assert.ok(this.service.loadedDataSources.has('bardTwo'), '`bardTwo` data source is loaded');
   });
@@ -104,7 +116,11 @@ module('Unit | Service | navi-metadata', function (hooks) {
       tables.every((table) => table instanceof TableMetadataModel),
       '`elideTwo` `TableMetadataModel`s are loaded into the keg'
     );
-    assert.deepEqual(tables.mapBy('id'), ['table0', 'table1'], 'All `elideTwo` tables are loaded');
+    assert.deepEqual(
+      tables.map((r) => r.id),
+      ['table0', 'table1'],
+      'All `elideTwo` tables are loaded'
+    );
 
     const dimensions = keg.all('metadata/dimension', 'elideTwo');
     assert.ok(
@@ -112,7 +128,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
       '`elideTwo` `DimensionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
-      dimensions.mapBy('id'),
+      dimensions.map((r) => r.id),
       [
         'table0.dimension0',
         'table0.dimension1',
@@ -130,7 +146,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
       '`elideTwo` `TimeDimensionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
-      timeDimensions.mapBy('id'),
+      timeDimensions.map((r) => r.id),
       [
         'table1.eventTimeHour',
         'table1.orderTimeHour',
@@ -154,7 +170,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
       '`elideTwo` `MetricMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
-      metrics.mapBy('id'),
+      metrics.map((r) => r.id),
       ['table0.metric0', 'table1.metric1', 'table1.metric2'],
       'All `elideTwo` metrics are loaded'
     );
@@ -165,7 +181,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
       '`elideTwo` `ColumnFunctionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
-      columnFunctions.mapBy('id'),
+      columnFunctions.map((r) => r.id),
       [
         'normalizer-generated:timeGrain(column=table1.eventTimeHour;grains=hour)',
         'normalizer-generated:timeGrain(column=table1.orderTimeHour;grains=hour)',
@@ -297,14 +313,22 @@ module('Unit | Service | navi-metadata', function (hooks) {
     await this.service.loadMetadata({ dataSourceName: 'elideTwo' });
 
     const bardTwoTables = this.service.all('table', 'bardTwo');
-    assert.deepEqual(bardTwoTables.mapBy('id'), ['inventory'], '`all` returns all `bardTwo` tables');
+    assert.deepEqual(
+      bardTwoTables.map((r) => r.id),
+      ['inventory'],
+      '`all` returns all `bardTwo` tables'
+    );
 
     const elideTwoTables = this.service.all('table', 'elideTwo');
-    assert.deepEqual(elideTwoTables.mapBy('id'), ['table0', 'table1'], '`all` return all `elideTwo` tables');
+    assert.deepEqual(
+      elideTwoTables.map((r) => r.id),
+      ['table0', 'table1'],
+      '`all` return all `elideTwo` tables'
+    );
 
     const allTables = this.service.all('table');
     assert.deepEqual(
-      allTables.mapBy('id'),
+      allTables.map((r) => r.id),
       ['inventory', 'table0', 'table1'],
       '`all` returns all loaded tables when data source is not specified'
     );

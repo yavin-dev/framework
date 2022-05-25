@@ -22,7 +22,7 @@ export default class NativeWithCreate {
 
 function createGetter(
   _target: NativeWithCreate,
-  _key: string,
+  key: string,
   _descriptor: unknown,
   dependencyId: ClientServices
 ): PropertyDescriptor {
@@ -32,7 +32,7 @@ function createGetter(
       return this[INJECTOR]?.lookup('service', dependencyId);
     },
     set(value: unknown) {
-      Object.defineProperty(this, _key, { value });
+      Object.defineProperty(this, key, { value });
     },
   };
 }

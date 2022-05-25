@@ -1,18 +1,21 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import TableMetadataModel, { TableMetadataPayload } from 'navi-data/models/metadata/table';
-import type KegService from 'navi-data/services/keg';
 import MetricMetadataModel from 'navi-data/models/metadata/metric';
 import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
 import RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
+import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import type KegClass from '@yavin/client/utils/classes/keg';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
-let Payload: TableMetadataPayload, Model: TableMetadataModel, Keg: KegService;
+let Payload: TableMetadataPayload, Model: TableMetadataModel, Keg: KegClass;
 
 module('Unit | Metadata Model | Table', function (hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function () {
+    let metatadataService: NaviMetadataService = this.owner.lookup('service:navi-metadata');
     Payload = {
       id: 'tableA',
       name: 'Table A',
@@ -31,57 +34,65 @@ module('Unit | Metadata Model | Table', function (hooks) {
     Model = new TableMetadataModel(this.owner.lookup('service:client-injector'), Payload);
 
     //Looking up and injecting keg into the model
-    Keg = this.owner.lookup('service:keg');
+    Keg = metatadataService['keg'];
 
-    const modelFactory = (Class: any) => ({
-      identifierField: 'id',
-      create: (p: object) => new Class(this.owner.lookup('service:client-injector'), p as any),
-    });
-
-    Keg.push(
+    Keg.insert(
       'metadata/metric',
-      {
+      new MetricMetadataModel(this.owner.lookup('service:client-injector'), {
         id: 'pv',
         name: 'Page Views',
         description: 'Page Views',
         category: 'Page Views',
         source: 'bardOne',
-      },
-      { namespace: 'bardOne', modelFactory: modelFactory(MetricMetadataModel) }
+        isSortable: true,
+        type: 'field',
+      }),
+      { namespace: 'bardOne' }
     );
-    Keg.push(
+    Keg.insert(
       'metadata/dimension',
-      {
+      new DimensionMetadataModel(this.owner.lookup('service:client-injector'), {
         id: 'age',
         name: 'Age',
         description: 'Age',
         category: 'category',
         source: 'bardOne',
-      },
-      { namespace: 'bardOne', modelFactory: modelFactory(DimensionMetadataModel) }
+        isSortable: false,
+        type: 'field',
+        valueSourceType: ValueSourceType.TABLE,
+      }),
+      { namespace: 'bardOne' }
     );
-    Keg.push(
+    Keg.insert(
       'metadata/timeDimension',
-      {
+      new TimeDimensionMetadataModel(this.owner.lookup('service:client-injector'), {
         id: 'orderDate',
         name: 'Order Date',
         description: 'Order Date',
         category: 'category',
         source: 'bardOne',
-      },
-      { namespace: 'bardOne', modelFactory: modelFactory(TimeDimensionMetadataModel) }
+        isSortable: true,
+        supportedGrains: [],
+        timeZone: 'UTC',
+        type: 'field',
+        valueSourceType: ValueSourceType.NONE,
+      }),
+      { namespace: 'bardOne' }
     );
-    Keg.push(
+    Keg.insert(
       'metadata/requestConstraint',
-      {
+      new RequestConstraintMetadataModel(this.owner.lookup('service:client-injector'), {
         id: 'constraint',
         name: 'Constraint',
         description: 'Constraint',
         type: 'existence',
-        constraint: {},
+        constraint: {
+          property: 'columns',
+          matches: { type: 'metric', field: 'test' },
+        },
         source: 'bardOne',
-      },
-      { namespace: 'bardOne', modelFactory: modelFactory(RequestConstraintMetadataModel) }
+      }),
+      { namespace: 'bardOne' }
     );
   });
 

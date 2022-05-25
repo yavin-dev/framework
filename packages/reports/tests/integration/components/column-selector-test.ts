@@ -39,7 +39,7 @@ module('Integration | Component | column-selector', function (hooks) {
     this.metadataService = this.owner.lookup('service:navi-metadata');
     await this.metadataService.loadMetadata({ dataSourceName: 'bardOne' });
 
-    const dimensions = this.metadataService.all('dimension', 'bardOne').toArray();
+    const dimensions = this.metadataService.all('dimension', 'bardOne');
     const selectedColumns = [this.factoryService.createColumnFromMeta(dimensions[0])];
     this.set('allColumns', dimensions);
     this.set('selectedColumns', selectedColumns);
