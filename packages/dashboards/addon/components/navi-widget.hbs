@@ -1,6 +1,7 @@
 {{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <GridStackItem
   class="navi-widget"
+  ...attributes
   @options={{hash
     x=@layoutOptions.column
     y=@layoutOptions.row
@@ -33,6 +34,13 @@
         <EmberTooltip @targetId="navi-widget__edit-btn-{{@index}}" @popperContainer="body" @text="Explore" />
       </LinkTo>
       {{#if @canEdit}}
+        <DenaliLinkTo
+          @route="dashboards.dashboard.widgets.widget.clone"
+          @models={{array @model.dashboard.id @model.id}}
+        >
+          <DenaliIcon @size="small" @icon="copy-file" class="navi-widget__clone-btn" id="navi-widget__clone-btn-{{@index}}" />
+          <EmberTooltip @targetId="navi-widget__clone-btn-{{@index}}" @popperContainer="body" @text="Clone" />
+        </DenaliLinkTo>
         <CommonActions::Delete
           class="link"
           @model={{@model}}
@@ -94,4 +102,7 @@
     {{/let}}
   {{/if}}
 
+  {{#if @isLastAdded}}
+    <div class="navi-widget__last-added" {{did-insert this.scrollContainerToBottom}}></div>
+  {{/if}}
 </GridStackItem>

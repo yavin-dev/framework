@@ -195,6 +195,90 @@ module('Acceptance | Dashboards', function (hooks) {
     );
   });
 
+  test('invalid lastAddedWidgetId query param', async function (assert) {
+    const filters =
+      'N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu%2BUArnChiAIwgC6NkcUAE1I4EWAYwDGMAGL4AttACe1EDnwJ5ceMjSg%2Bg0hCEBfGjEV5SAiHLjkkELJRpIsjBBLikARuoEB5ci9jLmMgA';
+
+    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `empty lastAddedWidgetId query param is removed`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `empty lastAddedWidgetId query param is removed (view route)`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=foo`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `invalid lastAddedWidgetId query param is removed`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=foo`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `invalid lastAddedWidgetId query param is removed (view route)`
+    );
+
+    await click('.navi-dashboard__revert-button');
+    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=0.4`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `decimal lastAddedWidgetId query param is removed`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=0.4`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `decimal lastAddedWidgetId query param is removed (view route)`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=0`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `zero lastAddedWidgetId query param is removed`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=0`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `zero lastAddedWidgetId query param is removed (view route)`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=100`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `lastAddedWidgetId query param that is not in the dashboad is removed`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=100`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `lastAddedWidgetId query param that is not in the dashboad is removed (view route)`
+    );
+  });
+
   test('add widget button', async function (assert) {
     assert.expect(5);
 
@@ -400,7 +484,7 @@ module('Acceptance | Dashboards', function (hooks) {
   });
 
   test('New widget', async function (assert) {
-    assert.expect(17);
+    assert.expect(23);
 
     // Check original set of widgets
     await visit('/dashboards/1');
@@ -430,10 +514,15 @@ module('Acceptance | Dashboards', function (hooks) {
 
     // Save without running
     await click('.navi-report-widget__save-btn');
-    assert.ok(
-      currentURL().endsWith('/dashboards/1/view'),
+    let NEW_WIDGET_ID = 14;
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
       'After saving without running, user is brought back to dashboard view'
     );
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
+    assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
 
     let widgetsAfter = findAll('.navi-widget__title').map((el) => el.textContent.trim());
 
@@ -473,7 +562,15 @@ module('Acceptance | Dashboards', function (hooks) {
 
     // Save
     await click('.navi-report-widget__save-btn');
-    assert.ok(currentURL().endsWith('/dashboards/1/view'), 'After saving, user is brought back to dashboard view');
+    NEW_WIDGET_ID++;
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
+      'After saving, user is brought back to dashboard view'
+    );
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
+    assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
 
     widgetsAfter = findAll('.navi-widget__title').map((el) => el.textContent.trim());
 
@@ -719,7 +816,7 @@ module('Acceptance | Dashboards', function (hooks) {
   });
 
   test('New widget after clone', async function (assert) {
-    assert.expect(4);
+    assert.expect(7);
 
     await visit('/dashboards/1');
 
@@ -742,10 +839,15 @@ module('Acceptance | Dashboards', function (hooks) {
 
     // Save without running
     await click('.navi-report-widget__save-btn');
-    assert.ok(
-      currentURL().endsWith('/dashboards/9/view'),
+    const NEW_WIDGET_ID = 17;
+    assert.equal(
+      currentURL(),
+      `/dashboards/9/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
       'After saving without running, user is brought back to dashboard view'
     );
+    assert.dom(`[data-gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
+    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
+    assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
 
     let widgetsAfter = findAll('.navi-widget__title').map((el) => el.textContent.trim());
 

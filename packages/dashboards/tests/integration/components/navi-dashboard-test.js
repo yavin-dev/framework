@@ -95,9 +95,12 @@ module('Integration | Component | navi dashboard', function (hooks) {
   });
 
   test('widget tasks', async function (assert) {
-    assert.expect(2);
+    assert.expect(3);
 
-    const taskByWidget = { 1: 'foo', 2: 'bar' };
+    const taskByWidget = {
+      1: { isRunning: true },
+      2: { isError: true, error: { details: [`It's 11:00pm. Do you know where your children are?`] } },
+    };
     this.set('taskByWidget', taskByWidget);
 
     await render(hbs`<NaviDashboard
@@ -108,16 +111,18 @@ module('Integration | Component | navi dashboard', function (hooks) {
       @onAddFilter={{this.onAddFilter}}
     />`);
 
-    const { owner } = this;
-    const components = owner.lookup('-view-registry:main');
-
-    findAll('.navi-widget').forEach((el) => {
-      const emberId = el.getAttribute('id');
-      const component = components[emberId].parentView;
-      const { id } = component.model;
-      const { taskInstance } = component;
-      assert.equal(taskInstance, taskByWidget[id], 'widget gets matching model and task instance');
-    });
+    assert.deepEqual(
+      findAll('.navi-widget').map((el) => el.getAttribute('data-gs-id')),
+      ['1', '2'],
+      'widgets get correct models'
+    );
+    assert.dom(`[data-gs-id="1"] .navi-loader__container`).exists('first widget gets correct task instance');
+    assert
+      .dom(`[data-gs-id="2"] .navi-widget__content`)
+      .hasText(
+        `There was an error with your request: It's 11:00pm. Do you know where your children are?`,
+        'second widget gets correct task instance'
+      );
   });
 
   test('dashboard export', async function (assert) {

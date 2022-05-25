@@ -1,4 +1,4 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
 <div class="navi-dashboard" ...attributes>
   <DashboardHeader
     @dashboard={{@dashboard}}
@@ -20,7 +20,7 @@
           @onChange={{route-action "didUpdateLayout"}}
           @onResizestop={{this.onResize}}
         >
-          {{#each @dashboard.presentation.layout as |layout|}}
+          {{#each @dashboard.presentation.layout as |layout index|}}
             {{#with (get-widget layout.widgetId) as |widget|}}
               {{#if widget}}
                 <NaviWidget
@@ -28,6 +28,8 @@
                   @layoutOptions={{layout}}
                   @taskInstance={{get @taskByWidget widget.id}}
                   @canEdit={{@dashboard.canUserEdit}}
+                  @isLastAdded={{eq widget.id @lastAddedWidgetId}}
+                  @index={{index}}
                 />
               {{/if}}
             {{/with}}

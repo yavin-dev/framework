@@ -39,12 +39,14 @@ export default class DashboardsDashboardViewController extends Controller.extend
   @service('navi-metadata')
   declare metadataService: NaviMetadataService;
 
-  queryParams = ['filters'];
+  queryParams = ['filters', 'lastAddedWidgetId'];
 
   /**
    * query param holding encoded filters for the dashboard
    */
   @tracked filters: string | null = null;
+
+  @tracked lastAddedWidgetId: string | null = null;
 
   @action
   async updateFilter(dashboard: DashboardModel, originalFilter: FilterFragment, changeSet: Partial<Filter>) {
@@ -62,7 +64,9 @@ export default class DashboardsDashboardViewController extends Controller.extend
 
     const filterQueryParams = await this.compression.compress({ filters: newFilters });
 
-    this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
+    this.transitionToRoute('dashboards.dashboard', {
+      queryParams: { filters: filterQueryParams, lastAddedWidgetId: null },
+    });
   }
 
   @action
@@ -71,7 +75,9 @@ export default class DashboardsDashboardViewController extends Controller.extend
     const newFilters = dashboardURLFilters(dashboard).filter((fil) => !isEqual(fil, removedFilter));
     const filterQueryParams = await this.compression.compress({ filters: newFilters });
 
-    this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
+    this.transitionToRoute('dashboards.dashboard', {
+      queryParams: { filters: filterQueryParams, lastAddedWidgetId: null },
+    });
   }
 
   @action
@@ -101,14 +107,17 @@ export default class DashboardsDashboardViewController extends Controller.extend
 
     const filterQueryParams = await this.compression.compress({ filters });
 
-    this.transitionToRoute('dashboards.dashboard', { queryParams: { filters: filterQueryParams } });
+    this.transitionToRoute('dashboards.dashboard', {
+      queryParams: { filters: filterQueryParams, lastAddedWidgetId: null },
+    });
   }
 
   /**
    * Remove query params as model enters clean state
    */
   @action
-  clearFilterQueryParams() {
+  clearQueryParams() {
     this.filters = null;
+    this.lastAddedWidgetId = null;
   }
 }
