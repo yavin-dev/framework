@@ -195,6 +195,74 @@ module('Acceptance | Dashboards', function (hooks) {
     );
   });
 
+  test('invalid lastAddedWidgetId query param', async function (assert) {
+    const filters =
+      'N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu%2BUArnChiAIwgC6NkcUAE1I4EWAYwDGMAGL4AttACe1EDnwJ5ceMjSg%2Bg0hCEBfGjEV5SAiHLjkkELJRpIsjBBLikARuoEB5ci9jLmMgA';
+
+    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `empty lastAddedWidgetId query param is removed`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `empty lastAddedWidgetId query param is removed (view route)`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=foo`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `invalid lastAddedWidgetId query param is removed`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=foo`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `invalid lastAddedWidgetId query param is removed (view route)`
+    );
+
+    await click('.navi-dashboard__revert-button');
+    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=0.4`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `decimal lastAddedWidgetId query param is removed`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=0.4`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `decimal lastAddedWidgetId query param is removed (view route)`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=0`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `zero lastAddedWidgetId query param is removed`
+    );
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=0`);
+    assert.equal(
+      currentURL(),
+      `/dashboards/1/view?filters=${filters}`,
+      `zero lastAddedWidgetId query param is removed (view route)`
+    );
+  });
+
   test('add widget button', async function (assert) {
     assert.expect(5);
 

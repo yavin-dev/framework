@@ -23,6 +23,8 @@ module('Acceptance | Clone Widget', function (hooks) {
       'redirects to dashboard view and adds query param correctly'
     );
 
+    assert.dom('.alert.is-danger').doesNotExist('Error notification is not shown');
+
     assert.dom('.navi-widget').exists({ count: 4 }, 'adds a widget to the dashboard');
 
     assert.deepEqual(
@@ -53,6 +55,10 @@ module('Acceptance | Clone Widget', function (hooks) {
 
     assert.equal(currentURL(), '/dashboards/4/view', 'redirects to dashboards/4/view');
 
+    assert
+      .dom('.alert.is-danger')
+      .hasText('You do not have edit permission for this dashboard.', 'Error notification is shown');
+
     assert.dom('.navi-widget').exists({ count: 1 }, 'widget has not been added to the dashboard');
   });
 
@@ -72,6 +78,8 @@ module('Acceptance | Clone Widget', function (hooks) {
       `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
       'cloning widget stays in dashboard view and adds query param correctly'
     );
+
+    assert.dom('.alert.is-danger').doesNotExist('Error notification is not shown');
 
     assert.dom('.navi-widget').exists({ count: 4 }, 'cloning adds a widget to the dashboard');
 

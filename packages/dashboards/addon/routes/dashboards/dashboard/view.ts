@@ -53,6 +53,22 @@ export default class DashboardsDashboardViewRoute extends Route {
   };
 
   /**
+   * validates lastAddedWidgetId query param
+   */
+  beforeModel(transition: Transition) {
+    const { filters, lastAddedWidgetId } = transition.to.queryParams;
+
+    if (
+      lastAddedWidgetId !== undefined &&
+      !(Number.isInteger(Number(lastAddedWidgetId)) && Number(lastAddedWidgetId) > 0)
+    ) {
+      this.transitionTo('dashboards.dashboard', {
+        queryParams: { filters, lastAddedWidgetId: null },
+      });
+    }
+  }
+
+  /**
    * Adds filters from query params to the dashboard then
    * makes an ajax request to retrieve relevant widgets in the dashboard
    */
