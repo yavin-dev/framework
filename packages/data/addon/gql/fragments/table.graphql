@@ -1,4 +1,4 @@
-#import "./arguments.graphql"
+# import * from "./arguments.graphql"
 
 fragment TableFragment on ElideTable {
   id
