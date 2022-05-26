@@ -3,28 +3,37 @@ import { module, test } from 'qunit';
 
 module('Unit | Utils | Cache Class', function () {
   test('cache stores and returns records correctly', async function (assert) {
-    assert.expect(6);
+    assert.expect(9);
 
     // setup cache (key : record :: '0' : 'zero')
-    const cache = new Cache<string>((id: number) => `${id}`);
+    const cache = new Cache<string>();
 
-    // try calling getCacheKey
-    const cacheId = cache.getCacheKey(0);
+    // try setting and getting a cache item
+    const cacheId = '0';
     const cacheRecord = 'zero';
-    assert.deepEqual(cacheId, '0', 'correctly calls getCacheId function from cache');
-
-    // check records
     cache.setItem(cacheId, cacheRecord);
     assert.deepEqual(cache.getItem(cacheId), 'zero', 'checking for values in cache returns values added to cache');
     assert.deepEqual(cache.getItem('1'), undefined, 'checking for values not in cache returns undefined');
 
+    // try removing cache items
+    cache.removeItem(cacheId);
+    assert.notOk(cache.has(cacheId));
+    cache.setItem('0', 'zero');
+    cache.setItem('1', 'one');
+    cache.clear();
+    assert.notOk(cache.has('0'));
+    assert.notOk(cache.has('1'));
+
     // try a complex record type
-    const cache2 = new Cache<{ word: string; letters: number }>((letter: string) => `${letter}`);
+    const cache2 = new Cache<{ word: string; letters: number }>();
     const recordA = { word: 'apple', letters: 5 };
     cache2.setItem('a', recordA);
     assert.deepEqual(cache2.getItem('a'), recordA, 'cache works as expected for complex record types');
 
-    // call getItem with something not in cache
+    // call getItem with something not in cache (without fallback function)
+    assert.deepEqual(cache2.getItem('b'), undefined, 'item not in cache returns undefined');
+
+    // call getItem with something not in cache (with fallback function)
     const recordB = { word: 'banana', letters: 6 };
     assert.deepEqual(
       cache2.getItem('b', (_cacheKey: string) => recordB),
@@ -38,7 +47,7 @@ module('Unit | Utils | Cache Class', function () {
     assert.expect(7);
 
     // setup cache (key : record :: '0' : 'zero')
-    const cache = new Cache<string>((id: number) => `${id}`, 3);
+    const cache = new Cache<string>(3);
 
     cache.setItem('2', 'two');
     cache.setItem('1', 'one');
@@ -61,7 +70,7 @@ module('Unit | Utils | Cache Class', function () {
   test('cache honors timeout constraint', async function (assert) {
     assert.expect(1);
 
-    const cache = new Cache<string>((id: number) => `${id}`, 3, 1);
+    const cache = new Cache<string>(3, 1);
 
     cache.setItem('7', 'seven');
 

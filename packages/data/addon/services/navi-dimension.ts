@@ -39,14 +39,16 @@ type RequestType = 'all' | 'search' | 'find';
  */
 class DimensionCache extends Cache<NaviDimensionResponse> {
   constructor() {
-    function getDimensionCacheId(dimension: DimensionColumn): string {
-      const cannonicalName = canonicalizeMetric({
-        metric: dimension?.columnMetadata?.name,
-        parameters: dimension.parameters,
-      });
-      return cannonicalName;
-    }
-    super(getDimensionCacheId, DIMENSION_CACHE.maxSize, DIMENSION_CACHE.timeoutMs);
+    super(DIMENSION_CACHE.maxSize, DIMENSION_CACHE.timeoutMs);
+  }
+
+  // given a dimension column, return that column's cache key
+  getCacheKey(dimension: DimensionColumn): string {
+    const cannonicalName = canonicalizeMetric({
+      metric: dimension?.columnMetadata?.name,
+      parameters: dimension.parameters,
+    });
+    return cannonicalName;
   }
 
   /**
