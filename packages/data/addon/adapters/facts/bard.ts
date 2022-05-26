@@ -11,27 +11,22 @@ import { A as array } from '@ember/array';
 import EmberObject from '@ember/object';
 import { canonicalizeMetric } from '../../utils/metric';
 import { configHost, getDataSource } from '../../utils/adapter';
-import NaviFactAdapter, { type RequestOptions, type AsyncQueryResponse, FactAdapterError } from './interface';
-import {
-  SORT_DIRECTIONS,
-  type Request,
-  type Filter,
-  type Column,
-  type Sort,
-  type ParameterValue,
-} from '@yavin/client/request';
+import NaviFactAdapter, { FactAdapterError } from './interface';
+import { SORT_DIRECTIONS } from '@yavin/client/request';
 import { omit, capitalize } from 'lodash-es';
 import { getPeriodForGrain, Grain } from '@yavin/client/utils/date';
 import moment from 'moment';
 import config from 'ember-get-config';
 import { task } from 'ember-concurrency';
+import Interval from '@yavin/client/utils/classes/interval';
+import { FiliDataSource } from 'navi-config';
+import type { RequestOptions, AsyncQueryResponse } from './interface';
+import type { Request, Filter, Column, Sort, ParameterValue } from '@yavin/client/request';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type RequestDecoratorService from 'navi-data/services/request-decorator';
 import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import type { TaskGenerator } from 'ember-concurrency';
-import Interval from '@yavin/client/utils/classes/interval';
-import { FiliDataSource } from 'navi-config';
 
 export type Query = Record<string, string | number | boolean>;
 

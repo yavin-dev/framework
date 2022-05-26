@@ -1,7 +1,8 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import NaviFactSerializer from 'navi-data/serializers/facts/interface';
-import { type AsyncQueryResponse, QueryStatus } from 'navi-data/adapters/facts/interface';
+import { QueryStatus } from 'navi-data/adapters/facts/interface';
+import type { AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
 import type { RequestV2 } from '@yavin/client/request';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import { ExecutionResult, GraphQLError } from 'graphql';
