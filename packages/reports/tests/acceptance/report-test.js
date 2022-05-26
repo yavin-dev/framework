@@ -1449,13 +1449,19 @@ module('Acceptance | Navi Report', function (hooks) {
   });
 
   test("filtering on a dimension with a storage strategy of 'none'", async function (assert) {
-    assert.expect(4);
+    assert.expect(5);
+
     //Add filter for a dimension where storageStrategy is 'none' and try to run the report
     await visit('/reports/13/view');
     await clickItem('dimension', 'Context Id');
     await clickItemFilter('dimension', 'Context Id');
+    await click('.navi-report__run-btn');
+
+    // fill in the filter and run the report
     await fillIn('.emberTagInput-new>input', 'This_will_not_match_any_dimension_values');
     await blur('.js-ember-tag-input-new');
+    assert.dom('.report-view-overlay__button--run').exists('run report overlay appears when filter is changed');
+
     await click('.navi-report__run-btn');
 
     assert

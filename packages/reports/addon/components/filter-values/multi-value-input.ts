@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -29,12 +29,12 @@ export default class MultiValueInput extends Component<Args> {
    */
   @action
   addValue(tag: string | number) {
-    const { tags } = this;
-    tags.push(tag);
+    const tags = [...this.tags, tag];
 
     this.args.onUpdateFilter({
       values: tags.slice(),
     });
+    this.tags = tags;
   }
 
   /**
@@ -43,11 +43,12 @@ export default class MultiValueInput extends Component<Args> {
    */
   @action
   removeValueAtIndex(index: number) {
-    const { tags } = this;
+    const tags = [...this.tags];
     tags.splice(index, 1);
 
     this.args.onUpdateFilter({
       values: tags.slice(),
     });
+    this.tags = tags;
   }
 }
