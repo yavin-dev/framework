@@ -17,7 +17,13 @@
       >
         <GridStack
           {{!-- TODO enable animation after determining how to do c3 resize + gs animation --}}
-          @options={{hash column=@width animate=false}}
+          @options={{hash
+            column=@width
+            animate=false
+            marginTop=0
+            marginBottom=20
+            cellHeight="80px"
+          }}
           @onChange={{route-action "didUpdateLayout"}}
           @onResizestop={{this.onResize}}
         >
