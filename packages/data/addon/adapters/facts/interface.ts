@@ -2,7 +2,6 @@
  * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import type { TaskGenerator } from 'ember-concurrency';
 import type { Request } from '@yavin/client/request';
 
 export type RequestOptions = {
@@ -84,7 +83,7 @@ export interface TableExportResult {
   message: string;
 }
 export default interface NaviFactAdapter {
-  fetchDataForRequest(request: Request, options: RequestOptions): TaskGenerator<unknown>;
+  fetchDataForRequest(request: Request, options: RequestOptions): PromiseLike<unknown>;
   urlForFindQuery(request: Request, options: RequestOptions): string;
-  urlForDownloadQuery(request: Request, options: RequestOptions): TaskGenerator<string>;
+  urlForDownloadQuery(request: Request, options: RequestOptions): PromiseLike<string>;
 }

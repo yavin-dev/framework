@@ -16,7 +16,7 @@ import type { FilterOperator } from '@yavin/client/request';
 import type { Column, RequestV2 } from '@yavin/client/request';
 import type NaviDimensionAdapter from './interface';
 import type { DimensionFilter } from './interface';
-import type { ServiceOptions } from 'navi-data/services/navi-dimension';
+import type { Options } from './interface';
 import type ElideFactsAdapter from '../facts/elide';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
@@ -72,14 +72,26 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     };
   }
 
-  @task *all(dimension: DimensionColumn, options: ServiceOptions = {}): TaskGenerator<AsyncQueryResponse> {
-    return yield taskFor(this.find).perform(dimension, [], options);
+  all(dimension: DimensionColumn, options: Options = {}): Promise<AsyncQueryResponse> {
+    return taskFor(this.findTask).perform(dimension, [], options);
   }
 
-  @task *find(
+  find(
     dimension: DimensionColumn,
     predicate: DimensionFilter[] = [],
-    options: ServiceOptions = {}
+    options: Options = {}
+  ): Promise<AsyncQueryResponse> {
+    return taskFor(this.findTask).perform(dimension, predicate, options);
+  }
+
+  search(dimension: DimensionColumn, query: string, options: Options = {}): Promise<AsyncQueryResponse> {
+    return taskFor(this.searchTask).perform(dimension, query, options);
+  }
+
+  @task *findTask(
+    dimension: DimensionColumn,
+    predicate: DimensionFilter[] = [],
+    options: Options = {}
   ): TaskGenerator<AsyncQueryResponse> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
 
@@ -91,7 +103,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
   @task private *findEnum(
     dimension: DimensionColumn,
     predicate: DimensionFilter[],
-    _options: ServiceOptions
+    _options: Options
   ): TaskGenerator<AsyncQueryResponse> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
     const { values } = columnMetadata;
@@ -109,7 +121,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
   @task private *findRequest(
     dimension: DimensionColumn,
     predicate: DimensionFilter[] = [],
-    options: ServiceOptions = {}
+    options: Options = {}
   ): TaskGenerator<AsyncQueryResponse> {
     const { columnMetadata, parameters = {} } = dimension;
     const { valueSource, suggestionColumns } = columnMetadata as ElideDimensionMetadataModel;
@@ -135,13 +147,13 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
       requestVersion: '2.0',
     };
 
-    return yield taskFor(this.factAdapter.fetchDataForRequest).perform(request, options);
+    return yield this.factAdapter.fetchDataForRequest(request, options);
   }
 
-  @task *search(
+  @task *searchTask(
     dimension: DimensionColumn,
     query: string,
-    options: ServiceOptions = {}
+    options: Options = {}
   ): TaskGenerator<AsyncQueryResponse> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
 

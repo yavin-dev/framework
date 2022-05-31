@@ -17,7 +17,7 @@ import moment from 'moment';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { omitBy } from 'lodash-es';
 import type { RequestOptions, AsyncQueryResponse, TableExportResponse } from './interface';
-import type { Parameters, Request, FilterOperator, Filter, Column, Sort } from '@yavin/client/request';
+import type { Parameters, Request, FilterOperator, Filter, Column, Sort, RequestV2 } from '@yavin/client/request';
 import type { DocumentNode } from 'graphql';
 import type { Moment } from 'moment';
 import type { Grain } from '@yavin/client/utils/date';
@@ -328,11 +328,15 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName, headers } });
   }
 
+  urlForDownloadQuery(request: RequestV2, options: RequestOptions): Promise<string> {
+    return taskFor(this.urlForDownloadQueryTask).perform(request, options);
+  }
+
   /**
    * @param _request
    * @param _options
    */
-  @task *urlForDownloadQuery(request: Request, options: RequestOptions): TaskGenerator<string> {
+  @task *urlForDownloadQueryTask(request: Request, options: RequestOptions): TaskGenerator<string> {
     const response = yield taskFor(this.fetchDataForExportTask).perform(request, options);
     const status: QueryStatus = response.tableExport.edges[0]?.node.status;
     if (status !== QueryStatus.COMPLETE) {
@@ -417,12 +421,12 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param request
    * @param options
    */
-  @task *fetchDataForRequest(
+  async fetchDataForRequest(
     this: ElideFactsAdapter,
     request: Request,
     options: RequestOptions = {}
-  ): TaskGenerator<AsyncQueryResponse> {
-    const payload: AsyncQueryResponse = yield taskFor(this.fetchDataForRequestTask).perform(request, options);
+  ): Promise<AsyncQueryResponse> {
+    const payload: AsyncQueryResponse = await taskFor(this.fetchDataForRequestTask).perform(request, options);
     const responseStr = payload?.asyncQuery.edges[0].node.result?.responseBody || '{}';
     const responseBody = JSON.parse(responseStr);
     if (responseBody.errors) {
