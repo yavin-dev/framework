@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import { createGraphQLHandler, mirageGraphQLFieldResolver } from '@miragejs/graphql';
-import graphQLSchema from '../../gql/schema.graphql';
+import graphQLSchema from '@yavin/client/gql/schema';
 import gql from 'graphql-tag';
 import faker from '@faker-js/faker';
 import moment from 'moment';

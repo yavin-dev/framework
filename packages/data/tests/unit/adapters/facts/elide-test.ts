@@ -1,10 +1,12 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { print } from 'graphql';
-import asyncFactsMutationStr from 'navi-data/gql/mutations/async-facts.graphql';
-import asyncFactsCancelMutationStr from 'navi-data/gql/mutations/async-facts-cancel.graphql';
-import asyncFactsQueryStr from 'navi-data/gql/queries/async-facts.graphql';
-import exportFactsQueryStr from 'navi-data/gql/queries/export-facts.graphql';
+import {
+  asyncFactsMutation,
+  asyncFactsCancel,
+  asyncFactsQuery,
+  tableExportFactsQuery,
+} from '@yavin/client/gql/fact-queries';
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import moment from 'moment';
@@ -375,7 +377,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       );
       assert.equal(
         requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-        print(asyncFactsMutationStr).replace(/[ \t\r\n]+/g, ''),
+        print(asyncFactsMutation).replace(/[ \t\r\n]+/g, ''),
         'createAsyncQuery sends the correct mutation to create a new asyncQuery'
       );
 
@@ -464,7 +466,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
       assert.equal(
         requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-        print(asyncFactsCancelMutationStr).replace(/[ \t\r\n]+/g, ''),
+        print(asyncFactsCancel).replace(/[ \t\r\n]+/g, ''),
         'cancelAsyncQuery sends the correct mutation to cancel an asyncQuery'
       );
 
@@ -533,7 +535,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
       assert.equal(
         requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-        print(asyncFactsQueryStr).replace(/[ \t\r\n]+/g, ''),
+        print(asyncFactsQuery).replace(/[ \t\r\n]+/g, ''),
         'fetchAsyncQuery sent the correct query to fetch an asyncQuery'
       );
 
@@ -638,7 +640,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
       assert.equal(
         requestObj.query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-        print(exportFactsQueryStr).replace(/[ \t\r\n]+/g, ''),
+        print(tableExportFactsQuery).replace(/[ \t\r\n]+/g, ''),
         'fetchTableExport sent the correct query to fetch a tableExport'
       );
 
@@ -730,13 +732,13 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
         assert.equal(
           query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-          print(asyncFactsMutationStr).replace(/[ \t\r\n]+/g, ''),
+          print(asyncFactsMutation).replace(/[ \t\r\n]+/g, ''),
           'fetchDataForRequest first creates an asyncQuery'
         );
       } else if (callCount < 6) {
         assert.equal(
           query.replace(/__typename/g, '').replace(/[ \t\r\n]+/g, ''),
-          print(asyncFactsQueryStr).replace(/[ \t\r\n]+/g, ''),
+          print(asyncFactsQuery).replace(/[ \t\r\n]+/g, ''),
           'fetchDataForRequest polls for the asyncQuery to complete'
         );
         assert.equal(
