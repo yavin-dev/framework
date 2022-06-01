@@ -4,7 +4,6 @@
  */
 import JSONSerializer from '@ember-data/serializer/json';
 import { inject as service } from '@ember/service';
-import { normalizeV1toV2 } from 'navi-core/utils/request';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { assert } from '@ember/debug';
@@ -33,17 +32,7 @@ export default class RequestSerializer extends JSONSerializer {
    * @return {Object} normalized request
    */
   normalize(typeClass, request) {
-    let normalized;
-
-    //normalize v1 into v2
-    if (request.requestVersion === 'v1') {
-      //if datasource is undefined, try to infer from metadata
-      const dateSourceName = request.dataSource || this.getTableNamespace(request.logicalTable.table);
-
-      normalized = normalizeV1toV2(request, dateSourceName, this.naviMetadata);
-    } else {
-      normalized = { ...request };
-    }
+    const normalized = { ...request };
 
     //copy source property from request
     ['columns', 'filters', 'sorts'].forEach((attr) =>

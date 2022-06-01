@@ -7,7 +7,6 @@ import { attr } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { readOnly } from '@ember/object/computed';
 import { set } from '@ember/object';
-import type { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/serializers/table';
 import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
 import type RequestFragment from './request';
 
@@ -36,6 +35,24 @@ const Validations = buildValidations(
     request: readOnly('model._request'),
   }
 );
+
+export interface TableColumnAttributes {
+  canAggregateSubtotal?: boolean;
+  format?: string;
+}
+export type TableVisualizationMetadata = {
+  type: 'table';
+  version: 2;
+  metadata: {
+    columnAttributes: {
+      [cid: string]: TableColumnAttributes | undefined;
+    };
+    showTotals?: {
+      subtotal?: string;
+      grandTotal?: boolean;
+    };
+  };
+};
 
 export default class TableVisualization
   extends VisualizationFragment.extend(Validations)

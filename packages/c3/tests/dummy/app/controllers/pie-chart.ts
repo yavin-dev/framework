@@ -64,7 +64,7 @@ export default class PieChartController extends Controller {
   get visualizationOptions() {
     return {
       type: 'pie-chart',
-      version: 1,
+      version: 2,
       metadata: this.options,
     };
   }

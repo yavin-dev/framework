@@ -53,15 +53,13 @@ module('Integration | Component | navi-column-config', function (hooks) {
         }),
         visualization: {
           type: 'line-chart',
-          version: 1,
+          version: 2,
           metadata: {
             axis: {
               y: {
                 series: {
                   type: 'metric',
-                  config: {
-                    metrics: [{ metric: 'adClicks', parameters: {}, canonicalName: 'adClicks' }],
-                  },
+                  config: {},
                 },
               },
             },
