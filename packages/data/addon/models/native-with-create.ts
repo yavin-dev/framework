@@ -39,7 +39,7 @@ function createGetter(
 
 export function ClientService<T extends NativeWithCreate, S extends ClientServices>(
   dependencyId: S
-): (...args: any[]) => PropertyDescriptor {
+): (...args: any[]) => void {
   return function getter(...args: any[]) {
     return createGetter(...(args as [T, string, any]), dependencyId);
   };
