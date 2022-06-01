@@ -1,8 +1,22 @@
 {
-  "extends": "./tsconfig-base.json",
   "compilerOptions": {
-    "rootDir": ""
+    "target": "ES2015",
+    "module": "ES2020",
+
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "allowSyntheticDefaultImports": true,
+
+    "moduleResolution": "node",
+    "baseUrl": "./src",
+
+    "rootDir": "src",
+
+    "typeRoots": ["node_modules/@types", "types"]
   },
-  "include": ["src", "test"],
-  "exclude": ["lib"]
+  "files": ["types/graphql.d.ts"],
+  "include": ["src"]
 }

@@ -4,7 +4,7 @@
  */
 import EmberObject from '@ember/object';
 import { queryManager } from 'ember-apollo-client';
-import GQLQueries from 'navi-data/gql/metadata-queries';
+import * as GQLQueries from '@yavin/client/gql/metadata-queries';
 import { assert } from '@ember/debug';
 import { DocumentNode } from 'graphql';
 import { isPresent } from '@ember/utils';

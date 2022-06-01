@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -10,13 +10,9 @@ import TableExportFactsMutation from './mutations/export-facts.graphql';
 import TableExportFactsCancel from './mutations/export-facts-cancel.graphql';
 import TableExportFactsQuery from './queries/export-facts.graphql';
 
-export default {
-  asyncFactsMutation: AsyncFactsMutation,
-  asyncFactsCancel: AsyncFactsCancel,
-  asyncFactsQuery: AsyncFactsQuery,
-  tableExportFactsMutation: TableExportFactsMutation,
-  tableExportFactsCancel: TableExportFactsCancel,
-  tableExportFactsQuery: TableExportFactsQuery,
-};
-
-declare module 'navi-data/gql/fact-queries';
+export const asyncFactsMutation = AsyncFactsMutation;
+export const asyncFactsCancel = AsyncFactsCancel;
+export const asyncFactsQuery = AsyncFactsQuery;
+export const tableExportFactsMutation = TableExportFactsMutation;
+export const tableExportFactsCancel = TableExportFactsCancel;
+export const tableExportFactsQuery = TableExportFactsQuery;

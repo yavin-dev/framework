@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import GQLQueries from 'navi-data/gql/metadata-queries';
+import * as GQLQueries from '@yavin/client/gql/metadata-queries';
 import { print } from 'graphql/language/printer';
 import ElideOneScenario from 'navi-data/mirage/scenarios/elide-one';
 import ElideOneDemoNamespaceScenario from 'navi-data/mirage/scenarios/elide-one-demo-namespace';

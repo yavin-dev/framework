@@ -9,7 +9,7 @@ import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import Interval from '@yavin/client/utils/classes/interval';
 import { getDefaultDataSource } from '../../utils/adapter';
-import GQLQueries from 'navi-data/gql/fact-queries';
+import * as GQLQueries from '@yavin/client/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import { v1 } from 'ember-uuid';
