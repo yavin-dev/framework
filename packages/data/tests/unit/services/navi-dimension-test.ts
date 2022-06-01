@@ -4,18 +4,16 @@ import NaviDimensionModel from 'navi-data/models/navi-dimension';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import GraphQLScenario from 'navi-data/mirage/scenarios/elide-one';
-import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import config from 'ember-get-config';
 import EmberObject from '@ember/object';
 import DimensionMetadataModel, { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
-import type { TaskGenerator } from 'ember-concurrency';
 import type NaviDimensionAdapter from 'navi-data/adapters/dimensions/interface';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type { DimensionFilter } from 'navi-data/adapters/dimensions/interface';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
-import type { ServiceOptions } from 'navi-data/services/navi-dimension';
+import type { Options } from 'navi-data/adapters/dimensions/interface';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { Server } from 'miragejs';
 import type { AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
@@ -81,19 +79,20 @@ module('Unit | Service | navi-dimension', function (hooks) {
     ];
 
     let call = 0;
-    let adapterCallback = (_call: number, _options: ServiceOptions): void => undefined;
+    let adapterCallback = (_call: number, _options: Options): void => undefined;
     class MockAdapter extends EmberObject implements Pick<NaviDimensionAdapter, 'all'> {
-      @task *all(_dimension: DimensionColumn, options: ServiceOptions): TaskGenerator<AsyncQueryResponse> {
+      async all(_dimension: DimensionColumn, options: Options): Promise<AsyncQueryResponse> {
         adapterCallback(call++, options);
-        return yield Promise.resolve({});
+        //@ts-expect-error - mock query response
+        return Promise.resolve({});
       }
     }
     this.owner.register(`adapter:dimensions/${dataSourceType}`, MockAdapter);
 
-    let serializerCallback = (_call: number, _options: ServiceOptions): ResponseV1['meta'] => ({});
+    let serializerCallback = (_call: number, _options: Options): ResponseV1['meta'] => ({});
     const { owner } = this;
     class MockSerializer extends EmberObject implements NaviDimensionSerializer {
-      normalize(_dimension: DimensionColumn, _rawPayload: unknown, options: ServiceOptions): NaviDimensionResponse {
+      normalize(_dimension: DimensionColumn, _rawPayload: unknown, options: Options): NaviDimensionResponse {
         const meta = serializerCallback(call++, options);
         //@ts-expect-error
         return new NaviDimensionResponse(owner, { meta: meta });

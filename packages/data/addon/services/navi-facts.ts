@@ -73,7 +73,7 @@ export default class NaviFactsService extends Service {
   @task *getDownloadURL(request: RequestV2, options: RequestOptions): TaskGenerator<string> {
     const { type: dataSourceType } = getDataSource(request.dataSource);
     const adapter = this._adapterFor(dataSourceType);
-    return yield taskFor(adapter.urlForDownloadQuery).perform(request, options);
+    return yield adapter.urlForDownloadQuery(request, options);
   }
 
   /**
@@ -89,7 +89,7 @@ export default class NaviFactsService extends Service {
     const serializer = this._serializerFor(type);
 
     try {
-      const payload: unknown = yield taskFor(adapter.fetchDataForRequest).perform(request, options);
+      const payload: unknown = yield adapter.fetchDataForRequest(request, options);
       const response = serializer.normalize(payload, request, options);
       assert('The response is defined', response);
       return new NaviFactsModel(getOwner(this).lookup('service:client-injector'), { request, response });

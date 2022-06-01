@@ -11,7 +11,6 @@ import moment from 'moment';
 import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
 import type { Filter, RequestV2 } from '@yavin/client/request';
 import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
-import { taskFor } from 'ember-concurrency-ts';
 
 const HOST = config.navi.dataSources[2].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;
@@ -788,7 +787,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
 
-    const result = await taskFor(adapter.fetchDataForRequest).perform(TestRequest);
+    const result = await adapter.fetchDataForRequest(TestRequest);
     assert.deepEqual(result, response, 'fetchDataForRequest returns the correct response payload');
   });
 
@@ -800,7 +799,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     Server.post(HOST, () => [400, { 'Content-Type': 'application/json' }, JSON.stringify({ errors })]);
 
     try {
-      await taskFor(adapter.fetchDataForRequest).perform(TestRequest);
+      await adapter.fetchDataForRequest(TestRequest);
     } catch ({ errors }) {
       const responseText = await errors[0].statusText;
       assert.deepEqual(responseText, errors[0].messages, 'fetchDataForRequest an array of response objects on error');
@@ -842,7 +841,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       };
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
-    const tableExportUrl: string = await taskFor(adapter.urlForDownloadQuery).perform(TestRequest, {});
+    const tableExportUrl: string = await adapter.urlForDownloadQuery(TestRequest, {});
     assert.deepEqual(tableExportUrl, downloadURL, 'urlForDownloadQuery returns the correct response payload');
   });
 
@@ -877,7 +876,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     });
 
     try {
-      await taskFor(adapter.urlForDownloadQuery).perform(TestRequest, {});
+      await adapter.urlForDownloadQuery(TestRequest, {});
     } catch (e) {
       assert.deepEqual(
         e.errors[0].response.statusText,
@@ -916,7 +915,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
     try {
-      await taskFor(adapter.urlForDownloadQuery).perform(TestRequest, {});
+      await adapter.urlForDownloadQuery(TestRequest, {});
     } catch (e) {
       assert.deepEqual(
         e.message,

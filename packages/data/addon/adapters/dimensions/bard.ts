@@ -17,7 +17,7 @@ import type { Filter } from '@yavin/client/request';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type NaviDimensionAdapter from './interface';
 import type { DimensionFilter } from './interface';
-import type { ServiceOptions } from 'navi-data/services/navi-dimension';
+import type { Options } from './interface';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import { searchDimensionRecords } from 'navi-data/utils/search';
@@ -102,7 +102,7 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
   _find(
     url: string,
     data: Record<string, string | number | boolean>,
-    options: ServiceOptions
+    options: Options
   ): Promise<FiliDimensionResponse> {
     let clientId = CLIENT_ID;
     let timeout = SEARCH_TIMEOUT;
@@ -138,8 +138,19 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     });
   }
 
-  @task *all(dimension: DimensionColumn, options: ServiceOptions = {}): TaskGenerator<FiliDimensionResponse> {
-    return yield taskFor(this.find).perform(dimension, [], options);
+  all(dimension: DimensionColumn, options: Options = {}): Promise<unknown> {
+    return taskFor(this.allTask).perform(dimension, options);
+  }
+
+  find(dimension: DimensionColumn, predicate: DimensionFilter[], options: Options = {}): Promise<unknown> {
+    return taskFor(this.findTask).perform(dimension, predicate, options);
+  }
+  search(dimension: DimensionColumn, query: string, options: Options = {}): Promise<unknown> {
+    return taskFor(this.searchTask).perform(dimension, query, options);
+  }
+
+  @task *allTask(dimension: DimensionColumn, options: Options = {}): TaskGenerator<FiliDimensionResponse> {
+    return yield taskFor(this.findTask).perform(dimension, [], options);
   }
 
   @task *findById(
@@ -152,28 +163,28 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
       dimensionName,
       options.dataSourceName || getDefaultDataSourceName()
     ) as DimensionMetadataModel;
-    return yield taskFor(this.find).perform({ columnMetadata }, [{ operator: 'in', values: [value] }], options);
+    return yield taskFor(this.findTask).perform({ columnMetadata }, [{ operator: 'in', values: [value] }], options);
   }
 
-  @task *find(
+  @task *findTask(
     dimension: DimensionColumn,
     predicate: DimensionFilter[] = [],
-    options: ServiceOptions = {}
+    options: Options = {}
   ): TaskGenerator<FiliDimensionResponse> {
     const url = this._buildUrl(dimension, undefined);
     const data = predicate ? this._buildFilterQuery(dimension, predicate) : {};
     return yield this._find(url, data, options);
   }
 
-  @task *search(
+  @task *searchTask(
     dimension: DimensionColumn,
     query: string,
-    options: ServiceOptions = {}
+    options: Options = {}
   ): TaskGenerator<FiliDimensionResponse> {
     const { source, cardinality } = dimension.columnMetadata;
     const filiOptions = getDataSource<'bard'>(source).options;
     if (cardinality === CARDINALITY_SIZES[0]) {
-      const all = yield taskFor(this.all).perform(dimension);
+      const all = yield taskFor(this.allTask).perform(dimension);
       return this._searchDimensions(all, query);
     } else if (filiOptions?.enableDimensionSearch) {
       const url = this._buildUrl(dimension, 'search');
@@ -181,7 +192,7 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
       const results = yield this._find(url, data, options);
       return this._searchDimensions(results, query); //TODO: Remove researching dimensions, when bard search ordering improves
     } else {
-      const results = yield taskFor(this.find).perform(
+      const results = yield taskFor(this.findTask).perform(
         dimension,
         [
           {

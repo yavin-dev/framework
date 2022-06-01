@@ -6,7 +6,6 @@ import Service from '@ember/service';
 import { task } from 'ember-concurrency';
 import { setOwner, getOwner } from '@ember/application';
 import { getDataSource } from 'navi-data/utils/adapter';
-import { taskFor } from 'ember-concurrency-ts';
 import type { TaskGenerator } from 'ember-concurrency';
 import type NaviDimensionSerializer from 'navi-data/serializers/dimensions/interface';
 import type NaviDimensionAdapter from 'navi-data/adapters/dimensions/interface';
@@ -20,15 +19,9 @@ import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { searchNaviDimensionRecords } from 'navi-data/utils/search';
 import { A } from '@ember/array';
 import config from 'ember-get-config';
+import type { Options as ServiceOptions } from 'navi-data/adapters/dimensions/interface';
 
 const DIMENSION_CACHE = config.navi.dimensionCache;
-
-export type ServiceOptions = {
-  timeout?: number;
-  page?: number;
-  perPage?: number;
-  clientId?: string;
-};
 
 type RequestType = 'all' | 'search' | 'find';
 
@@ -143,7 +136,7 @@ export default class NaviDimensionService extends Service {
     let values: NaviDimensionModel[] = [];
     while (moreResults) {
       const mergedOptions = { ...options, ...paginationOptions };
-      const payload: unknown = yield taskFor(adapter.all).perform(dimension, mergedOptions);
+      const payload: unknown = yield adapter.all(dimension, mergedOptions);
       const normalized = serializer.normalize(dimension, payload, mergedOptions);
 
       values.push(...normalized.values);
@@ -184,7 +177,7 @@ export default class NaviDimensionService extends Service {
   ): TaskGenerator<NaviDimensionResponse> {
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
-    const payload: unknown = yield taskFor(adapter.find).perform(dimension, predicate, options);
+    const payload: unknown = yield adapter.find(dimension, predicate, options);
     return this.serializerFor(dataSourceType).normalize(dimension, payload, options);
   }
 
@@ -213,7 +206,7 @@ export default class NaviDimensionService extends Service {
 
     const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
-    const payload: unknown = yield taskFor(adapter.search).perform(dimension, query, options);
+    const payload: unknown = yield adapter.search(dimension, query, options);
     const results = this.serializerFor(dataSourceType).normalize(dimension, payload, options);
 
     return results;

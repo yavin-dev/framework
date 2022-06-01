@@ -16,14 +16,14 @@ export default interface NaviMetadataAdapter {
    * Bulk fetch of all metadata for a datasource
    * @param options
    */
-  fetchEverything(options?: MetadataOptions): Promise<unknown>;
+  fetchEverything(options?: MetadataOptions): PromiseLike<unknown>;
 
   /**
    * Fetch collection of metadata object
    * @param type - metadata type
    * @param options
    */
-  fetchAll(type: string, options?: MetadataOptions): Promise<unknown>;
+  fetchAll(type: string, options?: MetadataOptions): PromiseLike<unknown>;
 
   /**
    * Fetch metadata object by id
@@ -31,5 +31,5 @@ export default interface NaviMetadataAdapter {
    * @param id - metadata identifier
    * @param options
    */
-  fetchById(type: string, id: string, options?: MetadataOptions): Promise<unknown>;
+  fetchById(type: string, id: string, options?: MetadataOptions): PromiseLike<unknown>;
 }

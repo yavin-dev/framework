@@ -4,9 +4,9 @@
  */
 import EmberObject from '@ember/object';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import type { ServiceOptions } from 'navi-data/services/navi-dimension';
+import type { Options } from 'navi-data/adapters/dimensions/interface';
 import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 
 export default interface NaviDimensionSerializer extends EmberObject {
-  normalize(dimension: DimensionColumn, rawPayload: unknown, options: ServiceOptions): NaviDimensionResponse;
+  normalize(dimension: DimensionColumn, rawPayload: unknown, options: Options): NaviDimensionResponse;
 }

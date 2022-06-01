@@ -12,7 +12,7 @@ import EmberObject from '@ember/object';
 import { canonicalizeMetric } from '../../utils/metric';
 import { configHost, getDataSource } from '../../utils/adapter';
 import NaviFactAdapter, { FactAdapterError } from './interface';
-import { SORT_DIRECTIONS } from '@yavin/client/request';
+import { RequestV2, SORT_DIRECTIONS } from '@yavin/client/request';
 import { omit, capitalize } from 'lodash-es';
 import { getPeriodForGrain, Grain } from '@yavin/client/utils/date';
 import moment from 'moment';
@@ -27,6 +27,7 @@ import type RequestDecoratorService from 'navi-data/services/request-decorator';
 import type BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
 import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import type { TaskGenerator } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
 
 export type Query = Record<string, string | number | boolean>;
 
@@ -435,8 +436,8 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   /**
    * Returns URL String for a request
    */
-  @task *urlForDownloadQuery(request: Request, options?: RequestOptions): TaskGenerator<string> {
-    return yield this.urlForFindQuery(request, options);
+  urlForDownloadQuery(request: Request, options?: RequestOptions): Promise<string> {
+    return Promise.resolve(this.urlForFindQuery(request, options));
   }
 
   /**
@@ -446,10 +447,14 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     return this.requestDecorator.applyGlobalDecorators(request);
   }
 
+  fetchDataForRequest(request: RequestV2, options?: RequestOptions): Promise<unknown> {
+    return taskFor(this.fetchDataForRequestTask).perform(request, options);
+  }
+
   /**
    * Uses the url generated using the adapter to make an ajax request
    */
-  @task *fetchDataForRequest(request: Request, options?: RequestOptions): TaskGenerator<unknown> {
+  @task *fetchDataForRequestTask(request: Request, options?: RequestOptions): TaskGenerator<unknown> {
     assert('Fact request for fili adapter must be version 2', (request.requestVersion || '').startsWith('2.'));
 
     // Decorate and translate the request

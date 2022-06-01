@@ -10,7 +10,7 @@ import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
 import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
-import type { ServiceOptions } from 'navi-data/services/navi-dimension';
+import type { Options } from 'navi-data/adapters/dimensions/interface';
 import { canonicalizeMetric } from 'navi-data/utils/metric';
 import { getPaginationFromPageInfo } from '../facts/elide';
 import type NaviDimensionSerializer from './interface';
@@ -20,11 +20,7 @@ export type ResponseEdge = {
 };
 
 export default class ElideDimensionSerializer extends EmberObject implements NaviDimensionSerializer {
-  normalize(
-    dimension: DimensionColumn,
-    rawPayload?: AsyncQueryResponse,
-    options: ServiceOptions = {}
-  ): NaviDimensionResponse {
+  normalize(dimension: DimensionColumn, rawPayload?: AsyncQueryResponse, options: Options = {}): NaviDimensionResponse {
     const responseStr = rawPayload?.asyncQuery.edges[0].node.result?.responseBody;
     const { valueSource, suggestionColumns } = dimension.columnMetadata as ElideDimensionMetadataModel;
     const { tableId } = valueSource;

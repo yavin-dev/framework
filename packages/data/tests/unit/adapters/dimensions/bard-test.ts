@@ -128,7 +128,7 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
       parameters: { field: 'id' },
     };
 
-    const result = await taskFor(this.adapter.all).perform(containerColumn);
+    const result = await this.adapter.all(containerColumn);
     assert.deepEqual(
       result,
       {
@@ -148,7 +148,7 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
       columnMetadata: this.naviMetadata.getById('dimension', 'container', 'bardTwo') as DimensionMetadataModel,
       parameters: { field: 'id' },
     };
-    const result = await taskFor(this.adapter.find).perform(containerColumn, [{ operator: 'in', values: ['1'] }]);
+    const result = await this.adapter.find(containerColumn, [{ operator: 'in', values: ['1'] }]);
     assert.deepEqual(
       result,
       {
@@ -164,7 +164,7 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
       parameters: { field: 'id' },
     };
 
-    const result = await taskFor(this.adapter.search).perform(containerColumn, 'a');
+    const result = await this.adapter.search(containerColumn, 'a');
     assert.deepEqual(
       result,
       {
@@ -213,7 +213,7 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
     });
 
     // Sending request for default clientId
-    await taskFor(this.adapter.find).perform(ageColumn, [{ operator: 'in', values: ['1'] }]);
+    await this.adapter.find(ageColumn, [{ operator: 'in', values: ['1'] }]);
 
     // Setting up assert for provided clientId
     this.server.get(`${HOST}/v1/dimensions/age/values/`, (_schema, request) => {
@@ -222,7 +222,7 @@ module('Unit | Adapter | Dimensions | Bard', function (hooks) {
     });
 
     // Sending request for provided clientId
-    await taskFor(this.adapter.find).perform(ageColumn, [{ operator: 'in', values: ['1'] }], { clientId: 'test id' });
+    await this.adapter.find(ageColumn, [{ operator: 'in', values: ['1'] }], { clientId: 'test id' });
   });
 
   test('searchUtil task calls and transforms search results', async function (this: TestContext, assert) {
