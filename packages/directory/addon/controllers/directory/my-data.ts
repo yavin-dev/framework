@@ -19,27 +19,25 @@ export default class DirectoryMyDataController extends SearchFilterController {
    */
   @computed('directory.{sortKey,sortDir}', 'model.items')
   get sortedItems() {
-    return new Promise<Array<TODO>>((resolve) => {
-      const {
-        directory: { sortKey, sortDir },
-      } = this;
+    const {
+      directory: { sortKey, sortDir },
+    } = this;
 
-      this.model.items.then((items) => {
-        let sortedItems;
-        if (sortKey === 'updatedOn') {
-          let getUpdatedOn = (item: any) => moment.utc(item.get('updatedOn')),
-            comparator = (a: any, b: any) => getUpdatedOn(a).diff(getUpdatedOn(b));
-          sortedItems = arr(items).slice().sort(comparator);
-        } else {
-          sortedItems = arr(items).sortBy(sortKey);
-        }
+    return this.model.items.then((items) => {
+      let sortedItems;
+      if (sortKey === 'updatedOn') {
+        let getUpdatedOn = (item: any) => moment.utc(item.get('updatedOn')),
+          comparator = (a: any, b: any) => getUpdatedOn(a).diff(getUpdatedOn(b));
+        sortedItems = arr(items).slice().sort(comparator);
+      } else {
+        sortedItems = arr(items).sortBy(sortKey);
+      }
 
-        if (sortDir === 'desc') {
-          resolve(sortedItems.reverse());
-        } else {
-          resolve(sortedItems);
-        }
-      });
+      if (sortDir === 'desc') {
+        return sortedItems.reverse();
+      } else {
+        return sortedItems;
+      }
     });
   }
 

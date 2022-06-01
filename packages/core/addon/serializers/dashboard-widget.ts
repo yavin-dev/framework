@@ -2,6 +2,7 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+//@ts-ignore
 import AssetSerializer from './asset';
 import { inject as service } from '@ember/service';
 import { normalizeVisualization } from './report';

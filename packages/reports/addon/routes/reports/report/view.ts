@@ -184,7 +184,7 @@ export default class ReportsReportViewRoute extends Route {
      * https://github.com/emberjs/ember.js/issues/17545
      */
     //@ts-ignore
-    transition.send('setReportState', 'failed');
+    transition.send(false, 'setReportState', 'failed');
     return true; // allows the error template to be shown
   }
 

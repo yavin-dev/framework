@@ -96,7 +96,7 @@ export default class DirectoryController extends Controller {
    */
   @action
   toggleSidebar() {
-    this.sidebarOpen = !!this.sidebarOpen;
+    this.sidebarOpen = !this.sidebarOpen;
   }
 
   /**
