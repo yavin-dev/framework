@@ -48,8 +48,10 @@ export default class DirectoryRoute extends Route {
 
   @action
   willTransition() {
-    if (this.controller.sidebarOpen) {
-      this.controller.set('sidebarOpen', false);
+    // eslint-disable-next-line ember/no-controller-access-in-routes
+    const { controller } = this;
+    if (controller.sidebarOpen) {
+      controller.set('sidebarOpen', false);
     }
   }
 }

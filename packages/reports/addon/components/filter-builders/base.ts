@@ -79,7 +79,7 @@ export default class BaseFilterBuilder<T extends BaseFilterBuilderArgs = BaseFil
     });
   }
 
-  @computed('args.filter.columnMetadata')
+  @computed('args.filter.columnMetadata', 'naviFormatter')
   get columnName() {
     return this.naviFormatter.formatColumnName(this.args.filter.columnMetadata, {}, null);
   }

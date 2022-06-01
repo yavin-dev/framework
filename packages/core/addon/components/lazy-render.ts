@@ -26,9 +26,8 @@ export default class LazyRenderComponent extends Component<Args> {
   @tracked shouldRender = false;
   on = 'mouseenter';
 
-  constructor() {
-    //@ts-ignore
-    super(...arguments);
+  constructor(owner: unknown, args: Args) {
+    super(owner, args);
 
     const { targetElement } = this;
     targetElement.addEventListener(this.on, this.render, { once: true });

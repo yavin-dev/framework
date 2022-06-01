@@ -8,6 +8,7 @@ import Route from '@ember/routing/route';
 import { A } from '@ember/array';
 import { hash } from 'rsvp';
 import EmberObject, { computed, action } from '@ember/object';
+// eslint-disable-next-line ember/use-ember-data-rfc-395-imports
 import DS from 'ember-data';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
 import type UserService from 'navi-core/services/user';

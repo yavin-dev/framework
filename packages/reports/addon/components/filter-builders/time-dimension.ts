@@ -268,7 +268,14 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
    * Finds the appropriate interval operator to modify an existing interval
    * @returns the best supported operator for this interval
    */
-  @computed('args.filter.{values,operator,parameters.grain}', 'supportedOperators')
+  @computed(
+    // eslint-disable-next-line ember/use-brace-expansion
+    'args.filter.parameters.grain',
+    'args.filter.validations.isValid',
+    'args.filter.{operator,values}',
+    'supportedOperators',
+    'valueBuilders'
+  )
   get selectedValueBuilder(): InteralFilterBuilderOperators {
     const internalId = this.args.filter.validations.isValid
       ? internalOperatorForValues(this.args.filter)

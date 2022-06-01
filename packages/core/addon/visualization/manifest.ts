@@ -38,9 +38,9 @@ export abstract class YavinVisualizationManifest<Settings = unknown> extends Emb
 
   abstract validate(request: RequestFragment): { isValid: boolean; messages?: string[] };
 
-  abstract visualizationComponent: {} & YavinVisualizationComponent<Settings>['constructor'];
+  abstract visualizationComponent: YavinVisualizationComponent<Settings>['constructor'];
 
-  settingsPanelComponent: ({} & YavinVisualizationPanelComponent<Settings>['constructor']) | null = null;
+  settingsPanelComponent: YavinVisualizationPanelComponent<Settings>['constructor'] | null = null;
 
   abstract createNewSettings(): Settings;
 

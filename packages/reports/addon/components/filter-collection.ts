@@ -35,7 +35,7 @@ export default class FilterCollection extends Component<FilterCollectionArgs> {
   /**
    * Ordered collection of date, metric, and dimension filters from request
    */
-  @computed('args.request.filters.[]')
+  @computed('args.request.filters.[]', 'requestConstrainer')
   get filters(): FilterItem[] {
     const { request } = this.args;
     const requiredFilters = this.requestConstrainer.getConstrainedProperties(request).filters || new Set();

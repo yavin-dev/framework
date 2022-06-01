@@ -25,9 +25,8 @@ export default class NumberFormatDropdownComponent extends Component<Args> {
 
   @tracked isActive = false;
 
-  constructor() {
-    //@ts-ignore
-    super(...arguments);
+  constructor(owner: unknown, args: Args) {
+    super(owner, args);
     this.format = this.args.column.attributes.format;
   }
 

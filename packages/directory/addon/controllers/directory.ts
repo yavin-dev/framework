@@ -3,6 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Controller from '@ember/controller';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { action, set, computed } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { inject as service } from '@ember/service';
@@ -95,7 +96,7 @@ export default class DirectoryController extends Controller {
    */
   @action
   toggleSidebar() {
-    this.toggleProperty('sidebarOpen');
+    this.sidebarOpen = !!this.sidebarOpen;
   }
 
   /**

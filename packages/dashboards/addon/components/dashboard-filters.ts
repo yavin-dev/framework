@@ -28,7 +28,7 @@ export default class DashboardFiltersComponent extends Component<Args> {
   @tracked
   isAddingMode = false;
 
-  @computed('args.dashboard.filters.[]')
+  @computed('args.dashboard.filters.[]', 'store')
   get request() {
     return this.store.createFragment('request', {
       table: null,

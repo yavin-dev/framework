@@ -16,16 +16,18 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import moment from 'moment';
 import { isEmpty } from '@ember/utils';
-// eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import Table from 'ember-light-table';
+import type ReportModel from 'navi-core/models/report';
+import type DashboardModel from 'navi-core/models/dashboard';
 
 interface DirTableComponentArgs {
   searchQuery: string;
-  items: Array<TODO>;
+  items: Array<ReportModel | DashboardModel>;
   sortBy: string;
-  sortDir: TODO<'asc' | 'desc'>;
-  onColumnClick: TODO<Function>;
+  sortDir: 'asc' | 'desc';
+  onColumnClick: (arg: unknown) => void;
 }
 
 export default class DirTableComponent extends Component<DirTableComponentArgs> {

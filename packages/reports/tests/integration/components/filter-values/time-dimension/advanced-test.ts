@@ -54,6 +54,7 @@ module('Integration | Component | filter-values/time-dimension/advanced', functi
   });
 
   test('it renders valid values', async function (assert) {
+    assert.expect(2);
     await render(TEMPLATE);
 
     assert.deepEqual(getValues(), ['P4D', '2022-01-01'], 'It renders with the correct values');

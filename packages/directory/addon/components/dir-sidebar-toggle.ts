@@ -8,6 +8,7 @@
 import Component from '@glimmer/component';
 import { inject as service } from '@ember/service';
 import { inject as controller } from '@ember/controller';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { action, computed } from '@ember/object';
 import RouterService from '@ember/routing/router-service';
 import DirectoryController from 'navi-directory/controllers/directory';

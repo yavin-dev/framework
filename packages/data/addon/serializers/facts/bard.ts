@@ -17,7 +17,7 @@ import { FactAdapterError } from 'navi-data/adapters/facts/interface';
 
 type BardError = {
   description: string;
-  druidQuery: {};
+  druidQuery: Record<string, unknown>;
   reason: string;
   requestId: string;
   status: number;

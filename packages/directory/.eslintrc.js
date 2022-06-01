@@ -61,15 +61,14 @@ module.exports = {
       plugins: ['node'],
       extends: ['plugin:node/recommended'],
       rules: {
-        '@typescript-eslint/camelcase': 'off',
         '@typescript-eslint/no-var-requires': 'off',
       },
     },
     {
-      files: ['tests/**/*.js', 'tests/test-helper.ts'],
+      files: ['tests/**/*', 'tests/test-helper.ts'],
       rules: {
         '@typescript-eslint/no-use-before-define': 'off',
-        '@typescript-eslint/ban-ts-ignore': 'off',
+        '@typescript-eslint/ban-ts-comment': 'off',
       },
     },
   ],

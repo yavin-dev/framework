@@ -7,7 +7,7 @@ import DeliveryFormatFragment, { TypedDeliveryFormat } from './fragments/deliver
 
 export type PNGFormatConfig = {
   type: 'png';
-  options?: {};
+  options?: Record<string, never>;
 };
 
 export default class PNGFormat extends DeliveryFormatFragment implements TypedDeliveryFormat, PNGFormatConfig {

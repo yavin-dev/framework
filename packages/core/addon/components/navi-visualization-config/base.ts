@@ -13,4 +13,6 @@ export interface Args<Options> {
   onUpdateConfig(options: Partial<Options>): void;
 }
 
-export default class NaviVisualizationConfigBaseComponent<T extends object = {}> extends Component<Args<T>> {}
+export default class NaviVisualizationConfigBaseComponent<T extends object = Record<string, unknown>> extends Component<
+  Args<T>
+> {}

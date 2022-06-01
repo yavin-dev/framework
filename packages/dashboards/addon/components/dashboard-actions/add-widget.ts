@@ -9,6 +9,7 @@ import { tracked } from '@glimmer/tracking';
 import { action } from '@ember/object';
 import DashboardModel from 'navi-core/models/dashboard';
 import ReportModel from 'navi-core/models/report';
+// eslint-disable-next-line ember/use-ember-data-rfc-395-imports
 import DS from 'ember-data';
 
 interface Args {

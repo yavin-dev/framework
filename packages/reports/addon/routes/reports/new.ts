@@ -25,7 +25,7 @@ export default class ReportsNewRoute extends Route {
     datasource: {},
   };
 
-  model(_params: {}, transition: Transition): Promise<ReportLike> {
+  model(_params: Record<string, unknown>, transition: Transition): Promise<ReportLike> {
     const modelQueryParam = transition.to?.queryParams?.model;
     const datasource = transition.to?.queryParams?.datasource;
     // Allow for a report to be passed through the URL

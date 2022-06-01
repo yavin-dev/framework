@@ -7,7 +7,7 @@ import DeliveryFormatFragment, { TypedDeliveryFormat } from './fragments/deliver
 
 export type PDFFormatConfig = {
   type: 'pdf';
-  options?: {};
+  options?: Record<string, never>;
 };
 
 export default class PDFFormat extends DeliveryFormatFragment implements TypedDeliveryFormat, PDFFormatConfig {

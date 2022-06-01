@@ -18,7 +18,6 @@ import type { TaskGenerator, TaskInstance } from 'ember-concurrency';
 import { sortBy } from 'lodash-es';
 
 type Timer = ReturnType<typeof later>;
-//@ts-ignore - TODO: cannot import Dropdown type
 type Dropdown = any;
 
 interface DataAvailabilityArgs {
@@ -55,6 +54,7 @@ export default class DataAvailability extends Component<DataAvailabilityArgs> {
   }
 
   willDestroy(): void {
+    super.willDestroy();
     document.removeEventListener('visibilitychange', this.onVisibilityChange);
   }
 

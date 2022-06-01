@@ -7,7 +7,7 @@ import DeliveryFormatFragment, { TypedDeliveryFormat } from './fragments/deliver
 
 export type CSVFormatConfig = {
   type: 'csv';
-  options?: {};
+  options?: Record<string, never>;
 };
 
 export default class CSVFormat extends DeliveryFormatFragment implements TypedDeliveryFormat, CSVFormatConfig {

@@ -22,4 +22,5 @@ interface Args {
   reset: () => void;
 }
 
+// eslint-disable-next-line ember/no-empty-glimmer-component-classes
 export default class ReportBuilderSourceSelector extends Component<Args> {}

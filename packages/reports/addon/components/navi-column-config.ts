@@ -46,7 +46,14 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   /**
    * Dimension and metric columns from the request
    */
-  @computed('args.report.request.{columns.[],columns.@each.parameters,filters.[],sorts.[],rollup.columnCids.[]}')
+  @computed(
+    // eslint-disable-next-line ember/use-brace-expansion
+    'args.report.request.columns.@each.parameters',
+    'args.report.request.filters.[]',
+    'args.report.request.rollup.columnCids.[]',
+    'args.report.request.sorts.[]',
+    'requestConstrainer'
+  )
   get columns(): ConfigColumn[] {
     const { request } = this.args.report;
     const requiredColumns = this.requestConstrainer.getConstrainedProperties(request).columns || new Set();

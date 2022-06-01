@@ -17,7 +17,7 @@ const TEMPLATE = hbs`
 `;
 
 type ComponentArgs = PowerSelectCollectionOptions['args'];
-type ExtraArgs = ComponentArgs['extra'] & {};
+type ExtraArgs = ComponentArgs['extra'] & Record<string, unknown>;
 interface TestContext extends Context, ExtraArgs {
   options: ComponentArgs['options'];
 }
