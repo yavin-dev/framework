@@ -53,7 +53,7 @@ export default class DashboardsDashboardWidgetsAddRoute extends Route {
     const dashboard = this.modelFor('dashboards.dashboard') as ModelFrom<DashboardsDashboardRoute>;
     return this.transitionTo('dashboards.dashboard', dashboard.id, {
       queryParams: {
-        lastAddedWidgetId: widgetId,
+        highlightWidget: widgetId,
       },
     });
   }

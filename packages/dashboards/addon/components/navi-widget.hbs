@@ -4,6 +4,7 @@
   data-widget-guid={{this.guid}}
   ...attributes
   @options={{this.options}}
+  {{did-insert this.scrollIntoView}}
   as |item|
 >
   <div class="navi-widget__header">
@@ -95,9 +96,5 @@
         @manifest={{@model.visualization.manifest}}
       />
     {{/let}}
-  {{/if}}
-
-  {{#if @isLastAdded}}
-    <div class="navi-widget__last-added" {{did-insert this.scrollContainerToBottom}}></div>
   {{/if}}
 </GridStackItem>

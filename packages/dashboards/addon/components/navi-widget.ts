@@ -8,14 +8,13 @@
  *     @taskInstance={{taskInstance}}
  *     @layoutOptions={{layoutObject}}
  *     @canEdit={{true}}
- *     @isLastAdded={{true}}
+ *     @isHighlighted={{true}}
  *     @index={{index}}
  *   />
  */
 import Component from '@glimmer/component';
 import { A as arr } from '@ember/array';
 import { action } from '@ember/object';
-import { assert } from '@ember/debug';
 import type EmberArray from '@ember/array';
 import type DashboardWidget from 'navi-core/models/dashboard-widget';
 import type LayoutFragment from 'navi-core/models/fragments/layout';
@@ -26,13 +25,14 @@ import type {
   WidgetDataTask,
 } from 'navi-dashboards/services/dashboard-data';
 import { guidFor } from '@ember/object/internals';
+import { run } from '@ember/runloop';
 
 interface NaviWidgetArgs {
   model: DashboardWidget;
   layoutOptions: LayoutFragment;
   taskInstance: WidgetDataTask;
   canEdit: boolean;
-  isLastAdded?: boolean;
+  isHighlighted?: boolean;
   index?: number;
 }
 
@@ -94,9 +94,12 @@ export default class NaviWidget extends Component<NaviWidgetArgs> {
   }
 
   @action
-  scrollContainerToBottom(element: HTMLElement) {
-    const containerElement = element.closest('.navi-dashboard__widgets');
-    assert('Widgets container element should exist', containerElement);
-    containerElement.scrollTop = containerElement.scrollHeight;
+  scrollIntoView(element: HTMLElement) {
+    if (this.args.isHighlighted) {
+      run.schedule('afterRender', () => {
+        element.scrollIntoView({ behavior: 'smooth' });
+        element.classList.add('navi-widget--highlighted');
+      });
+    }
   }
 }

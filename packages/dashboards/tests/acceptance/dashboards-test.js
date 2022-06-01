@@ -195,87 +195,79 @@ module('Acceptance | Dashboards', function (hooks) {
     );
   });
 
-  test('invalid lastAddedWidgetId query param', async function (assert) {
+  test('invalid highlightWidget query param', async function (assert) {
     const filters =
       'N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu%2BUArnChiAIwgC6NkcUAE1I4EWAYwDGMAGL4AttACe1EDnwJ5ceMjSg%2Bg0hCEBfGjEV5SAiHLjkkELJRpIsjBBLikARuoEB5ci9jLmMgA';
 
-    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=`);
+    await visit(`/dashboards/1?filters=${filters}&highlightWidget=`);
+    assert.equal(currentURL(), `/dashboards/1/view?filters=${filters}`, `empty highlightWidget query param is removed`);
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&highlightWidget=`);
     assert.equal(
       currentURL(),
       `/dashboards/1/view?filters=${filters}`,
-      `empty lastAddedWidgetId query param is removed`
+      `empty highlightWidget query param is removed (view route)`
     );
 
     await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
-    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=`);
+    await visit(`/dashboards/1?filters=${filters}&highlightWidget=foo`);
     assert.equal(
       currentURL(),
       `/dashboards/1/view?filters=${filters}`,
-      `empty lastAddedWidgetId query param is removed (view route)`
+      `invalid highlightWidget query param is removed`
     );
 
     await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
-    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=foo`);
+    await visit(`/dashboards/1/view?filters=${filters}&highlightWidget=foo`);
     assert.equal(
       currentURL(),
       `/dashboards/1/view?filters=${filters}`,
-      `invalid lastAddedWidgetId query param is removed`
-    );
-
-    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
-    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=foo`);
-    assert.equal(
-      currentURL(),
-      `/dashboards/1/view?filters=${filters}`,
-      `invalid lastAddedWidgetId query param is removed (view route)`
+      `invalid highlightWidget query param is removed (view route)`
     );
 
     await click('.navi-dashboard__revert-button');
-    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=0.4`);
+    await visit(`/dashboards/1?filters=${filters}&highlightWidget=0.4`);
     assert.equal(
       currentURL(),
       `/dashboards/1/view?filters=${filters}`,
-      `decimal lastAddedWidgetId query param is removed`
+      `decimal highlightWidget query param is removed`
     );
 
     await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
-    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=0.4`);
+    await visit(`/dashboards/1/view?filters=${filters}&highlightWidget=0.4`);
     assert.equal(
       currentURL(),
       `/dashboards/1/view?filters=${filters}`,
-      `decimal lastAddedWidgetId query param is removed (view route)`
+      `decimal highlightWidget query param is removed (view route)`
     );
 
     await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
-    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=0`);
+    await visit(`/dashboards/1?filters=${filters}&highlightWidget=0`);
+    assert.equal(currentURL(), `/dashboards/1/view?filters=${filters}`, `zero highlightWidget query param is removed`);
+
+    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
+    await visit(`/dashboards/1/view?filters=${filters}&highlightWidget=0`);
     assert.equal(
       currentURL(),
       `/dashboards/1/view?filters=${filters}`,
-      `zero lastAddedWidgetId query param is removed`
+      `zero highlightWidget query param is removed (view route)`
     );
 
     await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
-    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=0`);
+    await visit(`/dashboards/1?filters=${filters}&highlightWidget=100`);
     assert.equal(
       currentURL(),
       `/dashboards/1/view?filters=${filters}`,
-      `zero lastAddedWidgetId query param is removed (view route)`
+      `highlightWidget query param that is not in the dashboad is removed`
     );
 
     await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
-    await visit(`/dashboards/1?filters=${filters}&lastAddedWidgetId=100`);
+    await visit(`/dashboards/1/view?filters=${filters}&highlightWidget=100`);
     assert.equal(
       currentURL(),
       `/dashboards/1/view?filters=${filters}`,
-      `lastAddedWidgetId query param that is not in the dashboad is removed`
-    );
-
-    await click('.navi-dashboard__revert-button'); // to avoid unsaved changes dialog
-    await visit(`/dashboards/1/view?filters=${filters}&lastAddedWidgetId=100`);
-    assert.equal(
-      currentURL(),
-      `/dashboards/1/view?filters=${filters}`,
-      `lastAddedWidgetId query param that is not in the dashboad is removed (view route)`
+      `highlightWidget query param that is not in the dashboad is removed (view route)`
     );
   });
 
@@ -484,8 +476,6 @@ module('Acceptance | Dashboards', function (hooks) {
   });
 
   test('New widget', async function (assert) {
-    assert.expect(23);
-
     // Check original set of widgets
     await visit('/dashboards/1');
     const widgetsBefore = findAll('.navi-widget__title').map((el) => el.textContent.trim());
@@ -517,12 +507,10 @@ module('Acceptance | Dashboards', function (hooks) {
     let NEW_WIDGET_ID = 14;
     assert.equal(
       currentURL(),
-      `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
+      `/dashboards/1/view?highlightWidget=${NEW_WIDGET_ID}`,
       'After saving without running, user is brought back to dashboard view'
     );
-    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
-    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
-    assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).exists('next widget is present');
 
     let widgetsAfter = findAll('.navi-widget__title').map((el) => el.textContent.trim());
 
@@ -565,12 +553,10 @@ module('Acceptance | Dashboards', function (hooks) {
     NEW_WIDGET_ID++;
     assert.equal(
       currentURL(),
-      `/dashboards/1/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
+      `/dashboards/1/view?highlightWidget=${NEW_WIDGET_ID}`,
       'After saving, user is brought back to dashboard view'
     );
-    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
-    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
-    assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).exists('next widget is present');
 
     widgetsAfter = findAll('.navi-widget__title').map((el) => el.textContent.trim());
 
@@ -816,8 +802,6 @@ module('Acceptance | Dashboards', function (hooks) {
   });
 
   test('New widget after clone', async function (assert) {
-    assert.expect(7);
-
     await visit('/dashboards/1');
 
     await click('.dashboard-header__clone-btn');
@@ -842,12 +826,10 @@ module('Acceptance | Dashboards', function (hooks) {
     const NEW_WIDGET_ID = 17;
     assert.equal(
       currentURL(),
-      `/dashboards/9/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
+      `/dashboards/9/view?highlightWidget=${NEW_WIDGET_ID}`,
       'After saving without running, user is brought back to dashboard view'
     );
-    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
-    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
-    assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).exists('next widget is present');
 
     let widgetsAfter = findAll('.navi-widget__title').map((el) => el.textContent.trim());
 

@@ -35,7 +35,7 @@
                   @layoutOptions={{layout}}
                   @taskInstance={{get @taskByWidget widget.id}}
                   @canEdit={{@dashboard.canUserEdit}}
-                  @isLastAdded={{eq widget.id @lastAddedWidgetId}}
+                  @isHighlighted={{eq widget.id @highlightWidget}}
                   @index={{index}}
                 />
               {{/if}}

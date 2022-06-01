@@ -1,4 +1,4 @@
-import { click, find, findAll, currentURL, visit, fillIn, blur } from '@ember/test-helpers';
+import { click, findAll, currentURL, visit, fillIn, blur } from '@ember/test-helpers';
 import { module, test } from 'qunit';
 import { setupApplicationTest } from 'ember-qunit';
 //@ts-ignore
@@ -41,12 +41,10 @@ module('Acceptance | Dashboard Editor', function (hooks) {
     const NEW_WIDGET_ID = 14;
     assert.equal(
       currentURL(),
-      `/dashboards/3/view?lastAddedWidgetId=${NEW_WIDGET_ID}`,
+      `/dashboards/3/view?highlightWidget=${NEW_WIDGET_ID}`,
       'After saving without running, user is brought back to dashboard view'
     );
-    assert.dom(`[gs-id="${NEW_WIDGET_ID}"] .navi-widget__last-added`).exists('next widget is present');
-    assert.dom('.navi-widget__last-added').exists({ count: 1 }, 'last added dummy div exists only once');
-    assert.true((find('.navi-dashboard__widgets')?.scrollTop ?? 0) > 0, 'page is scrolled down');
+    assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).exists('next widget is present');
 
     assert.deepEqual(
       findAll('.navi-widget__title').map((el) => el.textContent?.trim()),

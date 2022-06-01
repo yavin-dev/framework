@@ -44,4 +44,10 @@
     justify-content: center;
     overflow: hidden;
   }
+
+  &--highlighted {
+    .grid-stack-item-content {
+      animation: navi-pulse-once 1s;
+    }
+  }
 }

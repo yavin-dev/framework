@@ -39,14 +39,14 @@ export default class DashboardsDashboardViewController extends Controller.extend
   @service('navi-metadata')
   declare metadataService: NaviMetadataService;
 
-  queryParams = ['filters', 'lastAddedWidgetId'];
+  queryParams = ['filters', 'highlightWidget'];
 
   /**
    * query param holding encoded filters for the dashboard
    */
   @tracked filters: string | null = null;
 
-  @tracked lastAddedWidgetId: string | null = null;
+  @tracked highlightWidget: string | null = null;
 
   @action
   async updateFilter(dashboard: DashboardModel, originalFilter: FilterFragment, changeSet: Partial<Filter>) {
@@ -65,7 +65,7 @@ export default class DashboardsDashboardViewController extends Controller.extend
     const filterQueryParams = await this.compression.compress({ filters: newFilters });
 
     this.transitionToRoute('dashboards.dashboard', {
-      queryParams: { filters: filterQueryParams, lastAddedWidgetId: null },
+      queryParams: { filters: filterQueryParams, highlightWidget: null },
     });
   }
 
@@ -76,7 +76,7 @@ export default class DashboardsDashboardViewController extends Controller.extend
     const filterQueryParams = await this.compression.compress({ filters: newFilters });
 
     this.transitionToRoute('dashboards.dashboard', {
-      queryParams: { filters: filterQueryParams, lastAddedWidgetId: null },
+      queryParams: { filters: filterQueryParams, highlightWidget: null },
     });
   }
 
@@ -108,7 +108,7 @@ export default class DashboardsDashboardViewController extends Controller.extend
     const filterQueryParams = await this.compression.compress({ filters });
 
     this.transitionToRoute('dashboards.dashboard', {
-      queryParams: { filters: filterQueryParams, lastAddedWidgetId: null },
+      queryParams: { filters: filterQueryParams, highlightWidget: null },
     });
   }
 
@@ -118,6 +118,6 @@ export default class DashboardsDashboardViewController extends Controller.extend
   @action
   clearQueryParams() {
     this.filters = null;
-    this.lastAddedWidgetId = null;
+    this.highlightWidget = null;
   }
 }
