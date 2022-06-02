@@ -1,12 +1,14 @@
 module.exports = {
-  "presets": [
-    ["@babel/preset-typescript"],
+  presets: [
+    ['@babel/preset-typescript'],
     [
-      "@babel/preset-env",
+      '@babel/preset-env',
       {
-        "modules": false
-      }
-    ]
+        modules: false,
+        useBuiltIns: 'usage',
+        corejs: '3.22',
+      },
+    ],
   ],
-  "plugins": ["import-graphql"],
-}
+  plugins: ['import-graphql'],
+};

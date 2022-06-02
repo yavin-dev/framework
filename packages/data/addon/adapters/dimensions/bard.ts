@@ -20,7 +20,7 @@ import type { DimensionFilter } from './interface';
 import type { Options } from './interface';
 import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
 import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import { searchDimensionRecords } from 'navi-data/utils/search';
+import { searchDimensionRecords } from '@yavin/client/utils/search';
 import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];

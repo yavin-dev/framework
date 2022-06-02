@@ -1,11 +1,9 @@
-import EmberObject from '@ember/object';
-import { A } from '@ember/array';
 import {
   getPartialMatchWeight,
   getExactMatchWeight,
   searchRecords,
   searchDimensionRecords,
-} from 'navi-data/utils/search';
+} from '@yavin/client/utils/search';
 import { module, test } from 'qunit';
 
 module('Unit - Utils - Search Utils', function () {
@@ -82,26 +80,14 @@ module('Unit - Utils - Search Utils', function () {
   test('searchDimensionRecords', function (assert) {
     assert.expect(8);
 
-    const records = A([
-      EmberObject.create({
-        id: 'bike',
-        description: 'All Bikes',
-      }),
-      EmberObject.create({
-        id: '123456',
-        description: 'Sport Bike',
-      }),
-      EmberObject.create({
-        id: '1234567',
-        description: 'Bowser',
-      }),
-      EmberObject.create({
-        id: '123',
-        description: 'Standard Kart',
-      }),
-    ]);
+    const records = [
+      { id: 'bike', description: 'All Bikes' },
+      { id: '123456', description: 'Sport Bike' },
+      { id: '1234567', description: 'Bowser' },
+      { id: '123', description: 'Standard Kart' },
+    ];
 
-    const results = A(searchDimensionRecords(records, 'Bike', 100));
+    const results = searchDimensionRecords(records, 'Bike', 100);
 
     assert.equal(results[0].record.description, 'All Bikes', 'First result is most relevant dimension');
 
@@ -112,9 +98,9 @@ module('Unit - Utils - Search Utils', function () {
     const results2 = searchDimensionRecords(records, '123', 2);
     assert.equal(results2.length, 2, 'Search results are correctly limited');
 
-    const results3 = A(searchDimensionRecords(records, '123', 2, 2));
+    const results3 = searchDimensionRecords(records, '123', 2, 2);
     assert.deepEqual(
-      results3.mapBy('record'),
+      results3.map((result) => result.record),
       [records[2]],
       'Pagination for search results returns records as expected'
     );
@@ -122,10 +108,10 @@ module('Unit - Utils - Search Utils', function () {
     const results4 = searchDimensionRecords(records, 'moible', 100);
     assert.equal(results4.length, 0, 'No results are returned when query does not match any record');
 
-    const results5 = A(searchDimensionRecords(records, '123', 100));
+    const results5 = searchDimensionRecords(records, '123', 100);
 
     assert.deepEqual(
-      results5.mapBy('record.id'),
+      results5.map((result) => result.record.id),
       ['123', '123456', '1234567'],
       'Results are sorted in relevance order'
     );
@@ -144,42 +130,31 @@ module('Unit - Utils - Search Utils', function () {
         relevance: 5,
       },
     ];
-    //@ts-expect-error
     assert.deepEqual(results5, expectedResults, 'Results contain expected records, order, and relevance');
   });
 
   test('searchDimensionRecords - without description', function (assert) {
     assert.expect(2);
 
-    let records = A([
-      {
-        id: 'bike',
-        description: 'All Bikes',
-      },
-      {
-        id: '123456',
-      },
-      {
-        id: '1234567',
-      },
-      {
-        id: '123',
-        description: 'Standard Kart',
-      },
-    ]);
+    let records = [
+      { id: 'bike', description: 'All Bikes' },
+      { id: '123456' },
+      { id: '1234567' },
+      { id: '123', description: 'Standard Kart' },
+    ];
 
-    let results = A(searchDimensionRecords(records, 'bike', 100));
+    let results = searchDimensionRecords(records, 'bike', 100);
 
     assert.deepEqual(
-      results.mapBy('record'),
+      results.map((result) => result.record),
       [records[0]],
       'Pagination for search results returns records even when records do not have description fields'
     );
 
-    results = A(searchDimensionRecords(records, '123456', 100));
+    results = searchDimensionRecords(records, '123456', 100);
 
     assert.deepEqual(
-      results.mapBy('record.id'),
+      results.map((result) => result.record.id),
       ['123456', '1234567'],
       'Pagination for search results returns records even when records do not have description fields'
     );
