@@ -1,4 +1,4 @@
-import Cache from 'navi-data/utils/classes/cache';
+import Cache from '@yavin/client/utils/classes/cache';
 import { module, test } from 'qunit';
 
 module('Unit | Utils | Cache Class', function () {
