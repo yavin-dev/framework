@@ -1,7 +1,7 @@
 import { getPaginatedRecords } from '@yavin/client/utils/pagination';
 import { module, test } from 'qunit';
 
-module('Unit - Utils - Pagination Utils', function () {
+module('Unit | Utils | Pagination Utils', function () {
   test('getPaginatedRecords', function (assert) {
     assert.expect(9);
 

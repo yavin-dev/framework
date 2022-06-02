@@ -5,7 +5,7 @@
 import Service from '@ember/service';
 import { hash, race, task, timeout } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
-import Cache from 'navi-data/utils/classes/cache';
+import Cache from '@yavin/client/utils/classes/cache';
 import config from 'ember-get-config';
 import { getDataSource } from 'navi-data/utils/adapter';
 import type { TaskGenerator, TaskInstance } from 'ember-concurrency';
