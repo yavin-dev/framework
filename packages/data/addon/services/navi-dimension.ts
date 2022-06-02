@@ -15,7 +15,7 @@ import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import Cache from '@yavin/client/utils/classes/cache';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { searchNaviDimensionRecords } from 'navi-data/utils/search';
 import { A } from '@ember/array';
 import config from 'ember-get-config';
@@ -37,8 +37,8 @@ class DimensionCache extends Cache<NaviDimensionResponse> {
 
   // given a dimension column, return that column's cache key
   getCacheKey(dimension: DimensionColumn): string {
-    const cannonicalName = canonicalizeMetric({
-      metric: dimension?.columnMetadata?.name,
+    const cannonicalName = canonicalizeColumn({
+      field: dimension?.columnMetadata?.name,
       parameters: dimension.parameters,
     });
     return cannonicalName;

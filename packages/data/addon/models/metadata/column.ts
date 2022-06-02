@@ -5,7 +5,7 @@
 import { isNone } from '@ember/utils';
 import TableMetadataModel from './table';
 import NativeWithCreate, { ClientService, Injector } from 'navi-data/models/native-with-create';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import type ColumnFunction from './column-function';
 import type FunctionParameter from './function-parameter';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
@@ -157,8 +157,7 @@ export default class ColumnMetadataModel extends NativeWithCreate {
   }
 
   getCanonicalName(parameters?: Parameters) {
-    const { id: metric } = this;
-    // TODO rename with generic canonicalizeColumn
-    return canonicalizeMetric({ metric, parameters });
+    const { id: field } = this;
+    return canonicalizeColumn({ field, parameters });
   }
 }

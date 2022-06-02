@@ -9,7 +9,7 @@ import EmberObject from '@ember/object';
 import { getOwner } from '@ember/application';
 import NaviFactSerializer, { ResponseV1 } from './interface';
 import type { RequestV2, Column } from '@yavin/client/request';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import NaviAdapterError, { NaviErrorDetails } from 'navi-data/errors/navi-adapter-error';
 import { AjaxError } from 'ember-ajax/errors';
@@ -32,7 +32,7 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
   private getFiliField(column: Column): string {
     switch (column.type) {
       case 'metric':
-        return canonicalizeMetric({ metric: column.field, parameters: column.parameters });
+        return canonicalizeColumn(column);
       case 'timeDimension':
         if (column.field.endsWith('.dateTime')) {
           return 'dateTime';
@@ -49,10 +49,7 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
    */
   private processResponse(payload: ResponseV1, request: RequestV2): NaviFactResponse {
     const filiFields = request.columns.map((column) => this.getFiliField(column));
-    const normalizedFields = request.columns.map(({ field: metric, parameters }) =>
-      // TODO rename with generic canonicalizeColumn
-      canonicalizeMetric({ metric, parameters })
-    );
+    const normalizedFields = request.columns.map((col) => canonicalizeColumn(col));
 
     const { rows: rawRows, meta } = payload;
     const totalRows = rawRows.length;

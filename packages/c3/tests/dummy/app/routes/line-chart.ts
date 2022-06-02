@@ -2,7 +2,7 @@ import { A } from '@ember/array';
 import Route from '@ember/routing/route';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import { Grain } from '@yavin/client/utils/date';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { inject as service } from '@ember/service';
 import type StoreService from '@ember-data/store';
 import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
@@ -199,7 +199,7 @@ export default class LineChartRoute extends Route {
           source: 'bardOne',
         },
         ...metrics.map(({ field, parameters }) => {
-          const canonical = canonicalizeMetric({ metric: field, parameters });
+          const canonical = canonicalizeColumn({ field, parameters });
           return {
             cid: `cid_${canonical}`,
             type: 'metric',
@@ -210,7 +210,7 @@ export default class LineChartRoute extends Route {
           };
         }),
         ...dimensions.map(({ field, parameters }) => {
-          const canonical = canonicalizeMetric({ metric: field, parameters });
+          const canonical = canonicalizeColumn({ field, parameters });
           return {
             cid: `cid_${canonical}`,
             type: 'dimension',

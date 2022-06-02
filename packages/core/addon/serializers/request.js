@@ -4,7 +4,7 @@
  */
 import JSONSerializer from '@ember-data/serializer/json';
 import { inject as service } from '@ember/service';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { assert } from '@ember/debug';
 
@@ -42,13 +42,13 @@ export default class RequestSerializer extends JSONSerializer {
     // add cid to sorts
     const map = new Map();
     normalized.columns?.forEach(({ type, field, parameters, cid }) => {
-      const canonicalName = canonicalizeMetric({ metric: field, parameters });
+      const canonicalName = canonicalizeColumn({ field, parameters });
       assert('columns must have cid', cid);
       map.set(`${type}|${canonicalName}`, cid);
     });
     normalized.sorts?.forEach((sort) => {
       const { type, field, parameters } = sort;
-      const canonicalName = canonicalizeMetric({ metric: field, parameters });
+      const canonicalName = canonicalizeColumn({ field, parameters });
       const cid = map.get(`${type}|${canonicalName}`);
       assert('sorts must have cid', cid);
       sort.cid = cid;

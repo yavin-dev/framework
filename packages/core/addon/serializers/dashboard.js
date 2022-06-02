@@ -5,7 +5,7 @@
 
 import AssetSerializer from 'navi-core/serializers/asset';
 import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 
 function v1ToV2Filter(filter) {
   let source;
@@ -78,7 +78,7 @@ export default AssetSerializer.extend({
    * @returns {Object} serialized dashboard
    */
   serialize(snapshot) {
-    const buildKey = (filter) => canonicalizeMetric({ metric: filter.field, parameters: filter.parameters });
+    const buildKey = (filter) => canonicalizeColumn(filter);
     const filterSources = Object.fromEntries(
       snapshot.attr('filters').map((filter) => [filter.record.canonicalName, filter.attr('source')])
     );

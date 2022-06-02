@@ -11,7 +11,7 @@ import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/di
 import NaviDimensionModel from 'navi-data/models/navi-dimension';
 import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
 import type { Options } from 'navi-data/adapters/dimensions/interface';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { getPaginationFromPageInfo } from '../facts/elide';
 import type NaviDimensionSerializer from './interface';
 
@@ -37,7 +37,7 @@ export default class ElideDimensionSerializer extends EmberObject implements Nav
             suggestions: suggestionColumns.reduce(
               (obj, col, idx) => ({
                 ...obj,
-                [canonicalizeMetric({ metric: col.id, parameters: col.parameters })]: edge.node[`col${idx + 1}`],
+                [canonicalizeColumn({ field: col.id, parameters: col.parameters })]: edge.node[`col${idx + 1}`],
               }),
               {}
             ),

@@ -9,7 +9,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import SortConsumer from 'navi-reports/consumers/request/sort';
 import ColumnFragment from 'navi-core/models/request/column';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 
 const timeDimension = {
   type: 'timeDimension',
@@ -45,7 +45,7 @@ const routeFor = (request: RequestFragment) => ({ modelFor: () => ({ request }) 
 const getSorts = (request: RequestFragment) =>
   Object.fromEntries(
     request.sorts.map((s) => {
-      const canonicalName = canonicalizeMetric({ metric: s.field, parameters: s.parameters });
+      const canonicalName = canonicalizeColumn(s);
       return [canonicalName, s.direction];
     })
   );

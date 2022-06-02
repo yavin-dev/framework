@@ -5,7 +5,7 @@
 import { computed } from '@ember/object';
 import { isEqual, omit } from 'lodash-es';
 import Controller, { inject as controller } from '@ember/controller';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import type { RequestV2 } from '@yavin/client/request';
 import type ReportsReportController from '../report';
 import type { ModelFrom } from 'navi-core/utils/type-utils';
@@ -16,9 +16,7 @@ import type ReportsReportViewRoute from 'navi-reports/routes/reports/report/view
  * @returns canonicalized metrics sorted alphabetically
  */
 function sortedColumns(request: RequestV2) {
-  const canonicalNames = request.columns.map(({ field: metric, parameters }) =>
-    canonicalizeMetric({ metric, parameters })
-  );
+  const canonicalNames = request.columns.map((col) => canonicalizeColumn(col));
   return [...new Set(canonicalNames)].sort();
 }
 

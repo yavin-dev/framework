@@ -88,7 +88,7 @@ const TestRequest: RequestV2 = {
       },
       {
         field: 'r',
-        parameters: { p: '123', as: 'a' },
+        parameters: { p: '123' },
         cid: 'puioqwer',
         type: 'metric',
       },
@@ -491,8 +491,8 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       columns: [
         { field: 'm1', parameters: {}, type: 'metric' },
         { field: 'm2', parameters: {}, type: 'metric' },
-        { field: 'r', parameters: { p: '123', as: 'm1' }, type: 'metric' },
-        { field: 'r', parameters: { p: 'xyz', as: 'm2' }, type: 'metric' },
+        { field: 'r', parameters: { p: '123' }, type: 'metric' },
+        { field: 'r', parameters: { p: 'xyz' }, type: 'metric' },
       ],
     };
     assert.equal(
@@ -507,8 +507,8 @@ module('Unit | Adapter | facts/bard', function (hooks) {
         { field: 'm1', parameters: {}, type: 'metric' },
         { field: 'm2', parameters: {}, type: 'metric' },
         { field: 'm1', parameters: {}, type: 'metric' },
-        { field: 'r', parameters: { p: '123', as: 'm1' }, type: 'metric' },
-        { field: 'r', parameters: { p: '123', as: 'm2' }, type: 'metric' },
+        { field: 'r', parameters: { p: '123' }, type: 'metric' },
+        { field: 'r', parameters: { p: '123' }, type: 'metric' },
       ],
     };
     assert.equal(

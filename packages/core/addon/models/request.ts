@@ -9,12 +9,10 @@ import Fragment from 'ember-data-model-fragments/fragment';
 //@ts-ignore
 import { fragmentArray, fragment } from 'ember-data-model-fragments/attributes';
 import { validator, buildValidations } from 'ember-cp-validations';
-//@ts-ignore
 import { isEqual } from 'lodash-es';
-//@ts-ignore
 import Interval from '@yavin/client/utils/classes/interval';
 import { assert } from '@ember/debug';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import type { RequestV2, SortDirection, Parameters, Rollup } from '@yavin/client/request';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
@@ -389,10 +387,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     direction,
     cid,
   }: BaseLiteral & { direction: SortDirection; cid: string }) {
-    const canonicalName = canonicalizeMetric({
-      metric: field,
-      parameters,
-    });
+    const canonicalName = canonicalizeColumn({ field, parameters });
 
     const sortExists = this.sorts.findBy('canonicalName', canonicalName);
     assert(`Metric: ${canonicalName} cannot have multiple sorts on it`, !sortExists);
