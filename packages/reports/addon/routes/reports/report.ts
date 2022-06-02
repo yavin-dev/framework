@@ -77,9 +77,8 @@ export default class ReportsReportRoute extends Route {
    * @param controller
    * @override
    */
-  setupController(controller: ReportsReportController) {
-    //@ts-ignore
-    super.setupController(...arguments);
+  setupController(controller: ReportsReportController, model: unknown, transition: Transition) {
+    super.setupController(controller, model, transition);
     controller.setProperties({
       modifiedRequest: null,
       lastAddedColumn: null,
@@ -215,6 +214,7 @@ export default class ReportsReportRoute extends Route {
    */
   @action
   setReportState(state: string) {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     const controller = this.controllerFor(this.routeName) as ReportsReportController;
     controller.set('reportState', state);
   }
@@ -224,6 +224,7 @@ export default class ReportsReportRoute extends Route {
    */
   @action
   setModifiedRequest(request: RequestV2) {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     const controller = this.controllerFor(this.routeName) as ReportsReportController;
     controller.set('modifiedRequest', request);
   }

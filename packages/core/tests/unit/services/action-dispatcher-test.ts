@@ -5,7 +5,7 @@ import { TestContext } from 'ember-test-helpers';
 import ActionDispatcher from 'navi-core/services/action-dispatcher';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 
-function registerDispatcher(consumers: string[]): { service: ActionDispatcher; destroy: Function } {
+function registerDispatcher(consumers: string[]): { service: ActionDispatcher; destroy: () => void } {
   const owner = (getContext() as TestContext).owner;
   class TestService extends ActionDispatcher {
     get consumers() {

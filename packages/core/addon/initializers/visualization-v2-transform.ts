@@ -1,4 +1,5 @@
 import Application from '@ember/application';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //@ts-ignore
 import FragmentTransform from 'ember-data-model-fragments/transforms/fragment';
 

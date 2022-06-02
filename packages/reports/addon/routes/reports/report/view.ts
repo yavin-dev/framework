@@ -113,7 +113,6 @@ export default class ReportsReportViewRoute extends Route {
     const { manifest } = visualization;
 
     const newSettings = manifest.dataDidUpdate(report.visualization.metadata, request, response);
-    //@ts-ignore
     visualization.metadata = newSettings;
     report.updateVisualization(visualization);
   }
@@ -124,6 +123,7 @@ export default class ReportsReportViewRoute extends Route {
    * @returns true if data is stored for the request
    */
   _hasRequestRun(): boolean {
+    // eslint-disable-next-line ember/no-controller-access-in-routes
     const controller = this.controllerFor(this.routeName) as ReportsReportViewController;
     return controller.hasRequestRun;
   }

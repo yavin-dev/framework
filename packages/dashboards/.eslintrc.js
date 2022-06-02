@@ -39,9 +39,8 @@ module.exports = {
 
     // typescript
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-    '@typescript-eslint/camelcase': ['error', { allow: ['_id$'] }],
     '@typescript-eslint/explicit-function-return-type': 'off',
-    '@typescript-eslint/ban-ts-ignore': 'off',
+    '@typescript-eslint/ban-ts-comment': 'off',
 
     // prettier
     'prettier/prettier': ['error', {}, { usePrettierrc: true }],
@@ -74,7 +73,6 @@ module.exports = {
       plugins: ['node'],
       extends: ['plugin:node/recommended'],
       rules: {
-        '@typescript-eslint/camelcase': 'off',
         '@typescript-eslint/no-var-requires': 'off',
       },
     },

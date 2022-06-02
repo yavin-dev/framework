@@ -60,7 +60,6 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
   /**
    * @type {Meta}
    */
-  @computed('field', 'type', 'source')
   get columnMetadata(): MetadataModelRegistry[T] {
     assert('Source must be set in order to access columnMetadata', isPresent(this.source));
     assert('column type must be set in order to access columnMetadata', isPresent(this.type));
@@ -85,7 +84,6 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
   /**
    * Column display name containing param value ids or provided alias
    */
-  @computed('alias', 'parameters', 'columnMetadata')
   get displayName(): string {
     const { alias, parameters, columnMetadata } = this;
     return this.naviFormatter.formatColumnName(columnMetadata, parameters, alias);
@@ -94,7 +92,6 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
   /**
    * Promise based column display name containing param nice name values or provided alias
    */
-  @computed('alias', 'parameters', 'columnMetadata')
   get displayNiceName(): Promise<string> {
     const { alias, parameters, columnMetadata } = this;
     return this.naviFormatter.formatNiceColumnName(columnMetadata, parameters, alias);

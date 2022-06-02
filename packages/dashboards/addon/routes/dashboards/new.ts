@@ -24,7 +24,7 @@ export default class DashboardsNewRoute extends Route {
    * @override
    * @returns route model
    */
-  model(_params: {}, transition: Transition): Promise<DashboardModel> {
+  model(_params: Record<string, unknown>, transition: Transition): Promise<DashboardModel> {
     const title = transition.to?.queryParams?.title;
     return this._newModel(title);
   }

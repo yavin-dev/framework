@@ -27,12 +27,11 @@ class ReportObject extends EmberObject {
   @computed('userReports.[]', 'favoriteReports.[]')
   get reports(): DS.PromiseArray<ReportModel> {
     const reportsPromise = hash({ userReports: this.userReports, favoriteReports: this.favoriteReports });
-    //@ts-ignore
     return DS.PromiseArray.create({
       promise: reportsPromise.then(({ userReports, favoriteReports }) => {
         return A().pushObjects(A(userReports.toArray())).pushObjects(A(favoriteReports.toArray())).uniq();
       }),
-    }) as DS.PromiseArray<ReportModel>;
+    }) as unknown as DS.PromiseArray<ReportModel>;
   }
 }
 

@@ -86,7 +86,7 @@ export default class TableController extends Controller {
 
   @action
   onUpdateReport(actionType: string, ...options: any[]) {
-    const updateAction = (this as any)[actionType] as Function;
+    const updateAction = (this as any)[actionType] as (...args: any[]) => void;
     updateAction(...options);
   }
 

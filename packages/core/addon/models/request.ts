@@ -160,7 +160,7 @@ export default class RequestFragment extends Fragment.extend(Validations) implem
     }
   }
 
-  @computed('table', 'dataSource')
+  @computed('dataSource', 'naviMetadata', 'table')
   get tableMetadata(): TableMetadataModel | undefined {
     const { dataSource, table } = this;
     if (!dataSource || !table) {

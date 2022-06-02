@@ -11,7 +11,6 @@
  */
 
 import BaseCellRenderer from './base';
-//@ts-ignore
 import { formatDateForGranularity } from 'navi-core/helpers/format-date-for-granularity';
 import { Grain } from '@yavin/client/utils/date';
 

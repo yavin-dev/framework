@@ -3,6 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import SearchFilterController from '../search-filter';
+// eslint-disable-next-line ember/no-computed-properties-in-native-classes
 import { action, computed } from '@ember/object';
 import { A as arr } from '@ember/array';
 import { tracked } from '@glimmer/tracking';
@@ -18,12 +19,11 @@ export default class DirectoryMyDataController extends SearchFilterController {
    */
   @computed('directory.{sortKey,sortDir}', 'model.items')
   get sortedItems() {
-    return new Promise<Array<TODO>>(async (resolve) => {
-      const {
-        directory: { sortKey, sortDir },
-      } = this;
-      const items = await this.model.items;
+    const {
+      directory: { sortKey, sortDir },
+    } = this;
 
+    return this.model.items.then((items) => {
       let sortedItems;
       if (sortKey === 'updatedOn') {
         let getUpdatedOn = (item: any) => moment.utc(item.get('updatedOn')),
@@ -34,9 +34,9 @@ export default class DirectoryMyDataController extends SearchFilterController {
       }
 
       if (sortDir === 'desc') {
-        resolve(sortedItems.reverse());
+        return sortedItems.reverse();
       } else {
-        resolve(sortedItems);
+        return sortedItems;
       }
     });
   }

@@ -4,7 +4,6 @@
  */
 import Store from '@ember-data/store';
 import Service, { inject as service } from '@ember/service';
-//@ts-ignore
 import config from 'ember-get-config';
 
 const NOT_FOUND = '404';

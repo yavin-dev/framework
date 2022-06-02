@@ -38,7 +38,7 @@ export default class DirItemNameCellComponent extends Component<DirItemNameCellC
    * @property {String} type - the type of the item
    */
   get type() {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     //@ts-ignore (ember data generates this field)
     return this.args.value?.constructor?.modelName;
   }

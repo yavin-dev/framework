@@ -1,3 +1,4 @@
+/* eslint-disable ember/no-assignment-of-untracked-properties-used-in-tracking-contexts */
 /**
  * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.

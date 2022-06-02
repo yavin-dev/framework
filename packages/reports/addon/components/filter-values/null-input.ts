@@ -5,4 +5,5 @@
 import Component from '@glimmer/component';
 import Args from './args-interface';
 
+// eslint-disable-next-line ember/no-empty-glimmer-component-classes
 export default class NullInput extends Component<Args> {}

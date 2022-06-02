@@ -47,7 +47,7 @@ export default class PowerSelectCollectionOptions extends Options {
     if (loading) {
       return [];
     }
-    return options.map((option: {}, idx: number) => ({ option, idx }));
+    return options.map((option: Record<string, unknown>, idx: number) => ({ option, idx }));
   }
 
   /**

@@ -22,6 +22,7 @@ export default class ActionDispatcher extends Service {
    */
   _registeredConsumers: ActionConsumer[] = [];
 
+  // eslint-disable-next-line ember/classic-decorator-hooks
   init() {
     super.init();
     this.consumers.forEach((consumer) => this.registerConsumer(consumer));

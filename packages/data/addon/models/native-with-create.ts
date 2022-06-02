@@ -37,7 +37,9 @@ function createGetter(
   };
 }
 
-export function ClientService<T extends NativeWithCreate, S extends ClientServices>(dependencyId: S): Function {
+export function ClientService<T extends NativeWithCreate, S extends ClientServices>(
+  dependencyId: S
+): (...args: any[]) => void {
   return function getter(...args: any[]) {
     return createGetter(...(args as [T, string, any]), dependencyId);
   };
