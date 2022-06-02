@@ -69,7 +69,7 @@ export default class LineChartController extends Controller {
   get metricVisualization() {
     return {
       type: this.chartType,
-      version: 1,
+      version: 2,
       metadata: this.metricOptions,
     };
   }
@@ -77,7 +77,7 @@ export default class LineChartController extends Controller {
   get dimVisualization() {
     return {
       type: this.chartType,
-      version: 1,
+      version: 2,
       metadata: this.dimensionOptions,
     };
   }

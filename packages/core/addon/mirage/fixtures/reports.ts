@@ -215,45 +215,54 @@ export default [
     deliveryRuleIds: [1],
     visualization: {
       type: 'table',
-      version: 1,
+      version: 2,
       metadata: {
-        columns: [
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Date',
-          },
-          {
-            field: 'adClicks',
-            type: 'metric',
-            displayName: 'Ad Clicks',
-          },
-          {
-            field: 'navClicks',
-            type: 'metric',
-            displayName: 'Nav Clicks',
-          },
-        ],
+        columnAttributes: {},
       },
     },
     request: {
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day',
-      },
-      dataSource: 'bardOne',
-      metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-      dimensions: [],
-      filters: [],
-      sort: [],
-      intervals: [
+      filters: [
         {
-          end: '2015-11-16 00:00:00.000',
-          start: '2015-11-09 00:00:00.000',
+          operator: 'bet',
+          values: ['2015-11-09T00:00:00.000Z', '2015-11-15T00:00:00.000Z'],
+          field: 'network.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
         },
       ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
+      columns: [
+        {
+          cid: 'x-4HGDijX7',
+          field: 'network.dateTime',
+          parameters: {
+            grain: 'day',
+          },
+          type: 'timeDimension',
+        },
+        {
+          cid: 'I4CO1UyJ9Z',
+          field: 'adClicks',
+          parameters: {},
+          type: 'metric',
+        },
+        {
+          cid: 'cZ1EsAC8X1',
+          field: 'navClicks',
+          parameters: {},
+          type: 'metric',
+        },
+      ],
+      table: 'network',
+      sorts: [],
+      rollup: {
+        columnCids: [],
+        grandTotal: false,
+      },
+      limit: null,
+      requestVersion: '2.0',
+      dataSource: 'bardOne',
     },
   },
   {
@@ -265,38 +274,36 @@ export default [
     deliveryRuleIds: [2],
     visualization: {
       type: 'line-chart',
-      version: 1,
-      metadata: {
-        axis: {
-          y: {
-            series: {
-              type: 'metric',
-              config: {
-                metrics: ['adClicks', 'navClicks'],
-              },
-            },
-          },
-        },
-      },
+      version: 2,
+      metadata: { axis: { y: { series: { type: 'metric', config: {} } } } },
     },
     request: {
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day',
-      },
-      dataSource: 'bardOne',
-      metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-      dimensions: [],
-      filters: [],
-      sort: [],
-      intervals: [
+      filters: [
         {
-          end: '2015-11-16 00:00:00.000',
-          start: '2015-11-09 00:00:00.000',
+          operator: 'bet',
+          values: ['2015-11-09T00:00:00.000Z', '2015-11-15T00:00:00.000Z'],
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          type: 'timeDimension',
         },
       ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
+      columns: [
+        {
+          cid: 'HqoHEl9fOm',
+          alias: null,
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          type: 'timeDimension',
+        },
+        { cid: '8C8dtbrp_b', alias: null, field: 'adClicks', parameters: {}, type: 'metric' },
+        { cid: 'MStyAbA2sg', alias: null, field: 'navClicks', parameters: {}, type: 'metric' },
+      ],
+      table: 'network',
+      sorts: [],
+      rollup: { columnCids: [], grandTotal: false },
+      limit: null,
+      requestVersion: '2.0',
+      dataSource: 'bardOne',
     },
   },
   {
@@ -306,47 +313,34 @@ export default [
     updatedOn: '2015-07-01 00:00:00',
     ownerId: 'navi_user',
     deliveryRuleIds: [],
-    visualization: {
-      type: 'table',
-      version: 1,
-      metadata: {
-        columns: [
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Date',
-          },
-          {
-            field: 'adClicks',
-            type: 'metric',
-            displayName: 'Ad Clicks',
-          },
-          {
-            field: 'navClicks',
-            type: 'metric',
-            displayName: 'Nav Clicks',
-          },
-        ],
-      },
-    },
+    visualization: null,
     request: {
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day',
-      },
-      dataSource: 'bardOne',
-      metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-      dimensions: [],
-      filters: [],
-      sort: [],
-      intervals: [
+      filters: [
         {
-          end: '2015-11-16 00:00:00.000',
-          start: '2015-11-09 00:00:00.000',
+          operator: 'bet',
+          values: ['2015-11-09T00:00:00.000Z', '2015-11-15T00:00:00.000Z'],
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          type: 'timeDimension',
         },
       ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
+      columns: [
+        {
+          cid: 'AXeG921x3K',
+          alias: null,
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          type: 'timeDimension',
+        },
+        { cid: 'XnnuhOJR6q', alias: null, field: 'adClicks', parameters: {}, type: 'metric' },
+        { cid: 'qeln5JtJdK', alias: null, field: 'navClicks', parameters: {}, type: 'metric' },
+      ],
+      table: 'network',
+      sorts: [],
+      rollup: { columnCids: [], grandTotal: false },
+      limit: null,
+      requestVersion: '2.0',
+      dataSource: 'bardOne',
     },
   },
   {
@@ -374,57 +368,61 @@ export default [
     updatedOn: '2015-01-01 00:00:00',
     ownerId: 'ciela',
     deliveryRuleIds: [],
-    visualization: {
-      type: 'table',
-      version: 1,
-      metadata: {
-        columns: [
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Date',
-          },
-          {
-            field: 'userSignupDate',
-            type: 'dimension',
-            displayName: 'User Signup Date',
-          },
-          {
-            field: 'revenue(currency=USD)',
-            type: 'metric',
-            displayName: 'Revenue (USD)',
-          },
-        ],
-      },
-    },
+    visualization: { type: 'table', version: 2, metadata: { columnAttributes: {} } },
     request: {
-      logicalTable: {
-        table: 'tableA',
-        timeGrain: 'day',
-      },
-      dataSource: 'bardOne',
-      metrics: [
-        {
-          metric: 'revenue',
-          parameters: {
-            currency: 'USD',
-          },
-        },
-      ],
-      dimensions: [{ dimension: 'userSignupDate' }],
       filters: [
-        { dimension: 'userSignupDate', field: 'id', operator: 'gte', values: ['2021-10-02'] },
-        { dimension: 'userSignupDate', field: 'id', operator: 'lt', values: ['2021-10-10'] },
-        { dimension: 'userSignupDate', field: 'id', operator: 'bet', values: ['2021-09-04', '2021-09-08'] },
-      ],
-      intervals: [
         {
-          end: '2018-02-16 00:00:00.000',
-          start: '2018-02-09 00:00:00.000',
+          operator: 'bet',
+          values: ['2018-02-09T00:00:00.000Z', '2018-02-15T00:00:00.000Z'],
+          field: 'tableA.dateTime',
+          parameters: { grain: 'day' },
+          type: 'timeDimension',
+        },
+        {
+          operator: 'gte',
+          values: ['2021-10-02'],
+          field: 'userSignupDate',
+          parameters: { field: 'id', grain: 'second' },
+          type: 'timeDimension',
+        },
+        {
+          operator: 'lte',
+          values: ['2021-10-09T00:00:00.000Z'],
+          field: 'userSignupDate',
+          parameters: { field: 'id', grain: 'second' },
+          type: 'timeDimension',
+        },
+        {
+          operator: 'bet',
+          values: ['2021-09-04', '2021-09-08'],
+          field: 'userSignupDate',
+          parameters: { field: 'id', grain: 'second' },
+          type: 'timeDimension',
         },
       ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
+      columns: [
+        {
+          cid: 'wKt1t2EpBl',
+          alias: null,
+          field: 'tableA.dateTime',
+          parameters: { grain: 'day' },
+          type: 'timeDimension',
+        },
+        {
+          cid: 'x6SyeNunSC',
+          alias: null,
+          field: 'userSignupDate',
+          parameters: { field: 'id', grain: 'second' },
+          type: 'timeDimension',
+        },
+        { cid: 'Hc_dQZXzln', alias: null, field: 'revenue', parameters: { currency: 'USD' }, type: 'metric' },
+      ],
+      table: 'tableA',
+      sorts: [],
+      rollup: { columnCids: [], grandTotal: false },
+      limit: null,
+      requestVersion: '2.0',
+      dataSource: 'bardOne',
     },
   },
   {
@@ -434,48 +432,27 @@ export default [
     updatedOn: '2015-02-01 00:00:00',
     ownerId: 'navi_user',
     deliveryRuleIds: [],
-    visualization: {
-      type: 'table',
-      version: 1,
-      metadata: {
-        columns: [
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Date',
-          },
-          {
-            field: 'revenue(currency=USD)',
-            type: 'metric',
-            displayName: 'Revenue (USD)',
-          },
-        ],
-      },
-    },
+    visualization: { type: 'table', version: 2, metadata: { columnAttributes: {} } },
     request: {
-      logicalTable: {
-        table: 'oak',
-        timeGrain: 'day',
-      },
+      filters: [
+        {
+          operator: 'bet',
+          values: ['2018-02-09T00:00:00.000Z', '2018-02-15T00:00:00.000Z'],
+          field: 'oak.dateTime',
+          parameters: { grain: 'day' },
+          type: 'timeDimension',
+        },
+      ],
+      columns: [
+        { cid: 'ATnJohxvUq', alias: null, field: 'oak.dateTime', parameters: { grain: 'day' }, type: 'timeDimension' },
+        { cid: 'cG9Irk0U7K', alias: null, field: 'revenue', parameters: { currency: 'USD' }, type: 'metric' },
+      ],
+      table: 'oak',
+      sorts: [],
+      rollup: { columnCids: [], grandTotal: false },
+      limit: null,
+      requestVersion: '2.0',
       dataSource: 'bardOne',
-      metrics: [
-        {
-          metric: 'revenue',
-          parameters: {
-            currency: 'USD',
-          },
-        },
-      ],
-      dimensions: [],
-      filters: [],
-      intervals: [
-        {
-          end: '2018-02-16 00:00:00.000',
-          start: '2018-02-09 00:00:00.000',
-        },
-      ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
     },
   },
   {
@@ -487,96 +464,35 @@ export default [
     deliveryRuleIds: [],
     visualization: {
       type: 'line-chart',
-      version: 1,
-      metadata: {
-        axis: {
-          y: {
-            series: {
-              type: 'metric',
-              config: {
-                metrics: ['uniqueIdentifier'],
-              },
-            },
-          },
-        },
-      },
+      version: 2,
+      metadata: { axis: { y: { series: { type: 'metric', config: {} } } } },
     },
     request: {
-      logicalTable: {
-        table: 'network',
-        timeGrain: 'day',
-      },
+      filters: [
+        {
+          operator: 'bet',
+          values: ['2018-11-11T00:00:00.000Z', '2018-11-17T00:00:00.000Z'],
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          type: 'timeDimension',
+        },
+      ],
+      columns: [
+        {
+          cid: 'uCFNyC7CfV',
+          alias: null,
+          field: 'network.dateTime',
+          parameters: { grain: 'day' },
+          type: 'timeDimension',
+        },
+        { cid: 'CryGpG7mra', alias: null, field: 'uniqueIdentifier', parameters: {}, type: 'metric' },
+      ],
+      table: 'network',
+      sorts: [],
+      rollup: { columnCids: [], grandTotal: false },
+      limit: null,
+      requestVersion: '2.0',
       dataSource: 'bardOne',
-      metrics: [{ metric: 'uniqueIdentifier' }],
-      dimensions: [],
-      filters: [],
-      sort: [],
-      intervals: [
-        {
-          end: '2018-11-18 00:00:00.000',
-          start: '2018-11-11 00:00:00.000',
-        },
-      ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
-    },
-  },
-  {
-    id: 11,
-    title: 'old report without params',
-    createdOn: '2015-01-01 00:00:00',
-    updatedOn: '2015-01-01 00:00:00',
-    ownerId: 'navi_user',
-    deliveryRuleIds: [],
-    visualization: {
-      type: 'table',
-      version: 1,
-      metadata: {
-        columns: [
-          {
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Date',
-          },
-          {
-            field: 'property',
-            type: 'dimension',
-            displayName: 'Property',
-          },
-          {
-            field: { metric: 'revenue', parameters: {} },
-            type: 'metric',
-            displayName: 'Revenue',
-          },
-        ],
-      },
-    },
-    request: {
-      logicalTable: {
-        table: 'tableA',
-        timeGrain: 'day',
-      },
-      dataSource: 'bardOne',
-      metrics: [
-        {
-          metric: 'revenue',
-          parameters: {},
-        },
-      ],
-      dimensions: [
-        {
-          dimension: 'property',
-        },
-      ],
-      filters: [],
-      intervals: [
-        {
-          end: '2018-02-16 00:00:00.000',
-          start: '2018-02-09 00:00:00.000',
-        },
-      ],
-      bardVersion: 'v1',
-      requestVersion: 'v1',
     },
   },
   {

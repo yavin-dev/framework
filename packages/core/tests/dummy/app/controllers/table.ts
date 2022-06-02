@@ -8,7 +8,7 @@ import { Args, TableColumn } from 'navi-core/components/navi-visualizations/tabl
 import { ModelFrom } from 'navi-core/utils/type-utils';
 import TableRoute from '../routes/table';
 import ColumnFragment from 'navi-core/models/request/column';
-import { TableColumnAttributes } from 'navi-core/serializers/table';
+import { TableColumnAttributes } from 'navi-core/models/table';
 import type YavinVisualizationsService from 'navi-core/services/visualization';
 
 export default class TableController extends Controller {
@@ -29,7 +29,7 @@ export default class TableController extends Controller {
   get visualization() {
     return {
       type: 'table',
-      version: 1,
+      version: 2,
       metadata: this.options,
     };
   }

@@ -211,15 +211,13 @@ export default [
     title: 'Clicks',
     visualization: {
       type: 'line-chart',
-      version: 1,
+      version: 2,
       metadata: {
         axis: {
           y: {
             series: {
               type: 'metric',
-              config: {
-                metrics: ['adClicks', 'navClicks'],
-              },
+              config: {},
             },
           },
         },
@@ -227,21 +225,51 @@ export default [
     },
     requests: [
       {
-        logicalTable: {
-          table: 'network',
-          timeGrain: 'day',
-        },
-        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-        dimensions: [],
-        filters: [],
-        intervals: [
+        filters: [
           {
-            end: 'current',
-            start: 'P7D',
+            operator: 'bet',
+            values: ['P7D', 'current'],
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
           },
         ],
-        bardVersion: 'v1',
-        requestVersion: 'v1',
+        columns: [
+          {
+            cid: 'swz_R-_hT2',
+            alias: null,
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+          },
+          {
+            cid: 'YhcKtFCt_K',
+            alias: null,
+            field: 'adClicks',
+            parameters: {},
+            type: 'metric',
+          },
+          {
+            cid: 'G42Zq3zIek',
+            alias: null,
+            field: 'navClicks',
+            parameters: {},
+            type: 'metric',
+          },
+        ],
+        table: 'network',
+        sorts: [],
+        rollup: {
+          columnCids: [],
+          grandTotal: false,
+        },
+        limit: null,
+        requestVersion: '2.0',
+        dataSource: 'bardOne',
       },
     ],
     createdOn: '2016-01-01 00:00:00',
@@ -261,21 +289,60 @@ export default [
     },
     requests: [
       {
-        logicalTable: {
-          table: 'network',
-          timeGrain: 'day',
-        },
-        metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
-        dimensions: [{ dimension: 'os' }],
-        filters: [],
-        intervals: [
+        filters: [
           {
-            end: 'current',
-            start: 'P7D',
+            operator: 'bet',
+            values: ['P7D', 'current'],
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
           },
         ],
-        bardVersion: 'v1',
-        requestVersion: 'v1',
+        columns: [
+          {
+            cid: 'bH7KHLRl-c',
+            alias: null,
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+          },
+          {
+            cid: 'mfM7aeASeq',
+            alias: null,
+            field: 'os',
+            parameters: {
+              field: 'id',
+            },
+            type: 'dimension',
+          },
+          {
+            cid: 'eULLHPFj48',
+            alias: null,
+            field: 'uniqueIdentifier',
+            parameters: {},
+            type: 'metric',
+          },
+          {
+            cid: 'glmUNB9FDg',
+            alias: null,
+            field: 'totalPageViews',
+            parameters: {},
+            type: 'metric',
+          },
+        ],
+        table: 'network',
+        sorts: [],
+        rollup: {
+          columnCids: [],
+          grandTotal: false,
+        },
+        limit: null,
+        requestVersion: '2.0',
+        dataSource: 'bardOne',
       },
     ],
     createdOn: '2016-01-01 00:00:00',
@@ -288,15 +355,13 @@ export default [
     title: 'Clicks',
     visualization: {
       type: 'line-chart',
-      version: 1,
+      version: 2,
       metadata: {
         axis: {
           y: {
             series: {
               type: 'metric',
-              config: {
-                metrics: ['adClicks', 'navClicks'],
-              },
+              config: {},
             },
           },
         },
@@ -304,21 +369,51 @@ export default [
     },
     requests: [
       {
-        logicalTable: {
-          table: 'network',
-          timeGrain: 'day',
-        },
-        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-        dimensions: [],
-        filters: [],
-        intervals: [
+        filters: [
           {
-            end: 'current',
-            start: 'P7D',
+            operator: 'bet',
+            values: ['P7D', 'current'],
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
           },
         ],
-        bardVersion: 'v1',
-        requestVersion: 'v1',
+        columns: [
+          {
+            cid: 'VVDTADSR8a',
+            alias: null,
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+          },
+          {
+            cid: '9RUUEsNMcp',
+            alias: null,
+            field: 'adClicks',
+            parameters: {},
+            type: 'metric',
+          },
+          {
+            cid: 'vUtPhSC5yc',
+            alias: null,
+            field: 'navClicks',
+            parameters: {},
+            type: 'metric',
+          },
+        ],
+        table: 'network',
+        sorts: [],
+        rollup: {
+          columnCids: [],
+          grandTotal: false,
+        },
+        limit: null,
+        requestVersion: '2.0',
+        dataSource: 'bardOne',
       },
     ],
     createdOn: '2016-01-01 00:00:00',
@@ -331,15 +426,13 @@ export default [
     title: 'Sale Contribution Value',
     visualization: {
       type: 'line-chart',
-      version: 1,
+      version: 2,
       metadata: {
         axis: {
           y: {
             series: {
               type: 'metric',
-              config: {
-                metrics: ['personalSold', 'globallySold'],
-              },
+              config: {},
             },
           },
         },
@@ -347,21 +440,50 @@ export default [
     },
     requests: [
       {
-        logicalTable: {
-          table: 'inventory',
-          timeGrain: 'day',
-        },
-        metrics: [{ metric: 'personalSold' }, { metric: 'globallySold' }],
-        dimensions: [],
-        filters: [],
-        intervals: [
+        filters: [
           {
-            end: 'current',
-            start: 'P7D',
+            operator: 'bet',
+            values: ['P7D', 'current'],
+            field: 'inventory.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
           },
         ],
-        bardVersion: 'v1',
-        requestVersion: 'v1',
+        columns: [
+          {
+            cid: 'UZU_IVJQ4T',
+            alias: null,
+            field: 'inventory.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+          },
+          {
+            cid: 'T2dXmjH4fO',
+            alias: null,
+            field: 'personalSold',
+            parameters: {},
+            type: 'metric',
+          },
+          {
+            cid: 'M_5lC6ktnJ',
+            alias: null,
+            field: 'globallySold',
+            parameters: {},
+            type: 'metric',
+          },
+        ],
+        table: 'inventory',
+        sorts: [],
+        rollup: {
+          columnCids: [],
+          grandTotal: false,
+        },
+        limit: null,
+        requestVersion: '2.0',
         dataSource: 'bardTwo',
       },
     ],
@@ -375,30 +497,53 @@ export default [
     title: 'Mobile DAU Goal',
     visualization: {
       type: 'goal-gauge',
-      version: 1,
+      version: 2,
       metadata: {
+        metricCid: 'zvgPWs-cSW',
         baselineValue: 200,
         goalValue: 1000,
-        metric: { metric: 'adClicks', parameters: {} },
       },
     },
     requests: [
       {
-        logicalTable: {
-          table: 'network',
-          timeGrain: 'day',
-        },
-        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-        dimensions: [],
-        filters: [],
-        intervals: [
+        filters: [
           {
-            end: 'current',
-            start: 'P1D',
+            operator: 'bet',
+            values: ['P1D', 'current'],
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
           },
         ],
-        bardVersion: 'v1',
-        requestVersion: 'v1',
+        columns: [
+          {
+            cid: 'VhL-u26siY',
+            alias: null,
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+          },
+          {
+            cid: 'zvgPWs-cSW',
+            alias: null,
+            field: 'adClicks',
+            parameters: {},
+            type: 'metric',
+          },
+        ],
+        table: 'network',
+        sorts: [],
+        rollup: {
+          columnCids: [],
+          grandTotal: false,
+        },
+        limit: null,
+        requestVersion: '2.0',
+        dataSource: 'bardOne',
       },
     ],
     createdOn: '2016-01-01 00:00:00',
@@ -411,15 +556,13 @@ export default [
     title: 'Mobile DAU Graph',
     visualization: {
       type: 'line-chart',
-      version: 1,
+      version: 2,
       metadata: {
         axis: {
           y: {
             series: {
               type: 'metric',
-              config: {
-                metrics: ['adClicks', 'navClicks'],
-              },
+              config: {},
             },
           },
         },
@@ -427,21 +570,50 @@ export default [
     },
     requests: [
       {
-        logicalTable: {
-          table: 'network',
-          timeGrain: 'day',
-        },
-        metrics: [{ metric: 'adClicks' }, { metric: 'navClicks' }],
-        dimensions: [],
-        filters: [],
-        intervals: [
+        filters: [
           {
-            end: 'current',
-            start: 'P7D',
+            operator: 'bet',
+            values: ['P7D', 'current'],
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
           },
         ],
-        bardVersion: 'v1',
-        requestVersion: 'v1',
+        columns: [
+          {
+            cid: '2rUNHHyzy8',
+            alias: null,
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+          },
+          {
+            cid: 'JjbfrNWWD9',
+            alias: null,
+            field: 'adClicks',
+            parameters: {},
+            type: 'metric',
+          },
+          {
+            cid: 'QsFBGjVQvC',
+            alias: null,
+            field: 'navClicks',
+            parameters: {},
+            type: 'metric',
+          },
+        ],
+        table: 'network',
+        sorts: [],
+        rollup: {
+          columnCids: [],
+          grandTotal: false,
+        },
+        limit: null,
+        requestVersion: '2.0',
         dataSource: 'bardOne',
       },
     ],
@@ -455,15 +627,13 @@ export default [
     title: 'Datasource error',
     visualization: {
       type: 'line-chart',
-      version: 1,
+      version: 2,
       metadata: {
         axis: {
           y: {
             series: {
               type: 'metric',
-              config: {
-                metrics: ['adClicks'],
-              },
+              config: {},
             },
           },
         },
@@ -650,51 +820,65 @@ export default [
       type: 'table',
       version: 2,
       metadata: {
-        columns: [
-          {
-            alias: null,
-            field: 'dateTime',
-            type: 'dateTime',
-            displayName: 'Date',
-          },
-          {
-            alias: null,
-            field: 'os',
-            type: 'dimension',
-            displayName: 'OS',
-          },
-          {
-            alias: null,
-            field: 'uniqueIdentifier',
-            type: 'metric',
-            displayName: 'Unique Identifier',
-          },
-          {
-            alias: null,
-            field: 'totalPageViews',
-            type: 'metric',
-            displayName: 'Total Page Views',
-          },
-        ],
+        columnAttributes: {},
       },
     },
     requests: [
       {
-        logicalTable: {
-          table: 'network',
-          timeGrain: 'day',
-        },
-        metrics: [{ metric: 'uniqueIdentifier' }, { metric: 'totalPageViews' }],
-        dimensions: [{ dimension: 'os' }],
-        filters: [],
-        intervals: [
+        filters: [
           {
-            end: 'current',
-            start: 'P7D',
+            operator: 'bet',
+            values: ['P7D', 'current'],
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
           },
         ],
-        bardVersion: 'v1',
-        requestVersion: 'v1',
+        columns: [
+          {
+            cid: 'Q8Hngt9Rzb',
+            alias: null,
+            field: 'network.dateTime',
+            parameters: {
+              grain: 'day',
+            },
+            type: 'timeDimension',
+          },
+          {
+            cid: '1GKI1CEq6g',
+            alias: null,
+            field: 'os',
+            parameters: {
+              field: 'id',
+            },
+            type: 'dimension',
+          },
+          {
+            cid: 'EfodXdHMxX',
+            alias: null,
+            field: 'uniqueIdentifier',
+            parameters: {},
+            type: 'metric',
+          },
+          {
+            cid: '-nlARe8_a4',
+            alias: null,
+            field: 'totalPageViews',
+            parameters: {},
+            type: 'metric',
+          },
+        ],
+        table: 'network',
+        sorts: [],
+        rollup: {
+          columnCids: [],
+          grandTotal: false,
+        },
+        limit: null,
+        requestVersion: '2.0',
+        dataSource: 'bardOne',
       },
     ],
     createdOn: '2016-01-01 00:00:00',
