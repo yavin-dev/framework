@@ -9,7 +9,7 @@ import { inject as service } from '@ember/service';
 import { set, computed } from '@ember/object';
 import { assert } from '@ember/debug';
 import { isPresent } from '@ember/utils';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { Parameters } from '@yavin/client/request';
 import { ColumnType } from 'navi-data/models/metadata/column';
@@ -68,13 +68,9 @@ export default class Base<T extends ColumnType> extends Fragment.extend(Validati
 
   @computed('field', 'parameters.{}')
   get canonicalName() {
-    const { field: metric, parameters } = this;
+    const { field, parameters } = this;
 
-    // TODO rename with generic canonicalizeColumn
-    return canonicalizeMetric({
-      metric,
-      parameters,
-    });
+    return canonicalizeColumn({ field, parameters });
   }
 
   updateParameters(parameters = {}) {

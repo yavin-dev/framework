@@ -9,7 +9,7 @@ import { assert, warn } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
 import EmberObject from '@ember/object';
-import { canonicalizeMetric } from '../../utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { configHost, getDataSource } from '../../utils/adapter';
 import NaviFactAdapter, { FactAdapterError } from './interface';
 import { RequestV2, SORT_DIRECTIONS } from '@yavin/client/request';
@@ -51,7 +51,7 @@ function canonicalizeFiliDimension(column: Column | Filter | Sort): string {
     ignoredParams.push('grain');
   }
   const parameters = omit(column.parameters, ...ignoredParams);
-  return canonicalizeMetric({ metric: column.field, parameters });
+  return canonicalizeColumn({ field: column.field, parameters });
 }
 
 export function buildTimeDimensionFilterValues(
@@ -257,9 +257,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    */
   _buildMetricsParam(request: Request): string {
     const metrics = request.columns.filter((col) => col.type === 'metric');
-    const metricIds = metrics.map((metric) =>
-      canonicalizeMetric({ metric: metric.field, parameters: metric.parameters })
-    );
+    const metricIds = metrics.map((metric) => canonicalizeColumn(metric));
 
     return array(metricIds).uniq().join(',');
   }
@@ -286,8 +284,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
 
     if (sorts.length) {
       let res = sorts.map(({ direction, field, parameters }) => {
-        const canonicalName =
-          field === `${table}.dateTime` ? 'dateTime' : canonicalizeMetric({ metric: field, parameters });
+        const canonicalName = field === `${table}.dateTime` ? 'dateTime' : canonicalizeColumn({ field, parameters });
         direction = direction || 'desc';
 
         assert(
@@ -321,7 +318,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       return having
         .map((having) => {
           const { field, parameters, operator, values = [] } = having;
-          return `${canonicalizeMetric({ metric: field, parameters })}-${operator}[${values.join(',')}]`;
+          return `${canonicalizeColumn({ field, parameters })}-${operator}[${values.join(',')}]`;
         })
         .join(',');
     }

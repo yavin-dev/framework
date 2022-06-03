@@ -7,7 +7,7 @@ import { guidFor } from '@ember/object/internals';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import RequestFragment from 'navi-core/models/request';
-import { searchRecords } from 'navi-data/utils/search';
+import { searchRecords } from '@yavin/client/utils/search';
 import ColumnMetadataModel from 'navi-data/models/metadata/column';
 import { groupBy } from 'lodash-es';
 

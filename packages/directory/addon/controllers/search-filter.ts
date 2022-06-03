@@ -7,7 +7,7 @@ import Controller, { inject as controller } from '@ember/controller';
 import { computed } from '@ember/object';
 import { isEmpty } from '@ember/utils';
 import DirectoryController from './directory';
-import { searchRecords } from 'navi-data/utils/search';
+import { searchRecords } from '@yavin/client/utils/search';
 
 export default abstract class SearchFilterController extends Controller {
   /**

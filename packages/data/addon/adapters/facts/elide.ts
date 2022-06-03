@@ -14,7 +14,7 @@ import { task, timeout } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import { v1 } from 'ember-uuid';
 import moment from 'moment';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { omitBy } from 'lodash-es';
 import type { RequestOptions, AsyncQueryResponse, TableExportResponse } from './interface';
 import type { Parameters, Request, FilterOperator, Filter, Column, Sort, RequestV2 } from '@yavin/client/request';
@@ -87,7 +87,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       const defaultParams = meta.getDefaultParameters() || {};
       const nonDefaultParams = omitBy(base.parameters, (v, k) => defaultParams[k] === v);
       if (Object.keys(nonDefaultParams).length !== 0) {
-        const canonicalName = canonicalizeMetric({ metric: base.field, parameters: base.parameters });
+        const canonicalName = canonicalizeColumn(base);
         throw new FactAdapterError(
           `Parameters are not supported in elide unless ${canonicalName} is added as a column.`
         );
@@ -141,7 +141,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       }
 
       let fieldStr;
-      const canonicalName = canonicalizeMetric({ metric: field, parameters });
+      const canonicalName = canonicalizeColumn({ field, parameters });
       if (canonicalToAlias[canonicalName]) {
         fieldStr = canonicalToAlias[canonicalName];
       } else {
@@ -176,14 +176,14 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     const args = [];
     const { table, columns, sorts, limit, filters } = request;
     const columnCanonicalToAlias = columns.reduce((canonicalToAlias: Record<string, string>, column, idx) => {
-      const canonicalName = canonicalizeMetric({ metric: column.field, parameters: column.parameters });
+      const canonicalName = canonicalizeColumn(column);
       // Use 'colX' as alias so that filters/sorts can reference the alias
       canonicalToAlias[canonicalName] = `col${idx}`;
       return canonicalToAlias;
     }, {});
     const columnsStr = columns
       .map(({ type, field, parameters }) => {
-        const alias = columnCanonicalToAlias[canonicalizeMetric({ metric: field, parameters })];
+        const alias = columnCanonicalToAlias[canonicalizeColumn({ field, parameters })];
         if (type === 'timeDimension') {
           // The elide time grain is uppercase (but we serialize to lowercase to use as Grain internally)
           const grain = parameters.grain ? `${parameters.grain}`.toUpperCase() : undefined;
@@ -203,7 +203,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
       const { field, parameters, direction } = sort;
 
       let column;
-      const canonicalName = canonicalizeMetric({ metric: field, parameters });
+      const canonicalName = canonicalizeColumn({ field, parameters });
       if (columnCanonicalToAlias[canonicalName]) {
         column = columnCanonicalToAlias[canonicalName];
       } else {

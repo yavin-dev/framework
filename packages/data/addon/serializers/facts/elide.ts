@@ -11,7 +11,7 @@ import NaviFactSerializer, { ResponseV1 } from './interface';
 import { FactAdapterError } from 'navi-data/adapters/facts/interface';
 import type { AsyncQueryResponse, PageInfo, RequestOptions } from 'navi-data/adapters/facts/interface';
 import type { RequestV2 } from '@yavin/client/request';
-import { canonicalizeMetric } from 'navi-data/utils/metric';
+import { canonicalizeColumn } from '@yavin/client/utils/column';
 import NaviFactResponse from 'navi-data/models/navi-fact-response';
 import NaviFactError, { NaviErrorDetails } from 'navi-data/errors/navi-adapter-error';
 import { ExecutionResult } from 'graphql';
@@ -60,10 +60,7 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
     const response = JSON.parse(payload) as ExecutionResult;
     const { table } = request;
     const elideFields = request.columns.map((_c, idx) => `col${idx}`);
-    const normalizedFields = request.columns.map(({ field: metric, parameters }) =>
-      // TODO rename with generic canonicalizeColumn
-      canonicalizeMetric({ metric, parameters })
-    );
+    const normalizedFields = request.columns.map((col) => canonicalizeColumn(col));
 
     const { data } = response;
     assert('`data` should be present in successful in a response', data);

@@ -32,48 +32,29 @@ module('Unit | Service | navi formatter', function (hooks) {
   });
 
   test('parameters', async function (assert) {
-    assert.expect(5);
+    assert.expect(3);
 
     assert.equal(Service.formatColumnName(metric, {}), 'Revenue', 'Prints name and hides empty parameters');
     assert.equal(
-      Service.formatColumnName(metric, { as: 'lame' }),
-      'Revenue (lame)',
-      'Prints name and hides the "as" parameter'
-    );
-    assert.equal(
       Service.formatColumnName(metric, { realParam: 'realValue' }),
       'Revenue (realValue)',
-      'Prints name with real parameter'
+      'Prints name with single parameter'
     );
     assert.equal(
-      Service.formatColumnName(metric, { as: 'lame', realParam: 'realValue' }),
-      'Revenue (lame,realValue)',
-      'Prints name with real parameter and hides "as"'
-    );
-    assert.equal(
-      Service.formatColumnName(metric, { as: 'lame', realParam1: 'realValue1', realParam2: 'realValue2' }),
-      'Revenue (lame,realValue1,realValue2)',
-      'Prints name with multiple real parameters and hides "as"'
+      Service.formatColumnName(metric, { realParam1: 'realValue1', realParam2: 'realValue2' }),
+      'Revenue (realValue1,realValue2)',
+      'Prints name with multiple parameters'
     );
   });
 
   test('parameters with alias', async function (assert) {
-    assert.equal(
-      Service.formatColumnName(metric, {}, 'override'),
-      'override',
-      'Prints alias and hides empty parameters'
-    );
-    assert.equal(
-      Service.formatColumnName(metric, { as: 'lame' }, 'override'),
-      'override',
-      'Prints alias and hides the "as" parameter'
-    );
+    assert.equal(Service.formatColumnName(metric, {}, 'override'), 'override', 'Prints alias and instead of name');
     assert.equal(Service.formatColumnName(metric, { realParam: 'realValue' }, 'override'), 'override', 'Prints alias');
 
     assert.equal(
-      Service.formatColumnName(metric, { as: 'lame', realParam1: 'realValue1', realParam2: 'realValue2' }, 'override'),
+      Service.formatColumnName(metric, { realParam1: 'realValue1', realParam2: 'realValue2' }, 'override'),
       'override',
-      'Prints alias and hides real params and "as"'
+      'Prints alias and instead of name with parameters'
     );
   });
 
