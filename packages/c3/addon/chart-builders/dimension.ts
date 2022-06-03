@@ -36,7 +36,7 @@ import { BaseChartBuilder, C3Row, EmptyC3Data, TooltipData } from './base';
 import RequestFragment from 'navi-core/models/request';
 import { tracked } from '@glimmer/tracking';
 import { DimensionSeries } from '@yavin/c3/models/chart-visualization';
-import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
+import NaviFactResponse, { ResponseRow } from '@yavin/client/models/navi-fact-response';
 import ColumnFragment from 'navi-core/models/request/column';
 
 const BLANK_X_VALUE = '';

@@ -1,15 +1,15 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import { TestContext as Context } from 'ember-test-helpers';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import ElideOneScenario from 'navi-data/mirage/scenarios/elide-one';
 import { Server } from 'miragejs';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
-import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
+import TimeDimensionMetadataModel from '@yavin/client/models/metadata/time-dimension';
 import moment from 'moment';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;

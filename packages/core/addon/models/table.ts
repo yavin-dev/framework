@@ -7,7 +7,7 @@ import { attr } from '@ember-data/model';
 import { validator, buildValidations } from 'ember-cp-validations';
 import { readOnly } from '@ember/object/computed';
 import { set } from '@ember/object';
-import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 import type RequestFragment from './request';
 
 function isConfigValid(request: RequestFragment, metadata: TableVisualizationMetadata['metadata']): boolean {

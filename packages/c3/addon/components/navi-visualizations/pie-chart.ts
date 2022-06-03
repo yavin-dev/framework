@@ -20,7 +20,7 @@ import { smartFormatNumber } from 'navi-core/helpers/smart-format-number';
 import { getTranslation } from '../../utils/chart';
 import ChartBuildersBase from './chart-builders-base';
 import RequestV2 from 'navi-core/models/request';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import { BaseChartBuilder, SeriesType, TooltipData } from '@yavin/c3/chart-builders/base';
 import { ChartSeries } from '@yavin/c3/models/chart-visualization';
 import { PieChartConfig } from '@yavin/c3/models/pie-chart';

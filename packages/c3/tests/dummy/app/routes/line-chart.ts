@@ -1,6 +1,6 @@
 import { A } from '@ember/array';
 import Route from '@ember/routing/route';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import { Grain } from '@yavin/client/utils/date';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { inject as service } from '@ember/service';

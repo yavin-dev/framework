@@ -9,7 +9,7 @@ import type Store from '@ember-data/store';
 import { inject as service } from '@ember/service';
 import type YavinVisualizationComponent from './component';
 import type YavinVisualizationPanelComponent from './panel-component';
-import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type NaviFactResponse from '@yavin/client/models/navi-fact-response';
 
 function isPresent<T>(t: T | undefined | null | void): t is T {
   return t !== undefined && t !== null;

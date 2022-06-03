@@ -4,12 +4,12 @@ import { capitalize } from '@ember/string';
 import GraphQLScenario from 'navi-data/mirage/scenarios/elide-two';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import { QueryStatus, AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
-import ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
-import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import { QueryStatus, AsyncQueryResponse } from '@yavin/client/adapters/facts/interface';
+import ElideDimensionMetadataModel from '@yavin/client/models/metadata/elide/dimension';
+import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import type DimensionMetadataModel from '@yavin/client/models/metadata/dimension';
+import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type { Server } from 'miragejs';
 import type ElideDimensionSerializer from 'navi-data/serializers/dimensions/elide';

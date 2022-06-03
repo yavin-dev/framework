@@ -8,8 +8,8 @@ import { capitalize } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
 import { assert } from '@ember/debug';
 import { parseParameterValue } from 'navi-data/utils/metric';
-import type FunctionParameter from 'navi-data/models/metadata/function-parameter';
-import type { PotentialParameterValue } from 'navi-data/models/metadata/function-parameter';
+import type FunctionParameter from '@yavin/client/models/metadata/function-parameter';
+import type { PotentialParameterValue } from '@yavin/client/models/metadata/function-parameter';
 import type { ParameterValue } from '@yavin/client/request';
 //@ts-ignore
 import type { Dropdown } from 'ember-basic-dropdown/components/basic-dropdown';

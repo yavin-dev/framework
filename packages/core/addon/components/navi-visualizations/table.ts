@@ -20,8 +20,8 @@ import { featureFlag } from 'navi-core/helpers/feature-flag';
 import type RequestFragment from 'navi-core/models/request';
 import type { TableVisualizationMetadata, TableColumnAttributes } from 'navi-core/models/table';
 import type ColumnFragment from 'navi-core/models/request/column';
-import type NaviFactResponse from 'navi-data/models/navi-fact-response';
-import type { ResponseRow } from 'navi-data/models/navi-fact-response';
+import type NaviFactResponse from '@yavin/client/models/navi-fact-response';
+import type { ResponseRow } from '@yavin/client/models/navi-fact-response';
 import type { SortDirection } from '@yavin/client/request';
 
 const HEADER_TITLE = {

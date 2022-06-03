@@ -6,10 +6,10 @@ import { topN, maxDataByDimensions } from 'navi-core/utils/data';
 import { METRIC_SERIES, DIMENSION_SERIES, DATE_TIME_SERIES, ChartType } from '@yavin/c3/utils/chart-data';
 import Visualization from 'navi-core/models/visualization';
 import RequestFragment from 'navi-core/models/request';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 import ColumnFragment from 'navi-core/models/request/column';
 import { get } from '@ember/object';
-import type { ResponseRow } from 'navi-data/models/navi-fact-response';
+import type { ResponseRow } from '@yavin/client/models/navi-fact-response';
 
 export type MetricSeries = {
   type: 'metric';

@@ -7,7 +7,7 @@ import { setupMirage } from 'ember-cli-mirage/test-support';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type BardDimensionAdapter from 'navi-data/adapters/dimensions/bard';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type DimensionMetadataModel from '@yavin/client/models/metadata/dimension';
 import type { Server } from 'miragejs';
 import { taskFor } from 'ember-concurrency-ts';
 

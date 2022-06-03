@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import BardTableMetadataModel from 'navi-data/models/metadata/bard/table';
-import type { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
+import BardTableMetadataModel from '@yavin/client/models/metadata/bard/table';
+import type { BardTableMetadataPayload } from '@yavin/client/models/metadata/bard/table';
 
 let Payload: BardTableMetadataPayload, Table: BardTableMetadataModel;
 

@@ -4,18 +4,18 @@
  */
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
-import TableMetadataModel from 'navi-data/models/metadata/table';
-import MetricMetadataModel from 'navi-data/models/metadata/metric';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
-import ColumnFunctionMetadataModel from 'navi-data/models/metadata/column-function';
-import RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
-import type { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
-import type { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
-import type { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
-import type { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
-import type { TableMetadataPayload } from 'navi-data/models/metadata/table';
-import type { RequestConstraintMetadataPayload } from 'navi-data/models/metadata/request-constraint';
+import TableMetadataModel from '@yavin/client/models/metadata/table';
+import MetricMetadataModel from '@yavin/client/models/metadata/metric';
+import DimensionMetadataModel from '@yavin/client/models/metadata/dimension';
+import TimeDimensionMetadataModel from '@yavin/client/models/metadata/time-dimension';
+import ColumnFunctionMetadataModel from '@yavin/client/models/metadata/column-function';
+import RequestConstraintMetadataModel from '@yavin/client/models/metadata/request-constraint';
+import type { TimeDimensionMetadataPayload } from '@yavin/client/models/metadata/time-dimension';
+import type { DimensionMetadataPayload } from '@yavin/client/models/metadata/dimension';
+import type { MetricMetadataPayload } from '@yavin/client/models/metadata/metric';
+import type { ColumnFunctionMetadataPayload } from '@yavin/client/models/metadata/column-function';
+import type { TableMetadataPayload } from '@yavin/client/models/metadata/table';
+import type { RequestConstraintMetadataPayload } from '@yavin/client/models/metadata/request-constraint';
 import type ClientInjector from 'navi-data/services/client-injector';
 
 export interface EverythingMetadataPayload {

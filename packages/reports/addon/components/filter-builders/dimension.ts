@@ -3,9 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import BaseFilterBuilderComponent, { FilterValueBuilder } from './base';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import DimensionMetadataModel from '@yavin/client/models/metadata/dimension';
 import { assert } from '@ember/debug';
-import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
 
 export const OPERATORS = <const>{
   in: 'in',

@@ -1,11 +1,11 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import TableMetadataModel, { TableMetadataPayload } from 'navi-data/models/metadata/table';
-import MetricMetadataModel from 'navi-data/models/metadata/metric';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
-import RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
-import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import TableMetadataModel, { TableMetadataPayload } from '@yavin/client/models/metadata/table';
+import MetricMetadataModel from '@yavin/client/models/metadata/metric';
+import DimensionMetadataModel from '@yavin/client/models/metadata/dimension';
+import TimeDimensionMetadataModel from '@yavin/client/models/metadata/time-dimension';
+import RequestConstraintMetadataModel from '@yavin/client/models/metadata/request-constraint';
+import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
 import type KegClass from '@yavin/client/utils/classes/keg';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 

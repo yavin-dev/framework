@@ -8,7 +8,7 @@ import { TestContext as Context } from 'ember-test-helpers';
 import { Server } from 'miragejs';
 import NaviFactsService from 'navi-data/services/navi-facts';
 import type { Filter, RequestV2 } from '@yavin/client/request';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { taskFor } from 'ember-concurrency-ts';
 

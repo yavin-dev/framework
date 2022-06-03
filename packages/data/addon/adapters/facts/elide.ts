@@ -4,7 +4,7 @@
  */
 import EmberObject from '@ember/object';
 import { queryManager } from 'ember-apollo-client';
-import NaviFactAdapter, { QueryStatus, FactAdapterError } from './interface';
+import NaviFactAdapter, { QueryStatus, FactAdapterError } from '@yavin/client/adapters/facts/interface';
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import Interval from '@yavin/client/utils/classes/interval';
@@ -16,7 +16,7 @@ import { v1 } from 'ember-uuid';
 import moment from 'moment';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { omitBy } from 'lodash-es';
-import type { RequestOptions, AsyncQueryResponse, TableExportResponse } from './interface';
+import type { RequestOptions, AsyncQueryResponse, TableExportResponse } from '@yavin/client/adapters/facts/interface';
 import type { Parameters, Request, FilterOperator, Filter, Column, Sort, RequestV2 } from '@yavin/client/request';
 import type { DocumentNode } from 'graphql';
 import type { Moment } from 'moment';

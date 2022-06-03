@@ -8,7 +8,7 @@ import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import { taskFor } from 'ember-concurrency-ts';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
-import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 
 /**
  * Pastes a string into the power select search input

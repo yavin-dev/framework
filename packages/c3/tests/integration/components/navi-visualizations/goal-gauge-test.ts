@@ -6,7 +6,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { TestContext as Context } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
 import GoalGaugeVisualization from '@yavin/c3/components/navi-visualizations/goal-gauge';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import RequestFragment from 'navi-core/models/request';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';

@@ -6,7 +6,7 @@ import { TestContext as Context } from 'ember-test-helpers';
 import { Server } from 'miragejs';
 import hbs from 'htmlbars-inline-precompile';
 import FragmentFactory from 'navi-core/services/fragment-factory';
-import ColumnMetadataModel from 'navi-data/models/metadata/column';
+import ColumnMetadataModel from '@yavin/client/models/metadata/column';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { module, test } from 'qunit';
 import config from 'ember-get-config';

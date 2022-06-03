@@ -4,11 +4,11 @@ import RequestConstrainerService, { TemplateDispatcherAction } from 'navi-report
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import RequestFragment from 'navi-core/models/request';
-import RequestConstraintMetadataModel from 'navi-data/models/metadata/request-constraint';
+import RequestConstraintMetadataModel from '@yavin/client/models/metadata/request-constraint';
 import type { RequestV2 } from '@yavin/client/request';
 import ColumnFragment from 'navi-core/models/request/column';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
-import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
+import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 import Route from '@ember/routing/route';
 import { mapValues } from 'lodash-es';
 import { MessageOptions } from 'navi-core/services/interfaces/navi-notifications';

@@ -11,7 +11,7 @@ import { computed } from '@ember/object';
 //@ts-ignore
 import { fragmentOwner } from 'ember-data-model-fragments/attributes';
 import type NaviFormatterService from 'navi-data/services/navi-formatter';
-import type { ColumnType } from 'navi-data/models/metadata/column';
+import type { ColumnType } from '@yavin/client/models/metadata/column';
 import type RequestFragment from 'navi-core/models/request';
 
 /**

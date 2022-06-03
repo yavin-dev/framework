@@ -24,7 +24,7 @@ import RequestFragment from 'navi-core/models/request';
 import { BaseChartBuilder, BLANK_X_VALUE, C3Row, EmptyC3Data, TooltipData } from './base';
 import { tracked } from '@glimmer/tracking';
 import { DateTimeSeries } from '@yavin/c3/models/chart-visualization';
-import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
+import NaviFactResponse, { ResponseRow } from '@yavin/client/models/navi-fact-response';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
 const YEAR_WITH_53_ISOWEEKS = '2015-01-01';

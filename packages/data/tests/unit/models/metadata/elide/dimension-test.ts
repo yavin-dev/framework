@@ -3,7 +3,7 @@ import { setupTest } from 'ember-qunit';
 import ElideDimensionMetadataModel, {
   ElideDimensionMetadataPayload,
   ValueSourceType,
-} from 'navi-data/models/metadata/elide/dimension';
+} from '@yavin/client/models/metadata/elide/dimension';
 
 let PayloadBase: ElideDimensionMetadataPayload;
 
@@ -53,7 +53,7 @@ module('Unit | Model | metadata/elide/dimension', function (hooks) {
       },
     });
     const fakeLookup = { fake: true } as unknown as ElideDimensionMetadataModel;
-    Model['naviMetadata'] = {
+    Model['metadataService'] = {
       //@ts-expect-error
       getById(type, id, dataSourceName) {
         assert.deepEqual(type, 'dimension', 'Looks up column as dimension');

@@ -4,7 +4,7 @@
  */
 
 import { A } from '@ember/array';
-import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import MutableArray from '@ember/array/mutable';
 import { getExactMatchWeight, getPartialMatchWeight } from '@yavin/client/utils/search';
 

@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import FunctionParameterMetadataModel, { DataType } from 'navi-data/models/metadata/function-parameter';
+import FunctionParameterMetadataModel, { DataType } from '@yavin/client/models/metadata/function-parameter';
 import { isPresent } from '@ember/utils';
 import type { ParameterValue } from '@yavin/client/request';
 

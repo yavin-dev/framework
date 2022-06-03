@@ -5,7 +5,7 @@ import { helper } from '@ember/component/helper';
 import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import TableMetadataModel from 'navi-data/models/metadata/table';
+import TableMetadataModel from '@yavin/client/models/metadata/table';
 import config from 'ember-get-config';
 //@ts-ignore
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';

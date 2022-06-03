@@ -12,7 +12,7 @@ import config from 'ember-get-config';
 import moment from 'moment';
 import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
 import type { Filter, RequestV2 } from '@yavin/client/request';
-import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
+import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 
 const HOST = config.navi.dataSources[2].uri;
 const uuidRegex = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/;

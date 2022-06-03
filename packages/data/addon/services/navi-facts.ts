@@ -8,15 +8,15 @@ import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
 import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
-import NaviFactsModel from 'navi-data/models/navi-facts';
+import NaviFactsModel from '@yavin/client/models/navi-facts';
 import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskGenerator } from 'ember-concurrency';
-import type NaviFactAdapter from 'navi-data/adapters/facts/interface';
-import type { RequestOptions } from 'navi-data/adapters/facts/interface';
+import type NaviFactAdapter from '@yavin/client/adapters/facts/interface';
+import type { RequestOptions } from '@yavin/client/adapters/facts/interface';
 import type { RequestV2 } from '@yavin/client/request';
-import type NaviFactSerializer from 'navi-data/serializers/facts/interface';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type NaviFactSerializer from '@yavin/client/serializers/facts/interface';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 
 export default class NaviFactsService extends Service {
   /**

@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Component from '@glimmer/component';
-import NaviAdapterError from 'navi-data/errors/navi-adapter-error';
+import NaviAdapterError from '@yavin/client/errors/navi-adapter-error';
 
 interface NaviReportErrorRouteArgs {
   error?: NaviAdapterError | Error;

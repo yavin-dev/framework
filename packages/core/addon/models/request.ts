@@ -22,8 +22,8 @@ import type FragmentArray from 'ember-data-model-fragments/FragmentArray';
 import type { ColumnMetadataModels } from './request/base';
 import type FilterFragment from 'navi-core/models/request/filter';
 import type SortFragment from 'navi-core/models/request/sort';
-import type TableMetadataModel from 'navi-data/models/metadata/table';
-import type { ColumnType } from 'navi-data/models/metadata/column';
+import type TableMetadataModel from '@yavin/client/models/metadata/table';
+import type { ColumnType } from '@yavin/client/models/metadata/column';
 import type { Grain } from '@yavin/client/utils/date';
 
 type BaseLiteral = {

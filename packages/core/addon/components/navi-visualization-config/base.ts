@@ -4,7 +4,7 @@
  */
 import Component from '@glimmer/component';
 import RequestFragment from 'navi-core/models/request';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 
 export interface Args<Options> {
   options: Options;

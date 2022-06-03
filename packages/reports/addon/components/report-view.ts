@@ -21,7 +21,7 @@ import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 //@ts-ignore
 import { fadeOut, fadeIn } from 'ember-animated/motions/opacity';
 import type ReportModel from 'navi-core/models/report';
-import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import type StoreService from '@ember-data/store';
 import type TransitionContext from 'ember-animated/-private/transition-context';
 import type { YavinVisualizationManifest } from 'navi-core/visualization/manifest';

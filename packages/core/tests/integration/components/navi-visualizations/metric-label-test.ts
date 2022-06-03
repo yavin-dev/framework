@@ -8,10 +8,10 @@ import { TestContext as Context } from 'ember-test-helpers';
 import StoreService from '@ember-data/store';
 import MetricLabelVisualization from 'navi-core/components/navi-visualizations/metric-label';
 import RequestFragment from 'navi-core/models/request';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import type { RowValue } from 'navi-data/serializers/facts/interface';
+import type { RowValue } from '@yavin/client/serializers/facts/interface';
 
 const TEMPLATE = hbs`
 <NaviVisualizations::MetricLabel

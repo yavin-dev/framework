@@ -11,16 +11,18 @@ import type {
   TimeDimensionNode,
   TimeDimensionGrainNode,
 } from 'navi-data/serializers/metadata/elide';
-import { DataType } from 'navi-data/models/metadata/function-parameter';
+import { DataType } from '@yavin/client/models/metadata/function-parameter';
 import { capitalize } from 'lodash-es';
-import TableMetadataModel, { TableMetadataPayload } from 'navi-data/models/metadata/table';
-import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
-import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
-import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
+import TableMetadataModel, { TableMetadataPayload } from '@yavin/client/models/metadata/table';
+import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from '@yavin/client/models/metadata/time-dimension';
+import ColumnFunctionMetadataModel, {
+  ColumnFunctionMetadataPayload,
+} from '@yavin/client/models/metadata/column-function';
+import MetricMetadataModel, { MetricMetadataPayload } from '@yavin/client/models/metadata/metric';
 import ElideDimensionMetadataModel, {
   ElideDimensionMetadataPayload,
   ValueSourceType,
-} from 'navi-data/models/metadata/elide/dimension';
+} from '@yavin/client/models/metadata/elide/dimension';
 
 let Serializer: ElideMetadataSerializer;
 

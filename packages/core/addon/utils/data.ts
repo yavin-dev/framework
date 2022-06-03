@@ -5,9 +5,9 @@
 import DataGroup from 'navi-core/utils/classes/data-group';
 import { assert } from '@ember/debug';
 import { maxBy } from 'lodash-es';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 import ColumnFragment from 'navi-core/models/request/column';
-import { ResponseRow } from 'navi-data/models/navi-fact-response';
+import { ResponseRow } from '@yavin/client/models/navi-fact-response';
 
 /**
  * Trim rows to a max of n values, sorted by highest value for given metric.

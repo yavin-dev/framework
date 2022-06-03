@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import type { FilterOperator } from '@yavin/client/request';
-import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 
 export type DimensionFilter = {
   operator: FilterOperator;

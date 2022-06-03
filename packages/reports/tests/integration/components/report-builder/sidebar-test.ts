@@ -12,7 +12,7 @@ import type ReportBuilderSidebar from 'navi-reports/components/report-builder/si
 import type { TestContext as Context } from 'ember-test-helpers';
 import type DataStore from '@ember-data/store';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import { RequestOptions } from 'navi-data/adapters/facts/interface';
+import { RequestOptions } from '@yavin/client/adapters/facts/interface';
 
 type ComponentArgs = ReportBuilderSidebar['args'];
 interface TestContext extends Context, ComponentArgs {}

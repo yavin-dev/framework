@@ -6,7 +6,7 @@ import Component from '@glimmer/component';
 // eslint-disable-next-line ember/no-classic-components
 import type EmberComponent from '@ember/component';
 import type RequestFragment from 'navi-core/models/request';
-import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import type { YavinVisualizationManifest } from './manifest';
 
 export interface YavinVisualizationArgs<Settings = unknown> {

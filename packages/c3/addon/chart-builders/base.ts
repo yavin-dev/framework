@@ -6,7 +6,7 @@ import Mixin from '@ember/object/mixin';
 import EmberObject from '@ember/object';
 import RequestFragment from 'navi-core/models/request';
 import { DateTimeSeries, DimensionSeries, MetricSeries } from '@yavin/c3/models/chart-visualization';
-import NaviFactResponse, { ResponseRow } from 'navi-data/models/navi-fact-response';
+import NaviFactResponse, { ResponseRow } from '@yavin/client/models/navi-fact-response';
 import DataGroup from 'navi-core/utils/classes/data-group';
 
 export type SeriesType = MetricSeries['type'] | DimensionSeries['type'] | DateTimeSeries['type'];

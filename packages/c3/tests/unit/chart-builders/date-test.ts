@@ -5,7 +5,7 @@ import BuilderClass from '@yavin/c3/chart-builders/date-time';
 import TooltipTemplate from '@yavin/c3/templates/chart-tooltips/date';
 import { C3Row } from '@yavin/c3/chart-builders/base';
 import { buildTestRequest } from 'navi-core/test-support/request';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviMetadataService from 'navi-data/services/navi-metadata';

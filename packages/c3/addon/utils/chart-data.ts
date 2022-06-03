@@ -5,7 +5,7 @@
 import ColumnFragment from 'navi-core/models/request/column';
 import RequestFragment from 'navi-core/models/request';
 import DataGroup from 'navi-core/utils/classes/data-group';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 
 export const METRIC_SERIES = 'metric';
 export const DIMENSION_SERIES = 'dimension';
