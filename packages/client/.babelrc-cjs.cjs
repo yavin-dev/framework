@@ -10,5 +10,9 @@ module.exports = {
       },
     ],
   ],
-  plugins: ['import-graphql'],
+  plugins: [
+    ['@babel/plugin-transform-typescript', { allowDeclareFields: true }],
+    ['@babel/plugin-proposal-decorators', { legacy: true }],
+    'import-graphql',
+  ],
 };
