@@ -20,6 +20,7 @@ import { searchNaviDimensionRecords } from 'navi-data/utils/search';
 import { A } from '@ember/array';
 import config from 'ember-get-config';
 import type { Options as ServiceOptions } from 'navi-data/adapters/dimensions/interface';
+import type DimensionService from '@yavin/client/services/interfaces/dimension';
 
 const DIMENSION_CACHE = config.navi.dimensionCache;
 
@@ -85,7 +86,7 @@ class DimensionCache extends Cache<NaviDimensionResponse> {
   }
 }
 
-export default class NaviDimensionService extends Service {
+export default class NaviDimensionService extends Service implements DimensionService {
   /**
    * @property {DimensionCache} _dimensionCache - local cache for dimensions
    */

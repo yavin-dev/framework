@@ -17,8 +17,9 @@ import type { RequestOptions } from '@yavin/client/adapters/facts/interface';
 import type { RequestV2 } from '@yavin/client/request';
 import type NaviFactSerializer from '@yavin/client/serializers/facts/interface';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
+import type FactService from '@yavin/client/services/interfaces/fact';
 
-export default class NaviFactsService extends Service {
+export default class NaviFactsService extends Service implements FactService {
   /**
    * @param type
    * @returns adapter instance for type

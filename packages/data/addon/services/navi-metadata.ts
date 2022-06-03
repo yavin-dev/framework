@@ -15,10 +15,11 @@ import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 import type NaviMetadataAdapter from '@yavin/client/adapters/metadata/interface';
 import type { NaviDataSource } from 'navi-config';
 import type { RequestOptions } from '@yavin/client/adapters/facts/interface';
+import type MetadataService from '@yavin/client/services/interfaces/metadata';
 
 export type MetadataModelTypes = keyof MetadataModelRegistry;
 
-export default class NaviMetadataService extends Service {
+export default class NaviMetadataService extends Service implements MetadataService {
   /**
    * TODO: define keg registry types to remove casting in this class
    */

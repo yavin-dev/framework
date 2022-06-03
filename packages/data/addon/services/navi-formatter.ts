@@ -12,8 +12,9 @@ import type { ResponseRow } from '@yavin/client/models/navi-fact-response';
 import type { MetricValue } from '@yavin/client/serializers/facts/interface';
 import type { PotentialParameterValue } from '@yavin/client/models/metadata/function-parameter';
 import { hash } from 'ember-concurrency';
+import type FormatterService from '@yavin/client/services/interfaces/formatter';
 
-export default class NaviFormatterService extends Service {
+export default class NaviFormatterService extends Service implements FormatterService {
   async formatNiceColumnName(
     columnMetadata?: ColumnMetadataModel,
     parameters: Parameters = {},
