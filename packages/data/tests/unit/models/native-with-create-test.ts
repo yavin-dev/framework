@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import NativeWithCreate, { ClientService } from 'navi-data/models/native-with-create';
+import NativeWithCreate, { ClientService } from '@yavin/client/models/native-with-create';
 
 module('Unit | Model | native with create', function (hooks) {
   setupTest(hooks);

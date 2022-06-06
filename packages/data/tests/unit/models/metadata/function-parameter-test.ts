@@ -2,10 +2,10 @@ import { module, test } from 'qunit';
 import FunctionParameterMetadataModel, {
   DataType,
   FunctionParameterMetadataPayload,
-} from 'navi-data/models/metadata/function-parameter';
+} from '@yavin/client/models/metadata/function-parameter';
 import { setupTest } from 'ember-qunit';
 import type { TestContext } from 'ember-test-helpers';
-import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 

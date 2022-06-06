@@ -7,7 +7,7 @@ import hbs from 'htmlbars-inline-precompile';
 import { initialize as injectC3Enhancements } from '@yavin/c3/initializers/inject-c3-enhancements';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import { buildTestRequest } from 'navi-core/test-support/request';
 import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
 import { TestContext } from 'ember-test-helpers';

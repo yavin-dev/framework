@@ -3,8 +3,8 @@ import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 import BardFactSerializer from 'navi-data/serializers/facts/bard';
 import type { RequestV2 } from '@yavin/client/request';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
+import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 import { AjaxError } from 'ember-ajax/errors';
 
 let Serializer: BardFactSerializer;

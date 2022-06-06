@@ -12,7 +12,7 @@ import ColumnFragment from 'navi-core/models/request/column';
 import ReportModel from 'navi-core/models/report';
 import type { SortDirection } from '@yavin/client/request';
 import Base, { ColumnMetadataModels } from 'navi-core/models/request/base';
-import { ColumnType } from 'navi-data/models/metadata/column';
+import { ColumnType } from '@yavin/client/models/metadata/column';
 
 export default class SortConsumer extends ActionConsumer {
   @service requestActionDispatcher!: RequestActionDispatcher;

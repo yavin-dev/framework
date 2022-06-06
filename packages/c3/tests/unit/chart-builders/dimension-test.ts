@@ -7,7 +7,7 @@ import TooltipTemplate from '@yavin/c3/templates/chart-tooltips/dimension';
 import { buildTestRequest } from 'navi-core/test-support/request';
 import { C3Row } from '@yavin/c3/chart-builders/base';
 import RequestFragment from 'navi-core/models/request';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { TestContext as Context } from 'ember-test-helpers';

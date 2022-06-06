@@ -6,9 +6,9 @@ import EmberObject from '@ember/object';
 import { getOwner } from '@ember/application';
 import { FiliDimensionResponse, DefaultField } from 'navi-data/adapters/dimensions/bard';
 import type NaviDimensionSerializer from './interface';
-import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import NaviDimensionModel from '../../models/navi-dimension';
-import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
+import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
+import NaviDimensionModel from '@yavin/client/models/navi-dimension';
+import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
 
 export default class BardDimensionSerializer extends EmberObject implements NaviDimensionSerializer {
   //TODO remove when https://github.com/yahoo/fili/issues/1088 lands

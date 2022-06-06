@@ -13,7 +13,7 @@ import { DateTimePeriod, getPeriodForGrain, Grain } from '@yavin/client/utils/da
 import Interval from '@yavin/client/utils/classes/interval';
 import BaseFilterBuilderComponent, { FilterValueBuilder } from './base';
 import { isEmpty } from '@ember/utils';
-import { GrainOrdering } from 'navi-data/models/metadata/bard/table';
+import { GrainOrdering } from '@yavin/client/models/metadata/bard/table';
 
 export const MONTHS_IN_QUARTER = 3;
 export const OPERATORS = <const>{

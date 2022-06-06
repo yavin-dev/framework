@@ -2,13 +2,13 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Pretender, { Server as PretenderServer } from 'pretender';
 import config from 'ember-get-config';
-import type { RequestOptions } from 'navi-data/adapters/facts/interface';
+import type { RequestOptions } from '@yavin/client/adapters/facts/interface';
 import type { RequestV2 } from '@yavin/client/request';
 import NaviFactsService from 'navi-data/services/navi-facts';
 import { TestContext } from 'ember-test-helpers';
-import { ResponseV1 } from 'navi-data/serializers/facts/interface';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import NaviAdapterError from 'navi-data/errors/navi-adapter-error';
+import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
+import NaviAdapterError from '@yavin/client/errors/navi-adapter-error';
 import { task, TaskGenerator } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 

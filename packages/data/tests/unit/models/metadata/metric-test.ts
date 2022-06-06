@@ -4,7 +4,7 @@ import Pretender, { Server } from 'pretender';
 import { TestContext } from 'ember-test-helpers';
 //@ts-ignore
 import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
-import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
+import MetricMetadataModel, { MetricMetadataPayload } from '@yavin/client/models/metadata/metric';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 
 let MetadataService: NaviMetadataService,

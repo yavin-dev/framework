@@ -4,11 +4,11 @@ import { setupTest } from 'ember-qunit';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
 import { TestContext } from 'ember-test-helpers';
-import Metric from 'navi-data/models/metadata/metric';
+import MetricMetadataModel from '@yavin/client/models/metadata/metric';
 
 let Service: NaviFormatterService;
-const metric = { name: 'Revenue' } as Metric;
-const emptyMetric = {} as Metric;
+const metric = { name: 'Revenue' } as MetricMetadataModel;
+const emptyMetric = {} as MetricMetadataModel;
 
 module('Unit | Service | navi formatter', function (hooks) {
   setupTest(hooks);
@@ -61,7 +61,11 @@ module('Unit | Service | navi formatter', function (hooks) {
   test('empty metric', async function (assert) {
     assert.expect(3);
 
-    assert.equal(Service.formatColumnName({ id: 'foo' } as Metric), '--', 'Prints "--" if name is not given');
+    assert.equal(
+      Service.formatColumnName({ id: 'foo' } as MetricMetadataModel),
+      '--',
+      'Prints "--" if name is not given'
+    );
     assert.equal(Service.formatColumnName(emptyMetric), '--', 'Prints "--" if metric is empty');
     assert.equal(Service.formatColumnName(undefined), '--', 'Prints "--" if metric is undefined');
   });

@@ -1,5 +1,5 @@
 import { A } from '@ember/array';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import type StoreService from '@ember-data/store';

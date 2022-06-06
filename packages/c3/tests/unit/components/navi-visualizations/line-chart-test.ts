@@ -13,7 +13,7 @@ import NaviMetadata from 'navi-data/services/navi-metadata';
 import { createGlimmerClass, createGlimmerComponent } from 'navi-core/test-support';
 import LineChart from '@yavin/c3/components/navi-visualizations/line-chart';
 import { C3Row } from '@yavin/c3/chart-builders/base';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import StoreService from '@ember-data/store';
 import { buildTestRequest } from 'navi-core/test-support/request';
 import { LineChartConfig } from '@yavin/c3/models/line-chart';

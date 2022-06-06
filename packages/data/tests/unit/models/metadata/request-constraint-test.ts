@@ -6,7 +6,7 @@ import { TestContext } from 'ember-test-helpers';
 import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import RequestConstraintMetadataModel, {
   RequestConstraintMetadataPayload,
-} from 'navi-data/models/metadata/request-constraint';
+} from '@yavin/client/models/metadata/request-constraint';
 import type { RequestV2 } from '@yavin/client/request';
 
 let server: Server;

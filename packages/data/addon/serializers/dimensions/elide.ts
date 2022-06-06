@@ -5,11 +5,11 @@
 import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
 import EmberObject from '@ember/object';
-import type { AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
-import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
-import NaviDimensionModel from 'navi-data/models/navi-dimension';
-import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
+import type { AsyncQueryResponse } from '@yavin/client/adapters/facts/interface';
+import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
+import type ElideDimensionMetadataModel from '@yavin/client/models/metadata/elide/dimension';
+import NaviDimensionModel from '@yavin/client/models/navi-dimension';
+import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
 import type { Options } from 'navi-data/adapters/dimensions/interface';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { getPaginationFromPageInfo } from '../facts/elide';

@@ -20,7 +20,7 @@ import RequestFragment from 'navi-core/models/request';
 import { LineChartConfig } from '@yavin/c3/models/line-chart';
 import { Grain } from '@yavin/client/utils/date';
 import { ChartSeries } from '@yavin/c3/models/chart-visualization';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 
 const DEFAULT_OPTIONS = <const>{
   style: {

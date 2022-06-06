@@ -16,7 +16,7 @@ import type ReportsReportRoute from 'navi-reports/routes/reports/report';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
 import type { RequestV2 } from '@yavin/client/request';
 import type RequestFragment from 'navi-core/models/request';
-import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import type ReportsReportViewController from 'navi-reports/controllers/reports/report/view';
 import type YavinVisualizationsService from 'navi-core/services/visualization';
 

@@ -14,7 +14,7 @@ import { TestContext } from 'ember-test-helpers';
 import { buildTestRequest } from 'navi-core/test-support/request';
 import LineChart from '@yavin/c3/components/navi-visualizations/line-chart';
 import StoreService from '@ember-data/store';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 
 const TEMPLATE = hbs`
   <NaviVisualizations::LineChart

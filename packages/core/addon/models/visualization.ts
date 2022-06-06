@@ -9,7 +9,7 @@ import { formTypeName } from 'navi-core/visualization/manifest';
 import { cloneDeep, omit } from 'lodash-es';
 import { inject as service } from '@ember/service';
 import type RequestFragment from './request';
-import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 import type { VisualizationType } from 'navi-core/models/registry';
 import type YavinVisualizationsService from 'navi-core/services/visualization';
 import type { YavinVisualizationManifest } from 'navi-core/visualization/manifest';

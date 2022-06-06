@@ -14,7 +14,7 @@ import NaviMetadataService from 'navi-data/services/navi-metadata';
 import { Args as ComponentArgs } from '@yavin/c3/components/navi-visualizations/pie-chart';
 import { VisualizationModel } from 'navi-core/components/navi-visualizations/table';
 import RequestFragment from 'navi-core/models/request';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import ColumnFragment from 'navi-core/models/request/column';
 
 const TEMPLATE = hbs`

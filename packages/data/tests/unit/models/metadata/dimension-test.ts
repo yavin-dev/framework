@@ -1,11 +1,11 @@
 import { module, test } from 'qunit';
-import DimensionMetadataModel, { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
+import DimensionMetadataModel, { DimensionMetadataPayload } from '@yavin/client/models/metadata/dimension';
 import { setupTest } from 'ember-qunit';
 import Pretender from 'pretender';
 import { TestContext } from 'ember-test-helpers';
 //@ts-ignore
 import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
-import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
 
 let Payload: DimensionMetadataPayload, Dimension: DimensionMetadataModel;
 

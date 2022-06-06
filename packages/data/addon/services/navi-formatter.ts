@@ -6,14 +6,15 @@ import Service from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import numbro from 'numbro';
 import type { Parameters } from '@yavin/client/request';
-import type ColumnMetadataModel from 'navi-data/models/metadata/column';
-import type { MetricColumn } from 'navi-data/models/metadata/metric';
-import type { ResponseRow } from 'navi-data/models/navi-fact-response';
-import type { MetricValue } from 'navi-data/serializers/facts/interface';
-import type { PotentialParameterValue } from 'navi-data/models/metadata/function-parameter';
+import type ColumnMetadataModel from '@yavin/client/models/metadata/column';
+import type { MetricColumn } from '@yavin/client/models/metadata/metric';
+import type { ResponseRow } from '@yavin/client/models/navi-fact-response';
+import type { MetricValue } from '@yavin/client/serializers/facts/interface';
+import type { PotentialParameterValue } from '@yavin/client/models/metadata/function-parameter';
 import { hash } from 'ember-concurrency';
+import type FormatterService from '@yavin/client/services/interfaces/formatter';
 
-export default class NaviFormatterService extends Service {
+export default class NaviFormatterService extends Service implements FormatterService {
   async formatNiceColumnName(
     columnMetadata?: ColumnMetadataModel,
     parameters: Parameters = {},
@@ -23,7 +24,7 @@ export default class NaviFormatterService extends Service {
       return alias;
     }
 
-    const lookups: Record<string, Promise<PotentialParameterValue[]>> = {};
+    const lookups: Record<string, PromiseLike<PotentialParameterValue[]>> = {};
     columnMetadata?.parameters?.forEach((e) => (lookups[e.id] = e.values));
     const parameterValueLookups = await hash(lookups);
 

@@ -15,8 +15,8 @@ import { VisualizationModel } from './table';
 import ColumnFragment from 'navi-core/models/request/column';
 import { MetricLabelConfig } from 'navi-core/models/metric-label';
 import type NaviFormatterService from 'navi-data/services/navi-formatter';
-import type { MetricValue } from 'navi-data/serializers/facts/interface';
-import type MetricMetadataModel from 'navi-data/models/metadata/metric';
+import type { MetricValue } from '@yavin/client/serializers/facts/interface';
+import type MetricMetadataModel from '@yavin/client/models/metadata/metric';
 
 export type Args = {
   model: VisualizationModel;

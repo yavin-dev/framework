@@ -3,14 +3,14 @@ import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 import config from 'ember-get-config';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
-import TableMetadataModel from 'navi-data/models/metadata/table';
+import TableMetadataModel from '@yavin/client/models/metadata/table';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import ElideTwoScenario from 'navi-data/mirage/scenarios/elide-two';
-import DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import MetricMetadataModel from 'navi-data/models/metadata/metric';
-import TimeDimensionMetadataModel from 'navi-data/models/metadata/time-dimension';
-import ColumnFunctionMetadataModel from 'navi-data/models/metadata/column-function';
+import DimensionMetadataModel from '@yavin/client/models/metadata/dimension';
+import MetricMetadataModel from '@yavin/client/models/metadata/metric';
+import TimeDimensionMetadataModel from '@yavin/client/models/metadata/time-dimension';
+import ColumnFunctionMetadataModel from '@yavin/client/models/metadata/column-function';
 import { Server } from 'miragejs';
 import Mirage from 'ember-cli-mirage';
 

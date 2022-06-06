@@ -7,19 +7,19 @@
 import EmberObject from '@ember/object';
 import { getOwner } from '@ember/application';
 import { assert, warn } from '@ember/debug';
-import { QueryStatus } from '../facts/interface';
+import { QueryStatus } from '@yavin/client/adapters/facts/interface';
 import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskGenerator } from 'ember-concurrency';
-import type { AsyncQueryResponse } from '../facts/interface';
+import type { AsyncQueryResponse } from '@yavin/client/adapters/facts/interface';
 import type { FilterOperator } from '@yavin/client/request';
 import type { Column, RequestV2 } from '@yavin/client/request';
 import type NaviDimensionAdapter from './interface';
 import type { DimensionFilter } from './interface';
 import type { Options } from './interface';
 import type ElideFactsAdapter from '../facts/elide';
-import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import type ElideDimensionMetadataModel from 'navi-data/models/metadata/elide/dimension';
+import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
+import type ElideDimensionMetadataModel from '@yavin/client/models/metadata/elide/dimension';
 
 type EnumFilter = (values: string[], filterValues: (string | number)[]) => (string | number)[];
 

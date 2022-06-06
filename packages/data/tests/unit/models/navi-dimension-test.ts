@@ -1,11 +1,11 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import { TestContext as Context } from 'ember-test-helpers';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
-import DimensionMetadataModel, { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import DimensionMetadataModel, { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import ElideOneScenario from 'navi-data/mirage/scenarios/elide-one';
 import type { Server } from 'miragejs';
 

@@ -11,8 +11,8 @@ import type { ColumnMetadataModels } from 'navi-core/models/request/base';
 import type { Parameters } from '@yavin/client/request';
 import type ReportModel from 'navi-core/models/report';
 import type ColumnFragment from 'navi-core/models/request/column';
-import type MetricMetadataModel from 'navi-data/models/metadata/metric';
-import type TableMetadataModel from 'navi-data/models/metadata/table';
+import type MetricMetadataModel from '@yavin/client/models/metadata/metric';
+import type TableMetadataModel from '@yavin/client/models/metadata/table';
 import type ReportsReportController from 'navi-reports/controllers/reports/report';
 
 export default class ColumnConsumer extends ActionConsumer {

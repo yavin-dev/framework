@@ -5,7 +5,7 @@
  */
 import Component from '@glimmer/component';
 import { isPresent } from '@ember/utils';
-import { PotentialParameterValue } from 'navi-data/models/metadata/function-parameter';
+import { PotentialParameterValue } from '@yavin/client/models/metadata/function-parameter';
 
 export interface ParameterListItemArgs {
   argument: PotentialParameterValue;

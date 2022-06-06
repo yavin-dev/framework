@@ -4,7 +4,7 @@ import { buildTestRequest } from 'navi-core/test-support/request';
 import StoreService from '@ember-data/store';
 import { TestContext } from 'ember-test-helpers';
 import PieChartModel from '@yavin/c3/models/pie-chart';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 
 let PieChart: PieChartModel;
 

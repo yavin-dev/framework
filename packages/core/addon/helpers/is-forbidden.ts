@@ -5,7 +5,7 @@
  * Util for testing if a RSVP Promise was rejected because of an ajax forbidden(403) response
  */
 import { helper as buildHelper } from '@ember/component/helper';
-import NaviAdapterError from 'navi-data/errors/navi-adapter-error';
+import NaviAdapterError from '@yavin/client/errors/navi-adapter-error';
 import { AjaxError, isForbiddenError } from 'ember-ajax/errors';
 
 export function isForbidden(reason: unknown): boolean {

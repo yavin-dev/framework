@@ -9,7 +9,7 @@ import { readOnly } from '@ember/object/computed';
 import { set } from '@ember/object';
 import NumberFormats from 'navi-core/utils/enums/number-formats';
 import type RequestFragment from './request';
-import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 
 /**
  * @constant {Object} Validations - Validation object

@@ -10,14 +10,14 @@ import AgeValues from 'navi-data/mirage/bard-lite/dimensions/age';
 import ContainerValues from 'navi-data/mirage/bard-lite/dimensions/container';
 import config from 'ember-get-config';
 import Service from '@ember/service';
-import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
+import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
 import { task, TaskGenerator } from 'ember-concurrency';
-import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type FilterFragment from 'navi-core/models/request/filter';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 import type { Server, Request } from 'miragejs';
-import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 
 interface TestContext extends Context {
   server: Server;

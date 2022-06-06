@@ -4,7 +4,7 @@
  */
 import { A as arr } from '@ember/array';
 import type RequestFragment from 'navi-core/models/request';
-import type ColumnMetadataModel from 'navi-data/models/metadata/column';
+import type ColumnMetadataModel from '@yavin/client/models/metadata/column';
 
 export function getSelectedMetricsOfBase(metricMetadataModel: ColumnMetadataModel, request: RequestFragment) {
   return request.columns.filter(

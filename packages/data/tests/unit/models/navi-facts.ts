@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import NaviFactsModel from 'navi-data/models/navi-facts';
+import NaviFactsModel from '@yavin/client/models/navi-facts';
 
 const Payload = {
   request: {
@@ -60,7 +60,6 @@ module('Unit | Model | navi facts', function (hooks) {
 
     //Mocking facts service
     Response['factService'] = {
-      //@ts-expect-error
       fetchNext: () => {
         assert.ok('The service`s fetch Next method is invoked with the response and request');
       },
@@ -70,7 +69,6 @@ module('Unit | Model | navi facts', function (hooks) {
 
     //Mocking facts service
     Response['factService'] = {
-      //@ts-expect-error
       fetchPrevious: () => {
         assert.ok('The service`s fetch Previous method is invoked with the response and request');
       },

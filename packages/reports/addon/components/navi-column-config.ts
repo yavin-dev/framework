@@ -10,7 +10,7 @@ import { getDataSource } from 'navi-data/utils/adapter';
 import type ReportModel from 'navi-core/models/report';
 import type ColumnFragment from 'navi-core/models/request/column';
 import type { Parameters, SortDirection } from '@yavin/client/request';
-import type ColumnMetadataModel from 'navi-data/models/metadata/column';
+import type ColumnMetadataModel from '@yavin/client/models/metadata/column';
 import type RequestConstrainer from 'navi-reports/services/request-constrainer';
 
 interface NaviColumnConfigArgs {

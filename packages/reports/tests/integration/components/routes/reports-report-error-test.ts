@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import { render } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
-import NaviAdapterError from 'navi-data/errors/navi-adapter-error';
+import NaviAdapterError from '@yavin/client/errors/navi-adapter-error';
 
 module('Integration | Component | routes/reports-report-error', function (hooks) {
   setupRenderingTest(hooks);

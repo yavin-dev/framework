@@ -10,9 +10,9 @@ import type { TaskGenerator } from 'ember-concurrency';
 import type NaviDimensionSerializer from 'navi-data/serializers/dimensions/interface';
 import type NaviDimensionAdapter from 'navi-data/adapters/dimensions/interface';
 import type { DimensionFilter } from 'navi-data/adapters/dimensions/interface';
-import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
-import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
+import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
+import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import Cache from '@yavin/client/utils/classes/cache';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
@@ -20,6 +20,7 @@ import { searchNaviDimensionRecords } from 'navi-data/utils/search';
 import { A } from '@ember/array';
 import config from 'ember-get-config';
 import type { Options as ServiceOptions } from 'navi-data/adapters/dimensions/interface';
+import type DimensionService from '@yavin/client/services/interfaces/dimension';
 
 const DIMENSION_CACHE = config.navi.dimensionCache;
 
@@ -85,7 +86,7 @@ class DimensionCache extends Cache<NaviDimensionResponse> {
   }
 }
 
-export default class NaviDimensionService extends Service {
+export default class NaviDimensionService extends Service implements DimensionService {
   /**
    * @property {DimensionCache} _dimensionCache - local cache for dimensions
    */

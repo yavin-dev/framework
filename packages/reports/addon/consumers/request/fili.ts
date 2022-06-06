@@ -9,19 +9,19 @@ import { RequestActions } from 'navi-reports/services/request-action-dispatcher'
 import { getDataSource } from 'navi-data/utils/adapter';
 import { valuesForOperator } from 'navi-reports/components/filter-builders/time-dimension';
 import { getPeriodForGrain } from '@yavin/client/utils/date';
-import { GrainOrdering } from 'navi-data/models/metadata/bard/table';
+import { GrainOrdering } from '@yavin/client/models/metadata/bard/table';
 import moment from 'moment';
 import Interval from '@yavin/client/utils/classes/interval';
 import type RequestActionDispatcher from 'navi-reports/services/request-action-dispatcher';
 import type ColumnFragment from 'navi-core/models/request/column';
 import type ReportModel from 'navi-core/models/report';
-import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type DimensionMetadataModel from '@yavin/client/models/metadata/dimension';
 import type { Filter, Parameters } from '@yavin/client/request';
 import type Route from '@ember/routing/route';
 import type { Grain } from '@yavin/client/utils/date';
 import type FilterFragment from 'navi-core/models/request/filter';
 import type SortFragment from 'navi-core/models/request/sort';
-import type TableMetadataModel from 'navi-data/models/metadata/table';
+import type TableMetadataModel from '@yavin/client/models/metadata/table';
 
 function isFiliDateTime(table: string, col: ColumnFragment | FilterFragment | SortFragment) {
   return col.field.endsWith(`${table}.dateTime`) && col.type === 'timeDimension';

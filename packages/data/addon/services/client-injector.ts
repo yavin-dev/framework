@@ -4,7 +4,7 @@
  */
 import Service from '@ember/service';
 import { getOwner } from '@ember/application';
-import type { ClientServices, Injector } from 'navi-data/models/native-with-create';
+import type { ClientServices, Injector } from '@yavin/client/models/native-with-create';
 
 export default class ClientInjector extends Service implements Injector {
   private owner = getOwner(this);

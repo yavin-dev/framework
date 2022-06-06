@@ -5,7 +5,7 @@ import { inject as service } from '@ember/service';
 import { set, computed, action } from '@ember/object';
 import { readOnly } from '@ember/object/computed';
 import { merge } from 'lodash-es';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import RequestFragment from 'navi-core/models/request';
 import StoreService from '@ember-data/store';
 import { PieChartConfig } from '@yavin/c3/models/pie-chart';

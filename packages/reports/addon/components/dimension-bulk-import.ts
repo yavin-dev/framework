@@ -20,10 +20,10 @@ import { tracked } from '@glimmer/tracking';
 import type { TaskGenerator, TaskInstance } from 'ember-concurrency';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
+import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 import type FilterFragment from 'navi-core/models/request/filter';
-import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
+import type NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
 
 interface Args {
   dimension: DimensionColumn;

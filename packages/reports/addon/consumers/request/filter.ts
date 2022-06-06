@@ -12,12 +12,12 @@ import {
   getDefaultValuesForTimeFilter,
 } from 'navi-reports/components/filter-builders/time-dimension';
 import type FilterFragment from 'navi-core/models/request/filter';
-import type MetricMetadataModel from 'navi-data/models/metadata/metric';
+import type MetricMetadataModel from '@yavin/client/models/metadata/metric';
 import type ColumnFragment from 'navi-core/models/request/column';
 import type ReportModel from 'navi-core/models/report';
-import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
+import type DimensionMetadataModel from '@yavin/client/models/metadata/dimension';
 import type { Parameters } from '@yavin/client/request';
-import type TableMetadataModel from 'navi-data/models/metadata/table';
+import type TableMetadataModel from '@yavin/client/models/metadata/table';
 import type ReportsReportController from 'navi-reports/controllers/reports/report';
 
 const DEFAULT_METRIC_FILTER: { operator: FilterFragment['operator']; values: FilterFragment['values'] } = {

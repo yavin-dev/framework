@@ -3,8 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service, { inject as service } from '@ember/service';
-import type ColumnMetadataModel from 'navi-data/models/metadata/column';
-import type { ColumnType } from 'navi-data/models/metadata/column';
+import type ColumnMetadataModel from '@yavin/client/models/metadata/column';
+import type { ColumnType } from '@yavin/client/models/metadata/column';
 import type Store from '@ember-data/store';
 import type ColumnFragment from '../models/request/column';
 import type FilterFragment from '../models/request/filter';

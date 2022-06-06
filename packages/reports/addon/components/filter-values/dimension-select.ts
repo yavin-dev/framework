@@ -9,7 +9,7 @@ import { tracked } from '@glimmer/tracking';
 //@ts-ignore
 import { task, TaskGenerator, timeout } from 'ember-concurrency';
 import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
-import NaviDimensionModel from 'navi-data/models/navi-dimension';
+import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import { sortBy } from 'lodash-es';
 import { taskFor } from 'ember-concurrency-ts';
 import { A } from '@ember/array';
@@ -17,9 +17,9 @@ import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type RequestFragment from 'navi-core/models/request';
 import type FilterFragment from 'navi-core/models/request/filter';
-import type DimensionMetadataModel from 'navi-data/models/metadata/dimension';
-import type { DimensionColumn } from 'navi-data/models/metadata/dimension';
-import type NaviDimensionResponse from 'navi-data/models/navi-dimension-response';
+import type DimensionMetadataModel from '@yavin/client/models/metadata/dimension';
+import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
+import type NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
 import type ClientInjector from 'navi-data/services/client-injector';
 
 const SEARCH_DEBOUNCE_MS = 250;

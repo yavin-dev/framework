@@ -7,7 +7,7 @@ import { cloneDeep } from 'lodash-es';
 import type { Filter, RequestV2 } from '@yavin/client/request';
 import type BardFactsAdapter from 'navi-data/adapters/facts/bard';
 import type { TestContext } from 'ember-test-helpers';
-import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
+import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 import { Grain } from '@yavin/client/utils/date';
 
 const HOST = config.navi.dataSources[0].uri;

@@ -17,7 +17,7 @@ import { Resize } from 'ember-animated/motions/resize';
 //@ts-ignore
 import move from 'ember-animated/motions/move';
 import { easeOut } from 'ember-animated/easings/cosine';
-import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import type TransitionContext from 'ember-animated/-private/transition-context';
 
 interface Args {

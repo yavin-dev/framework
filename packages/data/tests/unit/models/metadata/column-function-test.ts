@@ -1,12 +1,14 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
-import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
+import ColumnFunctionMetadataModel, {
+  ColumnFunctionMetadataPayload,
+} from '@yavin/client/models/metadata/column-function';
 import FunctionParameterMetadataModel, {
   DataType,
   FunctionParameterMetadataPayload,
-} from 'navi-data/models/metadata/function-parameter';
-import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+} from '@yavin/client/models/metadata/function-parameter';
+import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
 
 let Payload: ColumnFunctionMetadataPayload, ColumnFunction: ColumnFunctionMetadataModel;
 

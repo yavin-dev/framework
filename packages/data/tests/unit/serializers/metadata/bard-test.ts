@@ -8,17 +8,19 @@ import BardMetadataSerializer, {
   RawMetricPayload,
   RawTablePayload,
 } from 'navi-data/serializers/metadata/bard';
-import DimensionMetadataModel, { DimensionMetadataPayload } from 'navi-data/models/metadata/dimension';
-import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from 'navi-data/models/metadata/time-dimension';
-import MetricMetadataModel, { MetricMetadataPayload } from 'navi-data/models/metadata/metric';
-import ColumnFunctionMetadataModel, { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
-import BardTableMetadataModel, { BardTableMetadataPayload } from 'navi-data/models/metadata/bard/table';
+import DimensionMetadataModel, { DimensionMetadataPayload } from '@yavin/client/models/metadata/dimension';
+import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from '@yavin/client/models/metadata/time-dimension';
+import MetricMetadataModel, { MetricMetadataPayload } from '@yavin/client/models/metadata/metric';
+import ColumnFunctionMetadataModel, {
+  ColumnFunctionMetadataPayload,
+} from '@yavin/client/models/metadata/column-function';
+import BardTableMetadataModel, { BardTableMetadataPayload } from '@yavin/client/models/metadata/bard/table';
 import RequestConstraintMetadataModel, {
   RequestConstraintMetadataPayload,
-} from 'navi-data/models/metadata/request-constraint';
+} from '@yavin/client/models/metadata/request-constraint';
 import { EverythingMetadataPayload } from 'navi-data/serializers/metadata/base';
-import { DataType } from 'navi-data/models/metadata/function-parameter';
-import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
+import { DataType } from '@yavin/client/models/metadata/function-parameter';
+import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
 
 const Payload: RawEverythingPayload = {
   tables: [

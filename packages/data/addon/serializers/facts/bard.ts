@@ -7,13 +7,13 @@
 
 import EmberObject from '@ember/object';
 import { getOwner } from '@ember/application';
-import NaviFactSerializer, { ResponseV1 } from './interface';
+import NaviFactSerializer, { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 import type { RequestV2, Column } from '@yavin/client/request';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
-import NaviAdapterError, { NaviErrorDetails } from 'navi-data/errors/navi-adapter-error';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
+import NaviAdapterError, { NaviErrorDetails } from '@yavin/client/errors/navi-adapter-error';
 import { AjaxError } from 'ember-ajax/errors';
-import { FactAdapterError } from 'navi-data/adapters/facts/interface';
+import { FactAdapterError } from '@yavin/client/adapters/facts/interface';
 
 type BardError = {
   description: string;

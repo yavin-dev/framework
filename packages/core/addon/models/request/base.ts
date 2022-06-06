@@ -12,8 +12,8 @@ import { isPresent } from '@ember/utils';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { Parameters } from '@yavin/client/request';
-import { ColumnType } from 'navi-data/models/metadata/column';
-import type MetadataModelRegistry from 'navi-data/models/metadata/registry';
+import { ColumnType } from '@yavin/client/models/metadata/column';
+import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 import NaviFormatterService from 'navi-data/services/navi-formatter';
 
 const Validations = buildValidations({

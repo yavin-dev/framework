@@ -8,7 +8,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import RequestFragment from 'navi-core/models/request';
 import { searchRecords } from '@yavin/client/utils/search';
-import ColumnMetadataModel from 'navi-data/models/metadata/column';
+import ColumnMetadataModel from '@yavin/client/models/metadata/column';
 import { groupBy } from 'lodash-es';
 
 interface ColumnSelectorArgs {

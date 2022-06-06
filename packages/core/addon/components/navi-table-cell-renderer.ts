@@ -15,7 +15,7 @@ import Component from '@glimmer/component';
 import { dasherize } from '@ember/string';
 import RequestFragment from 'navi-core/models/request';
 import { TableColumn } from './navi-visualizations/table';
-import type { ResponseRow } from 'navi-data/models/navi-fact-response';
+import type { ResponseRow } from '@yavin/client/models/navi-fact-response';
 
 // TODO: Better Column/data type
 export type CellRendererArgs = {

@@ -10,7 +10,7 @@ import ChartVisualization, { DimensionSeries, MetricSeries } from './chart-visua
 import { validator, buildValidations } from 'ember-cp-validations';
 import { DIMENSION_SERIES, chartTypeForRequest } from '@yavin/c3/utils/chart-data';
 import type RequestFragment from 'navi-core/models/request';
-import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import type { TypedVisualizationFragment } from 'navi-core/models/visualization';
 
 const SERIES_PATH = 'metadata.series';

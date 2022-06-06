@@ -6,7 +6,7 @@ import { inject as service } from '@ember/service';
 import Route from '@ember/routing/route';
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import RequestActionDispatcher, { RequestActions } from '../../services/request-action-dispatcher';
-import type TableMetadataModel from 'navi-data/models/metadata/table';
+import type TableMetadataModel from '@yavin/client/models/metadata/table';
 import type ReportModel from 'navi-core/models/report';
 
 export default class TableConsumer extends ActionConsumer {

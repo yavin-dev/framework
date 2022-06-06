@@ -7,7 +7,7 @@ import VisualizationFragment, { TypedVisualizationFragment } from 'navi-core/mod
 import { buildValidations, validator } from 'ember-cp-validations';
 import { attr } from '@ember-data/model';
 import type RequestFragment from 'navi-core/models/request';
-import type { ResponseV1 } from 'navi-data/serializers/facts/interface';
+import type { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 
 /**
  * @constant {Object} Validations - Validation object

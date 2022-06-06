@@ -1,10 +1,10 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import NaviFactSerializer from 'navi-data/serializers/facts/interface';
-import { QueryStatus } from 'navi-data/adapters/facts/interface';
-import type { AsyncQueryResponse } from 'navi-data/adapters/facts/interface';
+import NaviFactSerializer from '@yavin/client/serializers/facts/interface';
+import { QueryStatus } from '@yavin/client/adapters/facts/interface';
+import type { AsyncQueryResponse } from '@yavin/client/adapters/facts/interface';
 import type { RequestV2 } from '@yavin/client/request';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import { ExecutionResult, GraphQLError } from 'graphql';
 import { getPaginationFromPageInfo } from 'navi-data/serializers/facts/elide';
 

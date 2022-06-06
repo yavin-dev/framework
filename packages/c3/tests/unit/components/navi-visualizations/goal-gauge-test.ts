@@ -6,7 +6,7 @@ import NaviMetadata from 'navi-data/services/navi-metadata';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import StoreService from '@ember-data/store';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import { TestContext } from 'ember-test-helpers';
 import { createGlimmerComponent } from 'navi-core/test-support';
 import { GoalGaugeConfig } from '@yavin/c3/models/goal-gauge';

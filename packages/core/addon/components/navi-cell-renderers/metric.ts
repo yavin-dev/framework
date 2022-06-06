@@ -12,7 +12,7 @@
  */
 import BaseCellRenderer from './base';
 import type ColumnFragment from 'navi-core/models/request/column';
-import type { MetricValue } from 'navi-data/serializers/facts/interface';
+import type { MetricValue } from '@yavin/client/serializers/facts/interface';
 
 export default class MetricCellRenderer extends BaseCellRenderer {
   /**

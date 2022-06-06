@@ -19,7 +19,7 @@ import type RequestFragment from 'navi-core/models/request';
 import type NaviVisualizationBaseManifest from 'navi-core/navi-visualization-manifests/base';
 import type { TypedVisualizationFragment } from 'navi-core/models/visualization';
 import type { VisualizationType } from 'navi-core/models/registry';
-import type NaviFactResponse from 'navi-data/models/navi-fact-response';
+import type NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import type YavinVisualizationModel from 'navi-core/models/visualization-v2';
 
 const global = window as typeof window & { requirejs: { entries: Record<string, unknown> } };

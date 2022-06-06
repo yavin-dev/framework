@@ -6,7 +6,7 @@ import { click, fillIn, find, findAll, getContext, triggerEvent } from '@ember/t
 import findByContains from 'navi-core/test-support/contains-helpers';
 //@ts-ignore
 import { getVerticalCollection, renderAllItems } from './vertical-collection';
-import type { ColumnType } from 'navi-data/models/metadata/column';
+import type { ColumnType } from '@yavin/client/models/metadata/column';
 /* global Ember */
 
 const addFilterButton = `.column-selector__add-filter-btn `;

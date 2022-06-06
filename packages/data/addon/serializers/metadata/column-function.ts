@@ -7,10 +7,10 @@
 
 import EmberObject from '@ember/object';
 import { RawColumnFunctionArguments, RawColumnFunction } from './bard';
-import { ColumnFunctionMetadataPayload } from 'navi-data/models/metadata/column-function';
-import { DataType } from 'navi-data/models/metadata/function-parameter';
-import { ValueSourceType } from 'navi-data/models/metadata/elide/dimension';
-import type { FunctionParameterMetadataPayload } from 'navi-data/models/metadata/function-parameter';
+import { ColumnFunctionMetadataPayload } from '@yavin/client/models/metadata/column-function';
+import { DataType } from '@yavin/client/models/metadata/function-parameter';
+import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
+import type { FunctionParameterMetadataPayload } from '@yavin/client/models/metadata/function-parameter';
 
 type RawMetricFunctionPayload = {
   'metric-functions': {

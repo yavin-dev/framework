@@ -12,7 +12,7 @@ import NaviMetadataService from 'navi-data/services/navi-metadata';
 import RequestFragment from 'navi-core/models/request';
 import { C3Row } from '@yavin/c3/chart-builders/base';
 import { setOwner } from '@ember/application';
-import NaviFactResponse from 'navi-data/models/navi-fact-response';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import StoreService from '@ember-data/store';
 
 interface TestContext extends Context {
