@@ -1,21 +1,86 @@
 import { module, test } from 'qunit';
-import { setupTest } from 'ember-qunit';
 import TableMetadataModel, { TableMetadataPayload } from '@yavin/client/models/metadata/table';
 import MetricMetadataModel from '@yavin/client/models/metadata/metric';
 import DimensionMetadataModel from '@yavin/client/models/metadata/dimension';
 import TimeDimensionMetadataModel from '@yavin/client/models/metadata/time-dimension';
 import RequestConstraintMetadataModel from '@yavin/client/models/metadata/request-constraint';
 import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
-import type KegClass from '@yavin/client/utils/classes/keg';
-import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import { nullInjector } from '../../../helpers/injector';
+import type MetadataServiceInterface from '@yavin/client/services/interfaces/metadata';
+import MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 
-let Payload: TableMetadataPayload, Model: TableMetadataModel, Keg: KegClass;
+type RecordsById<Registry> = Partial<{
+  [P in keyof Registry]: Record<string, Registry[P]>;
+}>;
+
+class MockMetadataService implements Partial<MetadataServiceInterface> {
+  mocks: RecordsById<MetadataModelRegistry> = {
+    metric: {
+      pv: new MetricMetadataModel(nullInjector, {
+        id: 'pv',
+        name: 'Page Views',
+        description: 'Page Views',
+        category: 'Page Views',
+        source: 'bardOne',
+        isSortable: true,
+        type: 'field',
+      }),
+    },
+    dimension: {
+      age: new DimensionMetadataModel(nullInjector, {
+        id: 'age',
+        name: 'Age',
+        description: 'Age',
+        category: 'category',
+        source: 'bardOne',
+        isSortable: false,
+        type: 'field',
+        valueSourceType: ValueSourceType.TABLE,
+      }),
+    },
+    timeDimension: {
+      orderDate: new TimeDimensionMetadataModel(nullInjector, {
+        id: 'orderDate',
+        name: 'Order Date',
+        description: 'Order Date',
+        category: 'category',
+        source: 'bardOne',
+        isSortable: true,
+        supportedGrains: [],
+        timeZone: 'UTC',
+        type: 'field',
+        valueSourceType: ValueSourceType.NONE,
+      }),
+    },
+    requestConstraint: {
+      constraint: new RequestConstraintMetadataModel(nullInjector, {
+        id: 'constraint',
+        name: 'Constraint',
+        description: 'Constraint',
+        type: 'existence',
+        constraint: {
+          property: 'columns',
+          matches: { type: 'metric', field: 'test' },
+        },
+        source: 'bardOne',
+      }),
+    },
+  };
+  getById<K extends keyof MetadataModelRegistry>(
+    type: K,
+    id: string,
+    _dataSourceName: string
+  ): MetadataModelRegistry[K] | undefined {
+    return this.mocks[type]?.[id];
+  }
+}
+
+let Payload: TableMetadataPayload;
+let Model: TableMetadataModel;
+let MetadataService: MockMetadataService;
 
 module('Unit | Metadata Model | Table', function (hooks) {
-  setupTest(hooks);
-
   hooks.beforeEach(function () {
-    let metatadataService: NaviMetadataService = this.owner.lookup('service:navi-metadata');
     Payload = {
       id: 'tableA',
       name: 'Table A',
@@ -31,68 +96,14 @@ module('Unit | Metadata Model | Table', function (hooks) {
       tags: ['DISPLAY'],
     };
 
-    Model = new TableMetadataModel(this.owner.lookup('service:client-injector'), Payload);
-
-    //Looking up and injecting keg into the model
-    Keg = metatadataService['keg'];
-
-    Keg.insert(
-      'metadata/metric',
-      new MetricMetadataModel(this.owner.lookup('service:client-injector'), {
-        id: 'pv',
-        name: 'Page Views',
-        description: 'Page Views',
-        category: 'Page Views',
-        source: 'bardOne',
-        isSortable: true,
-        type: 'field',
-      }),
-      { namespace: 'bardOne' }
-    );
-    Keg.insert(
-      'metadata/dimension',
-      new DimensionMetadataModel(this.owner.lookup('service:client-injector'), {
-        id: 'age',
-        name: 'Age',
-        description: 'Age',
-        category: 'category',
-        source: 'bardOne',
-        isSortable: false,
-        type: 'field',
-        valueSourceType: ValueSourceType.TABLE,
-      }),
-      { namespace: 'bardOne' }
-    );
-    Keg.insert(
-      'metadata/timeDimension',
-      new TimeDimensionMetadataModel(this.owner.lookup('service:client-injector'), {
-        id: 'orderDate',
-        name: 'Order Date',
-        description: 'Order Date',
-        category: 'category',
-        source: 'bardOne',
-        isSortable: true,
-        supportedGrains: [],
-        timeZone: 'UTC',
-        type: 'field',
-        valueSourceType: ValueSourceType.NONE,
-      }),
-      { namespace: 'bardOne' }
-    );
-    Keg.insert(
-      'metadata/requestConstraint',
-      new RequestConstraintMetadataModel(this.owner.lookup('service:client-injector'), {
-        id: 'constraint',
-        name: 'Constraint',
-        description: 'Constraint',
-        type: 'existence',
-        constraint: {
-          property: 'columns',
-          matches: { type: 'metric', field: 'test' },
+    MetadataService = new MockMetadataService();
+    Model = new TableMetadataModel(
+      {
+        lookup(_type, _name) {
+          return MetadataService;
         },
-        source: 'bardOne',
-      }),
-      { namespace: 'bardOne' }
+      },
+      Payload
     );
   });
 
@@ -142,7 +153,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
     assert.expect(1);
     assert.equal(
       Model.metrics[0],
-      Keg.getById('metadata/metric', 'pv', 'bardOne'),
+      MetadataService.getById('metric', 'pv', 'bardOne'),
       'The Page view metric is properly hydrated'
     );
   });
@@ -152,7 +163,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
 
     assert.equal(
       Model.dimensions[0],
-      Keg.getById('metadata/dimension', 'age', 'bardOne'),
+      MetadataService.getById('dimension', 'age', 'bardOne'),
       'The age dimension is properly hydrated'
     );
   });
@@ -162,7 +173,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
 
     assert.equal(
       Model.timeDimensions[0],
-      Keg.getById('metadata/timeDimension', 'orderDate', 'bardOne'),
+      MetadataService.getById('timeDimension', 'orderDate', 'bardOne'),
       'The Order date time-dimension is properly hydrated'
     );
   });
@@ -172,7 +183,7 @@ module('Unit | Metadata Model | Table', function (hooks) {
 
     assert.equal(
       Model.requestConstraints[0],
-      Keg.getById('metadata/requestConstraint', 'constraint', 'bardOne'),
+      MetadataService.getById('requestConstraint', 'constraint', 'bardOne'),
       'The requestConstraint is properly hydrated'
     );
   });

@@ -1,13 +1,11 @@
 import { module, test } from 'qunit';
-import { setupTest } from 'ember-qunit';
 import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
+import { nullInjector } from '../../helpers/injector';
 
-module('Unit | Model | navi dimension response', function (hooks) {
-  setupTest(hooks);
-
+module('Unit | Model | navi dimension response', function () {
   test('it exists', function (assert) {
     //@ts-expect-error
-    const response = new NaviDimensionResponse(this.owner.lookup('service:client-injector'), undefined);
+    const response = new NaviDimensionResponse(nullInjector, undefined);
     assert.deepEqual(response.values, [], 'Stores dimension values');
     assert.deepEqual(response.meta, {}, 'Stores meta information');
   });

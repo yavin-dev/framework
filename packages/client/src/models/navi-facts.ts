@@ -9,7 +9,7 @@ import type { RequestV2 } from '../request.js';
 import type NaviFactResponse from './navi-fact-response.js';
 import type FactService from '../services/interfaces/fact.js';
 
-interface NaviFactsPayload {
+export interface NaviFactsPayload {
   request: RequestV2;
   response: NaviFactResponse;
 }
@@ -20,7 +20,7 @@ export default class NaviFacts extends NativeWithCreate {
   }
 
   @ClientService('navi-facts')
-  protected declare factService: FactService;
+  declare factService: FactService;
 
   declare request: RequestV2;
 

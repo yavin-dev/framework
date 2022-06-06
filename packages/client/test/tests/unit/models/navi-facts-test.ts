@@ -1,11 +1,15 @@
 import { module, test } from 'qunit';
 import NaviFactsModel from '@yavin/client/models/navi-facts';
+import type { NaviFactsPayload } from '@yavin/client/models/navi-facts';
+import NaviFactResponse from '@yavin/client/models/navi-fact-response';
+import { nullInjector } from '../../helpers/injector';
 
-const Payload = {
+const Payload: NaviFactsPayload = {
   request: {
-    request: 'object',
+    //@ts-expect-error - mock request
+    request: null,
   },
-  response: {
+  response: new NaviFactResponse(nullInjector, {
     rows: [
       {
         dateTime: '2014-04-02 00:00:00.000',
@@ -30,21 +34,22 @@ const Payload = {
         numberOfResults: 34,
       },
     },
-  },
+  }),
 };
 
 module('Unit | Model | navi facts', function (hooks) {
   let Response: NaviFactsModel;
+  let factService: unknown;
 
   hooks.beforeEach(function () {
-    //@ts-expect-error mock response
-    Response = new NaviFactsModel(this.owner.lookup('service:client-injector'), Payload);
-
-    //Mocking facts service
-    Response['factService'] = {
-      //@ts-expect-error
-      fetch: (request, options) => ({ request, options }),
-    };
+    Response = new NaviFactsModel(
+      {
+        lookup(_type, _name) {
+          return factService;
+        },
+      },
+      Payload
+    );
   });
 
   test('it properly hydrates properties', function (assert) {
@@ -59,18 +64,22 @@ module('Unit | Model | navi facts', function (hooks) {
     assert.expect(2);
 
     //Mocking facts service
-    Response['factService'] = {
-      fetchNext: () => {
-        assert.ok('The service`s fetch Next method is invoked with the response and request');
+    factService = {
+      fetchNext: {
+        perform: () => {
+          assert.ok('The service`s fetch Next method is invoked with the response and request');
+        },
       },
     };
 
     Response.next();
 
     //Mocking facts service
-    Response['factService'] = {
-      fetchPrevious: () => {
-        assert.ok('The service`s fetch Previous method is invoked with the response and request');
+    factService = {
+      fetchPrevious: {
+        perform: () => {
+          assert.ok('The service`s fetch Previous method is invoked with the response and request');
+        },
       },
     };
 

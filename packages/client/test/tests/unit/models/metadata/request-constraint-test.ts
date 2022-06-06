@@ -1,25 +1,15 @@
 import { module, test } from 'qunit';
-import { setupTest } from 'ember-qunit';
-import Pretender, { Server } from 'pretender';
-import { TestContext } from 'ember-test-helpers';
-// @ts-ignore
-import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import RequestConstraintMetadataModel, {
   RequestConstraintMetadataPayload,
 } from '@yavin/client/models/metadata/request-constraint';
 import type { RequestV2 } from '@yavin/client/request';
+import { nullInjector } from '../../../helpers/injector';
 
-let server: Server;
 let Payload: RequestConstraintMetadataPayload;
 let RequestConstraint: RequestConstraintMetadataModel;
 
 module('Unit | Model | metadata/request constraint', function (hooks) {
-  setupTest(hooks);
-
-  hooks.beforeEach(async function (this: TestContext) {
-    server = new Pretender(metadataRoutes);
-    await this.owner.lookup('service:navi-metadata').loadMetadata();
-
+  hooks.beforeEach(async function () {
     Payload = {
       id: 'normalizer-generated:requestConstraint(filters=tableName.dateTime)',
       name: 'Date Time Filter',
@@ -29,11 +19,7 @@ module('Unit | Model | metadata/request constraint', function (hooks) {
       source: 'bardOne',
     };
 
-    RequestConstraint = new RequestConstraintMetadataModel(this.owner.lookup('service:client-injector'), Payload);
-  });
-
-  hooks.afterEach(function () {
-    server.shutdown();
+    RequestConstraint = new RequestConstraintMetadataModel(nullInjector, Payload);
   });
 
   test('it properly hydrates properties', function (assert) {

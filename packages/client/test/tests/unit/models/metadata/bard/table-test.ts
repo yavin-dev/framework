@@ -1,13 +1,11 @@
 import { module, test } from 'qunit';
-import { setupTest } from 'ember-qunit';
 import BardTableMetadataModel from '@yavin/client/models/metadata/bard/table';
 import type { BardTableMetadataPayload } from '@yavin/client/models/metadata/bard/table';
+import { nullInjector } from '../../../../helpers/injector';
 
 let Payload: BardTableMetadataPayload, Table: BardTableMetadataModel;
 
 module('Unit | Model | metadata/bard/table', function (hooks) {
-  setupTest(hooks);
-
   hooks.beforeEach(function () {
     Payload = {
       id: 'tableA',
@@ -26,7 +24,7 @@ module('Unit | Model | metadata/bard/table', function (hooks) {
       tags: ['DISPLAY'],
     };
 
-    Table = new BardTableMetadataModel(this.owner.lookup('service:client-injector'), Payload);
+    Table = new BardTableMetadataModel(nullInjector, Payload);
   });
 
   test('it properly hydrates properties', function (assert) {
