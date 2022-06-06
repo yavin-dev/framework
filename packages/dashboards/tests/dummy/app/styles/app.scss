@@ -7,11 +7,9 @@
 @import 'yavin-c3';
 
 body {
-  display: flex;
-  flex: 1;
-  flex-flow: column;
-  height: 100vh;
-  margin: 0;
+  #ember-testing-container {  /* stylelint-disable-line selector-max-id */
+    overflow: clip;
+  }
 }
 
 .nav-responsive {

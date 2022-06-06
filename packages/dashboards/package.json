@@ -46,7 +46,7 @@
     "ember-cp-validations": "^4.0.0-beta.10",
     "ember-data-model-fragments": "^5.0.0-beta.1",
     "ember-get-config": "0.2.4",
-    "ember-gridstack": "2.0.2",
+    "ember-gridstack": "^3.1.1",
     "ember-math-helpers": "^2.10.0",
     "ember-modal-dialog": "^2.4.3",
     "ember-moment": "^10.0.0",

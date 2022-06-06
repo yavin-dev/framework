@@ -106,19 +106,19 @@ module('Integration | Component | navi widget', function (hooks) {
 
     assert
       .dom('.grid-stack-item')
-      .hasAttribute('data-gs-x', '2', 'given column is correctly translated to gridstack data attribute');
+      .hasAttribute('gs-x', '2', 'given column is correctly translated to gridstack data attribute');
 
     assert
       .dom('.grid-stack-item')
-      .hasAttribute('data-gs-y', '1', 'given row is correctly translated to gridstack data attribute');
+      .hasAttribute('gs-y', '1', 'given row is correctly translated to gridstack data attribute');
 
     assert
       .dom('.grid-stack-item')
-      .hasAttribute('data-gs-width', '10', 'given width is correctly translated to gridstack data attribute');
+      .hasAttribute('gs-w', '10', 'given width is correctly translated to gridstack data attribute');
 
     assert
       .dom('.grid-stack-item')
-      .hasAttribute('data-gs-height', '4', 'given height is correctly translated to gridstack data attribute');
+      .hasAttribute('gs-h', '4', 'given height is correctly translated to gridstack data attribute');
   });
 
   test('visualization', async function (assert) {

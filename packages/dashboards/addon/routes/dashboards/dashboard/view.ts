@@ -53,17 +53,17 @@ export default class DashboardsDashboardViewRoute extends Route {
   };
 
   /**
-   * validates that lastAddedWidgetId query param exists in the dashboard
+   * validates that highlightWidget query param exists in the dashboard
    */
   beforeModel(transition: Transition) {
-    const { filters, lastAddedWidgetId } = transition.to.queryParams;
+    const { filters, highlightWidget } = transition.to.queryParams;
 
-    if (lastAddedWidgetId !== undefined) {
+    if (highlightWidget !== undefined) {
       const dashboard = this.modelFor('dashboards.dashboard') as ModelFrom<DashboardsDashboardRoute>;
       const widgetIds = dashboard.presentation.layout.map((widget) => widget.widgetId);
-      if (!widgetIds.includes(Number(lastAddedWidgetId))) {
+      if (!widgetIds.includes(Number(highlightWidget))) {
         this.transitionTo('dashboards.dashboard', {
-          queryParams: { filters, lastAddedWidgetId: null },
+          queryParams: { filters, highlightWidget: null },
         });
       }
     }
@@ -194,7 +194,7 @@ export default class DashboardsDashboardViewRoute extends Route {
    */
   resetController(controller: DashboardsDashboardViewController, isExiting: boolean) {
     if (isExiting) {
-      controller.set('lastAddedWidgetId', null);
+      controller.set('highlightWidget', null);
     }
   }
 

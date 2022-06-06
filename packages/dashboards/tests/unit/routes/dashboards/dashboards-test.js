@@ -83,8 +83,8 @@ module('Unit | Route | dashboards/dashboard', function (hooks) {
     const route = TestRoute.create();
 
     route._updateLayout([
-      { id: 1, x: 1, y: 1, height: 3, width: 1 },
-      { id: 2, x: 2, y: 4, height: 4, width: 5 },
+      { id: 1, x: 1, y: 1, h: 3, w: 1 },
+      { id: 2, x: 2, y: 4, h: 4, w: 5 },
     ]);
 
     const expectedLayout = [
@@ -138,8 +138,8 @@ module('Unit | Route | dashboards/dashboard', function (hooks) {
     const route = TestRoute.create();
 
     route.send('didUpdateLayout', undefined, [
-      { id: 1, x: 1, y: 2, height: 5, width: 12 },
-      { id: 2, x: 3, y: 3, height: 4, width: 6 },
+      { id: 1, x: 1, y: 2, h: 5, w: 12 },
+      { id: 2, x: 3, y: 3, h: 4, w: 6 },
     ]);
 
     assert.deepEqual(
@@ -148,7 +148,7 @@ module('Unit | Route | dashboards/dashboard', function (hooks) {
         { widgetId: 1, column: 1, row: 2, height: 5, width: 12 },
         { widgetId: 2, column: 3, row: 3, height: 4, width: 6 },
       ],
-      'layout is updaded'
+      'layout is updated'
     );
 
     await settled();

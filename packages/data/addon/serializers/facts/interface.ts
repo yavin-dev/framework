@@ -27,6 +27,10 @@ export interface ResponseV1 {
     };
     missingIntervals?: string[];
     warning?: string[];
+    errors?: {
+      title: string;
+      detail: string;
+    }[];
   };
 }
 

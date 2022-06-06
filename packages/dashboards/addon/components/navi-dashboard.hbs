@@ -16,7 +16,14 @@
         {{on "scroll" this.onScroll}}
       >
         <GridStack
-          @options={{hash column=@width}}
+          {{!-- TODO enable animation after determining how to do c3 resize + gs animation --}}
+          @options={{hash
+            column=@width
+            animate=false
+            marginTop=0
+            marginBottom=20
+            cellHeight="80px"
+          }}
           @onChange={{route-action "didUpdateLayout"}}
           @onResizestop={{this.onResize}}
         >
@@ -28,7 +35,7 @@
                   @layoutOptions={{layout}}
                   @taskInstance={{get @taskByWidget widget.id}}
                   @canEdit={{@dashboard.canUserEdit}}
-                  @isLastAdded={{eq widget.id @lastAddedWidgetId}}
+                  @isHighlighted={{eq widget.id @highlightWidget}}
                   @index={{index}}
                 />
               {{/if}}

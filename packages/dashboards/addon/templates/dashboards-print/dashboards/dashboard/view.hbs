@@ -8,7 +8,7 @@
         </div>
       </div>
     {{else if this.isGrid}}
-       <GridStack @width="12" @locked={{true}} @noMove={{true}} @noResize={{true}}>
+      <GridStack @options={{hash column=@width staticGrid=true}}>
         {{#each @model.dashboard.presentation.layout as |layout index|}}
           {{#with (get-widget layout.widgetId) as |widget|}}
             {{#if widget}}

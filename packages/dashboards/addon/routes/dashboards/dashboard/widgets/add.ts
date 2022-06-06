@@ -53,7 +53,7 @@ export default class DashboardsDashboardWidgetsAddRoute extends Route {
     const dashboard = this.modelFor('dashboards.dashboard') as ModelFrom<DashboardsDashboardRoute>;
     return this.transitionTo('dashboards.dashboard', dashboard.id, {
       queryParams: {
-        lastAddedWidgetId: widgetId,
+        highlightWidget: widgetId,
       },
     });
   }
@@ -68,34 +68,13 @@ export default class DashboardsDashboardWidgetsAddRoute extends Route {
    * @returns layout with new widget
    */
   _addToLayout(layout: FragmentArrayBase<LayoutFragment>, widgetId: number) {
-    const row = this._findNextAvailableRow(layout);
     const nextItemLayout = this.store.createFragment('fragments/layout', {
       widgetId,
       width: 5,
       height: 4,
-      column: 0,
-      row,
     });
     layout.pushObject(nextItemLayout);
     return layout;
-  }
-
-  /**
-   * Finds the next available row in a dashboard
-   *
-   * @private
-   * @param layout - dashboard layout array
-   * @returns next available row number
-   */
-  _findNextAvailableRow(layout: LayoutFragment[]): number {
-    let nextRow = 0;
-    layout.forEach((widget) => {
-      let { row, height } = widget;
-      if (row + height > nextRow) {
-        nextRow = row + height;
-      }
-    });
-    return nextRow;
   }
 
   /**

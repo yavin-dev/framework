@@ -49,7 +49,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
           queryParams: {
             filters:
               'N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu+UArnChiALL4DGA8gMrUQAdQoATLAHcUAXRqQ4UUaSwoaOfAnwBbOPGRpQ8xaQhKAvjRgBPPKVEQd5JBCyUaSLIwRc4pAEYaojzkvmbSZkA',
-            lastAddedWidgetId: null,
+            highlightWidget: null,
           },
         },
         'Updating the filter sets the filters query param to the expected compressed string'
@@ -108,7 +108,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
         {
           queryParams: {
             filters: 'N4IgZglgNgLgpgJwM4gFwG0C6BfIA',
-            lastAddedWidgetId: null,
+            highlightWidget: null,
           },
         },
         'Removing the filter sets the filters query param to the expected compressed string'
@@ -136,7 +136,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
           queryParams: {
             filters:
               'N4IgZglgNgLgpgJwM4gFwG1QwJ4Ac5ogAmEAtnAHZIQD2FIANOBHFEYQIYDmBTuHCDuXjI0oSK3aoQEdgF8mNfIJg0EhCPSYA3DlACucFBgC6TJDX0IAxgWkAjAUQDyFAnJNygA',
-            lastAddedWidgetId: null,
+            highlightWidget: null,
           },
         },
         'Adding a filter sets the filters query param to the expected compressed string'
@@ -182,7 +182,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
           queryParams: {
             filters:
               'N4IgZglgNgLgpgJwM4gFwG1QwJ4Ac5ogAmEAtnAHZIQD2FIANOBHFEYQMZ0wCGEFiRiFw8EPcvGRpQkVu1QgI7AL5Ma+MTBoJC-IQDceUAK5wUGALpMkNYwg4EFAI1FEAKgHcaIZReVA',
-            lastAddedWidgetId: null,
+            highlightWidget: null,
           },
         },
         'Adding a filter sets the filters query param to the expected compressed string'
@@ -240,7 +240,7 @@ module('Unit | Controller | dashboards/dashboard/view', function (hooks) {
           queryParams: {
             filters:
               'N4IgZglgNgLgpgJwM4gFwG1QHsAOiCGMWCaIEAdiADQgBu+UArnChiAIwgC6NkcUAE1IBjLORj4KiaiBz4E+ALZx4yNKD6DSEIQF8aMAJ55SAiMvJIIYmUiyMEwuKQBG8gQBUA7lhC6uukA',
-            lastAddedWidgetId: null,
+            highlightWidget: null,
           },
         },
         'Adding a filter sets the filters query param to the expected compressed string'
