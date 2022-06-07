@@ -51,7 +51,7 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
   }
 
   test('Configuring multiple parameters', async function (assert) {
-    assert.expect(6);
+    assert.expect(7);
 
     this.column = await getMetricColumn('multipleParamMetric', {
       type: 'l',
@@ -59,12 +59,13 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
       age: '6',
       currency: 'USD',
       currencyButNullDefault: 'CAD',
+      userInput: '123 abc',
     });
     await render(TEMPLATE);
 
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-label').map((el) => el.textContent.trim()),
-      ['Type', 'Aggregation', 'Age', 'Currency', 'CurrencyButNullDefault'],
+      ['Type', 'Aggregation', 'Age', 'Currency', 'CurrencyButNullDefault', 'UserInput'],
       'Multiple parameters config lists are displayed'
     );
     assert.deepEqual(
@@ -85,6 +86,7 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
     await selectChoose(findAll('.navi-column-config-item__parameter')[2], '2');
     await selectChoose(findAll('.navi-column-config-item__parameter')[3], 'EUR');
     await selectChoose(findAll('.navi-column-config-item__parameter')[4], 'AMD');
+    await fillIn('.navi-column-config-item__parameter-input', 'abc 123');
 
     assert.deepEqual(
       findAll('.navi-column-config-item__parameter-trigger').map((el) => el.textContent.trim()),
@@ -92,9 +94,15 @@ module('Integration | Component | navi-column-config/metric', function (hooks) {
       'A selected parameter can be changed and a null valued parameter can be changed'
     );
 
+    assert.deepEqual(
+      findAll('.navi-column-config-item__parameter-input').map((el) => el.value),
+      ['abc 123'],
+      'A user_input parameter can be changed'
+    );
+
     assert
       .dom('.ember-tooltip-target')
-      .exists({ count: 1 }, 'Description tooltip shows once for the one parameter that has a description');
+      .exists({ count: 2 }, 'Description tooltip shows once for the two parameters that have a description');
 
     await triggerEvent('.ember-tooltip-target', 'mouseenter');
 

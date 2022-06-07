@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import NaviMetadataSerializer from './base';
@@ -81,6 +81,7 @@ export type BardParamEnumValue = { id: string | number | boolean; name: string; 
 
 export type RawColumnFunctionArgument =
   | { type: 'enum'; defaultValue?: string | null; values: BardParamEnumValue[]; description?: string }
+  | { type: 'user_input'; defaultValue?: string | null; values: BardParamEnumValue[]; description?: string }
   | { type: 'dimension'; defaultValue?: string | null; dimensionName: string; description?: string };
 
 export type GrainWithAll = Grain | 'all';

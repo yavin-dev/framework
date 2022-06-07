@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Description: A serializer for the metric function endpoint
@@ -22,6 +22,8 @@ const paramValueSourceTypeMap: Record<string, ValueSourceType> = {
   enum: ValueSourceType.ENUM,
   dimension: ValueSourceType.TABLE,
   none: ValueSourceType.NONE,
+  // eslint-disable-next-line @typescript-eslint/camelcase
+  user_input: ValueSourceType.NONE,
 };
 
 /**
@@ -34,12 +36,17 @@ export function constructFunctionParameters(
 ): FunctionParameterMetadataPayload[] {
   return Object.keys(parameters).map((paramName) => {
     const param = parameters[paramName];
-    const { defaultValue, description } = param;
+    let { defaultValue } = param;
+
+    // in 'user_input' type params, interpret the default 'None' as empty
+    if (param.type === 'user_input' && param.defaultValue === 'None') {
+      defaultValue = null;
+    }
 
     const normalized: FunctionParameterMetadataPayload = {
       id: paramName,
       name: paramName,
-      description,
+      description: param.description,
       valueType: DataType.TEXT, //bard does not provide a value type
       valueSourceType: paramValueSourceTypeMap[param.type],
       tableSource: param.type === 'dimension' ? { valueSource: param.dimensionName } : undefined,

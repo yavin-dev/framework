@@ -172,6 +172,12 @@ export default {
           dimensionName: 'displayCurrency',
           defaultValue: null,
         },
+        userInput: {
+          type: 'user_input',
+          description: `a parameter of the type 'user_input'`,
+          defaultValue: 'None',
+          values: [],
+        },
       },
     },
   ],
