@@ -6,11 +6,10 @@ import GraphQLScenario from 'navi-data/mirage/scenarios/elide-two';
 import moment from 'moment';
 import { TestContext as Context } from 'ember-test-helpers';
 import { Server } from 'miragejs';
-import NaviFactsService from 'navi-data/services/navi-facts';
+import NaviFactsService from '@yavin/client/services/interfaces/fact';
 import type { Filter, RequestV2 } from '@yavin/client/request';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
-import { taskFor } from 'ember-concurrency-ts';
 
 interface TestContext extends Context {
   service: NaviFactsService;
@@ -96,7 +95,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
   });
 
   test('fetch', async function (this: TestContext, assert) {
-    const model = await taskFor(this.service.fetch).perform(TestRequest, { dataSourceName: TestRequest.dataSource });
+    const model = await this.service.fetch(TestRequest, { dataSourceName: TestRequest.dataSource });
     const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
@@ -225,7 +224,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
 
   test('fetch - pagination', async function (this: TestContext, assert) {
     const limitless = { ...TestRequest, limit: null };
-    const model = await taskFor(this.service.fetch).perform(limitless, {
+    const model = await this.service.fetch(limitless, {
       dataSourceName: limitless.dataSource,
       page: 1,
       perPage: 1,
@@ -256,7 +255,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
       'The pagination options limit the response to 1 row and gets the first page'
     );
 
-    const modelPage2 = await taskFor(this.service.fetch).perform(limitless, {
+    const modelPage2 = await this.service.fetch(limitless, {
       dataSourceName: limitless.dataSource,
       page: 2,
       perPage: 1,
@@ -289,7 +288,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
   });
 
   test('fetch - only metrics', async function (this: TestContext, assert) {
-    const model = await taskFor(this.service.fetch).perform(
+    const model = await this.service.fetch(
       {
         table: 'table1',
         columns: [
@@ -354,7 +353,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
       },
     ];
 
-    const model = await taskFor(this.service.fetch).perform(
+    const model = await this.service.fetch(
       {
         table: 'table1',
         columns: [
@@ -387,7 +386,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     );
 
     const noTimeDimResponse = (
-      await taskFor(this.service.fetch).perform(
+      await this.service.fetch(
         {
           table: 'table1',
           columns: [{ field: 'table1.metric1', parameters: {}, type: 'metric' }],
@@ -422,7 +421,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
   });
 
   test('fetch - incomplete date filters', async function (this: TestContext, assert) {
-    const model = await taskFor(this.service.fetch).perform(
+    const model = await this.service.fetch(
       {
         table: 'table1',
         columns: [
@@ -466,7 +465,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     );
 
     const noStartDateResponse = (
-      await taskFor(this.service.fetch).perform(
+      await this.service.fetch(
         {
           table: 'table1',
           columns: [
@@ -513,7 +512,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
 
     const DAY_FORMAT = 'YYYY-MM-DD';
     const dateToCurrentResponse = (
-      await taskFor(this.service.fetch).perform(
+      await this.service.fetch(
         {
           table: 'table1',
           columns: [{ field: 'table1.eventTimeDay', parameters: {}, type: 'timeDimension' }],
@@ -565,7 +564,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
   });
 
   test('fetch - sorts', async function (this: TestContext, assert) {
-    const model = await taskFor(this.service.fetch).perform(
+    const model = await this.service.fetch(
       {
         table: 'table1',
         columns: [
@@ -626,7 +625,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     );
 
     const multiSortResponse = (
-      await taskFor(this.service.fetch).perform(
+      await this.service.fetch(
         {
           table: 'table1',
           columns: [
@@ -794,7 +793,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
 
   test('fetch - limit', async function (this: TestContext, assert) {
     const limit = (
-      await taskFor(this.service.fetch).perform(
+      await this.service.fetch(
         {
           table: 'table1',
           columns: [
@@ -858,7 +857,7 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     );
 
     const limitless = (
-      await taskFor(this.service.fetch).perform(
+      await this.service.fetch(
         {
           table: 'table1',
           columns: [
@@ -950,8 +949,8 @@ module('Unit | Service | Navi Facts - Elide', function (hooks) {
     assert.expect(2);
 
     // Return an error
-    await taskFor(this.service.fetch)
-      .perform(
+    await this.service
+      .fetch(
         {
           table: 'badTable',
           columns: [{ field: 'badTable.badMetric', parameters: {}, type: 'metric' }],

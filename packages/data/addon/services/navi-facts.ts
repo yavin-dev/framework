@@ -37,17 +37,6 @@ export default class NaviFactsService extends Service implements FactService {
   }
 
   /**
-   * Creates a new request builder instance
-   *
-   * @param baseRequest - existing request to start from
-   * @returns request builder interface
-   */
-  request(_baseRequest: RequestV2) {
-    // TODO: Fix here
-    throw new Error('request builder not supported');
-  }
-
-  /**
    * Uses the adapter to get the bard query url for the request
    * @param request - request object
    * @param options - options object
@@ -65,13 +54,29 @@ export default class NaviFactsService extends Service implements FactService {
     return query;
   }
 
+  getDownloadURL(request: RequestV2, options: RequestOptions) {
+    return taskFor(this.getDownloadURLTask).perform(request, options);
+  }
+
+  fetch(request: RequestV2, options: RequestOptions = {}) {
+    return taskFor(this.fetchTask).perform(request, options);
+  }
+
+  fetchNext(response: NaviFactResponse, request: RequestV2) {
+    return taskFor(this.fetchNextTask).perform(response, request);
+  }
+
+  fetchPrevious(response: NaviFactResponse, request: RequestV2) {
+    return taskFor(this.fetchPreviousTask).perform(response, request);
+  }
+
   /**
    * Uses the adapter to get the download query url for the request
    * @param request - request object
    * @param options - options object
    * @returns - url for the request
    */
-  @task *getDownloadURL(request: RequestV2, options: RequestOptions): TaskGenerator<string> {
+  @task *getDownloadURLTask(request: RequestV2, options: RequestOptions): TaskGenerator<string> {
     const { type: dataSourceType } = getDataSource(request.dataSource);
     const adapter = this._adapterFor(dataSourceType);
     return yield adapter.urlForDownloadQuery(request, options);
@@ -83,7 +88,7 @@ export default class NaviFactsService extends Service implements FactService {
    * @param options - options object
    * @returns - Promise with the bard response model object
    */
-  @task *fetch(request: RequestV2, options: RequestOptions = {}): TaskGenerator<NaviFactsModel> {
+  @task *fetchTask(request: RequestV2, options: RequestOptions = {}): TaskGenerator<NaviFactsModel> {
     const dataSourceName = options?.dataSourceName;
     const type = dataSourceName ? getDataSource(dataSourceName).type : getDefaultDataSource().type;
     const adapter = this._adapterFor(type);
@@ -105,13 +110,13 @@ export default class NaviFactsService extends Service implements FactService {
    * @param request
    * @return returns the promise with the next set of results or null
    */
-  @task *fetchNext(response: NaviFactResponse, request: RequestV2): TaskGenerator<NaviFactsModel | null> {
+  @task *fetchNextTask(response: NaviFactResponse, request: RequestV2): TaskGenerator<NaviFactsModel | null> {
     if (response.meta.pagination) {
       const { rowsPerPage, numberOfResults, currentPage } = response.meta.pagination;
       const totalPages = numberOfResults / rowsPerPage;
 
       if (currentPage < totalPages) {
-        return yield taskFor(this.fetch).perform(request, {
+        return yield taskFor(this.fetchTask).perform(request, {
           page: currentPage + 1,
           perPage: rowsPerPage,
         });
@@ -125,11 +130,11 @@ export default class NaviFactsService extends Service implements FactService {
    * @param request
    * @return returns the promise with the previous set of results or null
    */
-  @task *fetchPrevious(response: NaviFactResponse, request: RequestV2): TaskGenerator<NaviFactsModel | null> {
+  @task *fetchPreviousTask(response: NaviFactResponse, request: RequestV2): TaskGenerator<NaviFactsModel | null> {
     if (response.meta.pagination) {
       const { rowsPerPage, currentPage } = response.meta.pagination;
       if (currentPage > 1) {
-        return yield taskFor(this.fetch).perform(request, {
+        return yield taskFor(this.fetchTask).perform(request, {
           page: currentPage - 1,
           perPage: rowsPerPage,
         });

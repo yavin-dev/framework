@@ -65,10 +65,8 @@ module('Unit | Model | navi facts', function (hooks) {
 
     //Mocking facts service
     factService = {
-      fetchNext: {
-        perform: () => {
-          assert.ok('The service`s fetch Next method is invoked with the response and request');
-        },
+      fetchNext: () => {
+        assert.ok('The service`s fetch Next method is invoked with the response and request');
       },
     };
 
@@ -76,10 +74,8 @@ module('Unit | Model | navi facts', function (hooks) {
 
     //Mocking facts service
     factService = {
-      fetchPrevious: {
-        perform: () => {
-          assert.ok('The service`s fetch Previous method is invoked with the response and request');
-        },
+      fetchPrevious: () => {
+        assert.ok('The service`s fetch Previous method is invoked with the response and request');
       },
     };
 

@@ -69,10 +69,8 @@ export default class DimensionBulkImportComponent extends Component<Args> {
     return [...new Set(queryIds)];
   }
 
-  get valueLookup(): TaskInstance<NaviDimensionResponse> {
-    return taskFor(this.naviDimension.find).perform(this.args.dimension, [
-      { operator: 'in', values: this.trimmedQueryIds },
-    ]);
+  get valueLookup(): Promise<NaviDimensionResponse> {
+    return this.naviDimension.find(this.args.dimension, [{ operator: 'in', values: this.trimmedQueryIds }]);
   }
 
   makeFilter = helper(([values]: [FilterFragment['values']]) => {

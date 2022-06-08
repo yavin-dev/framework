@@ -6,7 +6,7 @@ import type MetadataModelRegistry from '../../models/metadata/registry.js';
 import type { RequestOptions } from '../../adapters/facts/interface.js';
 
 export default interface MetadataService {
-  loadMetadata(options: RequestOptions): PromiseLike<void>;
+  loadMetadata(options: RequestOptions): Promise<void>;
 
   /**
    * Provides an array of all loaded models for a given type
@@ -37,7 +37,7 @@ export default interface MetadataService {
     type: K,
     id: string,
     dataSourceName: string
-  ): PromiseLike<MetadataModelRegistry[K] | undefined>;
+  ): Promise<MetadataModelRegistry[K] | undefined>;
 
   /**
    * Provides a single loaded model instance or fetches one, given an identifier
@@ -49,5 +49,5 @@ export default interface MetadataService {
     type: K,
     id: string,
     dataSourceName: string
-  ): PromiseLike<MetadataModelRegistry[K] | undefined>;
+  ): Promise<MetadataModelRegistry[K] | undefined>;
 }

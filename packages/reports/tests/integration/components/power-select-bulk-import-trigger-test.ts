@@ -6,7 +6,6 @@ import hbs from 'htmlbars-inline-precompile';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import { taskFor } from 'ember-concurrency-ts';
 import type FragmentFactory from 'navi-core/services/fragment-factory';
 import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 
@@ -62,7 +61,7 @@ module('Integration | Component | power select bulk import trigger', function (h
 
     const filter = fragmentFactory.createFilter('dimension', 'bardOne', 'property', { field: 'id' }, 'in', []);
 
-    const allProperties = await taskFor(NaviDimension.all).perform(filter as DimensionColumn);
+    const allProperties = await NaviDimension.all(filter as DimensionColumn);
     this.setProperties({
       options: allProperties.values,
       selected: [],

@@ -115,9 +115,9 @@ export default class DimensionMetadataModel extends ColumnMetadataModel {
   /**
    * extended metadata for the dimension that isn't provided in initial table fullView metadata load
    */
-  get extended(): PromiseLike<DimensionMetadataModel> {
-    const { metadataService: naviMetadata, id, source } = this;
-    return naviMetadata.findById('dimension', id, source).then((d) => d || this);
+  get extended(): Promise<DimensionMetadataModel> {
+    const { metadataService, id, source } = this;
+    return metadataService.findById('dimension', id, source).then((d) => d || this);
   }
 
   get suggestionColumns(): SuggestionColumn[] {

@@ -83,7 +83,7 @@ export interface TableExportResult {
   message: string;
 }
 export default interface NaviFactAdapter {
-  fetchDataForRequest(request: Request, options: RequestOptions): PromiseLike<unknown>;
+  fetchDataForRequest(request: Request, options: RequestOptions): Promise<unknown>;
   urlForFindQuery(request: Request, options: RequestOptions): string;
-  urlForDownloadQuery(request: Request, options: RequestOptions): PromiseLike<string>;
+  urlForDownloadQuery(request: Request, options: RequestOptions): Promise<string>;
 }

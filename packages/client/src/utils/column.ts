@@ -2,7 +2,7 @@
  * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import type { Parameters } from '../request';
+import type { Parameters } from '../request.js';
 
 interface ColumnLike {
   field: string;

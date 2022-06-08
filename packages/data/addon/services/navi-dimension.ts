@@ -20,6 +20,7 @@ import { searchDimensionModelRecords } from '@yavin/client/utils/search';
 import config from 'ember-get-config';
 import type { Options as ServiceOptions } from '@yavin/client/adapters/dimensions/interface';
 import type DimensionService from '@yavin/client/services/interfaces/dimension';
+import { taskFor } from 'ember-concurrency-ts';
 
 const DIMENSION_CACHE = config.navi.dimensionCache;
 
@@ -116,12 +117,28 @@ export default class NaviDimensionService extends Service implements DimensionSe
     return getOwner(this).lookup(`serializer:dimensions/${dataSourceType}`);
   }
 
+  all(dimension: DimensionColumn, options: ServiceOptions = {}): Promise<NaviDimensionResponse> {
+    return taskFor(this.allTask).perform(dimension, options);
+  }
+
+  find(
+    dimension: DimensionColumn,
+    predicate: DimensionFilter[],
+    options: ServiceOptions = {}
+  ): Promise<NaviDimensionResponse> {
+    return taskFor(this.findTask).perform(dimension, predicate, options);
+  }
+
+  search(dimension: DimensionColumn, query: string, options: ServiceOptions = {}): Promise<NaviDimensionResponse> {
+    return taskFor(this.searchTask).perform(dimension, query, options);
+  }
+
   /**
    * Get all values for a dimension column, paginating through results as needed.
    * @param dimension - requested dimension
    * @param options - method options
    */
-  @task *all(dimension: DimensionColumn, options: ServiceOptions = {}): TaskGenerator<NaviDimensionResponse> {
+  @task *allTask(dimension: DimensionColumn, options: ServiceOptions = {}): TaskGenerator<NaviDimensionResponse> {
     // check cache
     const cacheResponse = this._dimensionCache.checkDimensionCache('all', dimension);
     if (cacheResponse) {
@@ -170,7 +187,7 @@ export default class NaviDimensionService extends Service implements DimensionSe
    * @param predicate - filter criteria
    * @param options - method options
    */
-  @task *find(
+  @task *findTask(
     dimension: DimensionColumn,
     predicate: DimensionFilter[],
     options: ServiceOptions = {}
@@ -187,7 +204,7 @@ export default class NaviDimensionService extends Service implements DimensionSe
    * @param query - query string
    * @param options - method options
    */
-  @task *search(
+  @task *searchTask(
     dimension: DimensionColumn,
     query: string,
     options: ServiceOptions = {}

@@ -40,7 +40,7 @@ export default class MetricMetadataModel extends ColumnMetadataModel {
   /**
    * extended metadata for the metric that isn't provided in initial table fullView metadata load
    */
-  get extended(): PromiseLike<MetricMetadataModel> {
+  get extended(): Promise<MetricMetadataModel> {
     const { metadataService, id, source } = this;
     return metadataService.findById('metric', id, source).then((m) => m || this);
   }
