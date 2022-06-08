@@ -257,7 +257,7 @@ module('Unit | Model | report', function (hooks) {
     });
   });
 
-  test('deliveryRuleForUser', async function (assert) {
+  test('deliveryRulesForUser', async function (assert) {
     assert.expect(1);
 
     await run(async () => {
@@ -268,8 +268,8 @@ module('Unit | Model | report', function (hooks) {
         value: { getUser: () => user },
       });
 
-      const rule = await reportModel.get('deliveryRuleForUser');
-      assert.deepEqual(rule, Store.peekRecord('deliveryRule', 1), 'deliveryRule is fetched for current user');
+      const rules = await reportModel.get('deliveryRulesForUser');
+      assert.deepEqual(rules[0], Store.peekRecord('deliveryRule', 1), 'deliveryRule is fetched for current user');
     });
   });
 });

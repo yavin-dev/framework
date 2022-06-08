@@ -31,6 +31,8 @@
     "postpublish": "ember ts:clean"
   },
   "dependencies": {
+    "broccoli-funnel": "^3.0.8",
+    "broccoli-merge-trees": "^4.2.0",
     "@denali-design/ember": "^1.0.0-alpha.34",
     "@ember/jquery": "^0.6.0",
     "@ember/optional-features": "^2.0.0",

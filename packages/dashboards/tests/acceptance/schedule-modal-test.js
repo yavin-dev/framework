@@ -9,7 +9,7 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
   setupMirage(hooks);
 
   test('schedule modal save new schedule', async function (assert) {
-    assert.expect(12);
+    assert.expect(10);
     await visit('/dashboards');
 
     await triggerEvent('.navi-collection__row0', 'mouseenter');
@@ -17,13 +17,9 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
 
     assert.dom('.schedule__modal-header').isVisible('Schedule modal pops up when action is clicked');
 
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .isNotVisible('The delete button is not present when creating a new schedule');
+    await click('.schedule__modal-new-delivery button');
 
-    assert
-      .dom('.schedule__modal-save-btn')
-      .hasText('Save', 'The save button says "Save" and not "Save Changes" when creating a new schedule');
+    assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button says "Save"');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
@@ -57,25 +53,12 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     assert
       .dom('.alert')
       .hasText(
-        'Dashboard delivery schedule successfully saved!',
+        `'Email delivered pdf every day' schedule successfully saved!`,
         'Successful notification is shown after clicking save'
       );
 
-    //Reopen the modal because it closed when saved
-    await triggerEvent('.navi-collection__row0', 'mouseenter');
-    await click('.dashboard-actions__schedule');
-
     // Check that all fields match the delivery rule we just saved
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .isVisible('The delete button is present after a delivery rule has been saved');
-
-    assert
-      .dom('.schedule__modal-save-btn')
-      .hasText(
-        'Save Changes',
-        'The save button says "Save Changes" and not "Save" after a delivery rule has been saved'
-      );
+    assert.dom('.schedule__modal-save-btn').hasText('Save', 'The save button is rendered properly');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')
@@ -109,12 +92,9 @@ module('Acceptances | Navi Dashboard Schedule Modal', function (hooks) {
     assert
       .dom('.alert')
       .hasText(
-        'Dashboard delivery schedule successfully saved!',
+        `'Email delivered pdf every day' schedule successfully saved!`,
         'Successful notification is shown after clicking save'
       );
-
-    // Reopen the modal
-    await click('.dashboard-header__schedule-btn');
 
     assert
       .dom('.schedule__modal-frequency-trigger .ember-power-select-selected-item')

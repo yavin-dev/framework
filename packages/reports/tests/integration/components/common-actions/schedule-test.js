@@ -11,35 +11,40 @@ const DeliveryRule = {
   format: { type: 'csv' },
   recipients: ['test@oath.com', 'rule@oath.com'],
   delivery: 'email',
+  name: 'Email delivered csv every week',
   isDisabled: false,
+  validations: { isValid: true },
+  id: 1,
 };
 const NoDelivery = {
   frequency: 'Week',
   delivery: 'none',
   format: { type: 'csv' },
   recipients: ['test@oath.com', 'rule@oath.com'],
+  name: 'No delivery csv every week',
   isDisabled: false,
+  validations: { isValid: true },
 };
 const NoDeliveryModel = {
   constructor: { modelName: 'report' },
   title: 'Test Test',
-  deliveryRuleForUser: Promise.resolve(NoDelivery),
+  deliveryRulesForUser: Promise.resolve([NoDelivery]),
 };
 const TestModel = {
   constructor: { modelName: 'report' },
   title: 'Test Test',
-  deliveryRuleForUser: Promise.resolve(DeliveryRule),
+  deliveryRulesForUser: Promise.resolve([DeliveryRule]),
 };
 const errorModel = {
   constructor: { modelName: 'report' },
   title: 'Test Test',
-  get deliveryRuleForUser() {
-    return Promise.reject('boo');
+  get deliveryRulesForUser() {
+    return Promise.reject([DeliveryRule]);
   },
 };
 const unscheduledModel = {
   title: 'Test Test',
-  deliveryRuleForUser: Promise.resolve(null),
+  deliveryRulesForUser: Promise.resolve([]),
   constructor: {
     modelName: 'report',
   },
@@ -94,6 +99,8 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.dom('.modal.is-active').isVisible('Schedule Modal component is rendered when the button is clicked');
 
+    await click('.schedule__modal-new-delivery button');
+
     assert.dom('.schedule__modal .alert').doesNotExist('Error is not displayed when item is valid');
 
     assert
@@ -102,7 +109,17 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Delivery', 'Recipients', 'Format', 'Frequency', 'Only send if data is present', ''],
+      [
+        'Schedule Name',
+        'Delivery',
+        'Recipients',
+        'Format',
+        'Frequency',
+        'Only send if data is present',
+        '',
+        'Status',
+        'Paused\n  Active',
+      ],
       'Schedule Modal has all the expected sections'
     );
 
@@ -120,7 +137,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('schedule modal when invalid', async function (assert) {
-    assert.expect(10);
+    assert.expect(9);
 
     this.set('model', unscheduledModel);
     this.set('isValidForSchedule', () => Promise.resolve(false));
@@ -134,6 +151,8 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert
       .dom('.schedule__modal-header')
       .hasText('Schedule Report', 'The primary header makes use of the category of page appropriately');
+
+    await click('.schedule__modal-new-delivery button');
 
     assert
       .dom('.schedule__modal .alert')
@@ -150,11 +169,9 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.dom('.schedule__modal-rejected').doesNotExist('rejected error does not show');
 
-    assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'Close button is rendered');
+    assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Cancel button is rendered');
 
     assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
-
-    assert.dom('.schedule__modal-delete-btn').doesNotExist('Delete button is not rendered');
   });
 
   test('schedule modal - delivery rule passed in when valid', async function (assert) {
@@ -175,14 +192,13 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('schedule modal - delivery rule passed in when invalid', async function (assert) {
-    assert.expect(4);
+    assert.expect(3);
     this.set('model', TestModel);
     this.set('isValidForSchedule', () => Promise.resolve(false));
 
     await render(TEMPLATE);
 
     await click('.schedule-action__button');
-
     assert.deepEqual(
       findAll('.schedule__modal-input--recipients .tag').map((el) => el.textContent.trim()),
       ['test@oath.com', 'rule@oath.com'],
@@ -192,8 +208,6 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.dom('.schedule__modal-frequency-trigger').hasText('Week', 'The frequency is fetched from the delivery rule');
 
     assert.dom('.schedule__modal-save-btn').exists('Save button is rendered');
-
-    assert.dom('.schedule__modal-delete-btn').exists('Delete button is rendered');
   });
 
   test('onSave Action', async function (assert) {
@@ -206,6 +220,8 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     //Open modal
     await click('.schedule-action__button');
 
+    await click('.schedule__modal-new-delivery button');
+
     assert
       .dom('.schedule__modal-save-btn')
       .hasText('Save', 'The save button says `Save` when model does not have a delivery rule for the current user');
@@ -214,9 +230,8 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Show cancel button before save a delivery rule');
 
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .isNotVisible('The delete button is not available when model does not have a delivery rule for the current user');
+    await fillIn('.schedule__modal-name', 'Test');
+    await blur('.schedule__modal-name');
 
     await fillIn('.js-ember-tag-input-new', 'test1@navi.io');
     await blur('.js-ember-tag-input-new');
@@ -235,9 +250,12 @@ module('Integration | Component | common actions/schedule', function (hooks) {
         'Recipients entered in the text area is set in the delivery rule'
       );
 
+      assert.equal(rule.get('name'), 'Test', 'The test name is properly in place');
+
       assert.ok(true, 'OnSave action is called');
 
-      rule.rollbackAttributes();
+      //added because rolling back attributes creates error with defaultName function
+      rule.hasDirtyAttributes = false;
 
       return resolve();
     });
@@ -245,7 +263,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     //Click save after modal is open
     await click('.schedule__modal-save-btn');
 
-    assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'Show close button after save a delivery rule');
+    assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Show cancel button after save a delivery rule');
   });
 
   test('onRevert Action', async function (assert) {
@@ -267,7 +285,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
   });
 
   test('onDelete action', async function (assert) {
-    assert.expect(2);
+    assert.expect(1);
 
     this.set('deliveryRule', DeliveryRule);
 
@@ -281,13 +299,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     await click('.schedule-action__button');
 
-    assert
-      .dom('.schedule__modal-delete-btn')
-      .exists({ count: 1 }, 'Delete button is shown when deliveryRule is present for current user');
-
-    await click('.schedule__modal-delete-btn');
-
-    await click('.delete__modal-delete-btn');
+    await click('.schedule__modal-delete-1');
   });
 
   test('frequency options - default', async function (assert) {
@@ -458,12 +470,33 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert
       .dom('.schedule__modal .alert')
-      .hasText('Error An error occurred while fetching the schedule for this report.', 'Error is displayed correctly');
+      .hasText(
+        'Error An error occurred while fetching your schedule(s) for this report.',
+        'Error is displayed correctly'
+      );
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Delivery', 'Recipients', 'Format', 'Frequency', 'Only send if data is present', ''],
-      'Schedule Modal has all the expected sections'
+      [],
+      'Schedule Modal has its empty state shown because of the error'
+    );
+
+    await click('.schedule__modal-no-schedule-new-delivery');
+
+    assert.deepEqual(
+      findAll('.input-group label').map((el) => el.textContent.trim()),
+      [
+        'Schedule Name',
+        'Delivery',
+        'Recipients',
+        'Format',
+        'Frequency',
+        'Only send if data is present',
+        '',
+        'Status',
+        'Paused\n  Active',
+      ],
+      'Schedule Modal has all the expected sections once we add a rule'
     );
 
     assert
@@ -479,18 +512,17 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Cancel button is rendered');
 
     assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
-
-    assert.dom('.schedule__modal-delete-btn').doesNotExist('Delete button is not rendered');
   });
 
   test('error fetching delivery rule when invalid', async function (assert) {
-    assert.expect(10);
+    assert.expect(9);
 
     this.set('model', errorModel);
     this.set('isValidForSchedule', () => Promise.resolve(false));
 
     await render(TEMPLATE);
     await click('.schedule-action__button');
+    await click('.schedule__modal-no-schedule-new-delivery');
 
     assert.dom('.modal.is-active').isVisible('Schedule Modal component is rendered when the button is clicked');
 
@@ -501,7 +533,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.deepEqual(
       findAll('.schedule__modal .alert p').map((el) => el.textContent.trim()),
       [
-        'An error occurred while fetching the schedule for this report.',
+        'An error occurred while fetching your schedule(s) for this report.',
         'Unable to schedule invalid report. Please fix errors before proceeding.',
       ],
       'Both fetching and invalid errors are displayed'
@@ -515,24 +547,34 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.dom('.schedule__modal-rejected').doesNotExist('rejected error does not show');
 
-    assert.dom('.schedule__modal-cancel-btn').hasText('Close', 'Close button is rendered');
+    assert.dom('.schedule__modal-cancel-btn').hasText('Cancel', 'Cancel button is rendered');
 
     assert.dom('.schedule__modal-save-btn').doesNotExist('Save button is not rendered');
-
-    assert.dom('.schedule__modal-delete-btn').doesNotExist('Delete button is not rendered');
   });
 
   test('Change to no delivery', async function (assert) {
     assert.expect(2);
 
-    this.set('model', DeliveryRule);
+    this.set('model', TestModel);
 
     await render(TEMPLATE);
     await click('.schedule-action__button');
 
+    await click('.schedule__modal-new-delivery button');
+
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Delivery', 'Recipients', 'Format', 'Frequency', 'Only send if data is present', ''],
+      [
+        'Schedule Name',
+        'Delivery',
+        'Recipients',
+        'Format',
+        'Frequency',
+        'Only send if data is present',
+        '',
+        'Status',
+        'Paused\n  Active',
+      ],
       'Schedule Modal has all the expected sections'
     );
 
@@ -541,7 +583,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Delivery', 'Frequency'],
+      ['Schedule Name', 'Delivery', 'Frequency', 'Status', 'Paused\n  Active'],
       'Schedule Modal has all the expected sections'
     );
   });
@@ -556,7 +598,7 @@ module('Integration | Component | common actions/schedule', function (hooks) {
 
     assert.deepEqual(
       findAll('.input-group label').map((el) => el.textContent.trim()),
-      ['Delivery', 'Frequency'],
+      ['Schedule Name', 'Delivery', 'Frequency', 'Status', 'Paused\n  Active'],
       'Schedule Modal has all the expected sections'
     );
   });
@@ -569,12 +611,15 @@ module('Integration | Component | common actions/schedule', function (hooks) {
       frequency: 'week',
       format: { type: 'gsheet' },
       recipients: ['test@oath.com', 'rule@oath.com'],
+      isDisabled: false,
+      failureCount: 0,
+      name: 'Gsheet delivered every week',
     };
 
     this.set('model', {
       constructor: { modelName: 'report' },
       title: 'Test the overwrite',
-      deliveryRuleForUser: Promise.resolve(testDR),
+      deliveryRulesForUser: Promise.resolve([testDR]),
     });
     await render(TEMPLATE);
 

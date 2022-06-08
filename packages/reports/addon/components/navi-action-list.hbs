@@ -119,7 +119,7 @@
       class="navi-report-actions__delete"
       @model={{@item}}
       @warnMsg={{if (await @item.loadDeliveryRuleForUser)
-            "Are you sure you want to delete this report and the associated schedule?"
+            "Are you sure you want to delete this report and the associated schedule(s)?"
             "Are you sure you want to delete this report?"}}
       @deleteAction={{item-action "DELETE_ITEM" @item}}
       as |onDelete|

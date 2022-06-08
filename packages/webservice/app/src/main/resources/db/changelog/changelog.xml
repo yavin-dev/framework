@@ -161,6 +161,8 @@
                 ADD isDisabled boolean not null default false;
             ALTER TABLE DeliveryRule 
                 ADD failureCount int not null default 0;
+            ALTER TABLE DeliveryRule    
+                ADD name varchar(255);
         </sql>
     </changeSet>
 </databaseChangeLog>

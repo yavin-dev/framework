@@ -4,9 +4,17 @@
 */
 .schedule {
   &__modal {
+    &-unsaved-rule {
+      background-color: map-get($denali-brand-colors, '300');
+      border-radius: 50%;
+      display: inline-block;
+      height: 10px;
+      width: 10px;
+    }
     /* stylelint-disable selector-no-qualifying-type */
     div.modal-container {
-      width: 525px;
+      height: fit-content;
+      width: 901px;
     }
 
     &__input--recipients {
@@ -39,6 +47,68 @@
       label {
         min-width: 182px;
       }
+    }
+
+    &-options {
+      align-items: center;
+      height: 570px;
+
+      justify-content: center;
+      position: relative;
+
+      &-inputs {
+        height: 455px;
+        overflow-y: auto;
+      }
+    }
+
+    &-delivery-list {
+      border-right: 1px solid map-get($denali-grey-colors, '400');
+
+      li {
+        //overrides the tab height that is set to 40 with no flex
+        //making more specific class doesnt have the same effect on it so the important is necessary
+        height: fit-content !important;
+        min-height: 40px;
+      }
+
+      &-name {
+        inline-size: 210px;
+        overflow-wrap: break-word;
+        white-space: normal;
+      }
+
+      div.tabs ul {
+        max-height: 521px;
+        overflow-y: auto;
+      }
+    }
+
+    &-no-schedule {
+      height: 350px;
+      left: 50%;
+      margin-top: 50px;
+      position: absolute;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+    }
+
+    &-buttons {
+      border-top: 1px solid map-get($denali-grey-colors, '400');
+    }
+
+    &-new-delivery {
+      border-bottom: 1px solid map-get($denali-grey-colors, '400');
+
+      .button {
+        justify-content: left;
+      }
+    }
+
+    &-frequency-dropdown,
+    &-format-dropdown {
+      z-index: 999;
     }
   }
 }

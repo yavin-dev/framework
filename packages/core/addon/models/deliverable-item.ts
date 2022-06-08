@@ -1,5 +1,4 @@
 import Model, { hasMany } from '@ember-data/model';
-import { A as arr } from '@ember/array';
 import { computed } from '@ember/object';
 import UserService from 'navi-core/services/user';
 import { inject as service } from '@ember/service';
@@ -38,15 +37,13 @@ export default class DeliverableItemModel extends Model {
   store!: Store;
 
   /**
-   * @property {DS.Model} deliveryRuleForUser - delivery rule model
+   * @property {DS.Model} deliveryRulesForUser - delivery rule model
    */
   @computed('user', 'deliveryRules.[]')
-  get deliveryRuleForUser() {
+  get deliveryRulesForUser() {
     const userId = this.user.getUser()?.id;
 
-    return this.deliveryRules.then((rules) =>
-      arr(rules.filter((rule) => rule.get('owner').get('id') === userId)).get('firstObject')
-    );
+    return this.deliveryRules.then((rules) => rules.filter((rule) => rule.get('owner').get('id') === userId));
   }
 }
 
