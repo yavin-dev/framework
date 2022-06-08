@@ -4,6 +4,7 @@
  */
 import { getPaginatedRecords } from './pagination.js';
 import sortBy from 'lodash/sortBy.js';
+import NaviDimensionModel from '../models/navi-dimension.js';
 
 function words(str: string): string[] {
   return str.split(/\s+/);
@@ -181,4 +182,47 @@ export function searchDimensionRecords<T extends Record<string, unknown>>(
   results = sortBy(results, (result) => result.relevance);
 
   return getPaginatedRecords(results, resultLimit, page);
+}
+
+/**
+ * Searches noramlized dimension records and returns filtered results sorted by relevance
+ *
+ * @param records - collection of dimension records to search
+ * @param query - search query used to filter and rank assets
+ * @returns matching dimensin records
+ */
+export function searchDimensionModelRecords(
+  records: NaviDimensionModel[],
+  query: string
+): { values: NaviDimensionModel[] } {
+  let results: Array<{ record: NaviDimensionModel; relevance: number }> = [];
+
+  // Filter, map, and sort records based on how close each record is to the search query
+  records.forEach((record) => {
+    // Determine relevance based on string match weight
+    const { value, suggestions } = record;
+    const searchString = suggestions ? (Object.values(suggestions).join(' ') || '').toLowerCase() : '';
+    const valueMatchWeight = getExactMatchWeight(((value as string) || '').toLowerCase(), query.toLowerCase());
+    const suggestionMatchWeight = getPartialMatchWeight(searchString, query.toLowerCase());
+    let relevance = suggestionMatchWeight || valueMatchWeight;
+
+    // If both id and description match the query, take the most relevant
+    if (suggestionMatchWeight && valueMatchWeight) {
+      relevance = Math.min(suggestionMatchWeight, valueMatchWeight);
+    }
+
+    if (relevance) {
+      // If record matched search query, include it in the filtered results in the desire form
+      results.push({
+        relevance: relevance,
+        record: record,
+      });
+    }
+  });
+
+  results = sortBy(results, (result) => result.relevance);
+
+  return {
+    values: results.map((val) => val.record),
+  };
 }

@@ -2,8 +2,8 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import type { FilterOperator } from '@yavin/client/request';
-import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
+import type { FilterOperator } from '../../request.js';
+import type { DimensionColumn } from '../../models/metadata/dimension.js';
 
 export type DimensionFilter = {
   operator: FilterOperator;

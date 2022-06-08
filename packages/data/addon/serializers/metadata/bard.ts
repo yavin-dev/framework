@@ -22,7 +22,7 @@ import type TimeDimensionMetadataModel from '@yavin/client/models/metadata/time-
 import type { TimeDimensionMetadataPayload } from '@yavin/client/models/metadata/time-dimension';
 import type RequestConstraintMetadataModel from '@yavin/client/models/metadata/request-constraint';
 import type { RequestConstraintMetadataPayload } from '@yavin/client/models/metadata/request-constraint';
-import type { MetadataModelMap, EverythingMetadataPayload } from './base';
+import type { MetadataModelMap, EverythingMetadataPayload } from '@yavin/client/serializers/metadata/interface';
 import BardTableMetadataModel from '@yavin/client/models/metadata/bard/table';
 import type { BardTableMetadataPayload } from '@yavin/client/models/metadata/bard/table';
 import type { Cardinality } from '@yavin/client/utils/enums/cardinality-sizes';

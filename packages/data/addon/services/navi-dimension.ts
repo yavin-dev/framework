@@ -7,19 +7,18 @@ import { task } from 'ember-concurrency';
 import { setOwner, getOwner } from '@ember/application';
 import { getDataSource } from 'navi-data/utils/adapter';
 import type { TaskGenerator } from 'ember-concurrency';
-import type NaviDimensionSerializer from 'navi-data/serializers/dimensions/interface';
-import type NaviDimensionAdapter from 'navi-data/adapters/dimensions/interface';
-import type { DimensionFilter } from 'navi-data/adapters/dimensions/interface';
+import type NaviDimensionSerializer from '@yavin/client/serializers/dimensions/interface';
+import type NaviDimensionAdapter from '@yavin/client/adapters/dimensions/interface';
+import type { DimensionFilter } from '@yavin/client/adapters/dimensions/interface';
 import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
 import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import Cache from '@yavin/client/utils/classes/cache';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
-import { searchNaviDimensionRecords } from 'navi-data/utils/search';
-import { A } from '@ember/array';
+import { searchDimensionModelRecords } from '@yavin/client/utils/search';
 import config from 'ember-get-config';
-import type { Options as ServiceOptions } from 'navi-data/adapters/dimensions/interface';
+import type { Options as ServiceOptions } from '@yavin/client/adapters/dimensions/interface';
 import type DimensionService from '@yavin/client/services/interfaces/dimension';
 
 const DIMENSION_CACHE = config.navi.dimensionCache;
@@ -54,7 +53,7 @@ class DimensionCache extends Cache<NaviDimensionResponse> {
   getSearchFromAll(allResponse: NaviDimensionResponse, query: string): NaviDimensionResponse {
     return new NaviDimensionResponse(
       getOwner(this).lookup('service:client-injector'),
-      searchNaviDimensionRecords(A(allResponse.values), query)
+      searchDimensionModelRecords(allResponse.values, query)
     );
   }
 

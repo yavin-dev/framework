@@ -9,7 +9,7 @@ import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 import NaviMetadataSerializer, {
   EverythingMetadataPayload,
   MetadataModelMap,
-} from 'navi-data/serializers/metadata/base';
+} from '@yavin/client/serializers/metadata/interface';
 import Keg from '@yavin/client/utils/classes/keg';
 import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 import type NaviMetadataAdapter from '@yavin/client/adapters/metadata/interface';

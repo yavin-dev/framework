@@ -7,7 +7,7 @@ import { action } from '@ember/object';
 import { capitalize } from 'lodash-es';
 import { tracked } from '@glimmer/tracking';
 import { assert } from '@ember/debug';
-import { parseParameterValue } from 'navi-data/utils/metric';
+import { parseParameterValue } from '@yavin/client/utils/parameters';
 import type FunctionParameter from '@yavin/client/models/metadata/function-parameter';
 import type { PotentialParameterValue } from '@yavin/client/models/metadata/function-parameter';
 import type { ParameterValue } from '@yavin/client/request';

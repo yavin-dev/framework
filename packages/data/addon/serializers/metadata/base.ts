@@ -17,29 +17,10 @@ import type { ColumnFunctionMetadataPayload } from '@yavin/client/models/metadat
 import type { TableMetadataPayload } from '@yavin/client/models/metadata/table';
 import type { RequestConstraintMetadataPayload } from '@yavin/client/models/metadata/request-constraint';
 import type ClientInjector from 'navi-data/services/client-injector';
+import type MetadataSerializer from '@yavin/client/serializers/metadata/interface';
+import type { MetadataModelMap, RawMetadataPayload } from '@yavin/client/serializers/metadata/interface';
 
-export interface EverythingMetadataPayload {
-  tables: TableMetadataModel[];
-  metrics: MetricMetadataModel[];
-  dimensions: DimensionMetadataModel[];
-  timeDimensions: TimeDimensionMetadataModel[];
-  columnFunctions?: ColumnFunctionMetadataModel[];
-  requestConstraints: RequestConstraintMetadataModel[];
-}
-
-export interface MetadataModelMap {
-  everything: EverythingMetadataPayload;
-  table: TableMetadataModel[];
-  requestConstraint: RequestConstraintMetadataModel[];
-  metric: MetricMetadataModel[];
-  dimension: DimensionMetadataModel[];
-  timeDimension: TimeDimensionMetadataModel[];
-  columnFunction: ColumnFunctionMetadataModel[];
-}
-
-export type RawMetadataPayload = unknown;
-
-export default abstract class NaviMetadataSerializer extends EmberObject {
+export default abstract class NaviMetadataSerializer extends EmberObject implements MetadataSerializer {
   abstract normalize<K extends keyof MetadataModelMap>(
     type: K,
     rawPayload: RawMetadataPayload,

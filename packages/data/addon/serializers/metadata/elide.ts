@@ -19,7 +19,7 @@ import type TimeDimensionMetadataModel from '@yavin/client/models/metadata/time-
 import type { TimeDimensionMetadataPayload } from '@yavin/client/models/metadata/time-dimension';
 import type ColumnFunctionMetadataModel from '@yavin/client/models/metadata/column-function';
 import type { ColumnFunctionMetadataPayload } from '@yavin/client/models/metadata/column-function';
-import type { MetadataModelMap, EverythingMetadataPayload } from './base';
+import type { MetadataModelMap, EverythingMetadataPayload } from '@yavin/client/serializers/metadata/interface';
 import ElideDimensionMetadataModel from '@yavin/client/models/metadata/elide/dimension';
 import { ElideDimensionMetadataPayload, ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
 import type { Grain } from '@yavin/client/utils/date';
