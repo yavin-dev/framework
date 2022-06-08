@@ -122,9 +122,21 @@ module('Integration | Component | navi widget', function (hooks) {
   });
 
   test('visualization', async function (assert) {
-    assert.expect(5);
+    assert.expect(6);
 
-    const data = arr([{ request: 'foo', response: { rows: [1, 2, 3] } }]),
+    const data = arr([
+        {
+          request: 'foo',
+          response: {
+            rows: [1, 2, 3],
+            meta: {
+              pagination: {
+                numberOfResults: 3,
+              },
+            },
+          },
+        },
+      ]),
       metadata = {
         xAxis: 'timeseries',
       },
@@ -190,6 +202,32 @@ module('Integration | Component | navi widget', function (hooks) {
 
     // Test visualization listening to events
     triggerEvent(containerComponent.element, 'resizestop');
+
+    const noData = arr([
+      {
+        request: 'foo',
+        response: {
+          rows: [],
+          meta: {
+            pagination: {
+              numberOfResults: 0,
+            },
+          },
+        },
+      },
+    ]);
+    this.set('taskInstance.value', noData);
+
+    await render(hbs`
+      <NaviWidget
+        @model={{this.widgetModel}}
+        @taskInstance={{this.taskInstance}}
+      />
+    `);
+
+    assert
+      .dom('.navi-widget__content--no-results')
+      .hasText('No results available.', 'visualization will not render without data');
   });
 
   test('delete action visibility', async function (assert) {
