@@ -249,7 +249,7 @@ module('Unit | Service | dashboard data', function (hooks) {
     const service = this.owner.factoryFor('service:dashboard-data').create({
       fetch(request) {
         // Skip the ws data fetch for this test
-        return resolve({
+        return Promise.resolve({
           request,
           response: {
             meta: {

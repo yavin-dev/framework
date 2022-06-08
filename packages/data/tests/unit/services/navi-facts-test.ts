@@ -9,6 +9,8 @@ import { TestContext } from 'ember-test-helpers';
 import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import NaviAdapterError from '@yavin/client/errors/navi-adapter-error';
+import { task, TaskGenerator } from 'ember-concurrency';
+import type NaviFacts from '@yavin/client/models/navi-facts';
 
 let Server: PretenderServer;
 
@@ -77,11 +79,10 @@ const Response: ResponseV1 = {
 const HOST = config.navi.dataSources[0].uri;
 
 function assertRequest(context: TestContext, callback: (request: RequestV2, options?: RequestOptions) => void) {
-  const originalNaviFacts = context.owner.factoryFor('service:navi-facts').class;
-  class TestService extends originalNaviFacts {
-    fetch(request: RequestV2, options?: RequestOptions): Promise<unknown> {
+  class TestService extends NaviFactsService {
+    @task *fetchTask(request: RequestV2, options?: RequestOptions): TaskGenerator<NaviFacts> {
       callback(request, options);
-      return Promise.resolve({});
+      return yield;
     }
   }
   context.owner.unregister('service:navi-facts');

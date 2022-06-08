@@ -151,7 +151,7 @@ export default class DashboardDataService extends Service {
   ): TaskGenerator<NaviFactsWithRequestFragment> {
     const request = this.decorate(decorators, requestFragment.serialize() as RequestV2);
 
-    const naviFactsModel: NaviFactsModel = yield this.naviFacts.fetch(request, options);
+    const naviFactsModel: NaviFactsModel = yield this.fetch(request, options);
     //@ts-ignore -- TODO is this valid?
     const serverErrors = naviFactsModel.response?.meta?.errors ?? [];
 
@@ -159,6 +159,13 @@ export default class DashboardDataService extends Service {
       request: requestFragment,
       response: { meta: { errors: [...serverErrors, ...filterErrors] } },
     });
+  }
+
+  /**
+   * Performs a fetch of the given request
+   */
+  protected fetch(request: RequestV2, options: RequestOptions): Promise<NaviFactsModel> {
+    return this.naviFacts.fetch(request, options);
   }
 
   /**

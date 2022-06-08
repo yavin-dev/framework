@@ -11,7 +11,6 @@ import ContainerValues from 'navi-data/mirage/bard-lite/dimensions/container';
 import config from 'ember-get-config';
 import Service from '@ember/service';
 import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
-import { task, TaskGenerator } from 'ember-concurrency';
 import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type FilterFragment from 'navi-core/models/request/filter';
@@ -232,13 +231,13 @@ module('Integration | Component | filter values/dimension select', function (hoo
   test('sort is applied numerically', async function (this: TestContext, assert) {
     assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
-    const { owner } = this;
+    const injector = this.owner.lookup('service:client-injector');
 
     class MockDimensions extends Service {
-      @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
+      all(dimensionColumn: DimensionColumn): Promise<NaviDimensionResponse> {
         const rawValues = ['1', '3', '2', '11', '111'];
-        const values = rawValues.map((value) => new NaviDimensionModel(owner, { value, dimensionColumn }));
-        return yield new NaviDimensionResponse(owner, { values });
+        const values = rawValues.map((value) => new NaviDimensionModel(injector, { value, dimensionColumn }));
+        return Promise.resolve(new NaviDimensionResponse(injector, { values }));
       }
     }
 
@@ -257,13 +256,13 @@ module('Integration | Component | filter values/dimension select', function (hoo
   test('sort is applied lexicographically', async function (this: TestContext, assert) {
     assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'age', { field: 'id' }, 'in', []);
-    const { owner } = this;
+    const injector = this.owner.lookup('service:client-injector');
 
     class MockDimensions extends Service {
-      @task *all(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
+      all(dimensionColumn: DimensionColumn): Promise<NaviDimensionResponse> {
         const rawValues = ['1', '3', '2', '11', '111', 'stringvalue'];
-        const values = rawValues.map((value) => new NaviDimensionModel(owner, { value, dimensionColumn }));
-        return yield new NaviDimensionResponse(owner, { values });
+        const values = rawValues.map((value) => new NaviDimensionModel(injector, { value, dimensionColumn }));
+        return Promise.resolve(new NaviDimensionResponse(injector, { values }));
       }
     }
 
@@ -282,15 +281,15 @@ module('Integration | Component | filter values/dimension select', function (hoo
   test('sort is NOT applied to search', async function (this: TestContext, assert) {
     assert.expect(1);
     this.filter = this.fragmentFactory.createFilter('dimension', 'bardOne', 'property', { field: 'id' }, 'in', []);
-    const { owner } = this;
+    const injector = this.owner.lookup('service:client-injector');
 
     class MockDimensions extends Service {
-      @task *search(dimensionColumn: DimensionColumn): TaskGenerator<NaviDimensionModel[]> {
+      search(dimensionColumn: DimensionColumn): Promise<NaviDimensionResponse> {
         const rawValues = ['1', '3', '2', '11', '111'];
         const values = rawValues.map(
-          (value) => new NaviDimensionModel(owner, { value: `Property ${value}`, dimensionColumn })
+          (value) => new NaviDimensionModel(injector, { value: `Property ${value}`, dimensionColumn })
         );
-        return yield new NaviDimensionResponse(owner, { values });
+        return Promise.resolve(new NaviDimensionResponse(injector, { values }));
       }
     }
 

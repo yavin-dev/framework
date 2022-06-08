@@ -4,7 +4,6 @@ import { render, click } from '@ember/test-helpers';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import hbs from 'htmlbars-inline-precompile';
 import Service from '@ember/service';
-import { task } from 'ember-concurrency';
 
 const TEMPLATE = hbs`
   <ReportActions::Export
@@ -117,7 +116,7 @@ module('Integration | Component | report actions - export', function (hooks) {
     }
     class MockFacts extends Service {
       // eslint-disable-next-line require-yield
-      @task *getDownloadURL() {
+      getDownloadURL() {
         throw new Error(`Whoa! Couldn't get the url`);
       }
     }
