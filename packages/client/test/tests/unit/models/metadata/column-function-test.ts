@@ -1,6 +1,4 @@
 import { module, test } from 'qunit';
-import { setupTest } from 'ember-qunit';
-import { TestContext } from 'ember-test-helpers';
 import ColumnFunctionMetadataModel, {
   ColumnFunctionMetadataPayload,
 } from '@yavin/client/models/metadata/column-function';
@@ -9,13 +7,12 @@ import FunctionParameterMetadataModel, {
   FunctionParameterMetadataPayload,
 } from '@yavin/client/models/metadata/function-parameter';
 import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
+import { nullInjector } from '../../../helpers/injector';
 
 let Payload: ColumnFunctionMetadataPayload, ColumnFunction: ColumnFunctionMetadataModel;
 
 module('Unit | Metadata Model | Column Function', function (hooks) {
-  setupTest(hooks);
-
-  hooks.beforeEach(async function (this: TestContext) {
+  hooks.beforeEach(async function () {
     const paramPayload: FunctionParameterMetadataPayload = {
       id: 'currency',
       name: 'Currency',
@@ -34,7 +31,7 @@ module('Unit | Metadata Model | Column Function', function (hooks) {
       _parametersPayload: [paramPayload],
     };
 
-    ColumnFunction = new ColumnFunctionMetadataModel(this.owner.lookup('service:client-injector'), Payload);
+    ColumnFunction = new ColumnFunctionMetadataModel(nullInjector, Payload);
   });
 
   test('factory has identifierField defined', function (assert) {
