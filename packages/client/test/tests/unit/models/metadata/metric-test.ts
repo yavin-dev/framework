@@ -1,27 +1,91 @@
 import { module, test } from 'qunit';
-import { setupTest } from 'ember-qunit';
-import Pretender, { Server } from 'pretender';
-import { TestContext } from 'ember-test-helpers';
-//@ts-ignore
-import metadataRoutes from 'navi-data/test-support/helpers/metadata-routes';
 import MetricMetadataModel, { MetricMetadataPayload } from '@yavin/client/models/metadata/metric';
-import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import { nullInjector } from '../../../helpers/injector';
+import ColumnFunctionMetadataModel from '@yavin/client/models/metadata/column-function';
+import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
+import { DataType } from '@yavin/client/models/metadata/function-parameter';
+import type MetadataServiceInterface from '@yavin/client/services/interfaces/metadata';
+import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
+import type { Injector } from '@yavin/client/models/native-with-create';
 
-let MetadataService: NaviMetadataService,
+type RecordsById<Registry> = Partial<{
+  [P in keyof Registry]: Record<string, Registry[P]>;
+}>;
+class MockMetadataService implements Partial<MetadataServiceInterface> {
+  mocks: RecordsById<MetadataModelRegistry> = {
+    columnFunction: {
+      aggregationTrend: new ColumnFunctionMetadataModel(nullInjector, {
+        id: 'aggregationTrend',
+        name: 'Aggregation Trend',
+        description: 'Aggregation and Trend column function',
+        source: 'bardOne',
+        _parametersPayload: [
+          {
+            id: 'aggregation',
+            name: 'Aggregation',
+            source: 'bardOne',
+            valueType: DataType.TEXT,
+            valueSourceType: ValueSourceType.ENUM,
+            _localValues: [
+              { id: '7DayAvg', name: '7 Day Average' },
+              { id: '28DayAvg', name: '28 Day Average' },
+            ],
+            defaultValue: '7DayAvg',
+          },
+          {
+            id: 'trend',
+            name: 'Trend',
+            source: 'bardOne',
+            valueType: DataType.TEXT,
+            valueSourceType: ValueSourceType.ENUM,
+            _localValues: [
+              { id: 'DO_D', name: 'Day over Day' },
+              { id: 'WO_W', name: 'Week over Week' },
+            ],
+            defaultValue: 'DO_D',
+          },
+        ],
+      }),
+      moneyMetric: new ColumnFunctionMetadataModel(nullInjector, {
+        id: 'moneyMetric',
+        name: 'Money Metric',
+        description: 'Money column function',
+        source: 'bardOne',
+        _parametersPayload: [
+          {
+            id: 'currency',
+            name: 'Currency',
+            source: 'bardOne',
+            valueType: DataType.TEXT,
+            valueSourceType: ValueSourceType.ENUM,
+            _localValues: [
+              { id: 'USD', name: 'Dollars' },
+              { id: 'EUR', name: 'Euros' },
+            ],
+            defaultValue: 'USD',
+          },
+        ],
+      }),
+    },
+  };
+  getById<K extends keyof MetadataModelRegistry>(
+    type: K,
+    id: string,
+    _dataSourceName: string
+  ): MetadataModelRegistry[K] | undefined {
+    return this.mocks[type]?.[id];
+  }
+}
+
+let MetadataService: MockMetadataService,
+  MockInjector: Injector,
   Payload: MetricMetadataPayload,
   Metric: MetricMetadataModel,
   MoneyMetric: MetricMetadataModel,
-  ClicksMetric: MetricMetadataModel,
-  server: Server;
+  ClicksMetric: MetricMetadataModel;
 
 module('Unit | Metadata Model | Metric', function (hooks) {
-  setupTest(hooks);
-
-  hooks.beforeEach(async function (this: TestContext) {
-    server = new Pretender(metadataRoutes);
-    MetadataService = this.owner.lookup('service:navi-metadata');
-    await MetadataService.loadMetadata();
-
+  hooks.beforeEach(async function () {
     Payload = {
       type: 'field',
       id: 'dayAvgPageViews',
@@ -31,8 +95,9 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       isSortable: true,
       source: 'bardOne',
     };
-
-    Metric = new MetricMetadataModel(this.owner.lookup('service:client-injector'), Payload);
+    MetadataService = new MockMetadataService();
+    MockInjector = { lookup: () => MetadataService };
+    Metric = new MetricMetadataModel(nullInjector, Payload);
     const moneyMetricPayload: MetricMetadataPayload = {
       id: 'metricOne',
       name: 'Metric One',
@@ -42,7 +107,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       isSortable: true,
       type: 'field',
     };
-    MoneyMetric = new MetricMetadataModel(this.owner.lookup('service:client-injector'), moneyMetricPayload);
+    MoneyMetric = new MetricMetadataModel(MockInjector, moneyMetricPayload);
     const clicksMetric: MetricMetadataPayload = {
       id: 'metricTwo',
       name: 'Metric Two',
@@ -52,11 +117,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       isSortable: true,
       type: 'field',
     };
-    ClicksMetric = new MetricMetadataModel(this.owner.lookup('service:client-injector'), clicksMetric);
-  });
-
-  hooks.afterEach(function () {
-    server.shutdown();
+    ClicksMetric = new MetricMetadataModel(MockInjector, clicksMetric);
   });
 
   test('factory has identifierField defined', function (assert) {
@@ -89,7 +150,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       isSortable: true,
       type: 'field',
     };
-    const metricOne = new MetricMetadataModel(this.owner.lookup('service:client-injector'), payload);
+    const metricOne = new MetricMetadataModel(MockInjector, payload);
 
     const columnFunction = metricOne.columnFunction;
     const expectedColumnFunc = MetadataService.getById('columnFunction', 'moneyMetric', 'bardOne');
@@ -121,7 +182,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
         isSortable: true,
         source: 'bardOne',
       },
-      metric = new MetricMetadataModel(this.owner.lookup('service:client-injector'), payload);
+      metric = new MetricMetadataModel(nullInjector, payload);
 
     assert.deepEqual(metric.parameters, [], 'parameters is an empty array when metric has no column function');
 
@@ -152,7 +213,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
         isSortable: true,
         source: 'bardOne',
       },
-      metric = new MetricMetadataModel(this.owner.lookup('service:client-injector'), payload);
+      metric = new MetricMetadataModel(nullInjector, payload);
 
     assert.strictEqual(
       metric.getDefaultParameters(),
@@ -170,14 +231,27 @@ module('Unit | Metadata Model | Metric', function (hooks) {
   test('extended property', async function (assert) {
     assert.expect(3);
     //@ts-expect-error
-    const metricOne = new MetricMetadataModel(this.owner.lookup('service:client-injector'), {
-      id: 'metricOne',
-      source: 'bardOne',
-    });
+    const extendedModel = new MetricMetadataModel(nullInjector, {});
+    const metricOne = new MetricMetadataModel(
+      {
+        lookup(type, name) {
+          assert.equal(type, 'service', 'service is looked up');
+          assert.equal(name, 'navi-metadata', 'metadata service is looked up');
+          return {
+            findById() {
+              return Promise.resolve(extendedModel);
+            },
+          };
+        },
+      },
+      //@ts-expect-error
+      {
+        id: 'metricOne',
+        source: 'bardOne',
+      }
+    );
 
     const result = await metricOne.extended;
-    assert.equal(result?.id, 'metricOne', 'extended attributes model has same id');
-    assert.equal(result?.category, 'category', 'extended attributes model has same id');
-    assert.equal(result?.name, 'Metric One', 'extended attributes model has same id');
+    assert.strictEqual(result, extendedModel);
   });
 });

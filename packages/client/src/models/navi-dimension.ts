@@ -12,7 +12,7 @@ interface NaviDimensionModelPayload {
   suggestions?: Readonly<Record<string, string>>;
 }
 
-export default class NaviDimensionModel extends NativeWithCreate implements NaviDimensionModel {
+export default class NaviDimensionModel extends NativeWithCreate {
   constructor(injector: Injector, args: NaviDimensionModelPayload) {
     super(injector, args);
   }
