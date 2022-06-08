@@ -226,7 +226,7 @@ module('Integration | Component | navi widget', function (hooks) {
     `);
 
     assert
-      .dom('.navi-widget__content--no-results')
+      .dom('.navi-widget__content.error-container')
       .hasText('No results available.', 'visualization will not render without data');
   });
 

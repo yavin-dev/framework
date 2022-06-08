@@ -84,7 +84,7 @@
   {{#if @taskInstance.isSuccessful}}
     {{#let @model.visualization.manifest.visualizationComponent as |VisualizationComponent|}}
       {{#if this.hasNoData}}
-        <div class="navi-widget__content--no-results">
+        <div class="navi-widget__content error-container">
           No results available.
         </div>
       {{else}}
