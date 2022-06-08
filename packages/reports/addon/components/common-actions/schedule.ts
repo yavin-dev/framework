@@ -81,6 +81,8 @@ export default class ScheduleActionComponent extends Component<Args> {
    */
   overwriteableFormats = ['gsheet'];
 
+  rootURL = config.rootURL;
+
   /**
    * Promise resolving to whether item is valid to be scheduled
    */
