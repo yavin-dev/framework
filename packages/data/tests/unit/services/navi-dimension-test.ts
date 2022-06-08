@@ -9,15 +9,14 @@ import config from 'ember-get-config';
 import EmberObject from '@ember/object';
 import DimensionMetadataModel, { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
-import type NaviDimensionAdapter from 'navi-data/adapters/dimensions/interface';
+import type NaviDimensionAdapter from '@yavin/client/adapters/dimensions/interface';
 import type { TestContext as Context } from 'ember-test-helpers';
-import type { DimensionFilter } from 'navi-data/adapters/dimensions/interface';
+import type { DimensionFilter, Options } from '@yavin/client/adapters/dimensions/interface';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
-import type { Options } from 'navi-data/adapters/dimensions/interface';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type { Server } from 'miragejs';
 import type { AsyncQueryResponse } from '@yavin/client/adapters/facts/interface';
-import type NaviDimensionSerializer from 'navi-data/serializers/dimensions/interface';
+import type NaviDimensionSerializer from '@yavin/client/serializers/dimensions/interface';
 import type { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 
 interface TestContext extends Context {

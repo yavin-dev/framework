@@ -10,10 +10,10 @@ import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import type ElideDimensionMetadataModel from '@yavin/client/models/metadata/elide/dimension';
 import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
-import type { Options } from 'navi-data/adapters/dimensions/interface';
+import type { Options } from '@yavin/client/adapters/dimensions/interface';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { getPaginationFromPageInfo } from '../facts/elide';
-import type NaviDimensionSerializer from './interface';
+import type NaviDimensionSerializer from '@yavin/client/serializers/dimensions/interface';
 
 export type ResponseEdge = {
   node: Record<string, string>;

@@ -5,7 +5,7 @@
 import EmberObject from '@ember/object';
 import { getOwner } from '@ember/application';
 import { FiliDimensionResponse, DefaultField } from 'navi-data/adapters/dimensions/bard';
-import type NaviDimensionSerializer from './interface';
+import type NaviDimensionSerializer from '@yavin/client/serializers/dimensions/interface';
 import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';

@@ -18,7 +18,7 @@ import BardTableMetadataModel, { BardTableMetadataPayload } from '@yavin/client/
 import RequestConstraintMetadataModel, {
   RequestConstraintMetadataPayload,
 } from '@yavin/client/models/metadata/request-constraint';
-import { EverythingMetadataPayload } from 'navi-data/serializers/metadata/base';
+import type { EverythingMetadataPayload } from '@yavin/client/serializers/metadata/interface';
 import { DataType } from '@yavin/client/models/metadata/function-parameter';
 import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
 

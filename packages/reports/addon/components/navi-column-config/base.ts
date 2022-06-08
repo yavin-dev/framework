@@ -7,7 +7,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { guidFor } from '@ember/object/internals';
-import { parseParameterValue } from 'navi-data/utils/metric';
+import { parseParameterValue } from '@yavin/client/utils/parameters';
 import type FunctionParameterMetadataModel from '@yavin/client/models/metadata/function-parameter';
 import type { ConfigColumn } from '../navi-column-config';
 import type { ParameterValue, SortDirection } from '@yavin/client/request';
