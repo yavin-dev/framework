@@ -129,11 +129,6 @@ module('Integration | Component | navi widget', function (hooks) {
           request: 'foo',
           response: {
             rows: [1, 2, 3],
-            meta: {
-              pagination: {
-                numberOfResults: 3,
-              },
-            },
           },
         },
       ]),
@@ -208,11 +203,6 @@ module('Integration | Component | navi widget', function (hooks) {
         request: 'foo',
         response: {
           rows: [],
-          meta: {
-            pagination: {
-              numberOfResults: 0,
-            },
-          },
         },
       },
     ]);
@@ -257,6 +247,7 @@ module('Integration | Component | navi widget', function (hooks) {
     const data = arr([
       {
         response: {
+          rows: [1, 2, 3],
           meta: {
             errors: [
               {
@@ -302,6 +293,7 @@ module('Integration | Component | navi widget', function (hooks) {
     const newData = arr([
       {
         response: {
+          rows: [1, 2, 3],
           meta: {},
         },
       },

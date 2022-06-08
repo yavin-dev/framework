@@ -97,7 +97,7 @@ export default class NaviWidget extends Component<NaviWidgetArgs> {
    * whether or not there is data to display
    */
   get hasNoData() {
-    return this.data?.firstObject?.response?.meta.pagination?.numberOfResults === 0;
+    return this.data?.firstObject?.response?.rows?.length === 0;
   }
 
   @action
