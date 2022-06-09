@@ -116,13 +116,13 @@ export function getExactMatchWeight(string: string, query: string): number | und
  * @param searchField - field in record to compare
  * @returns array of matching records
  */
-export function searchRecords(records: object[], query: string, searchField: string) {
+export function searchRecords<T, S extends keyof T>(records: ArrayLike<T>, query: string, searchField: S): T[] {
   const results = [];
   query = query.toLowerCase();
 
   for (let i = 0; i < records.length; i++) {
-    let record = records[i] as Record<string, string>;
-    const relevance = getStrictPartialMatchWeight(record[searchField].toLowerCase(), query);
+    let record = records[i];
+    const relevance = getStrictPartialMatchWeight(`${record[searchField]}`.toLowerCase(), query);
 
     if (relevance) {
       results.push({ relevance, record });
