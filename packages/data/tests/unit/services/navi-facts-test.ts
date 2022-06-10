@@ -209,7 +209,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
         507,
         { 'Content-Type': 'application/json' },
         JSON.stringify({
-          description: 'Result set too large.  Try reducing interval or dimensions.',
+          description: 'Result set too large. Try reducing interval or dimensions.',
         }),
       ];
     });
