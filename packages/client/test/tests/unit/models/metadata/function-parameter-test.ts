@@ -60,28 +60,26 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
 
   test('ValueSourceType=table values', async function (assert) {
     const mockDimMeta = {};
-    const mockDimensionService: DimensionService = {
-      all: {
-        perform: (dimensionColumn: DimensionColumn) => {
-          assert.strictEqual(dimensionColumn.columnMetadata, mockDimMeta, 'mock dimension meta is passed in');
-          return Promise.resolve(
-            new NaviDimensionResponse(nullInjector, {
-              values: [
-                new NaviDimensionModel(nullInjector, { dimensionColumn, value: 1, suggestions: { desc: 'ABC' } }),
-                new NaviDimensionModel(nullInjector, { dimensionColumn, value: 2, suggestions: { desc: 'DEF' } }),
-                new NaviDimensionModel(nullInjector, { dimensionColumn, value: 3, suggestions: { desc: 'GHI' } }),
-              ],
-            })
-          );
-        },
+    const mockDimensionService = {
+      all: (dimensionColumn: DimensionColumn) => {
+        assert.strictEqual(dimensionColumn.columnMetadata, mockDimMeta, 'mock dimension meta is passed in');
+        return Promise.resolve(
+          new NaviDimensionResponse(nullInjector, {
+            values: [
+              new NaviDimensionModel(nullInjector, { dimensionColumn, value: 1, suggestions: { desc: 'ABC' } }),
+              new NaviDimensionModel(nullInjector, { dimensionColumn, value: 2, suggestions: { desc: 'DEF' } }),
+              new NaviDimensionModel(nullInjector, { dimensionColumn, value: 3, suggestions: { desc: 'GHI' } }),
+            ],
+          })
+        );
       },
-    };
+    } as DimensionService;
     const mockMetadataService: Partial<MetadataService> = {
       findById<K extends keyof MetadataModelRegistry>(
         _type: K,
         id: string,
         _dataSourceName: string
-      ): PromiseLike<MetadataModelRegistry[K] | undefined> {
+      ): Promise<MetadataModelRegistry[K] | undefined> {
         assert.strictEqual(id, 'alphabet', 'dimension is looked up');
         //@ts-expect-error
         return Promise.resolve(mockDimMeta);

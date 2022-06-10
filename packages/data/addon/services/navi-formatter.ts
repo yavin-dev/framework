@@ -24,7 +24,7 @@ export default class NaviFormatterService extends Service implements FormatterSe
       return alias;
     }
 
-    const lookups: Record<string, PromiseLike<PotentialParameterValue[]>> = {};
+    const lookups: Record<string, Promise<PotentialParameterValue[]>> = {};
     columnMetadata?.parameters?.forEach((e) => (lookups[e.id] = e.values));
     const parameterValueLookups = await hash(lookups);
 

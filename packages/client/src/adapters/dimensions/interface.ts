@@ -23,7 +23,7 @@ export default interface NaviDimensionAdapter {
    * @param dimension - requested dimension
    * @param options - adapter options
    */
-  all(dimension: DimensionColumn, options?: Options): PromiseLike<unknown>;
+  all(dimension: DimensionColumn, options?: Options): Promise<unknown>;
 
   /**
    * Get dimension value for a filter predicate
@@ -31,7 +31,7 @@ export default interface NaviDimensionAdapter {
    * @param predicate - filter criteria
    * @param options - adapter options
    */
-  find(dimension: DimensionColumn, predicate: DimensionFilter[], options?: Options): PromiseLike<unknown>;
+  find(dimension: DimensionColumn, predicate: DimensionFilter[], options?: Options): Promise<unknown>;
 
   /**
    * Get dimension values for a search string
@@ -39,5 +39,5 @@ export default interface NaviDimensionAdapter {
    * @param query - query string
    * @param options - adapter options
    */
-  search(dimension: DimensionColumn, query: string, options?: Options): PromiseLike<unknown>;
+  search(dimension: DimensionColumn, query: string, options?: Options): Promise<unknown>;
 }

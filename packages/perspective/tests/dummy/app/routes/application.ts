@@ -1,6 +1,5 @@
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { taskFor } from 'ember-concurrency-ts';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type StoreService from '@ember-data/store';
@@ -60,7 +59,7 @@ export default class Application extends Route {
   async model() {
     const { request, naviMetadata, naviFacts } = this;
     await naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
-    const { response } = await taskFor(naviFacts.fetch).perform(this.request);
+    const { response } = await naviFacts.fetch(this.request);
     return { request, response };
   }
 }

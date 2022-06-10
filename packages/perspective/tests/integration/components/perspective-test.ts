@@ -6,7 +6,6 @@ import { YavinVisualizationArgs } from 'navi-core/visualization/component';
 import { PerspectiveSettings } from '@yavin/perspective/manifest';
 //@ts-ignore
 import { buildTestRequest } from 'navi-core/test-support/request';
-import { taskFor } from 'ember-concurrency-ts';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { timeout } from 'ember-concurrency';
@@ -51,7 +50,7 @@ module('Integration | Component | perspective', function (hooks) {
       { start: '2016-05-30 00:00:00.000', end: '2016-06-02 00:00:00.000' },
       'day'
     );
-    const model = await taskFor(this.factService.fetch).perform(this.request);
+    const model = await this.factService.fetch(this.request);
     this.onUpdateSettings = () => null;
     this.response = model.response;
   });
@@ -176,7 +175,7 @@ module('Integration | Component | perspective', function (hooks) {
 
     const fetchWithGrain = async (grain: Grain) => {
       this.request.timeGrainColumn!.parameters.grain = grain;
-      const model = await taskFor(this.factService.fetch).perform(this.request);
+      const model = await this.factService.fetch(this.request);
       this.set('reponse', model.response);
       await clearRender();
 

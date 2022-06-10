@@ -61,7 +61,7 @@ export default class ReportActionExport extends Component<Args> {
     const serializedRequest = this.args.model.request.serialize() as RequestV2;
 
     try {
-      let url: string = yield taskFor(this.facts.getDownloadURL).perform(serializedRequest, {
+      let url: string = yield this.facts.getDownloadURL(serializedRequest, {
         format: 'csv',
         dataSourceName: serializedRequest.dataSource,
         fileName: `${this.filename}.csv`,

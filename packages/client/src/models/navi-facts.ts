@@ -30,13 +30,13 @@ export default class NaviFacts extends NativeWithCreate {
    * @returns Promise with the response model object for previous page or null when trying to access pages less than the first page
    */
   previous(): Promise<NaviFacts | null> {
-    return this.factService.fetchPrevious.perform(this.response, this.request);
+    return this.factService.fetchPrevious(this.response, this.request);
   }
 
   /**
    * @returns Promise with the response model object for next page or null when trying to go past last page
    */
   next(): Promise<NaviFacts | null> {
-    return this.factService.fetchNext.perform(this.response, this.request);
+    return this.factService.fetchNext(this.response, this.request);
   }
 }

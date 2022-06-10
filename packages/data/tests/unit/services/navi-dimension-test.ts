@@ -4,7 +4,6 @@ import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import GraphQLScenario from 'navi-data/mirage/scenarios/elide-one';
-import { taskFor } from 'ember-concurrency-ts';
 import config from 'ember-get-config';
 import EmberObject from '@ember/object';
 import DimensionMetadataModel, { DimensionColumn } from '@yavin/client/models/metadata/dimension';
@@ -62,7 +61,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
           suggestions: {},
         })
     );
-    const all = await taskFor(service.all).perform({ columnMetadata });
+    const all = await service.all({ columnMetadata });
 
     assert.deepEqual(all.values, expectedDimensionModels, '`all` gets all the unfiltered values for a dimension');
   });
@@ -136,7 +135,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       }
     };
     call = 0;
-    await taskFor(service.all).perform({ columnMetadata });
+    await service.all({ columnMetadata });
     assert.strictEqual(call, 6, 'It took 3 calls to adapter/serializer to page through all the data');
 
     adapterCallback = (call, options) => {
@@ -155,7 +154,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       }
     };
     call = 0;
-    await taskFor(service.all).perform({ columnMetadata });
+    await service.all({ columnMetadata });
     assert.strictEqual(
       call,
       2,
@@ -183,7 +182,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       }
     };
     call = 0;
-    await taskFor(service.all).perform({ columnMetadata }, { perPage: 4, page: 1 });
+    await service.all({ columnMetadata }, { perPage: 4, page: 1 });
     assert.strictEqual(call, 4, 'It took 2 calls to adapter/serializer to page through all the data');
 
     config.navi.dataSources = originalDataSources;
@@ -196,7 +195,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       'table0.dimension0',
       'elideOne'
     ) as DimensionMetadataModel;
-    const all = await taskFor(service.all).perform({ columnMetadata });
+    const all = await service.all({ columnMetadata });
 
     assert.strictEqual(all.values.length, 4, 'There are 4 results');
     assert.strictEqual(
@@ -207,7 +206,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
     );
     this.server.db.elideAsyncQueries.remove();
 
-    const allPageBy1 = await taskFor(service.all).perform({ columnMetadata }, { perPage: 1 });
+    const allPageBy1 = await service.all({ columnMetadata }, { perPage: 1 });
     assert.strictEqual(
       //@ts-expect-error -- the type does not expect a length property
       this.server.db.elideAsyncQueries.length,
@@ -228,7 +227,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
         dataRequestsCount++;
       }
     };
-    const all = await taskFor(service.all).perform({ columnMetadata });
+    const all = await service.all({ columnMetadata });
 
     assert.strictEqual(all.values.length, 13, 'There are 13 results');
     assert.strictEqual(dataRequestsCount, 1, 'Only one dimension request is created because response fits in one page');
@@ -236,7 +235,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
     service.clearCache();
 
     dataRequestsCount = 0;
-    const allPageBy2 = await taskFor(service.all).perform({ columnMetadata }, { perPage: 1, page: 1 });
+    const allPageBy2 = await service.all({ columnMetadata }, { perPage: 1, page: 1 });
     assert.strictEqual(allPageBy2.values.length, 13, 'There are 13 results');
     assert.strictEqual(
       dataRequestsCount,
@@ -266,7 +265,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
           suggestions: {},
         })
     );
-    const all = await taskFor(service.all).perform({ columnMetadata });
+    const all = await service.all({ columnMetadata });
 
     assert.deepEqual(
       all.values,
@@ -292,7 +291,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
           suggestions: {},
         })
     );
-    const find = await taskFor(service.find).perform({ columnMetadata }, filters);
+    const find = await service.find({ columnMetadata }, filters);
     assert.deepEqual(
       find.values,
       expectedDimensionModels,
@@ -309,7 +308,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       'table0.dimension0',
       'elideOne'
     ) as DimensionMetadataModel;
-    const search = await taskFor(service.search).perform({ columnMetadata }, 'plastic');
+    const search = await service.search({ columnMetadata }, 'plastic');
     const expectedDimensionModels = ['Awesome Plastic Fish', 'Licensed Plastic Pants'].map(
       (dimVal) =>
         new NaviDimensionModel(this.owner.lookup('service:client-injector'), {
@@ -324,7 +323,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
       '`search` gets all the values for a dimension that contain the query case insensitively'
     );
 
-    const noResultSearch = await taskFor(service.search).perform({ columnMetadata }, 'fuggedaboutit');
+    const noResultSearch = await service.search({ columnMetadata }, 'fuggedaboutit');
     assert.deepEqual(noResultSearch.values, [], 'Empty array is returned when no values are found');
   });
 
@@ -339,9 +338,9 @@ module('Unit | Service | navi-dimension', function (hooks) {
     async function runServiceTask(dimensionID: string, searchParams?: string) {
       const columnMetadata = metadataService.getById('dimension', dimensionID, 'bardOne') as DimensionMetadataModel;
       if (searchParams) {
-        return await taskFor(service.search).perform({ columnMetadata }, searchParams);
+        return await service.search({ columnMetadata }, searchParams);
       }
-      return await taskFor(service.all).perform({ columnMetadata });
+      return await service.all({ columnMetadata });
     }
 
     // mock endpoint and keep track of number of calls to it

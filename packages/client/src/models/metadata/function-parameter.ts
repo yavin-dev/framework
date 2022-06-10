@@ -81,7 +81,7 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
   /**
    * promise that resolves to an array of values used for function parameters with an enum type
    */
-  get values(): PromiseLike<PotentialParameterValue[]> {
+  get values(): Promise<PotentialParameterValue[]> {
     if (this.valueSourceType === 'ENUM') {
       const { _localValues: values } = this;
       invariant(
@@ -97,7 +97,7 @@ export default class FunctionParameterMetadataModel extends NativeWithCreate {
         .then((columnMetadata) => {
           invariant(columnMetadata, `The dimension metadata for '${this.tableSource?.valueSource}' should exist`);
           const dimension: DimensionColumn = { columnMetadata, parameters: {} };
-          return this.dimensionService.all.perform(dimension);
+          return this.dimensionService.all(dimension);
         })
         .then((v: NaviDimensionResponse) =>
           v.values.map((d) => {

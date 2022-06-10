@@ -164,8 +164,8 @@ export default class DashboardDataService extends Service {
   /**
    * Performs a fetch of the given request
    */
-  protected fetch(request: RequestV2, options: RequestOptions): TaskInstance<NaviFactsModel> {
-    return taskFor(this.naviFacts.fetch).perform(request, options);
+  protected fetch(request: RequestV2, options: RequestOptions): Promise<NaviFactsModel> {
+    return this.naviFacts.fetch(request, options);
   }
 
   /**

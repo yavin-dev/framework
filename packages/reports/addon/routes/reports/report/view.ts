@@ -8,7 +8,6 @@ import { inject as service } from '@ember/service';
 import { merge } from 'lodash-es';
 import { isForbiddenError } from 'ember-ajax/errors';
 import { reject } from 'rsvp';
-import { taskFor } from 'ember-concurrency-ts';
 import { assert } from '@ember/debug';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
@@ -63,8 +62,8 @@ export default class ReportsReportViewRoute extends Route {
     });
 
     // Wrap the response in a promise object so we can manually handle loading spinners
-    return taskFor(this.facts.fetch)
-      .perform(serializedRequest, requestOptions)
+    return this.facts
+      .fetch(serializedRequest, requestOptions)
       .then(async (response) => {
         this._setValidVisualizationType(request, report);
         await this._setValidVisualizationConfig(request, report, response.response);

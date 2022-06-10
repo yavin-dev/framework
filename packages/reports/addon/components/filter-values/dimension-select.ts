@@ -11,7 +11,6 @@ import { task, TaskGenerator, timeout } from 'ember-concurrency';
 import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import { sortBy } from 'lodash-es';
-import { taskFor } from 'ember-concurrency-ts';
 import { A } from '@ember/array';
 import type NaviDimensionService from 'navi-data/services/navi-dimension';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
@@ -123,8 +122,8 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
   fetchDimensionOptions(): void {
     const { dimensionColumn } = this;
     if (this.isSmallCardinality) {
-      this.dimensionValues = taskFor(this.naviDimension.all)
-        .perform(dimensionColumn)
+      this.dimensionValues = this.naviDimension
+        .all(dimensionColumn)
         .then((r) => r.values.map((value) => new DimModelWrapper(value, { manualInputEntry: false })))
         .then((dimensions) => {
           if (isNumericDimensionArray(dimensions)) {
@@ -150,10 +149,7 @@ export default class DimensionSelectComponent extends Component<DimensionSelectC
     }
 
     yield timeout(this.isSmallCardinality ? SEARCH_DEBOUNCE_OFFLINE_MS : SEARCH_DEBOUNCE_MS);
-    const dimensionResponse: NaviDimensionResponse = yield taskFor(this.naviDimension.search).perform(
-      this.dimensionColumn,
-      searchTerm
-    );
+    const dimensionResponse: NaviDimensionResponse = yield this.naviDimension.search(this.dimensionColumn, searchTerm);
 
     const dimensionResponseModel = dimensionResponse.values.map(
       (values) => new DimModelWrapper(values, { manualInputEntry: false })

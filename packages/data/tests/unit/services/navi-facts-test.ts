@@ -10,7 +10,7 @@ import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import NaviAdapterError from '@yavin/client/errors/navi-adapter-error';
 import { task, TaskGenerator } from 'ember-concurrency';
-import { taskFor } from 'ember-concurrency-ts';
+import type NaviFacts from '@yavin/client/models/navi-facts';
 
 let Server: PretenderServer;
 
@@ -79,11 +79,10 @@ const Response: ResponseV1 = {
 const HOST = config.navi.dataSources[0].uri;
 
 function assertRequest(context: TestContext, callback: (request: RequestV2, options?: RequestOptions) => void) {
-  const originalNaviFacts = context.owner.factoryFor('service:navi-facts').class;
-  class TestService extends originalNaviFacts {
-    @task *fetch(request: RequestV2, options?: RequestOptions): TaskGenerator<unknown> {
+  class TestService extends NaviFactsService {
+    @task *fetchTask(request: RequestV2, options?: RequestOptions): TaskGenerator<NaviFacts> {
       callback(request, options);
-      return yield {};
+      return yield;
     }
   }
   context.owner.unregister('service:navi-facts');
@@ -151,7 +150,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
 
   test('fetch', async function (assert) {
     const service: NaviFactsService = this.owner.lookup('service:navi-facts');
-    const model = await taskFor(service.fetch).perform(TestRequest);
+    const model = await service.fetch(TestRequest);
     const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
@@ -183,7 +182,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
 
   test('fetch with pagination', async function (assert) {
     const service: NaviFactsService = this.owner.lookup('service:navi-facts');
-    const model = await taskFor(service.fetch).perform(TestRequest, { page: 2, perPage: 10 });
+    const model = await service.fetch(TestRequest, { page: 2, perPage: 10 });
     const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
@@ -210,44 +209,38 @@ module('Unit | Service | Navi Facts', function (hooks) {
         507,
         { 'Content-Type': 'application/json' },
         JSON.stringify({
-          description: 'Result set too large.  Try reducing interval or dimensions.',
+          description: 'Result set too large. Try reducing interval or dimensions.',
         }),
       ];
     });
 
-    await taskFor(service.fetch)
-      .perform(TestRequest)
-      .catch((response: NaviAdapterError) => {
-        assert.ok(true, 'A request error falls into the promise catch block');
-        assert.equal(
-          response.details[0],
-          'Result set too large.  Try reducing interval or dimensions.',
-          'error is passed to catch block'
-        );
-      });
+    await service.fetch(TestRequest).catch((response: NaviAdapterError) => {
+      assert.ok(true, 'A request error falls into the promise catch block');
+      assert.equal(
+        response.details[0],
+        'Result set too large. Try reducing interval or dimensions.',
+        'error is passed to catch block'
+      );
+    });
 
     // Return an error string
     Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, () => {
       return [500, { 'Content-Type': 'text/plain' }, 'Server Error'];
     });
 
-    await taskFor(service.fetch)
-      .perform(TestRequest)
-      .catch((response: NaviAdapterError) => {
-        assert.ok(true, 'A request error falls into the promise catch block');
-        assert.equal(response.details[0], 'Server Error', 'String error extracted');
-      });
+    await service.fetch(TestRequest).catch((response: NaviAdapterError) => {
+      assert.ok(true, 'A request error falls into the promise catch block');
+      assert.equal(response.details[0], 'Server Error', 'String error extracted');
+    });
 
-    await taskFor(service.fetch)
-      .perform({ ...TestRequest, filters: [] })
-      .catch((response: NaviAdapterError) => {
-        assert.ok(true, 'A request error falls into the promise catch block');
-        assert.equal(
-          response.details[0],
-          `Exactly one 'table1.dateTime' filter is required, you have 0`,
-          'Adapter error is shown'
-        );
-      });
+    await service.fetch({ ...TestRequest, filters: [] }).catch((response: NaviAdapterError) => {
+      assert.ok(true, 'A request error falls into the promise catch block');
+      assert.equal(
+        response.details[0],
+        `Exactly one 'table1.dateTime' filter is required, you have 0`,
+        'Adapter error is shown'
+      );
+    });
   });
 
   test('fetchNext', async function (assert) {
@@ -270,12 +263,12 @@ module('Unit | Service | Navi Facts', function (hooks) {
     });
     const request = {} as RequestV2;
 
-    await taskFor(service.fetchNext).perform(response, request);
+    await service.fetchNext(response, request);
 
     //@ts-ignore
     response.meta.pagination.currentPage = 3;
     assert.equal(
-      await taskFor(service.fetchNext).perform(response, request),
+      await service.fetchNext(response, request),
       null,
       'fetchNext returns null when the last page is reached'
     );
@@ -301,12 +294,12 @@ module('Unit | Service | Navi Facts', function (hooks) {
     });
     const request = {} as RequestV2;
 
-    await taskFor(service.fetchPrevious).perform(response, request);
+    await service.fetchPrevious(response, request);
 
     //@ts-ignore
     response.meta.pagination.currentPage = 1;
     assert.equal(
-      await taskFor(service.fetchPrevious).perform(response, request),
+      await service.fetchPrevious(response, request),
       null,
       'fetchPrevious returns null when the first page is reached'
     );

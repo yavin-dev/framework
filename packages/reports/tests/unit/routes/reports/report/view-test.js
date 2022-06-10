@@ -1,9 +1,7 @@
 import EmberObject from '@ember/object';
 import { run } from '@ember/runloop';
-import { resolve } from 'rsvp';
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import { task } from 'ember-concurrency';
 
 module('Unit | Route | reports/report/view', function (hooks) {
   setupTest(hooks);
@@ -47,7 +45,7 @@ module('Unit | Route | reports/report/view', function (hooks) {
       };
 
     class MockFacts extends EmberObject {
-      @task *fetch(request, options) {
+      fetch(request, options) {
         assert.deepEqual(request, serializedRequest, "Report's serialized request is given to fact service");
 
         assert.deepEqual(
@@ -64,7 +62,7 @@ module('Unit | Route | reports/report/view', function (hooks) {
           'Options from route are passed to fact service'
         );
 
-        return yield resolve({ request: serializedRequest, response: factServiceResponse });
+        return Promise.resolve({ request: serializedRequest, response: factServiceResponse });
       }
     }
 
