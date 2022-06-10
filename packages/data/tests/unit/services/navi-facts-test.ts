@@ -218,7 +218,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
       assert.ok(true, 'A request error falls into the promise catch block');
       assert.equal(
         response.details[0],
-        'Result set too large.  Try reducing interval or dimensions.',
+        'Result set too large. Try reducing interval or dimensions.',
         'error is passed to catch block'
       );
     });
