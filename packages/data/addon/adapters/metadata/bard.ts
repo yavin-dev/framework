@@ -7,10 +7,10 @@ import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import { camelize } from '@ember/string';
 import { pluralize } from 'ember-inflector';
-import { configHost } from '../../utils/adapter';
 import type NaviMetadataAdapter from '@yavin/client/adapters/metadata/interface';
 import type { MetadataOptions } from '@yavin/client/adapters/metadata/interface';
 import { MetadataModelTypes } from 'navi-data/services/navi-metadata';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 export default class BardMetadataAdapter extends EmberObject implements NaviMetadataAdapter {
   /**
@@ -20,6 +20,9 @@ export default class BardMetadataAdapter extends EmberObject implements NaviMeta
 
   @service
   private ajax!: TODO;
+
+  @service
+  declare yavinClient: YavinClientService;
 
   private typeTransform: Record<string, string> = {
     columnFunction: 'metricFunction',
@@ -42,7 +45,7 @@ export default class BardMetadataAdapter extends EmberObject implements NaviMeta
    * @return URL Path
    */
   private buildURLPath(type: MetadataModelTypes, id: string, options: MetadataOptions): string {
-    const host = configHost(options);
+    const host = this.yavinClient.clientConfig.configHost(options);
     const { namespace } = this;
     const bardType = this.getBardType(type);
     return `${host}/${namespace}/${camelize(pluralize(bardType))}/${id}`;

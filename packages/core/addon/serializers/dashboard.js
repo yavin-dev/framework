@@ -4,10 +4,10 @@
  */
 
 import AssetSerializer from 'navi-core/serializers/asset';
-import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
+import { inject as service } from '@ember/service';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
 
-function v1ToV2Filter(filter) {
+function v1ToV2Filter(filter, defaultDataSource) {
   let source;
   let dimension;
   const dotOccurences = (filter.dimension.match(/\./g) ?? []).length;
@@ -22,7 +22,7 @@ function v1ToV2Filter(filter) {
     source = split.slice(0, dotOccurences > 2 ? 2 : 1).join('.');
     dimension = split.slice(dotOccurences > 1 ? -2 : -1).join('.');
   } else {
-    source = getDefaultDataSourceName();
+    source = defaultDataSource;
     dimension = filter.dimension;
   }
 
@@ -48,6 +48,8 @@ function v1ToV2Filter(filter) {
 }
 
 export default AssetSerializer.extend({
+  yavinClient: service(),
+
   /**
    * @method normalize
    * @override
@@ -61,8 +63,11 @@ export default AssetSerializer.extend({
         newPayload.attributes.filters = [];
       }
 
+      const defaultDataSource = this.yavinClient.clientConfig.getDefaultDataSource().name;
       // TODO: We always convert since we only persist v1 filters
-      newPayload.attributes.filters = newPayload.attributes.filters.map((filter) => v1ToV2Filter(filter));
+      newPayload.attributes.filters = newPayload.attributes.filters.map((filter) =>
+        v1ToV2Filter(filter, defaultDataSource)
+      );
 
       return this._super(type, newPayload);
     }

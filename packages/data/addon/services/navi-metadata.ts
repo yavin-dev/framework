@@ -3,9 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
+import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
-import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 import NaviMetadataSerializer, {
   EverythingMetadataPayload,
   MetadataModelMap,
@@ -13,13 +13,17 @@ import NaviMetadataSerializer, {
 import Keg from '@yavin/client/utils/classes/keg';
 import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 import type NaviMetadataAdapter from '@yavin/client/adapters/metadata/interface';
-import type { NaviDataSource } from 'navi-config';
+import type { DataSourceConfig } from '@yavin/client/config/datasources';
 import type { RequestOptions } from '@yavin/client/adapters/facts/interface';
 import type MetadataService from '@yavin/client/services/interfaces/metadata';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 export type MetadataModelTypes = keyof MetadataModelRegistry;
 
 export default class NaviMetadataService extends Service implements MetadataService {
+  @service
+  declare yavinClient: YavinClientService;
+
   /**
    * TODO: define keg registry types to remove casting in this class
    */
@@ -48,8 +52,9 @@ export default class NaviMetadataService extends Service implements MetadataServ
     return getOwner(this).lookup(`serializer:metadata/${dataSourceType}`);
   }
 
-  private dataSourceFor(dataSourceName?: string): NaviDataSource {
-    return dataSourceName ? getDataSource(dataSourceName) : getDefaultDataSource();
+  private dataSourceFor(dataSourceName?: string): DataSourceConfig {
+    const { clientConfig } = this.yavinClient;
+    return dataSourceName ? clientConfig.getDataSource(dataSourceName) : clientConfig.getDefaultDataSource();
   }
 
   /**
@@ -81,7 +86,7 @@ export default class NaviMetadataService extends Service implements MetadataServ
     }) as Array<MetadataModelRegistry[K]>;
   }
 
-  private async loadAndProcessMetadata(dataSource: NaviDataSource, options: RequestOptions): Promise<void> {
+  private async loadAndProcessMetadata(dataSource: DataSourceConfig, options: RequestOptions): Promise<void> {
     const { type: dataSourceType, name: dataSourceName } = dataSource;
     const payload = await this.adapterFor(dataSourceType).fetchEverything(options);
     const normalized = this.serializerFor(dataSourceType).normalize('everything', payload, dataSourceName);

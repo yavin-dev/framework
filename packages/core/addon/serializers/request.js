@@ -5,7 +5,6 @@
 import JSONSerializer from '@ember-data/serializer/json';
 import { inject as service } from '@ember/service';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
-import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { assert } from '@ember/debug';
 
 export default class RequestSerializer extends JSONSerializer {
@@ -21,7 +20,7 @@ export default class RequestSerializer extends JSONSerializer {
    */
   getTableNamespace(tableId) {
     const tableModel = this.naviMetadata.all('table').find(({ id }) => id === tableId);
-    return tableModel ? tableModel.source : getDefaultDataSourceName();
+    return tableModel.source;
   }
 
   /**

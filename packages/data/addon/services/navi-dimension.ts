@@ -5,7 +5,7 @@
 import Service from '@ember/service';
 import { task } from 'ember-concurrency';
 import { setOwner, getOwner } from '@ember/application';
-import { getDataSource } from 'navi-data/utils/adapter';
+import { inject as service } from '@ember/service';
 import type { TaskGenerator } from 'ember-concurrency';
 import type NaviDimensionSerializer from '@yavin/client/serializers/dimensions/interface';
 import type NaviDimensionAdapter from '@yavin/client/adapters/dimensions/interface';
@@ -17,12 +17,10 @@ import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import Cache from '@yavin/client/utils/classes/cache';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { searchDimensionModelRecords } from '@yavin/client/utils/search';
-import config from 'ember-get-config';
 import type { Options as ServiceOptions } from '@yavin/client/adapters/dimensions/interface';
 import type DimensionService from '@yavin/client/services/interfaces/dimension';
 import { taskFor } from 'ember-concurrency-ts';
-
-const DIMENSION_CACHE = config.navi.dimensionCache;
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 type RequestType = 'all' | 'search' | 'find';
 
@@ -32,8 +30,8 @@ type RequestType = 'all' | 'search' | 'find';
  * dimension cache, however, is "give me query X and I'll format result Y from what I have"
  */
 class DimensionCache extends Cache<NaviDimensionResponse> {
-  constructor() {
-    super(DIMENSION_CACHE.maxSize, DIMENSION_CACHE.timeoutMs);
+  constructor(maxSize: number, timeoutMs: number) {
+    super(maxSize, timeoutMs);
   }
 
   // given a dimension column, return that column's cache key
@@ -90,10 +88,15 @@ export default class NaviDimensionService extends Service implements DimensionSe
   /**
    * @property {DimensionCache} _dimensionCache - local cache for dimensions
    */
-  private _dimensionCache = new DimensionCache();
+  private _dimensionCache;
+
+  @service
+  declare yavinClient: YavinClientService;
 
   constructor() {
     super(...arguments);
+    const { maxSize, timeoutMs } = this.yavinClient.clientConfig.dimensionCache;
+    this._dimensionCache = new DimensionCache(maxSize, timeoutMs);
     setOwner(this._dimensionCache, getOwner(this));
   }
 
@@ -145,7 +148,7 @@ export default class NaviDimensionService extends Service implements DimensionSe
       return cacheResponse;
     }
 
-    const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
+    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
     const serializer = this.serializerFor(dataSourceType);
     let moreResults = true;
@@ -192,7 +195,7 @@ export default class NaviDimensionService extends Service implements DimensionSe
     predicate: DimensionFilter[],
     options: ServiceOptions = {}
   ): TaskGenerator<NaviDimensionResponse> {
-    const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
+    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
     const payload: unknown = yield adapter.find(dimension, predicate, options);
     return this.serializerFor(dataSourceType).normalize(dimension, payload, options);
@@ -221,7 +224,7 @@ export default class NaviDimensionService extends Service implements DimensionSe
       return this._dimensionCache.getSearchFromAll(allResponse, query);
     }
 
-    const { type: dataSourceType } = getDataSource(dimension.columnMetadata.source);
+    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(dimension.columnMetadata.source);
     const adapter = this.adapterFor(dataSourceType);
     const payload: unknown = yield adapter.search(dimension, query, options);
     const results = this.serializerFor(dataSourceType).normalize(dimension, payload, options);

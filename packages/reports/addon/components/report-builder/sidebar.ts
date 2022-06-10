@@ -9,8 +9,6 @@ import { assert } from '@ember/debug';
 import { next } from '@ember/runloop';
 import { inject as service } from '@ember/service';
 import { sortBy } from 'lodash-es';
-import config from 'ember-get-config';
-import { getDataSource } from 'navi-data/utils/adapter';
 import { easeOut, easeIn } from 'ember-animated/easings/cosine';
 //@ts-ignore
 import { toLeft, toRight } from 'navi-reports/transitions/custom-move-over';
@@ -19,13 +17,14 @@ import move from 'ember-animated/motions/move';
 import { task, all } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskInstance, TaskGenerator } from 'ember-concurrency';
-import type { NaviDataSource } from 'navi-config';
+import type { DataSourceConfig } from '@yavin/client/config/datasources';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type TableMetadataModel from '@yavin/client/models/metadata/table';
 import type ReportModel from 'navi-core/models/report';
 import type ColumnFragment from 'navi-core/models/request/column';
 import type { SourceItem } from './source-selector';
 import type { OrphanObserver } from 'ember-animated/services/motion';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 export type TransitionContext = Parameters<Parameters<OrphanObserver>[1]>[0];
 
@@ -42,9 +41,9 @@ interface Args {
 
 type SelectingState = 'dataSource' | 'table' | 'columns';
 
-type SourcePath = [] | [SourceItem<NaviDataSource>] | [SourceItem<NaviDataSource>, SourceItem<TableMetadataModel>];
+type SourcePath = [] | [SourceItem<DataSourceConfig>] | [SourceItem<DataSourceConfig>, SourceItem<TableMetadataModel>];
 
-const mapDataSource = (dataSource: NaviDataSource): SourceItem<NaviDataSource> => ({
+const mapDataSource = (dataSource: DataSourceConfig): SourceItem<DataSourceConfig> => ({
   name: dataSource.displayName,
   description: dataSource.description,
   source: dataSource,
@@ -60,9 +59,12 @@ export default class ReportBuilderSidebar extends Component<Args> {
   @service('navi-metadata')
   declare metadataService: NaviMetadataService;
 
+  @service
+  declare yavinClient: YavinClientService;
+
   @tracked sourcePath: SourcePath = [];
 
-  @tracked dataSources: TaskInstance<SourceItem<NaviDataSource>[]>;
+  @tracked dataSources: TaskInstance<SourceItem<DataSourceConfig>[]>;
   @tracked tables?: TaskInstance<SourceItem<TableMetadataModel>[]>;
 
   constructor(owner: unknown, args: Args) {
@@ -71,12 +73,16 @@ export default class ReportBuilderSidebar extends Component<Args> {
     this.dataSources = taskFor(this.fetchDataSources).perform();
 
     if (tableMetadata) {
-      this.setSourcePath([mapDataSource(getDataSource(tableMetadata.source)), mapTable(tableMetadata)]);
+      this.setSourcePath([mapDataSource(this.getDataSource(tableMetadata.source)), mapTable(tableMetadata)]);
     } else if (dataSource) {
-      this.setSourcePath([mapDataSource(getDataSource(dataSource))]);
+      this.setSourcePath([mapDataSource(this.getDataSource(dataSource))]);
     } else {
       this.setupDefaultPath();
     }
+  }
+
+  protected getDataSource(dataSourceName: string) {
+    return this.yavinClient.clientConfig.getDataSource(dataSourceName);
   }
 
   protected async setupDefaultPath() {
@@ -99,9 +105,9 @@ export default class ReportBuilderSidebar extends Component<Args> {
     return this.args.report.request;
   }
 
-  get requestDataSource(): SourceItem<NaviDataSource> | undefined {
+  get requestDataSource(): SourceItem<DataSourceConfig> | undefined {
     const { dataSource } = this.request;
-    return dataSource ? mapDataSource(getDataSource(dataSource)) : undefined;
+    return dataSource ? mapDataSource(this.getDataSource(dataSource)) : undefined;
   }
 
   get requestTableMetadata(): SourceItem<TableMetadataModel> | undefined {
@@ -120,11 +126,11 @@ export default class ReportBuilderSidebar extends Component<Args> {
     assert('sourcePath length not supported');
   }
 
-  @task *fetchDataSources(): TaskGenerator<SourceItem<NaviDataSource>[]> {
-    let sources: SourceItem<NaviDataSource>[] = [];
-    const fetchNamespacesTasks: TaskInstance<SourceItem<NaviDataSource>[]>[] = [];
+  @task *fetchDataSources(): TaskGenerator<SourceItem<DataSourceConfig>[]> {
+    let sources: SourceItem<DataSourceConfig>[] = [];
+    const fetchNamespacesTasks: TaskInstance<SourceItem<DataSourceConfig>[]>[] = [];
 
-    config.navi.dataSources.forEach((dataSource) => {
+    this.yavinClient.clientConfig.dataSources.forEach((dataSource) => {
       sources.push({
         name: dataSource.displayName,
         description: dataSource.description,
@@ -140,7 +146,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
     return yield sortBy(sources, ['name']);
   }
 
-  @task *fetchDataSourceNamespaces(dataSource: NaviDataSource): TaskGenerator<SourceItem<NaviDataSource>[]> {
+  @task *fetchDataSourceNamespaces(dataSource: DataSourceConfig): TaskGenerator<SourceItem<DataSourceConfig>[]> {
     if (!Array.isArray(dataSource.namespaces)) {
       return yield [];
     }
@@ -150,13 +156,13 @@ export default class ReportBuilderSidebar extends Component<Args> {
         name: displayName,
         description,
         hide,
-        source: getDataSource(`${dataSource.name}.${name}`),
+        source: this.getDataSource(`${dataSource.name}.${name}`),
       };
     });
   }
 
   @task({ restartable: true }) *getTablesForDataSource(
-    dataSource: NaviDataSource
+    dataSource: DataSourceConfig
   ): TaskGenerator<SourceItem<TableMetadataModel>[]> {
     yield this.metadataService.loadMetadata({ dataSourceName: dataSource.name });
     const factTables = this.metadataService.all('table', dataSource.name).filter((t) => t.isFact === true);
@@ -210,7 +216,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
   }
 
   @action
-  setSelectedDataSource(dataSource?: NaviDataSource) {
+  setSelectedDataSource(dataSource?: DataSourceConfig) {
     if (dataSource) {
       this.setSourcePath([mapDataSource(dataSource)]);
     } else {
@@ -221,7 +227,7 @@ export default class ReportBuilderSidebar extends Component<Args> {
   @action
   setSelectedTable(table?: TableMetadataModel) {
     if (table) {
-      const dataSource = getDataSource(table.source);
+      const dataSource = this.getDataSource(table.source);
       this.setSourcePath([mapDataSource(dataSource), mapTable(table)]);
       this.args.setTable(table);
     } else {

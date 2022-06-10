@@ -11,7 +11,6 @@ import { v1 } from 'ember-uuid';
 import config from 'ember-get-config';
 //@ts-ignore
 import { isForbidden } from 'navi-core/helpers/is-forbidden';
-import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { taskFor } from 'ember-concurrency-ts';
 import type { RequestOptions } from '@yavin/client/adapters/facts/interface';
 import type { RequestV2 } from '@yavin/client/request';
@@ -121,7 +120,7 @@ export default class DashboardDataService extends Service {
         uiView: `dashboard.${dashboard.id}.${uuid}.${widgetId}`,
       };
 
-      options.dataSourceName = request.dataSource || getDefaultDataSourceName();
+      options.dataSourceName = request.dataSource;
 
       const requestWithFilters = this.applyFilters(dashboard, request);
       const filterErrors = this.getFilterErrors(dashboard, request);

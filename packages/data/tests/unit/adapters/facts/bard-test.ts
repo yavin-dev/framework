@@ -9,6 +9,7 @@ import type BardFactsAdapter from 'navi-data/adapters/facts/bard';
 import type { TestContext } from 'ember-test-helpers';
 import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 import { Grain } from '@yavin/client/utils/date';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 const HOST = config.navi.dataSources[0].uri;
 const HOST2 = config.navi.dataSources[1].uri;
@@ -133,6 +134,8 @@ module('Unit | Adapter | facts/bard', function (hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function (this: TestContext) {
+    const client: YavinClientService = this.owner.lookup('service:yavin-client');
+    client.clientConfig.dataSources.push({ displayName: 'Test', name: 'test', type: 'bard', uri: 'test://' });
     Adapter = this.owner.lookup('adapter:facts/bard');
 
     //setup Pretender

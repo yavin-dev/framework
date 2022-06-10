@@ -7,9 +7,7 @@
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A as arr } from '@ember/array';
-import { configHost, getDataSource } from '../../utils/adapter';
 import { serializeFilters } from '../facts/bard';
-import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskGenerator } from 'ember-concurrency';
@@ -21,6 +19,7 @@ import type DimensionMetadataModel from '@yavin/client/models/metadata/dimension
 import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import { searchDimensionRecords } from '@yavin/client/utils/search';
 import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 const SUPPORTED_FILTER_OPERATORS = ['in', 'notin', 'startswith', 'contains'];
 
@@ -29,7 +28,7 @@ const SEARCH_TIMEOUT = 30000;
 const CLIENT_ID = 'UI';
 
 type LegacyAdapterOptions = {
-  dataSourceName?: string;
+  dataSourceName: string;
   clientId?: string;
   timeout?: number;
   page?: number;
@@ -60,13 +59,16 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
   @service
   private naviMetadata!: NaviMetadataService;
 
+  @service
+  declare yavinClient: YavinClientService;
+
   /**
    * @property {Array} supportedFilterOperators - List of supported filter operations
    */
   supportedFilterOperators = SUPPORTED_FILTER_OPERATORS;
 
   _buildUrl(dimension: DimensionColumn, path = 'values') {
-    const host = configHost({ dataSourceName: dimension.columnMetadata.source });
+    const host = this.yavinClient.clientConfig.configHost({ dataSourceName: dimension.columnMetadata.source });
     const { namespace } = this;
     const { id: dimensionId } = dimension.columnMetadata;
     return `${host}/${namespace}/dimensions/${dimensionId}/${path}/`;
@@ -87,7 +89,8 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
       };
     });
 
-    return andQueries.length ? { filters: serializeFilters(requestV2Filters, dimension.columnMetadata.source) } : {};
+    const dataSourceConfig = this.yavinClient.clientConfig.getDataSource<'bard'>(dimension.columnMetadata.source);
+    return andQueries.length ? { filters: serializeFilters(requestV2Filters, dataSourceConfig) } : {};
   }
 
   _searchDimensions(dimensions: FiliDimensionResponse, query: string): FiliDimensionResponse {
@@ -160,7 +163,7 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     const columnMetadata = this.naviMetadata.getById(
       'dimension',
       dimensionName,
-      options.dataSourceName || getDefaultDataSourceName()
+      options.dataSourceName
     ) as DimensionMetadataModel;
     return yield taskFor(this.findTask).perform({ columnMetadata }, [{ operator: 'in', values: [value] }], options);
   }
@@ -181,7 +184,7 @@ export default class BardDimensionAdapter extends EmberObject implements NaviDim
     options: Options = {}
   ): TaskGenerator<FiliDimensionResponse> {
     const { source, cardinality } = dimension.columnMetadata;
-    const filiOptions = getDataSource<'bard'>(source).options;
+    const filiOptions = this.yavinClient.clientConfig.getDataSource<'bard'>(source).options;
     if (cardinality === CARDINALITY_SIZES[0]) {
       const all = yield taskFor(this.allTask).perform(dimension);
       return this._searchDimensions(all, query);

@@ -10,7 +10,6 @@ import { inject as service } from '@ember/service';
 import { A as array } from '@ember/array';
 import EmberObject from '@ember/object';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
-import { configHost, getDataSource } from '../../utils/adapter';
 import NaviFactAdapter, { FactAdapterError } from '@yavin/client/adapters/facts/interface';
 import { RequestV2, SORT_DIRECTIONS } from '@yavin/client/request';
 import { omit, capitalize } from 'lodash-es';
@@ -19,7 +18,7 @@ import moment from 'moment';
 import config from 'ember-get-config';
 import { task } from 'ember-concurrency';
 import Interval from '@yavin/client/utils/classes/interval';
-import { FiliDataSource } from 'navi-config';
+import { FiliDataSource } from '@yavin/client/config/datasources';
 import type { RequestOptions, AsyncQueryResponse } from '@yavin/client/adapters/facts/interface';
 import type { Request, Filter, Column, Sort, ParameterValue } from '@yavin/client/request';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
@@ -28,6 +27,7 @@ import type BardTableMetadataModel from '@yavin/client/models/metadata/bard/tabl
 import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
 import type { TaskGenerator } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 export type Query = Record<string, string | number | boolean>;
 
@@ -56,7 +56,7 @@ function canonicalizeFiliDimension(column: Column | Filter | Sort): string {
 
 export function buildTimeDimensionFilterValues(
   timeFilter: Filter,
-  dataSource: string,
+  dataSourceConfig: FiliDataSource,
   allowCustomMacros: boolean,
   allowISOMacros: boolean,
   columnGrain?: GrainWithAll
@@ -93,7 +93,6 @@ export function buildTimeDimensionFilterValues(
     if (!moment.utc(start).isValid()) {
       throw new FactAdapterError(`Since operator only supports datetimes, '${start}' is invalid`);
     }
-    const dataSourceConfig = getDataSource(dataSource) as FiliDataSource;
     const sinceOperatorEnd = dataSourceConfig.options?.sinceOperatorEndPeriod;
     end = sinceOperatorEnd
       ? moment
@@ -132,14 +131,14 @@ export function buildTimeDimensionFilterValues(
  * @param filters - list of filters to be ANDed together for fili
  * @returns serialized filter string
  */
-export function serializeFilters(filters: Filter[], dataSource: string): string {
+export function serializeFilters(filters: Filter[], dataSourceConfig: FiliDataSource): string {
   return filters
     .map((filter) => {
       let { operator, values, type } = filter;
 
       let serializedValues;
       if (type === 'timeDimension') {
-        const filterValues = buildTimeDimensionFilterValues(filter, dataSource, false, false);
+        const filterValues = buildTimeDimensionFilterValues(filter, dataSourceConfig, false, false);
 
         if (operator === 'lte') {
           serializedValues = [filterValues[1]];
@@ -205,6 +204,9 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
   @service
   declare requestDecorator: RequestDecoratorService;
 
+  @service
+  declare yavinClient: YavinClientService;
+
   /**
    * Builds the dimensions path for a request
    */
@@ -244,7 +246,8 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
     const timeFilter = dateTimeFilters[0];
     const timeColumn = request.columns.filter(isDateTime)[0];
     const columnGrain: GrainWithAll = (timeColumn?.parameters?.grain as Grain | undefined) ?? 'all';
-    const filterValues = buildTimeDimensionFilterValues(timeFilter, request.dataSource, true, true, columnGrain);
+    const dataSourceConfig = this.yavinClient.clientConfig.getDataSource<'bard'>(request.dataSource);
+    const filterValues = buildTimeDimensionFilterValues(timeFilter, dataSourceConfig, true, true, columnGrain);
     if (timeFilter.operator === 'intervals') {
       return filterValues.join(',');
     }
@@ -271,7 +274,8 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
       .filter((fil) => fil.values.length !== 0);
 
     if (filters?.length) {
-      return serializeFilters(filters, request.dataSource);
+      const dataSourceConfig = this.yavinClient.clientConfig.getDataSource<'bard'>(request.dataSource);
+      return serializeFilters(filters, dataSourceConfig);
     }
     return undefined;
   }
@@ -347,7 +351,7 @@ export default class BardFactsAdapter extends EmberObject implements NaviFactAda
    * Builds a URL path for a request
    */
   _buildURLPath(request: Request, options: RequestOptions = {}): string {
-    const host = configHost(options);
+    const host = this.yavinClient.clientConfig.configHost(options);
     const { namespace } = this;
     const table = request.table;
 
