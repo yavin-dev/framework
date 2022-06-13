@@ -2,7 +2,8 @@ import { module, test } from 'qunit';
 import NaviFactsModel from '@yavin/client/models/navi-facts';
 import type { NaviFactsPayload } from '@yavin/client/models/navi-facts';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
-import { nullInjector } from '../../helpers/injector';
+import { Mock, nullInjector } from '../../helpers/injector';
+import FactService from '@yavin/client/services/interfaces/fact';
 
 const Payload: NaviFactsPayload = {
   request: {
@@ -39,15 +40,13 @@ const Payload: NaviFactsPayload = {
 
 module('Unit | Model | navi facts', function (hooks) {
   let Response: NaviFactsModel;
-  let factService: unknown;
+  let factService = {} as FactService;
 
   hooks.beforeEach(function () {
     Response = new NaviFactsModel(
-      {
-        lookup(_type, _name) {
-          return factService;
-        },
-      },
+      Mock()
+        .facts(factService as FactService)
+        .build(),
       Payload
     );
   });
@@ -64,19 +63,16 @@ module('Unit | Model | navi facts', function (hooks) {
     assert.expect(2);
 
     //Mocking facts service
-    factService = {
-      fetchNext: () => {
-        assert.ok('The service`s fetch Next method is invoked with the response and request');
-      },
+    //@ts-expect-error - mock fetch
+    factService.fetchNext = () => {
+      assert.ok('The service`s fetch Next method is invoked with the response and request');
     };
 
     Response.next();
 
-    //Mocking facts service
-    factService = {
-      fetchPrevious: () => {
-        assert.ok('The service`s fetch Previous method is invoked with the response and request');
-      },
+    //@ts-expect-error - mock fetch
+    factService.fetchPrevious = () => {
+      assert.ok('The service`s fetch Previous method is invoked with the response and request');
     };
 
     Response.previous();

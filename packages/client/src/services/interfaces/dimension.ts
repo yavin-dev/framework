@@ -7,7 +7,7 @@ import type { DimensionColumn } from '../../models/metadata/dimension.js';
 import type { DimensionFilter } from '../../adapters/dimensions/interface.js';
 import type { Options } from '../../adapters/dimensions/interface.js';
 
-export interface DimensionService {
+export default interface DimensionService {
   /**
    * Get all values for a dimension column, paginating through results as needed.
    * @param dimension - requested dimension
@@ -32,4 +32,8 @@ export interface DimensionService {
   search(dimension: DimensionColumn, query: string, options?: Options): Promise<NaviDimensionResponse>;
 }
 
-export default DimensionService;
+declare module './registry' {
+  export default interface ServiceRegistry {
+    'navi-dimension': DimensionService;
+  }
+}

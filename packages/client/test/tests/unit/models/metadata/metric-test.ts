@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import MetricMetadataModel, { MetricMetadataPayload } from '@yavin/client/models/metadata/metric';
-import { nullInjector } from '../../../helpers/injector';
+import { Mock, nullInjector } from '../../../helpers/injector';
 import ColumnFunctionMetadataModel from '@yavin/client/models/metadata/column-function';
 import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
 import { DataType } from '@yavin/client/models/metadata/function-parameter';
@@ -77,7 +77,7 @@ class MockMetadataService implements Partial<MetadataServiceInterface> {
   }
 }
 
-let MetadataService: MockMetadataService,
+let MetadataService: MetadataServiceInterface,
   MockInjector: Injector,
   Payload: MetricMetadataPayload,
   Metric: MetricMetadataModel,
@@ -95,8 +95,8 @@ module('Unit | Metadata Model | Metric', function (hooks) {
       isSortable: true,
       source: 'bardOne',
     };
-    MetadataService = new MockMetadataService();
-    MockInjector = { lookup: () => MetadataService };
+    MetadataService = new MockMetadataService() as unknown as MetadataServiceInterface;
+    MockInjector = Mock().meta(MetadataService).build();
     Metric = new MetricMetadataModel(nullInjector, Payload);
     const moneyMetricPayload: MetricMetadataPayload = {
       id: 'metricOne',
@@ -234,6 +234,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
     const extendedModel = new MetricMetadataModel(nullInjector, {});
     const metricOne = new MetricMetadataModel(
       {
+        //@ts-expect-error - mock injector
         lookup(type, name) {
           assert.equal(type, 'service', 'service is looked up');
           assert.equal(name, 'navi-metadata', 'metadata service is looked up');
@@ -244,7 +245,6 @@ module('Unit | Metadata Model | Metric', function (hooks) {
           };
         },
       },
-      //@ts-expect-error
       {
         id: 'metricOne',
         source: 'bardOne',

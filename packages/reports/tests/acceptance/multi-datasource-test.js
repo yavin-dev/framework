@@ -201,11 +201,11 @@ module('Acceptance | multi-datasource report builder', function (hooks) {
 
     await click('.visualization-toggle__option-icon[title="Bar Chart"]');
     assert.dom('.c3-axis-y-label').hasText('Used Amount', 'Bar chart has right Y axis label');
-    assert.dom('.c3-legend-item').containsText('Bank,UNKNOWN', 'Bar chart legend has right value');
+    assert.dom('.c3-legend-item').containsText('Bank,Guilders', 'Bar chart legend has right value');
 
     await click('.visualization-toggle__option-icon[title="Line Chart"]');
     assert.dom('.c3-axis-y-label').hasText('Used Amount', 'Line chart has right Y Axis label');
-    assert.dom('.c3-legend-item').containsText('Bank,UNKNOWN', 'Line chart has right legend value');
+    assert.dom('.c3-legend-item').containsText('Bank,Guilders', 'Line chart has right legend value');
 
     //check api url
     await click('.get-api__action-btn');

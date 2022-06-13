@@ -6,13 +6,13 @@
  */
 import { helper as buildHelper } from '@ember/component/helper';
 import NaviAdapterError from '@yavin/client/errors/navi-adapter-error';
-import { AjaxError, isForbiddenError } from 'ember-ajax/errors';
+import { FetchError } from '@yavin/client/plugins/bard/adapter/facts';
 
 export function isForbidden(reason: unknown): boolean {
   if (reason instanceof NaviAdapterError) {
     return reason.errors.some((error) => error.status === '403');
-  } else if (reason instanceof AjaxError || typeof reason === 'number') {
-    return isForbiddenError(reason);
+  } else if (reason instanceof FetchError) {
+    return reason.status === 403;
   }
   return false;
 }

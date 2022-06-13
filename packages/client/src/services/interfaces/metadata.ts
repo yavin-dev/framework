@@ -51,3 +51,9 @@ export default interface MetadataService {
     dataSourceName: string
   ): Promise<MetadataModelRegistry[K] | undefined>;
 }
+
+declare module './registry' {
+  export default interface ServiceRegistry {
+    'navi-metadata': MetadataService;
+  }
+}

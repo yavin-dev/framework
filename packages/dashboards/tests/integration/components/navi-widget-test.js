@@ -6,7 +6,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { assertTooltipContent } from 'ember-tooltips/test-support';
-import { ForbiddenError } from 'ember-ajax/errors';
+import { FetchError } from '@yavin/client/plugins/bard/adapter/facts';
 
 const WIDGET = {
   id: 1,
@@ -77,7 +77,7 @@ module('Integration | Component | navi widget', function (hooks) {
 
     this.set('taskInstance', {
       isError: true,
-      error: new ForbiddenError(),
+      error: new FetchError(403, 'You are not authorized'),
     });
 
     assert

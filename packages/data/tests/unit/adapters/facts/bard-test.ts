@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 import Pretender, { Server as PretenderServer, ResponseData } from 'pretender';
-import config from 'ember-get-config';
+import hostConfig from 'ember-get-config';
 import moment from 'moment';
 import { cloneDeep } from 'lodash-es';
 import type { Filter, RequestV2 } from '@yavin/client/request';
@@ -10,9 +10,11 @@ import type { TestContext } from 'ember-test-helpers';
 import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 import { Grain } from '@yavin/client/utils/date';
 import type YavinClientService from 'navi-data/services/yavin-client';
+import type { ClientConfig } from '@yavin/client/config/datasources';
+import type ClientInjector from 'navi-data/services/client-injector';
 
-const HOST = config.navi.dataSources[0].uri;
-const HOST2 = config.navi.dataSources[1].uri;
+const HOST = hostConfig.navi.dataSources[0].uri;
+const HOST2 = hostConfig.navi.dataSources[1].uri;
 
 const EmptyRequest: RequestV2 = {
   table: '',
@@ -128,14 +130,15 @@ const TestRequest: RequestV2 = {
   }),
   MockBardResponse: ResponseData = [200, { 'Content-Type': 'application/json' }, JSON.stringify(Response)];
 
-let Adapter: BardFactsAdapter, Server: PretenderServer;
+let Adapter: BardFactsAdapter, Server: PretenderServer, config: ClientConfig;
 
 module('Unit | Adapter | facts/bard', function (hooks) {
   setupTest(hooks);
 
   hooks.beforeEach(function (this: TestContext) {
     const client: YavinClientService = this.owner.lookup('service:yavin-client');
-    client.clientConfig.dataSources.push({ displayName: 'Test', name: 'test', type: 'bard', uri: 'test://' });
+    config = client.clientConfig;
+    config.dataSources.push({ displayName: 'Test', name: 'test', type: 'bard', uri: 'test://' });
     Adapter = this.owner.lookup('adapter:facts/bard');
 
     //setup Pretender
@@ -363,17 +366,16 @@ module('Unit | Adapter | facts/bard', function (hooks) {
 
     const endDate = '2021-03-01';
     const before = singleValue(endDate, 'lte');
-    let originalDataEpoch = config.navi.dataEpoch;
+    let originalDataEpoch = config.dataEpoch;
     // TODO: Remove once dataEpoch is not required
-    //@ts-expect-error
-    config.navi.dataEpoch = undefined;
+    config.dataEpoch = undefined;
     assert.deepEqual(
       Adapter._buildDateTimeParam(before),
       `0001-01-01T00:00:00.000/${endDate}`,
       '_buildDateTimeParam uses year 0001 aligned to grain when no dataEpoch is defined'
     );
 
-    config.navi.dataEpoch = '1999-02-03';
+    config.dataEpoch = '1999-02-03';
     assert.deepEqual(
       Adapter._buildDateTimeParam(before),
       `1999-02-01T00:00:00.000/${endDate}`,
@@ -386,7 +388,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       /FactAdapterError: Before operator only supports datetimes, 'fakeDate' is invalid/,
       '_buildDateTimeParam throws error if end date is not a valid datetime'
     );
-    config.navi.dataEpoch = originalDataEpoch;
+    config.dataEpoch = originalDataEpoch;
 
     const eqDate = '2022-04-11';
     const eqRequest = singleValue(eqDate, 'eq');
@@ -963,16 +965,23 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       '_buildURLPath assumes the all timeGrain exists if table metadata is not loaded'
     );
 
-    const originalNaviMetadata = Adapter.naviMetadata;
+    const clientInjector: ClientInjector = this.owner.lookup('service:client-injector');
+
+    const originalLookup = clientInjector.lookup;
     //@ts-ignore
-    Adapter.naviMetadata = {
-      getById<K extends keyof MetadataModelRegistry>(
-        _type: K,
-        _id: string,
-        _dataSourceName: string
-      ): MetadataModelRegistry[K] {
-        return { hasAllGrain: false } as unknown as MetadataModelRegistry[K];
-      },
+    clientInjector.lookup = (type, service) => {
+      if (type === 'service' && service === 'navi-metadata') {
+        return {
+          getById<K extends keyof MetadataModelRegistry>(
+            _type: K,
+            _id: string,
+            _dataSourceName: string
+          ): MetadataModelRegistry[K] {
+            return { hasAllGrain: false } as unknown as MetadataModelRegistry[K];
+          },
+        };
+      }
+      return originalLookup.call(clientInjector, type, service);
     };
     assert.throws(
       () => {
@@ -992,7 +1001,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
       'https://data.naviapp.io/v1/data/tableName/grain/',
       '_buildURLPath does not throw error for table without all grain that specifies a grain to use'
     );
-    Adapter.naviMetadata = originalNaviMetadata;
+    clientInjector.lookup = originalLookup;
 
     const twoDateTime: RequestV2 = {
       ...EmptyRequest,

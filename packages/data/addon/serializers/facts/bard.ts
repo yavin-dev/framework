@@ -12,8 +12,8 @@ import type { RequestV2, Column } from '@yavin/client/request';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import NaviAdapterError, { NaviErrorDetails } from '@yavin/client/errors/navi-adapter-error';
-import { AjaxError } from 'ember-ajax/errors';
 import { FactAdapterError } from '@yavin/client/adapters/facts/interface';
+import { FetchError } from '@yavin/client/plugins/bard/adapter/facts';
 
 type BardError = {
   description: string;
@@ -78,7 +78,7 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
 
   protected readonly errorMsgOverrides: Record<string, string> = {
     '^The adapter operation timed out$': 'Data Timeout',
-    '^The ajax operation timed out$': 'Data Timeout',
+    '^The fetch operation timed out$': 'Data Timeout',
     '^Rate limit reached\\. .*': 'Rate limit reached, please try again later.',
   };
 
@@ -93,9 +93,9 @@ export default class BardFactsSerializer extends EmberObject implements NaviFact
     return normalizedMsg;
   }
 
-  extractError(error: AjaxError | Error, _request: RequestV2): NaviAdapterError {
+  extractError(error: FetchError | Error, _request: RequestV2): NaviAdapterError {
     let errorDetails: NaviErrorDetails = {};
-    if (error instanceof AjaxError) {
+    if (error instanceof FetchError) {
       errorDetails.status = `${error.status}`;
 
       if (typeof error.payload === 'object') {

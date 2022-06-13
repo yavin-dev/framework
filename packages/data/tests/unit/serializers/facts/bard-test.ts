@@ -5,7 +5,7 @@ import BardFactSerializer from 'navi-data/serializers/facts/bard';
 import type { RequestV2 } from '@yavin/client/request';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
-import { AjaxError } from 'ember-ajax/errors';
+import { FetchError } from '@yavin/client/plugins/bard/adapter/facts';
 
 let Serializer: BardFactSerializer;
 
@@ -106,7 +106,7 @@ module('Unit | Serializer | facts/bard', function (hooks) {
       status: 400,
       statusName: 'Bad request',
     };
-    const response = new AjaxError(payload, 'Timeout', 400);
+    const response = new FetchError(400, payload);
     const error = Serializer.extractError(response, request);
 
     assert.deepEqual(
@@ -134,7 +134,7 @@ module('Unit | Serializer | facts/bard', function (hooks) {
     };
 
     const payload = 'The adapter operation timed out';
-    const response = new AjaxError(payload, 'Timeout', 408);
+    const response = new FetchError(408, payload);
 
     const error = Serializer.extractError(response, request);
     assert.deepEqual(
@@ -163,7 +163,7 @@ module('Unit | Serializer | facts/bard', function (hooks) {
       status: 429,
       statusName: 'Too many requests',
     };
-    const response = new AjaxError(payload, payload.reason, payload.status);
+    const response = new FetchError(payload.status, payload);
     const error = Serializer.extractError(response, request);
 
     assert.deepEqual(

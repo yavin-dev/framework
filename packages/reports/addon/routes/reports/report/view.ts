@@ -6,9 +6,9 @@ import { action } from '@ember/object';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { merge } from 'lodash-es';
-import { isForbiddenError } from 'ember-ajax/errors';
 import { reject } from 'rsvp';
 import { assert } from '@ember/debug';
+import { isForbidden } from 'navi-core/helpers/is-forbidden';
 import type NaviFactsService from 'navi-data/services/navi-facts';
 import type { ModelFrom, Transition } from 'navi-core/utils/type-utils';
 import type ReportsReportRoute from 'navi-reports/routes/reports/report';
@@ -71,7 +71,7 @@ export default class ReportsReportViewRoute extends Route {
         return response;
       })
       .catch((response) => {
-        if (isForbiddenError(response.rootCause)) {
+        if (isForbidden(response.rootCause)) {
           this.transitionTo('reports.report.unauthorized', report.id);
         } else {
           return reject(response);
