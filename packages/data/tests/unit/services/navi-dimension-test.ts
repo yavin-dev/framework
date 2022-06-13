@@ -4,7 +4,6 @@ import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 // @ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import GraphQLScenario from 'navi-data/mirage/scenarios/elide-one';
-import config from 'ember-get-config';
 import EmberObject from '@ember/object';
 import DimensionMetadataModel, { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
@@ -17,6 +16,7 @@ import type { Server } from 'miragejs';
 import type { AsyncQueryResponse } from '@yavin/client/adapters/facts/interface';
 import type NaviDimensionSerializer from '@yavin/client/serializers/dimensions/interface';
 import type { ResponseV1 } from '@yavin/client/serializers/facts/interface';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
@@ -24,7 +24,7 @@ interface TestContext extends Context {
 }
 
 //Mock data source
-declare module 'navi-config' {
+declare module '@yavin/client/config/datasources' {
   // eslint-disable-next-line ember/no-test-import-export
   export interface DataSourceRegistry {
     mock: BaseDataSource<'mock'>;
@@ -68,11 +68,11 @@ module('Unit | Service | navi-dimension', function (hooks) {
 
   test('all - pagination - generic', async function (this: TestContext, assert) {
     assert.expect(15);
-    let originalDataSources = config.navi.dataSources;
+    const client: YavinClientService = this.owner.lookup('service:yavin-client');
     const dataSourceType = 'mock';
     const dataSourceName = 'test-example';
 
-    config.navi.dataSources = [
+    client.clientConfig.dataSources = [
       { type: dataSourceType, uri: 'fake', name: dataSourceName, displayName: dataSourceName },
     ];
 
@@ -184,8 +184,6 @@ module('Unit | Service | navi-dimension', function (hooks) {
     call = 0;
     await service.all({ columnMetadata }, { perPage: 4, page: 1 });
     assert.strictEqual(call, 4, 'It took 2 calls to adapter/serializer to page through all the data');
-
-    config.navi.dataSources = originalDataSources;
   });
 
   test('all - pagination - elide', async function (this: TestContext, assert) {

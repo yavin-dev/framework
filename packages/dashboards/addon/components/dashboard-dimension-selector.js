@@ -12,7 +12,6 @@ import Component from '@ember/component';
 import { computed } from '@ember/object';
 import layout from '../templates/components/dashboard-dimension-selector';
 import { layout as templateLayout, tagName } from '@ember-decorators/component';
-import { getDefaultDataSourceName } from 'navi-data/utils/adapter';
 import { groupBy } from 'lodash-es';
 
 @templateLayout(layout)
@@ -78,17 +77,14 @@ export default class DashboardDimensionSelectorComponent extends Component {
    */
   buildCategoryMap(dimensionMap) {
     return Object.entries(dimensionMap).reduce((results, [table, dimensions]) => {
-      let dataSource = getDefaultDataSourceName();
-      if (table.includes('.')) {
-        /**
-         * table might be:
-         * dataSource.table (fili/elide)
-         * dataSource.namespace.table (elide)
-         */
-        const split = table.split('.');
-        table = split.pop();
-        dataSource = split.join('.');
-      }
+      /**
+       * table might be:
+       * dataSource.table (fili/elide)
+       * dataSource.namespace.table (elide)
+       */
+      const split = table.split('.');
+      table = split.pop();
+      let dataSource = split.join('.');
 
       dimensions.forEach((dimension) => {
         if (!results[dimension.category]) {

@@ -10,8 +10,9 @@ import type UserService from 'navi-core/services/user';
 import type { Transition } from 'navi-core/utils/type-utils';
 import type ReportModel from 'navi-core/models/report';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
-import { getDataSource } from 'navi-data/utils/adapter';
 import type YavinVisualizationsService from 'navi-core/services/visualization';
+import type YavinClientService from 'navi-data/services/yavin-client';
+
 export default class ReportsNewRoute extends Route {
   @service declare naviNotifications: NaviNotificationsService;
 
@@ -20,6 +21,8 @@ export default class ReportsNewRoute extends Route {
   @service declare compression: CompressionService;
 
   @service declare user: UserService;
+
+  @service declare yavinClient: YavinClientService;
 
   queryParams = {
     datasource: {},
@@ -57,7 +60,7 @@ export default class ReportsNewRoute extends Route {
     const defaultVisualization = this.visualization.defaultVisualization();
     if (dataSource !== undefined) {
       try {
-        getDataSource(dataSource); //validate datasource param
+        this.yavinClient.clientConfig.getDataSource(dataSource); //validate datasource param
       } catch (e) {
         throw new Error('Could not locate requested data source');
       }

@@ -6,12 +6,12 @@ import Component from '@glimmer/component';
 import { action, computed } from '@ember/object';
 import { inject as service } from '@ember/service';
 import { tracked } from '@glimmer/tracking';
-import { getDataSource } from 'navi-data/utils/adapter';
 import type ReportModel from 'navi-core/models/report';
 import type ColumnFragment from 'navi-core/models/request/column';
 import type { Parameters, SortDirection } from '@yavin/client/request';
 import type ColumnMetadataModel from '@yavin/client/models/metadata/column';
 import type RequestConstrainer from 'navi-reports/services/request-constrainer';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 interface NaviColumnConfigArgs {
   report: ReportModel;
@@ -39,6 +39,9 @@ export type ConfigColumn = {
 export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
   @service
   declare requestConstrainer: RequestConstrainer;
+
+  @service
+  declare yavinClient: YavinClientService;
 
   @tracked
   currentlyOpenColumn?: ConfigColumn;
@@ -74,13 +77,13 @@ export default class NaviColumnConfig extends Component<NaviColumnConfigArgs> {
     return [];
   }
 
-  @computed('args.report.request.dataSource')
+  @computed('args.report.request.dataSource', 'yavinClient.clientConfig')
   get supportsSubtotal(): boolean {
     //TODO: We shouldn't need this line because TS, but js tests causing a big regression. Remove and fix tests.
     if (!this.args.report.request.dataSource) {
       return false;
     }
-    const dataSource = getDataSource<'bard'>(this.args.report.request.dataSource).options;
+    const dataSource = this.yavinClient.clientConfig.getDataSource<'bard'>(this.args.report.request.dataSource).options;
     return dataSource?.enableSubtotals ?? false;
   }
 

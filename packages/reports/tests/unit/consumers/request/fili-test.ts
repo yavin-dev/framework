@@ -3,19 +3,17 @@ import { setupTest } from 'ember-qunit';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import config from 'ember-get-config';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type Route from '@ember/routing/route';
 import type FiliConsumer from 'navi-reports/consumers/request/fili';
 import type StoreService from '@ember-data/store';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
-import type { NaviDataSource } from 'navi-config';
 import type RequestFragment from 'navi-core/models/request';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 let consumer: FiliConsumer;
 const dispatchedActions: string[] = [];
 const dispatchedActionArgs: Array<unknown[]> = [];
-let originalDataSources: NaviDataSource[];
 
 const MockDispatcher = {
   dispatch(action: string, _route: Route, ...args: unknown[]) {
@@ -26,6 +24,7 @@ const MockDispatcher = {
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
+  yavinClient: YavinClientService;
 }
 
 module('Unit | Consumer | request fili', function (hooks) {
@@ -35,17 +34,13 @@ module('Unit | Consumer | request fili', function (hooks) {
   hooks.beforeEach(async function (this: TestContext) {
     dispatchedActions.length = 0;
     dispatchedActionArgs.length = 0;
-    originalDataSources = config.navi.dataSources;
+    this.yavinClient = this.owner.lookup('service:yavin-client');
 
     consumer = this.owner
       .factoryFor('consumer:request/fili')
       .create({ requestActionDispatcher: MockDispatcher }) as FiliConsumer;
     this.metadataService = this.owner.lookup('service:navi-metadata') as NaviMetadataService;
     await this.metadataService.loadMetadata({ dataSourceName: 'bardOne' });
-  });
-
-  hooks.afterEach(async function () {
-    config.navi.dataSources = originalDataSources;
   });
 
   test('UPDATE_FILTER', function (assert) {
@@ -296,7 +291,7 @@ module('Unit | Consumer | request fili', function (hooks) {
     );
   });
 
-  test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function (assert) {
+  test('UPDATE_COLUMN_FRAGMENT_WITH_PARAMS', function (this: TestContext, assert) {
     const store = this.owner.lookup('service:store') as StoreService;
     const request = store.createFragment('request', {
       table: 'network',
@@ -390,8 +385,8 @@ module('Unit | Consumer | request fili', function (hooks) {
     dispatchedActions.length = 0;
     dispatchedActionArgs.length = 0;
 
-    config.navi.dataSources = [
-      ...config.navi.dataSources,
+    this.yavinClient.clientConfig.dataSources = [
+      ...this.yavinClient.clientConfig.dataSources,
       { name: 'Other Data Source', displayName: 'Other', uri: 'data://stuff', type: 'elide' },
     ];
     request.dataSource = 'Other Data Source';

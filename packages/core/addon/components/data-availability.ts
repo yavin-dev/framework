@@ -11,11 +11,11 @@ import { inject as service } from '@ember/service';
 import { task, timeout } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import { Status } from 'navi-data/services/data-availability';
-import { getDataSource } from 'navi-data/utils/adapter';
 import type DataAvailabilityService from 'navi-data/services/data-availability';
 import type { DataSourceAvailabilty, AvailabilityResult } from 'navi-data/services/data-availability';
 import type { TaskGenerator, TaskInstance } from 'ember-concurrency';
 import { sortBy } from 'lodash-es';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 type Timer = ReturnType<typeof later>;
 type Dropdown = any;
@@ -45,6 +45,9 @@ export default class DataAvailability extends Component<DataAvailabilityArgs> {
 
   @service
   declare dataAvailability: DataAvailabilityService;
+
+  @service
+  declare yavinClient: YavinClientService;
 
   isHidden = false;
 
@@ -120,7 +123,7 @@ export default class DataAvailability extends Component<DataAvailabilityArgs> {
     const availabilities: DataSourceAvailabilty = yield taskFor(this.dataAvailability.fetchAll).perform(dataSources);
 
     const dataSourceStatuses = Object.entries(availabilities).map(([dataSource, result]) => {
-      const dsConfig = getDataSource(dataSource);
+      const dsConfig = this.yavinClient.clientConfig.getDataSource(dataSource);
       return { dataSource, displayName: dsConfig.displayName, result };
     });
 

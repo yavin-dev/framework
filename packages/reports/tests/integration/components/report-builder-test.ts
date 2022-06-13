@@ -6,28 +6,30 @@ import hbs from 'htmlbars-inline-precompile';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import TableMetadataModel from '@yavin/client/models/metadata/table';
-import config from 'ember-get-config';
 //@ts-ignore
 import { setupAnimationTest, animationsSettled } from 'ember-animated/test-support';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type StoreService from '@ember-data/store';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
-let MetadataService: NaviMetadataService, Store: StoreService;
-
-const mockDataSourceA = {
+const mockDataSourceA = <const>{
   name: 'bardOne',
   displayName: 'Source A',
   description: 'Awesome Source A',
   uri: 'https://data.naviapp.io',
-  type: 'bard' as const,
+  type: 'bard',
 };
-const mockDataSourceB = {
+const mockDataSourceB = <const>{
   name: 'bardTwo',
   displayName: 'Source B',
   description: 'Beautiful Source B',
   uri: 'https://data2.naviapp.io',
-  type: 'bard' as const,
+  type: 'bard',
 };
+
+let MetadataService: NaviMetadataService;
+let YavinClient: YavinClientService;
+let Store: StoreService;
 
 const TEMPLATE = hbs`<ReportBuilder @report={{this.report}} />`;
 module('Integration | Component | report builder', function (hooks) {
@@ -36,6 +38,7 @@ module('Integration | Component | report builder', function (hooks) {
   setupMirage(hooks);
 
   hooks.beforeEach(async function () {
+    YavinClient = this.owner.lookup('service:yavin-client');
     MetadataService = this.owner.lookup('service:navi-metadata');
     Store = this.owner.lookup('service:store');
 
@@ -65,9 +68,8 @@ module('Integration | Component | report builder', function (hooks) {
 
   test('Single datasource single table is automatically selected', async function (assert) {
     assert.expect(6);
-
-    const originalDataSources = config.navi.dataSources;
-    config.navi.dataSources = [mockDataSourceA];
+    YavinClient.clientConfig.dataSources = [mockDataSourceA];
+    MetadataService['loadedDataSources'].add(mockDataSourceA.name);
 
     //reset meta data and load only one table
     MetadataService['keg'].resetByType('metadata/table');
@@ -126,14 +128,13 @@ module('Integration | Component | report builder', function (hooks) {
       ['Source A'],
       'The only data source is shown'
     );
-    config.navi.dataSources = originalDataSources;
   });
 
   test('Single datasource with multiple tables only selects datasource', async function (assert) {
     assert.expect(6);
 
-    const originalDataSources = config.navi.dataSources;
-    config.navi.dataSources = [mockDataSourceB];
+    YavinClient.clientConfig.dataSources = [mockDataSourceB];
+    MetadataService['loadedDataSources'].add(mockDataSourceB.name);
 
     //reset meta data and load only one table
     MetadataService['keg'].resetByType('metadata/table');
@@ -198,14 +199,12 @@ module('Integration | Component | report builder', function (hooks) {
       ['Source B'],
       'The only data source is shown'
     );
-    config.navi.dataSources = originalDataSources;
   });
 
   test('Multiple datasources nothing is automatically selected', async function (assert) {
     assert.expect(4);
 
-    const originalDataSources = config.navi.dataSources;
-    config.navi.dataSources = [mockDataSourceA, mockDataSourceB];
+    YavinClient.clientConfig.dataSources = [mockDataSourceA, mockDataSourceB];
 
     //reset meta data and load only one table
     MetadataService['keg'].resetByType('metadata/table');
@@ -265,7 +264,6 @@ module('Integration | Component | report builder', function (hooks) {
       ['Source A', 'Source B'],
       'Both fact tables are shown'
     );
-    config.navi.dataSources = originalDataSources;
   });
 
   test('Open and close sidebar', async function (assert) {

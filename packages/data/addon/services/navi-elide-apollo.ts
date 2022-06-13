@@ -4,9 +4,13 @@
  */
 import ApolloService from 'ember-apollo-client/services/apollo';
 import { setContext } from 'apollo-link-context';
-import { configHost } from 'navi-data/utils/adapter';
+import { inject as service } from '@ember/service';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 export default class NaviElideApolloService extends ApolloService {
+  @service
+  declare yavinClient: YavinClientService;
+
   /**
    * @override
    * @method clientOptions
@@ -66,7 +70,7 @@ export default class NaviElideApolloService extends ApolloService {
    * @returns complete url including host and namespace
    */
   _buildURLPath(dataSourceName: string): string {
-    const host = configHost({ dataSourceName });
+    const host = this.yavinClient.clientConfig.configHost({ dataSourceName });
     return new URL(host, `${document.location.protocol}${document.location.host}`).href;
   }
 }

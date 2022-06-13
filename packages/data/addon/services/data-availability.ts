@@ -3,13 +3,14 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import Service from '@ember/service';
+import { inject as service } from '@ember/service';
 import { hash, race, task, timeout } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import Cache from '@yavin/client/utils/classes/cache';
 import config from 'ember-get-config';
-import { getDataSource } from 'navi-data/utils/adapter';
 import type { TaskGenerator, TaskInstance } from 'ember-concurrency';
 import type { Moment } from 'moment';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 export enum Status {
   OK,
@@ -30,6 +31,9 @@ type Fetcher = () =>
 const AVAILABILITY_CACHE_MS = config.navi.availability?.cacheMs ?? 5 * 60 * 1000;
 
 export default class DataAvailabilityService extends Service {
+  @service
+  declare yavinClient: YavinClientService;
+
   _cache = new Cache<FetchedAvailabilityResult>(100, AVAILABILITY_CACHE_MS);
   fetchers = new Map<string, Fetcher>();
 
@@ -53,7 +57,7 @@ export default class DataAvailabilityService extends Service {
     const fetcher = this.fetchers.get(dataSourceName);
     if (!fetcher) {
       try {
-        const dsConfig = getDataSource(dataSourceName);
+        const dsConfig = this.yavinClient.clientConfig.getDataSource(dataSourceName);
         return {
           status: Status.UNAVAILABLE,
           error: new Error(`Data availability is not configured for the '${dsConfig.displayName}' datasource`),

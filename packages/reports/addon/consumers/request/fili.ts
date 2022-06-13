@@ -6,7 +6,6 @@ import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import { getDataSource } from 'navi-data/utils/adapter';
 import { valuesForOperator } from 'navi-reports/components/filter-builders/time-dimension';
 import { getPeriodForGrain } from '@yavin/client/utils/date';
 import { GrainOrdering } from '@yavin/client/models/metadata/bard/table';
@@ -22,6 +21,7 @@ import type { Grain } from '@yavin/client/utils/date';
 import type FilterFragment from 'navi-core/models/request/filter';
 import type SortFragment from 'navi-core/models/request/sort';
 import type TableMetadataModel from '@yavin/client/models/metadata/table';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 function isFiliDateTime(table: string, col: ColumnFragment | FilterFragment | SortFragment) {
   return col.field.endsWith(`${table}.dateTime`) && col.type === 'timeDimension';
@@ -31,6 +31,9 @@ export default class FiliConsumer extends ActionConsumer {
   @service
   declare requestActionDispatcher: RequestActionDispatcher;
 
+  @service
+  declare yavinClient: YavinClientService;
+
   /**
    * Filters actions to only those updating fili requests
    */
@@ -39,7 +42,7 @@ export default class FiliConsumer extends ActionConsumer {
     const { request } = route.modelFor(routeName) as ReportModel;
     const { dataSource } = request;
     if (dataSource) {
-      return getDataSource(dataSource).type === 'bard';
+      return this.yavinClient.clientConfig.getDataSource(dataSource).type === 'bard';
     }
     return false;
   }

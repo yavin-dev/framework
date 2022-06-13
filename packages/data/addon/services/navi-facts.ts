@@ -5,9 +5,9 @@
  * Description: Navi facts service that executes and delivers the results
  */
 import Service from '@ember/service';
+import { inject as service } from '@ember/service';
 import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
-import { getDataSource, getDefaultDataSource } from 'navi-data/utils/adapter';
 import NaviFactsModel from '@yavin/client/models/navi-facts';
 import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
@@ -18,8 +18,12 @@ import type { RequestV2 } from '@yavin/client/request';
 import type NaviFactSerializer from '@yavin/client/serializers/facts/interface';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import type FactService from '@yavin/client/services/interfaces/fact';
+import type YavinClientService from 'navi-data/services/yavin-client';
 
 export default class NaviFactsService extends Service implements FactService {
+  @service
+  declare yavinClient: YavinClientService;
+
   /**
    * @param type
    * @returns adapter instance for type
@@ -43,7 +47,7 @@ export default class NaviFactsService extends Service implements FactService {
    * @returns url for the request
    */
   getURL(request: RequestV2, options: RequestOptions = {}) {
-    const { type: dataSourceType } = getDataSource(request.dataSource);
+    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(request.dataSource);
     const adapter = this._adapterFor(dataSourceType);
     let query;
     try {
@@ -77,7 +81,7 @@ export default class NaviFactsService extends Service implements FactService {
    * @returns - url for the request
    */
   @task *getDownloadURLTask(request: RequestV2, options: RequestOptions): TaskGenerator<string> {
-    const { type: dataSourceType } = getDataSource(request.dataSource);
+    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(request.dataSource);
     const adapter = this._adapterFor(dataSourceType);
     return yield adapter.urlForDownloadQuery(request, options);
   }
@@ -89,10 +93,9 @@ export default class NaviFactsService extends Service implements FactService {
    * @returns - Promise with the bard response model object
    */
   @task *fetchTask(request: RequestV2, options: RequestOptions = {}): TaskGenerator<NaviFactsModel> {
-    const dataSourceName = options?.dataSourceName;
-    const type = dataSourceName ? getDataSource(dataSourceName).type : getDefaultDataSource().type;
-    const adapter = this._adapterFor(type);
-    const serializer = this._serializerFor(type);
+    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(request.dataSource);
+    const adapter = this._adapterFor(dataSourceType);
+    const serializer = this._serializerFor(dataSourceType);
 
     try {
       const payload: unknown = yield adapter.fetchDataForRequest(request, options);

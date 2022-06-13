@@ -8,7 +8,6 @@ import NaviFactAdapter, { QueryStatus, FactAdapterError } from '@yavin/client/ad
 import { assert } from '@ember/debug';
 import { inject as service } from '@ember/service';
 import Interval from '@yavin/client/utils/classes/interval';
-import { getDefaultDataSource } from '../../utils/adapter';
 import * as GQLQueries from '@yavin/client/gql/fact-queries';
 import { task, timeout } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
@@ -74,7 +73,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   @queryManager({ service: 'navi-elide-apollo' })
   apollo: TODO;
 
-  @service naviMetadata!: NaviMetadataService;
+  @service declare naviMetadata: NaviMetadataService;
 
   /**
    * @property {Number} _pollingInterval - number of ms between fetch requests during async request polling
@@ -276,10 +275,9 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param id
    * @returns Promise with the updated asyncQuery's id and status
    */
-  cancelAsyncQuery(id: string, dataSourceName?: string, options: RequestOptions = {}) {
+  cancelAsyncQuery(id: string, dataSourceName: string, options: RequestOptions = {}) {
     const headers = options.customHeaders || {};
     const mutation: DocumentNode = GQLQueries['asyncFactsCancel'];
-    dataSourceName = dataSourceName || getDefaultDataSource().name;
     return this.apollo.mutate({ mutation, variables: { id }, context: { dataSourceName, headers } });
   }
 
@@ -287,10 +285,9 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param id
    * @returns Promise that resolves to the result of the AsyncQuery fetch query
    */
-  fetchAsyncQuery(id: string, dataSourceName?: string, options: RequestOptions = {}) {
+  fetchAsyncQuery(id: string, dataSourceName: string, options: RequestOptions = {}) {
     const headers = options.customHeaders || {};
     const query: DocumentNode = GQLQueries['asyncFactsQuery'];
-    dataSourceName = dataSourceName || getDefaultDataSource().name;
     return this.apollo.query({ query, variables: { ids: [id] }, context: { dataSourceName, headers } });
   }
 
