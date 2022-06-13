@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  *
  * Usage:
@@ -89,7 +89,7 @@ export default class ReportView extends Component<ReportViewArgs> {
    * whether or not there is data to display
    */
   get hasNoData() {
-    return this.args.response?.meta.pagination?.numberOfResults === 0;
+    return this.args.response?.rows?.length === 0;
   }
 
   @action

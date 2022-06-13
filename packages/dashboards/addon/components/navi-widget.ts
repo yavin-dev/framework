@@ -93,6 +93,13 @@ export default class NaviWidget extends Component<NaviWidgetArgs> {
     return isSuccessful ? arr(value as WidgetData) : null;
   }
 
+  /**
+   * whether or not there is data to display
+   */
+  get hasNoData() {
+    return this.data?.firstObject?.response?.rows?.length === 0;
+  }
+
   @action
   scrollIntoView(element: HTMLElement) {
     if (this.args.isHighlighted) {
