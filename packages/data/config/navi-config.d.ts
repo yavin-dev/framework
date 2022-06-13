@@ -3,8 +3,8 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 declare module 'navi-config' {
-  import { NaviConfig } from '@yavin/client/config/datasources';
-  export default interface NaviDataConfig extends NaviConfig {
+  import { YavinClientConfig } from '@yavin/client/config/datasources';
+  export default interface NaviDataConfig extends YavinClientConfig {
     availability?: {
       timeoutMs?: number;
       cacheMs?: number;

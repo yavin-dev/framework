@@ -7,14 +7,14 @@ import { Client } from '@yavin/client';
 import config from 'ember-get-config';
 
 export default class YavinClientService extends Service {
-  private client: Client;
+  #client: Client;
   constructor() {
     super(...arguments);
-    this.client = new Client(config.navi);
+    this.#client = new Client(config.navi);
   }
 
   get clientConfig() {
-    return this.client.clientConfig;
+    return this.#client.clientConfig;
   }
 }
 

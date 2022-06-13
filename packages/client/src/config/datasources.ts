@@ -56,7 +56,7 @@ interface DimensionCacheConfig {
   maxSize: number;
 }
 
-export interface NaviConfig {
+export interface YavinClientConfig {
   dataSources: DataSourceConfig[];
   defaultDataSource?: string;
   cardinalities: CardinalityConfig;
@@ -64,13 +64,13 @@ export interface NaviConfig {
   dimensionCache: DimensionCacheConfig;
 }
 
-export class ClientConfig implements NaviConfig {
+export class ClientConfig implements YavinClientConfig {
   dataSources: DataSourceConfig[];
   defaultDataSource?: string;
   cardinalities: CardinalityConfig;
   defaultTimeGrain?: Grain;
   dimensionCache: DimensionCacheConfig;
-  constructor(config: NaviConfig) {
+  constructor(config: YavinClientConfig) {
     this.dataSources = config.dataSources;
     this.cardinalities = config.cardinalities;
     this.defaultDataSource = config.defaultDataSource;
