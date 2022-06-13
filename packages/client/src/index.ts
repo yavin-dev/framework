@@ -4,11 +4,11 @@
  */
 
 import { ClientConfig } from './config/datasources.js';
-import type { NaviConfig } from './config/datasources.js';
+import type { YavinClientConfig } from './config/datasources.js';
 
 export class Client {
   clientConfig: ClientConfig;
-  constructor(clientConfig: NaviConfig) {
+  constructor(clientConfig: YavinClientConfig) {
     this.clientConfig = new ClientConfig(clientConfig);
   }
 }
