@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { isForbidden } from 'dummy/helpers/is-forbidden';
-import { FetchError } from '@yavin/client/plugins/bard/adapter/facts';
+import { FetchError } from '@yavin/client/errors/fetch-error';
 
 module('Unit | Helper | is forbidden', function () {
   test('it returns true with rejected promise with forbidden error', function (assert) {

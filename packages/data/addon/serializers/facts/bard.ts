@@ -13,7 +13,7 @@ import { canonicalizeColumn } from '@yavin/client/utils/column';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import NaviAdapterError, { NaviErrorDetails } from '@yavin/client/errors/navi-adapter-error';
 import { FactAdapterError } from '@yavin/client/adapters/facts/interface';
-import { FetchError } from '@yavin/client/plugins/bard/adapter/facts';
+import { FetchError } from '@yavin/client/errors/fetch-error';
 
 type BardError = {
   description: string;

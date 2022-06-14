@@ -6,7 +6,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import { render, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import { assertTooltipContent } from 'ember-tooltips/test-support';
-import { FetchError } from '@yavin/client/plugins/bard/adapter/facts';
+import { FetchError } from '@yavin/client/errors/fetch-error';
 
 const WIDGET = {
   id: 1,

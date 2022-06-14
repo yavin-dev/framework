@@ -4,12 +4,12 @@
  *
  * Description: The fact adapter for the bard request v2 model.
  */
-import BardFactsAdapter from '@yavin/client/plugins/bard/adapter/facts';
+import FiliFactsAdapter from '@yavin/client/plugins/fili/adapter/facts';
 import { getOwner } from '@ember/application';
 
-export default class NaviBardFactsAdapter extends BardFactsAdapter {
+export default class NaviFiliFactsAdapter extends FiliFactsAdapter {
   static create(owner: any) {
     owner = getOwner(owner);
-    return new NaviBardFactsAdapter(owner.lookup('service:client-injector'));
+    return new NaviFiliFactsAdapter(owner.lookup('service:client-injector'));
   }
 }

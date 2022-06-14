@@ -65,6 +65,7 @@
     "test": "npm-run-all --aggregate-output --silent -n -p -c test:*"
   },
   "dependencies": {
+    "abortcontroller-polyfill": "^1.7.3",
     "core-js": "^3.22.8",
     "cross-fetch": "^3.1.5",
     "effection": "^2.0.4",

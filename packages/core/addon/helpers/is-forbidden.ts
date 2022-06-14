@@ -6,7 +6,7 @@
  */
 import { helper as buildHelper } from '@ember/component/helper';
 import NaviAdapterError from '@yavin/client/errors/navi-adapter-error';
-import { FetchError } from '@yavin/client/plugins/bard/adapter/facts';
+import { FetchError } from '@yavin/client/errors/fetch-error';
 
 export function isForbidden(reason: unknown): boolean {
   if (reason instanceof NaviAdapterError) {

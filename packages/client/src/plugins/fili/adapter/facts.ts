@@ -25,6 +25,9 @@ import { run } from 'effection';
 import type { Operation } from 'effection';
 import type MetadataService from '../../../services/interfaces/metadata.js';
 import type RequestDecoratorService from '../../../services/interfaces/request-decorator.js';
+import { FetchError } from '../../../errors/fetch-error.js';
+// Node 14 support
+import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only.js';
 
 /**
  * @deprecated TODO import this from the bard metadata serializer
@@ -32,16 +35,6 @@ import type RequestDecoratorService from '../../../services/interfaces/request-d
 type GrainWithAll = Grain | 'all';
 
 export type Query = Record<string, string | number | boolean>;
-
-export class FetchError extends Error {
-  status: number;
-  payload: Record<string, unknown> | string;
-  constructor(status: number, payload: Record<string, unknown> | string) {
-    super();
-    this.status = status;
-    this.payload = payload;
-  }
-}
 
 /**
  * @param column - dimension column
@@ -210,7 +203,7 @@ function isDateTime(column: Column | Filter | Sort) {
 export type FilterOperator = 'in' | 'notin' | 'contains';
 export type HavingOperator = 'gt' | 'gte' | 'lt' | 'lte' | 'eq' | 'neq' | 'bet' | 'nbet';
 
-export default class BardFactsAdapter extends NativeWithCreate implements NaviFactAdapter {
+export default class FiliFactsAdapter extends NativeWithCreate implements NaviFactAdapter {
   /**
    * @property namespace
    */

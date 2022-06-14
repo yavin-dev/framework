@@ -2,7 +2,7 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { FilterOperator, HavingOperator } from '@yavin/client/plugins/bard/adapter/facts';
+import { FilterOperator, HavingOperator } from '@yavin/client/plugins/fili/adapter/facts';
 import { parse, ParseResult } from 'papaparse';
 
 const parseConfig = {

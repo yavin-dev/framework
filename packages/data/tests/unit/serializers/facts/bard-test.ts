@@ -5,7 +5,7 @@ import BardFactSerializer from 'navi-data/serializers/facts/bard';
 import type { RequestV2 } from '@yavin/client/request';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
-import { FetchError } from '@yavin/client/plugins/bard/adapter/facts';
+import { FetchError } from '@yavin/client/errors/fetch-error';
 
 let Serializer: BardFactSerializer;
 
