@@ -1,5 +1,6 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
+import webpack from 'webpack';
 import glob from 'glob';
 import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 
@@ -32,6 +33,13 @@ export default {
       '@yavin/client': path.resolve(__dirname, '../lib/esm'),
     },
   },
+  plugins: [
+    // Allow msw node and service worker code in same file
+    new webpack.IgnorePlugin({
+      resourceRegExp: /^msw\/node$/,
+      contextRegExp: new RegExp(`^${__dirname}/.*`),
+    }),
+  ],
   output: {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist'),

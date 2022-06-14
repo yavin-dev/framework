@@ -3,6 +3,9 @@ lib
 .idea
 .vscode
 
+#Mock service worker
+mockServiceWorker.js
+
 # Dependency directories
 node_modules/
 
