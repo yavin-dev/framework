@@ -1161,9 +1161,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
     );
   });
 
-  test('_buildQuery with pagination', function (assert) {
-    assert.expect(4);
-
+  test('_buildQuery - pagination', function (assert) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest),
       {
@@ -1173,8 +1171,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
         having: 'm1-gt[0]',
         format: 'json',
       },
-      '_buildQuery correctly builds the query object for the provided request ' +
-        'without any pagination options when options passed in are undefined'
+      'it can generate the correct request without any request options or limit'
     );
 
     assert.deepEqual(
@@ -1186,8 +1183,21 @@ module('Unit | Adapter | facts/bard', function (hooks) {
         having: 'm1-gt[0]',
         format: 'json',
       },
-      '_buildQuery correctly builds the query object for the provided request ' +
-        'without any pagination options when options passed in are empty'
+      'it can generate the correct request with an empty request options obj and no limit'
+    );
+
+    assert.deepEqual(
+      Adapter._buildQuery({ ...TestRequest, limit: 22 }),
+      {
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
+        metrics: 'm1,m2,r(p=123)',
+        having: 'm1-gt[0]',
+        format: 'json',
+        page: 1,
+        perPage: 22,
+      },
+      'it can generate the correct pagination request with a request limit'
     );
 
     assert.deepEqual(
@@ -1201,9 +1211,39 @@ module('Unit | Adapter | facts/bard', function (hooks) {
         page: 1,
         perPage: 100,
       },
-      '_buildQuery correctly builds query with pagination options when options are defined'
+      'it can generate the correct pagination request with the provided pagination options'
     );
 
+    assert.deepEqual(
+      Adapter._buildQuery(TestRequest, { perPage: 100 }),
+      {
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
+        metrics: 'm1,m2,r(p=123)',
+        having: 'm1-gt[0]',
+        format: 'json',
+        page: 1,
+        perPage: 100,
+      },
+      'it defaults `page` to 1 when omitted'
+    );
+
+    assert.deepEqual(
+      Adapter._buildQuery({ ...TestRequest, limit: 22 }, { page: 1, perPage: 100 }),
+      {
+        dateTime: '2015-01-03/2015-01-04T00:00:00.000',
+        filters: 'd3|id-in["v1","v2"],d4|id-in["v3","v4"],d5|id-notin[""]',
+        metrics: 'm1,m2,r(p=123)',
+        having: 'm1-gt[0]',
+        format: 'json',
+        page: 1,
+        perPage: 100,
+      },
+      'it overrides the request limit with the pagination request options'
+    );
+  });
+
+  test('_buildQuery - format', function (assert) {
     assert.deepEqual(
       Adapter._buildQuery(TestRequest, { format: 'csv' }),
       {
@@ -1213,7 +1253,7 @@ module('Unit | Adapter | facts/bard', function (hooks) {
         having: 'm1-gt[0]',
         format: 'csv',
       },
-      '_buildQuery correctly builds query with provided format setting'
+      'it correctly builds the query with provided format setting'
     );
   });
 
