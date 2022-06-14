@@ -210,6 +210,7 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
     const extendedModel = new DimensionMetadataModel(nullInjector, {});
     const dimensionOne = new DimensionMetadataModel(
       {
+        //@ts-expect-error - mock injector
         lookup(type, name) {
           assert.equal(type, 'service', 'service is looked up');
           assert.equal(name, 'navi-metadata', 'metadata service is looked up');
@@ -220,7 +221,6 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
           };
         },
       },
-      //@ts-expect-error
       {
         id: 'dimensionOne',
         source: 'bardOne',

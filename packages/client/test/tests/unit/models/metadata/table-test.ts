@@ -5,7 +5,7 @@ import DimensionMetadataModel from '@yavin/client/models/metadata/dimension';
 import TimeDimensionMetadataModel from '@yavin/client/models/metadata/time-dimension';
 import RequestConstraintMetadataModel from '@yavin/client/models/metadata/request-constraint';
 import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
-import { nullInjector } from '../../../helpers/injector';
+import { Mock, nullInjector } from '../../../helpers/injector';
 import type MetadataServiceInterface from '@yavin/client/services/interfaces/metadata';
 import MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 
@@ -77,7 +77,7 @@ class MockMetadataService implements Partial<MetadataServiceInterface> {
 
 let Payload: TableMetadataPayload;
 let Model: TableMetadataModel;
-let MetadataService: MockMetadataService;
+let MetadataService: MetadataServiceInterface;
 
 module('Unit | Metadata Model | Table', function (hooks) {
   hooks.beforeEach(function () {
@@ -96,15 +96,8 @@ module('Unit | Metadata Model | Table', function (hooks) {
       tags: ['DISPLAY'],
     };
 
-    MetadataService = new MockMetadataService();
-    Model = new TableMetadataModel(
-      {
-        lookup(_type, _name) {
-          return MetadataService;
-        },
-      },
-      Payload
-    );
+    MetadataService = new MockMetadataService() as unknown as MetadataServiceInterface;
+    Model = new TableMetadataModel(Mock().meta(MetadataService).build(), Payload);
   });
 
   test('factory has identifierField defined', function (assert) {

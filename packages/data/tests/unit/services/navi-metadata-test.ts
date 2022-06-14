@@ -209,6 +209,23 @@ module('Unit | Service | navi-metadata', function (hooks) {
   });
 
   test('loadMetadata - multiple calls to default datasource', async function (this: Context, assert) {
+    assert.expect(1);
+
+    this.server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
+    this.server.get('/tables', function () {
+      assert.ok(true, 'initial metadata load executes a request');
+      return { tables: [] };
+    });
+    await this.service.loadMetadata();
+
+    this.server.get('/tables', function () {
+      assert.notOk(true, 'after metadata is loaded, a fetch request is not executed');
+      return { tables: [] };
+    });
+    await this.service.loadMetadata();
+  });
+
+  test('loadMetadata - multiple calls to different datasource', async function (this: Context, assert) {
     assert.expect(2);
 
     this.server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
@@ -216,29 +233,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
       assert.ok(true, 'initial metadata load executes a request');
       return { tables: [] };
     });
-    const promise1 = this.service.loadMetadata();
-    await promise1;
-
-    this.server.get('/tables', function () {
-      assert.notOk(true, 'after metadata is loaded, a fetch request is not executed');
-      return { tables: [] };
-    });
-    const promise2 = this.service.loadMetadata();
-    await promise2;
-
-    assert.equal(promise1, promise2, 'loadMetadata returns the same promise for the same datasource');
-  });
-
-  test('loadMetadata - multiple calls to different datasource', async function (this: Context, assert) {
-    assert.expect(4);
-
-    this.server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
-    this.server.get('/tables', function () {
-      assert.ok(true, 'initial metadata load executes a request');
-      return { tables: [] };
-    });
-    const defaultPromise = this.service.loadMetadata();
-    await defaultPromise;
+    await this.service.loadMetadata();
 
     this.server.urlPrefix = `${config.navi.dataSources[0].uri}/v1`;
     this.server.get('/tables', function () {
@@ -252,8 +247,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
       return { tables: [] };
     });
 
-    const bardTwoPromise1 = this.service.loadMetadata({ dataSourceName: 'bardTwo' });
-    await bardTwoPromise1;
+    await this.service.loadMetadata({ dataSourceName: 'bardTwo' });
 
     this.server.urlPrefix = `${config.navi.dataSources[1].uri}/v1`;
     this.server.get('/tables', function () {
@@ -261,15 +255,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
       return { tables: [] };
     });
 
-    const bardTwoPromise2 = this.service.loadMetadata({ dataSourceName: 'bardTwo' });
-    await bardTwoPromise2;
-
-    assert.notEqual(
-      defaultPromise,
-      bardTwoPromise1,
-      'loadMetadata returns different promises for different datasource'
-    );
-    assert.equal(bardTwoPromise1, bardTwoPromise2, 'loadMetadata returns the same promise for the same datasource');
+    await this.service.loadMetadata({ dataSourceName: 'bardTwo' });
   });
 
   test('loadMetadata - failure', async function (this: Context, assert) {

@@ -9,6 +9,5 @@ declare module 'navi-config' {
       timeoutMs?: number;
       cacheMs?: number;
     };
-    dataEpoch: string;
   }
 }

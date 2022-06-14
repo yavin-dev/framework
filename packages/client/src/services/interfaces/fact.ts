@@ -7,7 +7,7 @@ import type { Request } from '../../request.js';
 import type NaviFactsModel from '../../models/navi-facts.js';
 import type NaviFactResponse from '../../models/navi-fact-response.js';
 
-interface FactService {
+export default interface FactService {
   /**
    * Uses the adapter to get the query url for the request
    * @param request - request object
@@ -49,4 +49,8 @@ interface FactService {
   fetchPrevious(response: NaviFactResponse, request: Request): Promise<NaviFactsModel | null>;
 }
 
-export default FactService;
+declare module './registry' {
+  export default interface ServiceRegistry {
+    'navi-facts': FactService;
+  }
+}

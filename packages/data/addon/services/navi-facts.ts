@@ -11,6 +11,7 @@ import { assert } from '@ember/debug';
 import NaviFactsModel from '@yavin/client/models/navi-facts';
 import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
+import { waitFor } from '@ember/test-waiters';
 import type { TaskGenerator } from 'ember-concurrency';
 import type NaviFactAdapter from '@yavin/client/adapters/facts/interface';
 import type { RequestOptions } from '@yavin/client/adapters/facts/interface';
@@ -62,14 +63,17 @@ export default class NaviFactsService extends Service implements FactService {
     return taskFor(this.getDownloadURLTask).perform(request, options);
   }
 
+  @waitFor
   fetch(request: RequestV2, options: RequestOptions = {}) {
     return taskFor(this.fetchTask).perform(request, options);
   }
 
+  @waitFor
   fetchNext(response: NaviFactResponse, request: RequestV2) {
     return taskFor(this.fetchNextTask).perform(response, request);
   }
 
+  @waitFor
   fetchPrevious(response: NaviFactResponse, request: RequestV2) {
     return taskFor(this.fetchPreviousTask).perform(response, request);
   }

@@ -7,7 +7,7 @@
 import EmberObject from '@ember/object';
 import { inject as service } from '@ember/service';
 import { A as arr } from '@ember/array';
-import { serializeFilters } from '../facts/bard';
+import { serializeFilters } from '@yavin/client/plugins/fili/adapter/facts';
 import { task } from 'ember-concurrency';
 import { taskFor } from 'ember-concurrency-ts';
 import type { TaskGenerator } from 'ember-concurrency';

@@ -4,12 +4,11 @@ import FunctionParameterMetadataModel, {
   FunctionParameterMetadataPayload,
 } from '@yavin/client/models/metadata/function-parameter';
 import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
-import { nullInjector } from '../../../helpers/injector';
+import { Mock, nullInjector } from '../../../helpers/injector';
 import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
 import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import type DimensionService from '@yavin/client/services/interfaces/dimension';
 import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
-import type { ClientServices } from '@yavin/client/models/native-with-create';
 import type MetadataService from '@yavin/client/services/interfaces/metadata';
 import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 
@@ -74,7 +73,7 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
         );
       },
     } as DimensionService;
-    const mockMetadataService: Partial<MetadataService> = {
+    const mockMetadataService = {
       findById<K extends keyof MetadataModelRegistry>(
         _type: K,
         id: string,
@@ -84,17 +83,10 @@ module('Unit | Metadata Model | Function Parameter', function (hooks) {
         //@ts-expect-error
         return Promise.resolve(mockDimMeta);
       },
-    };
+    } as MetadataService;
+
     const tableLookupParam = new FunctionParameterMetadataModel(
-      {
-        lookup: (_type, service) => {
-          const services: Partial<Record<ClientServices, unknown>> = {
-            'navi-dimension': mockDimensionService,
-            'navi-metadata': mockMetadataService,
-          };
-          return services[service];
-        },
-      },
+      Mock().meta(mockMetadataService).dims(mockDimensionService).build(),
       {
         ...Payload,
         valueSourceType: ValueSourceType.TABLE,

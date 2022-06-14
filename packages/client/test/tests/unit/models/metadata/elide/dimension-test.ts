@@ -44,11 +44,11 @@ module('Unit | Model | metadata/elide/dimension', function (hooks) {
     assert.expect(6);
 
     const injector: Injector = {
+      //@ts-expect-error - mock injector
       lookup(type, name) {
-        assert.deepEqual(type, 'service', 'service is looked up');
-        assert.deepEqual(name, 'navi-metadata', 'metadata service is looked up');
+        assert.equal(type, 'service', 'service is looked up');
+        assert.equal(name, 'navi-metadata', 'metadata service is looked up');
         return {
-          //@ts-expect-error
           getById(type, id, dataSourceName) {
             assert.deepEqual(type, 'dimension', 'Looks up column as dimension');
             assert.deepEqual(id, Model.tableSource?.valueSource, 'Looks up column using table source');

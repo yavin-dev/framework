@@ -1,9 +1,10 @@
 import { module, test } from 'qunit';
 import NativeWithCreate, { ClientService, Injector } from '@yavin/client/models/native-with-create';
+import { Mock } from '../../../tests/helpers/injector';
 
 module('Unit | Model | native with create', function () {
   test('it exists', function (assert) {
-    const instance = new NativeWithCreate({ lookup: () => undefined }, {});
+    const instance = new NativeWithCreate(Mock().build(), {});
     assert.ok(instance, 'Factory can create classes');
   });
 
@@ -13,6 +14,7 @@ module('Unit | Model | native with create', function () {
     }
     const mockService = {};
     const injector: Injector = {
+      //@ts-expect-error - mock injector
       lookup(type, name) {
         assert.equal(type, 'service', 'looks up service');
         assert.equal(name, 'navi-dimension', 'name is passed to lookup');

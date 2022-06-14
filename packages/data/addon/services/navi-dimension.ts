@@ -6,20 +6,21 @@ import Service from '@ember/service';
 import { task } from 'ember-concurrency';
 import { setOwner, getOwner } from '@ember/application';
 import { inject as service } from '@ember/service';
-import type { TaskGenerator } from 'ember-concurrency';
-import type NaviDimensionSerializer from '@yavin/client/serializers/dimensions/interface';
-import type NaviDimensionAdapter from '@yavin/client/adapters/dimensions/interface';
-import type { DimensionFilter } from '@yavin/client/adapters/dimensions/interface';
-import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
 import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import CARDINALITY_SIZES from '@yavin/client/utils/enums/cardinality-sizes';
 import Cache from '@yavin/client/utils/classes/cache';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
 import { searchDimensionModelRecords } from '@yavin/client/utils/search';
+import { taskFor } from 'ember-concurrency-ts';
+import { waitFor } from '@ember/test-waiters';
+import type { TaskGenerator } from 'ember-concurrency';
+import type NaviDimensionSerializer from '@yavin/client/serializers/dimensions/interface';
+import type NaviDimensionAdapter from '@yavin/client/adapters/dimensions/interface';
+import type { DimensionFilter } from '@yavin/client/adapters/dimensions/interface';
+import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import type { Options as ServiceOptions } from '@yavin/client/adapters/dimensions/interface';
 import type DimensionService from '@yavin/client/services/interfaces/dimension';
-import { taskFor } from 'ember-concurrency-ts';
 import type YavinClientService from 'navi-data/services/yavin-client';
 
 type RequestType = 'all' | 'search' | 'find';
@@ -120,10 +121,12 @@ export default class NaviDimensionService extends Service implements DimensionSe
     return getOwner(this).lookup(`serializer:dimensions/${dataSourceType}`);
   }
 
+  @waitFor
   all(dimension: DimensionColumn, options: ServiceOptions = {}): Promise<NaviDimensionResponse> {
     return taskFor(this.allTask).perform(dimension, options);
   }
 
+  @waitFor
   find(
     dimension: DimensionColumn,
     predicate: DimensionFilter[],
@@ -132,6 +135,7 @@ export default class NaviDimensionService extends Service implements DimensionSe
     return taskFor(this.findTask).perform(dimension, predicate, options);
   }
 
+  @waitFor
   search(dimension: DimensionColumn, query: string, options: ServiceOptions = {}): Promise<NaviDimensionResponse> {
     return taskFor(this.searchTask).perform(dimension, query, options);
   }

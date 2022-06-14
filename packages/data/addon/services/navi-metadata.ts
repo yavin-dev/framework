@@ -10,6 +10,7 @@ import NaviMetadataSerializer, {
   EverythingMetadataPayload,
   MetadataModelMap,
 } from '@yavin/client/serializers/metadata/interface';
+import { waitFor } from '@ember/test-waiters';
 import Keg from '@yavin/client/utils/classes/keg';
 import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 import type NaviMetadataAdapter from '@yavin/client/adapters/metadata/interface';
@@ -95,6 +96,7 @@ export default class NaviMetadataService extends Service implements MetadataServ
     }
   }
 
+  @waitFor
   loadMetadata(options: RequestOptions = {}): Promise<void> {
     const dataSource = this.dataSourceFor(options.dataSourceName);
     const existingPromise = this.loadMetadataPromises[dataSource.name];
@@ -148,6 +150,7 @@ export default class NaviMetadataService extends Service implements MetadataServ
    * @param id - identifier value of model
    * @param dataSourceName - name of data source
    */
+  @waitFor
   async fetchById<K extends keyof MetadataModelRegistry>(
     type: K,
     id: string,
@@ -173,6 +176,7 @@ export default class NaviMetadataService extends Service implements MetadataServ
    * @param id - identifier value of model
    * @param dataSourceName - name of data source
    */
+  @waitFor
   findById<K extends keyof MetadataModelRegistry>(
     type: K,
     id: string,

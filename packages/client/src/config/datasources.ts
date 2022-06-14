@@ -58,6 +58,7 @@ interface DimensionCacheConfig {
 
 export interface YavinClientConfig {
   dataSources: DataSourceConfig[];
+  dataEpoch?: string;
   defaultDataSource?: string;
   cardinalities: CardinalityConfig;
   defaultTimeGrain?: Grain;
@@ -66,14 +67,16 @@ export interface YavinClientConfig {
 
 export class ClientConfig implements YavinClientConfig {
   dataSources: DataSourceConfig[];
+  dataEpoch?: string;
   defaultDataSource?: string;
   cardinalities: CardinalityConfig;
   defaultTimeGrain?: Grain;
   dimensionCache: DimensionCacheConfig;
   constructor(config: YavinClientConfig) {
     this.dataSources = config.dataSources;
-    this.cardinalities = config.cardinalities;
+    this.dataEpoch = config.dataEpoch;
     this.defaultDataSource = config.defaultDataSource;
+    this.cardinalities = config.cardinalities;
     this.defaultTimeGrain = config.defaultTimeGrain;
     this.dimensionCache = config.dimensionCache;
   }

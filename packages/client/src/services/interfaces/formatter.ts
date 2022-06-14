@@ -19,3 +19,9 @@ export default interface FormatterService {
 
   formatMetricValue(value: MetricValue, _column: MetricColumn, _row: ResponseRow, requestedFormat?: string): string;
 }
+
+declare module './registry' {
+  export default interface ServiceRegistry {
+    'navi-formatter': FormatterService;
+  }
+}
