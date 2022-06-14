@@ -167,13 +167,34 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     return filterStrings.filter((f) => f).join(';');
   }
 
+  private getPaginationOptions(request: Request, options: RequestOptions = {}) {
+    // Elide does not have a `LIMIT` concept, so map limit value to pagination concepts
+    let pagination: PaginationOptions | undefined;
+    if (request.limit) {
+      pagination = {
+        after: 0,
+        first: request.limit,
+      };
+    }
+
+    // Low level pagination options override request limit
+    if (options.perPage) {
+      const page = options.page ?? 1;
+      pagination = {
+        after: (page - 1) * options.perPage,
+        first: options.perPage,
+      };
+    }
+    return pagination;
+  }
+
   /**
    * @param request
    * @returns graphql query string for a v2 request
    */
-  private dataQueryFromRequest(request: Request, pagination?: PaginationOptions | null): string {
+  private dataQueryFromRequest(request: Request, options?: RequestOptions): string {
     const args = [];
-    const { table, columns, sorts, limit, filters } = request;
+    const { table, columns, sorts, filters } = request;
     const columnCanonicalToAlias = columns.reduce((canonicalToAlias: Record<string, string>, column, idx) => {
       const canonicalName = canonicalizeColumn(column);
       // Use 'colX' as alias so that filters/sorts can reference the alias
@@ -214,8 +235,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
     });
     sortStrings.length && args.push(`sort: "${sortStrings.join(',')}"`);
 
-    const limitStr = limit ? `first: "${limit}"` : null;
-    limitStr && args.push(limitStr);
+    const pagination = this.getPaginationOptions(request, options);
 
     if (pagination) {
       pagination.first && args.push(`first: "${pagination.first}"`);
@@ -243,20 +263,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    */
   createAsyncQuery(request: Request, options: RequestOptions = {}): Promise<AsyncQueryResponse> {
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
-    let pagination: PaginationOptions | undefined;
-    if (options.perPage) {
-      const page = options.page ?? 1;
-      if (request.limit && !(page === 1 && request.limit === options.perPage)) {
-        throw new FactAdapterError(
-          `The request specified a limit of ${request.limit} which conflicts with page=${page} and perPage=${options.perPage}`
-        );
-      }
-      pagination = {
-        after: (page - 1) * options.perPage,
-        first: options.perPage,
-      };
-    }
-    const query = this.dataQueryFromRequest(request, pagination);
+    const query = this.dataQueryFromRequest(request, options);
     const asyncAfterSeconds = DEFAULT_ASYNC_AFTER_SECONDS;
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
@@ -295,8 +302,8 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
    * @param _request
    * @param _options
    */
-  urlForFindQuery(request: Request, _options: RequestOptions): string {
-    return this.dataQueryFromRequest(request, null);
+  urlForFindQuery(request: Request, options: RequestOptions): string {
+    return this.dataQueryFromRequest(request, options);
   }
 
   /**
@@ -307,7 +314,7 @@ export default class ElideFactsAdapter extends EmberObject implements NaviFactAd
   createTableExport(request: Request, options: RequestOptions = {}): Promise<TableExportResponse> {
     const headers = options.customHeaders || {};
     const mutation: DocumentNode = GQLQueries['tableExportFactsMutation'];
-    const query = this.dataQueryFromRequest(request);
+    const query = this.dataQueryFromRequest(request, options);
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
     const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName, headers } };

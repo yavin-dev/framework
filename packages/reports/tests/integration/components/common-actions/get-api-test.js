@@ -99,7 +99,7 @@ module('Integration | Component | common actions/get api', function (hooks) {
     assert
       .dom('.get-api__api-input')
       .hasValue(
-        '{"query":"{ tableA { edges { node { col0:datestamp col1:userCount } } } }"}',
+        '{"query":"{ tableA { edges { node { col0:datestamp col1:userCount } } pageInfo { startCursor endCursor totalRecords } } }"}',
         'Modal input box has link to the current page'
       );
 

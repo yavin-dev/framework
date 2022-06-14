@@ -171,23 +171,6 @@ module('Unit | Adapter | facts/elide', function (hooks) {
           { field: 'myTable.d1', parameters: {}, type: 'dimension' },
         ],
         sorts: [],
-        filters: [],
-        limit: 5,
-        requestVersion: '2.0',
-        dataSource: 'elideOne',
-      }),
-      `{"query":"{ myTable(first: \\"5\\") { edges { node { col0:m1(p:\\"q\\") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
-      'Request with limit is queried correctly'
-    );
-
-    assert.equal(
-      adapter['dataQueryFromRequest']({
-        table: 'myTable',
-        columns: [
-          { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric' },
-          { field: 'myTable.d1', parameters: {}, type: 'dimension' },
-        ],
-        sorts: [],
         filters: [
           { field: 'myTable.m1', parameters: { p: 'q' }, type: 'metric', operator: 'bet', values: ['v1', 'v2'] },
         ],
@@ -295,54 +278,46 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     );
 
     assert.strictEqual(
-      adapter['dataQueryFromRequest']({ ...TestRequest, limit: null }, { first: 10, after: 1 }),
-      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10\\",after: \\"1\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      adapter['dataQueryFromRequest']({ ...TestRequest, limit: null }, { page: 3, perPage: 10 }),
+      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10\\",after: \\"20\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
       'The first and after pagination options are applied to the query'
     );
   });
 
-  test('createAsyncQuery - pagination', async function (assert) {
-    assert.expect(7);
+  test('getPaginationOptions', async function (assert) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
 
-    let Pagination: Parameters<ElideFactsAdapter['dataQueryFromRequest']>[1] = undefined;
-    let Message = '';
-    adapter.apollo.mutate = () => undefined;
-    adapter['dataQueryFromRequest'] = (_request, pagination) => {
-      assert.deepEqual(pagination, Pagination, Message);
-      return '';
-    };
-
-    assert.throws(
-      () => adapter.createAsyncQuery(TestRequest, { perPage: 2 }),
-      /The request specified a limit of 10000 which conflicts with page=1 and perPage=2/,
-      'The request cannot specify a different limit and perPage'
+    assert.deepEqual(
+      adapter['getPaginationOptions'](TestRequest, {}),
+      { first: 10000, after: 0 },
+      'request `limit` is translated to the correct pagination options'
     );
 
-    assert.throws(
-      () => adapter.createAsyncQuery(TestRequest, { perPage: 1000, page: 2 }),
-      /The request specified a limit of 10000 which conflicts with page=2 and perPage=1000/,
-      'The request cannot specify a different limit and perPage'
+    assert.deepEqual(
+      adapter['getPaginationOptions'](TestRequest, { perPage: 3, page: 2 }),
+      { first: 3, after: 3 },
+      'specifying `perPage` and `page` overrides request limit'
     );
-
-    Pagination = { first: 10000, after: 0 };
-    Message = 'A limit and perPage that are equal is allowed';
-    await adapter.createAsyncQuery(TestRequest, { perPage: 10000 });
-
-    Pagination = { first: 10000, after: 0 };
-    Message = 'A limit and perPage that are equal is allowed if page=1';
-    await adapter.createAsyncQuery(TestRequest, { perPage: 10000, page: 1 });
 
     const limitless = { ...TestRequest, limit: null };
-    Pagination = { first: 3, after: 3 };
-    Message = 'Specifying perPage and page is translated correctly';
-    await adapter.createAsyncQuery(limitless, { perPage: 3, page: 2 });
 
-    Pagination = { first: 4, after: 12 };
-    await adapter.createAsyncQuery(limitless, { perPage: 4, page: 4 });
+    assert.deepEqual(
+      adapter['getPaginationOptions'](limitless, { perPage: 4, page: 3 }),
+      { first: 4, after: 8 },
+      'pagination options work without a limit'
+    );
 
-    Pagination = { first: 4, after: 4 };
-    await adapter.createAsyncQuery(limitless, { perPage: 4, page: 2 });
+    assert.deepEqual(
+      adapter['getPaginationOptions'](limitless, { perPage: 4 }),
+      { first: 4, after: 0 },
+      'if `page` is omitted it defaults to the first page'
+    );
+
+    assert.deepEqual(
+      adapter['getPaginationOptions'](limitless, {}),
+      undefined,
+      '`undefined` is return if limit and pagination is not specified'
+    );
   });
 
   test('createAsyncQuery - success', async function (assert) {
@@ -1132,8 +1107,8 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     assert.equal(
       decodeURIComponent(adapter.urlForFindQuery(TestRequest, {})),
-      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10000\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } } }"}`,
-      'urlForFindQuery correctly built the query for the provided request with no pagination info'
+      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10000\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      'urlForFindQuery correctly built the query for the provided request'
     );
   });
 });
