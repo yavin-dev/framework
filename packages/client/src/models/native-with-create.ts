@@ -54,3 +54,7 @@ export function ClientService<T extends NativeWithCreate, S extends ClientServic
     return createGetter(...(args as [T, string, any]), ['service', dependencyId]);
   };
 }
+
+export function getInjector<T extends NativeWithCreate>(obj: T) {
+  return obj[INJECTOR];
+}

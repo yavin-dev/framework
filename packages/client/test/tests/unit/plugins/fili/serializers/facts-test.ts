@@ -1,19 +1,16 @@
 import { module, test } from 'qunit';
-import { setupTest } from 'ember-qunit';
-import { TestContext } from 'ember-test-helpers';
-import BardFactSerializer from 'navi-data/serializers/facts/bard';
+import FiliFactSerializer from '@yavin/client/plugins/fili/serializers/facts';
 import type { RequestV2 } from '@yavin/client/request';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 import { FetchError } from '@yavin/client/errors/fetch-error';
+import { nullInjector } from '../../../../helpers/injector';
 
-let Serializer: BardFactSerializer;
+let Serializer: FiliFactSerializer;
 
-module('Unit | Serializer | facts/bard', function (hooks) {
-  setupTest(hooks);
-
-  hooks.beforeEach(function (this: TestContext) {
-    Serializer = this.owner.lookup('serializer:facts/bard');
+module('Unit | Plugins | Fili | Serializers | facts', function (hooks) {
+  hooks.beforeEach(function () {
+    Serializer = new FiliFactSerializer(nullInjector);
   });
 
   test('normalize - empty rows', function (assert) {

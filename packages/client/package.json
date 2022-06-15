@@ -58,7 +58,8 @@
     "prepare": "npm run build",
     "lint:ts": "tsc --noEmit",
     "lint": "npm-run-all --silent -c lint:*",
-    "build:test:web": "npm run build:js:esm && webpack --config test/webpack.config.js",
+    "build:service-worker": "shx --silent ls mockServiceWorker.js || msw init .",
+    "build:test:web": "npm run build:service-worker && npm run build:js:esm && webpack --config test/webpack.config.js",
     "build:test:node": "npm run build:js:cjs && shx rm -rf test/dist/build && tsc -p test/tsconfig.json && node set-package-type test/dist/build commonjs",
     "test:web": "testem ci --file testem.cjs",
     "test:node": "npm run build:test:node && qunit --require ./test/dist/build/test/setup.js ./test/dist/build/test/tests/**/*",
@@ -79,6 +80,7 @@
     "@babel/plugin-proposal-decorators": "^7.18.2",
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-typescript": "^7.17.12",
+    "@types/debug": "^4.1.7",
     "@types/lodash": "^4.14.182",
     "@types/module-alias": "^2.0.1",
     "@types/node": "^16.4.2",
@@ -86,6 +88,7 @@
     "babel-plugin-import-graphql": "^2.8.1",
     "graphql": "^16.5.0",
     "module-alias": "^2.2.2",
+    "msw": "^0.42.1",
     "npm-run-all": "^4.1.5",
     "qunit": "^2.19.1",
     "shx": "^0.3.4",
@@ -101,5 +104,8 @@
   },
   "volta": {
     "extends": "../../package.json"
+  },
+  "msw": {
+    "workerDirectory": ""
   }
 }
