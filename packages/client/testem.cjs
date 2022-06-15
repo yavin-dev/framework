@@ -3,11 +3,10 @@
 module.exports = {
   test_page: 'test/tests.html?hidepassed',
   before_tests: 'npm run build:test:web',
-  src_files: ['src/**/*', 'test/tests/**/*'],
+  src_files: ['mockServiceWorker.js', 'src/**/*', 'test/tests/**/*'],
   launch_in_ci: ['Chrome'],
   launch_in_dev: ['Chrome'],
   browser_start_timeout: 10,
-  serve_files: ['mockServiceWorker.js'],
   browser_args: {
     Chrome: {
       ci: [
