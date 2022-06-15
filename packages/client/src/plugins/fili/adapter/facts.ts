@@ -398,14 +398,37 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
     return `${host}/${namespace}/${table}/${timeGrain}${dimensions}/`;
   }
 
+  private _buildPagination(request: Request, options: RequestOptions = {}) {
+    // Fili does not have a `LIMIT` concept, so map limit value to pagination concepts
+    let pagination: { page: number; perPage: number } | undefined;
+    if (request.limit) {
+      pagination = {
+        page: 1,
+        perPage: request.limit,
+      };
+    }
+
+    // Low level pagination options override request limit
+    if (options.perPage) {
+      const page = options.page ?? 1;
+
+      pagination = {
+        page,
+        perPage: options.perPage,
+      };
+    }
+    return pagination;
+  }
+
   /**
    * Builds a query object for a request
    */
-  _buildQuery(request: Request, options?: RequestOptions): Query {
+  _buildQuery(request: Request, options: RequestOptions = {}): Query {
     const filters = this._buildFiltersParam(request);
     const having = this._buildHavingParam(request);
     const sort = this._buildSortParam(request);
     const rollupTo = this._buildRollupParam(request);
+    const pagination = this._buildPagination(request, options) ?? {};
 
     const query: Query = {
       dateTime: this._buildDateTimeParam(request),
@@ -417,13 +440,10 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
       ...(request.rollup?.grandTotal === true ? { rollupGrandTotal: true } : {}),
       format: options?.format ?? 'json',
       ...(options?.fileName ? { filename: options.fileName } : {}),
+      ...pagination,
     };
 
-    const { page, perPage, cache, queryParams } = options || {};
-    if (page && perPage) {
-      query.page = page;
-      query.perPage = perPage;
-    }
+    const { cache, queryParams } = options;
 
     if (cache === false) {
       query._cache = false;
