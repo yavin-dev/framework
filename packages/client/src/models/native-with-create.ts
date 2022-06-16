@@ -55,6 +55,10 @@ export function ClientService<T extends NativeWithCreate, S extends ClientServic
   };
 }
 
-export function getInjector<T extends NativeWithCreate>(obj: T) {
+export function getInjector(obj: any): Injector {
   return obj[INJECTOR];
+}
+
+export function setInjector(obj: any, injector: Injector) {
+  obj[INJECTOR] = injector;
 }

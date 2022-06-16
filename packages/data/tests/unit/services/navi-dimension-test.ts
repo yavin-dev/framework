@@ -7,6 +7,7 @@ import GraphQLScenario from 'navi-data/mirage/scenarios/elide-one';
 import EmberObject from '@ember/object';
 import DimensionMetadataModel, { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
+import hostConfig from 'ember-get-config';
 import type NaviDimensionAdapter from '@yavin/client/adapters/dimensions/interface';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type { DimensionFilter, Options } from '@yavin/client/adapters/dimensions/interface';
@@ -16,7 +17,7 @@ import type { Server } from 'miragejs';
 import type { AsyncQueryResponse } from '@yavin/client/adapters/facts/interface';
 import type NaviDimensionSerializer from '@yavin/client/serializers/dimensions/interface';
 import type { ResponseV1 } from '@yavin/client/serializers/facts/interface';
-import type YavinClientService from 'navi-data/services/yavin-client';
+import YavinClientService from 'navi-data/services/yavin-client';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
@@ -68,11 +69,10 @@ module('Unit | Service | navi-dimension', function (hooks) {
 
   test('all - pagination - generic', async function (this: TestContext, assert) {
     assert.expect(15);
-    const client: YavinClientService = this.owner.lookup('service:yavin-client');
     const dataSourceType = 'mock';
     const dataSourceName = 'test-example';
 
-    client.clientConfig.dataSources = [
+    hostConfig.navi.dataSources = [
       { type: dataSourceType, uri: 'fake', name: dataSourceName, displayName: dataSourceName },
     ];
 
@@ -98,6 +98,9 @@ module('Unit | Service | navi-dimension', function (hooks) {
     }
     this.owner.register(`serializer:dimensions/${dataSourceType}`, MockSerializer);
 
+    // reload client to pick up new datasource, adapter, and serializer
+    this.owner.unregister('service:yavin-client');
+    this.owner.register('service:yavin-client', YavinClientService);
     const service = this.owner.lookup('service:navi-dimension') as NaviDimensionService;
     const columnMetadata = { source: dataSourceName } as DimensionMetadataModel;
 

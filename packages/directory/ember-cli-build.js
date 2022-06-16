@@ -10,6 +10,9 @@ module.exports = function (defaults) {
     sassOptions: {
       includePaths: ['node_modules/ember-basic-dropdown/app/styles/'],
     },
+    autoImport: {
+      watchDependencies: ['@yavin/client'],
+    },
   });
 
   /*

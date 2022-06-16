@@ -7,6 +7,9 @@ module.exports = function (defaults) {
     'ember-cli-babel': {
       includePolyfill: true,
     },
+    autoImport: {
+      watchDependencies: ['@yavin/client'],
+    },
   });
 
   /*

@@ -4,7 +4,6 @@
  */
 import Service from '@ember/service';
 import { inject as service } from '@ember/service';
-import { getOwner } from '@ember/application';
 import { assert } from '@ember/debug';
 import NaviMetadataSerializer, {
   EverythingMetadataPayload,
@@ -38,19 +37,19 @@ export default class NaviMetadataService extends Service implements MetadataServ
   private loadMetadataPromises: Record<string, Promise<void>> = {};
 
   /**
-   * @param dataSourceType
-   * @returns  adapter instance for type
+   * @param dataSourceName
+   * @returns  adapter instance for dataSource
    */
-  private adapterFor(dataSourceType: string): NaviMetadataAdapter {
-    return getOwner(this).lookup(`adapter:metadata/${dataSourceType}`);
+  private adapterFor(dataSourceName: string): NaviMetadataAdapter {
+    return this.yavinClient.pluginConfig.adapterFor(dataSourceName, 'metadata');
   }
 
   /**
-   * @param dataSourceType
-   * @returns serializer instance for type
+   * @param dataSourceName
+   * @returns serializer instance for dataSource
    */
-  private serializerFor(dataSourceType: string): NaviMetadataSerializer {
-    return getOwner(this).lookup(`serializer:metadata/${dataSourceType}`);
+  private serializerFor(dataSourceName: string): NaviMetadataSerializer {
+    return this.yavinClient.pluginConfig.serializerFor(dataSourceName, 'metadata');
   }
 
   private dataSourceFor(dataSourceName?: string): DataSourceConfig {
@@ -87,10 +86,9 @@ export default class NaviMetadataService extends Service implements MetadataServ
     }) as Array<MetadataModelRegistry[K]>;
   }
 
-  private async loadAndProcessMetadata(dataSource: DataSourceConfig, options: RequestOptions): Promise<void> {
-    const { type: dataSourceType, name: dataSourceName } = dataSource;
-    const payload = await this.adapterFor(dataSourceType).fetchEverything(options);
-    const normalized = this.serializerFor(dataSourceType).normalize('everything', payload, dataSourceName);
+  private async loadAndProcessMetadata(dataSourceName: string, options: RequestOptions): Promise<void> {
+    const payload = await this.adapterFor(dataSourceName).fetchEverything(options);
+    const normalized = this.serializerFor(dataSourceName).normalize('everything', payload, dataSourceName);
     if (normalized) {
       this.loadEverythingMetadataIntoKeg(normalized, dataSourceName);
     }
@@ -98,20 +96,20 @@ export default class NaviMetadataService extends Service implements MetadataServ
 
   @waitFor
   loadMetadata(options: RequestOptions = {}): Promise<void> {
-    const dataSource = this.dataSourceFor(options.dataSourceName);
-    const existingPromise = this.loadMetadataPromises[dataSource.name];
+    const { name: dataSourceName } = this.dataSourceFor(options.dataSourceName);
+    const existingPromise = this.loadMetadataPromises[dataSourceName];
 
     if (existingPromise) {
       return existingPromise;
     }
 
-    const newPromise = this.loadAndProcessMetadata(dataSource, options);
+    const newPromise = this.loadAndProcessMetadata(dataSourceName, options);
 
     //cache promise so we don't execute multiple load fetches
-    this.loadMetadataPromises[dataSource.name] = newPromise;
+    this.loadMetadataPromises[dataSourceName] = newPromise;
 
     //if load fails remove from cache so we can retry
-    newPromise.catch(() => delete this.loadMetadataPromises[dataSource.name]);
+    newPromise.catch(() => delete this.loadMetadataPromises[dataSourceName]);
 
     return newPromise;
   }
@@ -157,10 +155,9 @@ export default class NaviMetadataService extends Service implements MetadataServ
     dataSourceName: string
   ): Promise<MetadataModelRegistry[K] | undefined> {
     assert('`dataSourceName` argument required', dataSourceName);
-    const { type: dataSourceType } = this.dataSourceFor(dataSourceName);
-    const rawPayload = await this.adapterFor(dataSourceType).fetchById(type, id, { dataSourceName });
+    const rawPayload = await this.adapterFor(dataSourceName).fetchById(type, id, { dataSourceName });
     const normalized = rawPayload
-      ? this.serializerFor(dataSourceType).normalize(type, rawPayload, dataSourceName)
+      ? this.serializerFor(dataSourceName).normalize(type, rawPayload, dataSourceName)
       : undefined;
 
     if (normalized) {
