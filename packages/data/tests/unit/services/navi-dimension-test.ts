@@ -72,6 +72,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
     const dataSourceType = 'mock';
     const dataSourceName = 'test-example';
 
+    const originalDataSources = hostConfig.navi.dataSources;
     hostConfig.navi.dataSources = [
       { type: dataSourceType, uri: 'fake', name: dataSourceName, displayName: dataSourceName },
     ];
@@ -187,6 +188,7 @@ module('Unit | Service | navi-dimension', function (hooks) {
     call = 0;
     await service.all({ columnMetadata }, { perPage: 4, page: 1 });
     assert.strictEqual(call, 4, 'It took 2 calls to adapter/serializer to page through all the data');
+    hostConfig.navi.dataSources = originalDataSources;
   });
 
   test('all - pagination - elide', async function (this: TestContext, assert) {
