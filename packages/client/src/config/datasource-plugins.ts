@@ -32,14 +32,15 @@ export interface DataSourcePlugins {
 type ResolvedResolvedConfig = ReturnTypesOfObject<DataSourcePlugins>;
 
 type DataSourceService = keyof DataSourcePlugins;
+type ServiceAdapter = ResolvedResolvedConfig[DataSourceService]['adapter'];
+type ServiceSerializer = ResolvedResolvedConfig[DataSourceService]['serializer'];
 
 export class DataSourcePluginConfig extends NativeWithCreate {
   @Config()
   private declare clientConfig: ClientConfig;
 
   #config: Record<string, DataSourcePlugins | undefined>;
-  #adapterCache = new Map<string, ResolvedResolvedConfig[DataSourceService]['adapter']>();
-  #serializerCache = new Map<string, ResolvedResolvedConfig[DataSourceService]['serializer']>();
+  #cache = new Map<string, ServiceAdapter | ServiceSerializer>();
 
   constructor(injector: Injector, config: Record<string, DataSourcePlugins | undefined>) {
     super(injector);
@@ -54,35 +55,34 @@ export class DataSourcePluginConfig extends NativeWithCreate {
     return this.#config[type];
   }
 
+  private getServicePluginFor<S extends keyof ResolvedResolvedConfig, T extends 'adapter' | 'serializer'>(
+    dataSourceName: string,
+    service: S,
+    type: T
+  ): ResolvedResolvedConfig[S][T] {
+    const dataSourceType = this.#getDataSourceType(dataSourceName);
+    const key = `${dataSourceType}.${service}.${type}`;
+    let serviceThing = this.#cache.get(key);
+    if (!serviceThing) {
+      const dataSourcePlugin = this.#getPluginFor(dataSourceType);
+      invariant(dataSourcePlugin, `The dataSource plugin for ${dataSourceType} must be configured`);
+      serviceThing = dataSourcePlugin[service][type](getInjector(this));
+      this.#cache.set(key, serviceThing);
+    }
+    return serviceThing;
+  }
+
   adapterFor<S extends keyof ResolvedResolvedConfig>(
     dataSourceName: string,
     service: S
   ): ResolvedResolvedConfig[S]['adapter'] {
-    const dataSourceType = this.#getDataSourceType(dataSourceName);
-    const key = `${dataSourceType}.${service}`;
-    let adapter = this.#adapterCache.get(key);
-    if (!adapter) {
-      const dataSourcePlugin = this.#getPluginFor(dataSourceType);
-      invariant(dataSourcePlugin, `The dataSource plugin for ${dataSourceType} must be configured`);
-      adapter = dataSourcePlugin[service].adapter(getInjector(this));
-      this.#adapterCache.set(key, adapter);
-    }
-    return adapter;
+    return this.getServicePluginFor(dataSourceName, service, 'adapter');
   }
 
   serializerFor<S extends keyof ResolvedResolvedConfig>(
     dataSourceName: string,
     service: S
   ): ResolvedResolvedConfig[S]['serializer'] {
-    const dataSourceType = this.#getDataSourceType(dataSourceName);
-    const key = `${dataSourceType}.${service}`;
-    let serializer = this.#serializerCache.get(key);
-    if (!serializer) {
-      const dataSourcePlugin = this.#getPluginFor(dataSourceType);
-      invariant(dataSourcePlugin, `The dataSource plugin for ${dataSourceType} must be configured`);
-      serializer = dataSourcePlugin[service].serializer(getInjector(this));
-      this.#serializerCache.set(key, serializer);
-    }
-    return serializer;
+    return this.getServicePluginFor(dataSourceName, service, 'serializer');
   }
 }
