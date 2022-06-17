@@ -10,7 +10,6 @@ import { setPackageType } from './set-package-type.mjs';
 const [_program, _file, type, watchFlag] = argv;
 
 const watch = watchFlag === '--watch';
-console.log('isWatching', watch);
 
 const targetDir = `lib/${type}`;
 sh.rm('-rf', targetDir);

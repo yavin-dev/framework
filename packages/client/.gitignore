@@ -8,6 +8,7 @@ mockServiceWorker.js
 
 # Typescript Build Cache
 tsconfig-types.tsbuildinfo
+tsconfig.tsbuildinfo
 
 # Dependency directories
 node_modules/
