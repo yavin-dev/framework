@@ -3,14 +3,18 @@ import type { SetupServerApi } from 'msw/node';
 
 const IS_NODE = typeof process !== 'undefined' && process.versions != null && process.versions.node != null;
 
+let server: SetupServerApi | SetupWorkerApi | null = null;
 async function getServer() {
+  if (server) {
+    return server;
+  }
   if (IS_NODE) {
-    const server = (await import('msw/lib/node/index.js')).setupServer();
-    server.listen();
+    server = (await import('msw/node')).setupServer();
+    server.listen({ onUnhandledRequest: 'error' });
     return server;
   } else {
-    const server = (await import('msw')).setupWorker();
-    await server.start();
+    server = (await import('msw')).setupWorker();
+    await server.start({ onUnhandledRequest: 'error' });
     return server;
   }
 }
@@ -20,19 +24,32 @@ export interface WithServer {
 }
 
 /**
+ * Shutdown server after all tests have finished because calling
+ * `setupServer` will polyfill request interception multiple times
+ * and then fail to intercept requests.
+ */
+QUnit.done(() => {
+  if (!server) {
+    return;
+  }
+  if ('close' in server) {
+    server.close();
+  } else if ('stop' in server) {
+    server.stop();
+  }
+  server = null;
+});
+
+/**
  * Sets up the Service Worker (for web) and Server (for node) for tests
  * @param hooks - qunit test hooks
  */
 export default function setupServer(hooks: NestedHooks) {
-  hooks.beforeEach(async function (this: WithServer) {
+  hooks.before(async function (this: WithServer) {
     this.server = await getServer();
   });
 
-  hooks.afterEach(function (this: WithServer) {
-    if ('close' in this.server) {
-      this.server.close();
-    } else if ('stop' in this.server) {
-      this.server.stop();
-    }
+  hooks.beforeEach(function (this: WithServer) {
+    this.server.resetHandlers();
   });
 }
