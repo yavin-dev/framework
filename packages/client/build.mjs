@@ -22,7 +22,7 @@ build({
   format: type,
   outdir: targetDir,
   platform: 'neutral',
-  watch: true,
+  watch,
   plugins: [
     graphqlLoaderPlugin(),
     esbuildPluginBrowserslist(browserslist(null, { config: './.browserslistrc' }), {
