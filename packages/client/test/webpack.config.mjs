@@ -6,11 +6,11 @@ import TsconfigPathsPlugin from 'tsconfig-paths-webpack-plugin';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
-const getTests = () => glob.sync(`${__dirname}/tests/**/*-test.{js,ts}`);
+const getTests = () => glob.sync(path.join(__dirname, './tests/**/*-test.{js,ts}'));
 
 export default {
   mode: 'development',
-  entry: () => ['./tests.ts', ...getTests()],
+  entry: () => [path.join(__dirname, './tests.ts'), ...getTests()],
   context: path.resolve(__dirname),
   target: 'web',
   devtool: 'inline-source-map',
@@ -20,9 +20,13 @@ export default {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
+        test: /\.ts$/,
+        loader: 'esbuild-loader',
         exclude: /node_modules/,
+        options: {
+          loader: 'ts',  // Or 'ts' if you don't need tsx
+          target: 'es2015'
+        }
       },
     ],
   },
@@ -36,7 +40,7 @@ export default {
   plugins: [
     // Allow msw node and service worker code in same file
     new webpack.IgnorePlugin({
-      resourceRegExp: /^msw\/node$/,
+      resourceRegExp: /^msw\/lib\/node\/index.js$/,
       contextRegExp: new RegExp(`^${__dirname}/.*`),
     }),
   ],

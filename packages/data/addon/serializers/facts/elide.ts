@@ -57,7 +57,9 @@ export default class ElideFactsSerializer extends EmberObject implements NaviFac
    * @param request - request object
    */
   private processResponse(payload: string, request: RequestV2, options: RequestOptions): NaviFactResponse {
-    const response = JSON.parse(payload) as ExecutionResult;
+    const response = JSON.parse(payload) as ExecutionResult<
+      Record<string, { pageInfo: PageInfo; edges: Array<{ node: Record<string, unknown> }> }>
+    >;
     const { table } = request;
     const elideFields = request.columns.map((_c, idx) => `col${idx}`);
     const normalizedFields = request.columns.map((col) => canonicalizeColumn(col));

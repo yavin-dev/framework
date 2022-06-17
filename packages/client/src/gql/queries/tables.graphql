@@ -1,4 +1,4 @@
-# import * from "../fragments/table.graphql"
+# import ../fragments/table.graphql
 
 query GetTables($filter: String!) {
   table(filter: $filter) {

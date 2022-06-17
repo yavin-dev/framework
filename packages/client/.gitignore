@@ -3,8 +3,11 @@ lib
 .idea
 .vscode
 
-#Mock service worker
+# Mock service worker
 mockServiceWorker.js
+
+# Typescript Build Cache
+tsconfig-types.tsbuildinfo
 
 # Dependency directories
 node_modules/
