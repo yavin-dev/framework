@@ -11,6 +11,9 @@ module.exports = function (defaults) {
       theme: false,
     },
     sassOptions: {},
+    autoImport: {
+      watchDependencies: ['@yavin/client'],
+    },
   });
 
   /*

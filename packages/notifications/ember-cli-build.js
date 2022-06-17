@@ -7,6 +7,7 @@ module.exports = function (defaults) {
     // Add options here
     autoImport: {
       exclude: ['navi-core'],
+      watchDependencies: ['@yavin/client'],
     },
   });
 

@@ -106,19 +106,19 @@ export default class NaviDimensionService extends Service implements DimensionSe
   }
 
   /**
-   * @param dataSourceType
-   * @returns  adapter instance for type
+   * @param dataSourceName
+   * @returns  adapter instance for dataSource
    */
-  private adapterFor(dataSourceType: string): NaviDimensionAdapter {
-    return getOwner(this).lookup(`adapter:dimensions/${dataSourceType}`);
+  private adapterFor(dataSourceName: string): NaviDimensionAdapter {
+    return this.yavinClient.pluginConfig.adapterFor(dataSourceName, 'dimensions');
   }
 
   /**
-   * @param dataSourceType
-   * @returns serializer instance for type
+   * @param dataSourceName
+   * @returns serializer instance for dataSource
    */
-  private serializerFor(dataSourceType: string): NaviDimensionSerializer {
-    return getOwner(this).lookup(`serializer:dimensions/${dataSourceType}`);
+  private serializerFor(dataSourceName: string): NaviDimensionSerializer {
+    return this.yavinClient.pluginConfig.serializerFor(dataSourceName, 'dimensions');
   }
 
   @waitFor
@@ -152,9 +152,9 @@ export default class NaviDimensionService extends Service implements DimensionSe
       return cacheResponse;
     }
 
-    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(dimension.columnMetadata.source);
-    const adapter = this.adapterFor(dataSourceType);
-    const serializer = this.serializerFor(dataSourceType);
+    const dataSourceName = dimension.columnMetadata.source;
+    const adapter = this.adapterFor(dataSourceName);
+    const serializer = this.serializerFor(dataSourceName);
     let moreResults = true;
     let paginationOptions: Pick<ServiceOptions, 'page' | 'perPage'> = {};
     let values: NaviDimensionModel[] = [];
@@ -199,10 +199,10 @@ export default class NaviDimensionService extends Service implements DimensionSe
     predicate: DimensionFilter[],
     options: ServiceOptions = {}
   ): TaskGenerator<NaviDimensionResponse> {
-    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(dimension.columnMetadata.source);
-    const adapter = this.adapterFor(dataSourceType);
+    const dataSourceName = dimension.columnMetadata.source;
+    const adapter = this.adapterFor(dataSourceName);
     const payload: unknown = yield adapter.find(dimension, predicate, options);
-    return this.serializerFor(dataSourceType).normalize(dimension, payload, options);
+    return this.serializerFor(dataSourceName).normalize(dimension, payload, options);
   }
 
   /**
@@ -228,10 +228,10 @@ export default class NaviDimensionService extends Service implements DimensionSe
       return this._dimensionCache.getSearchFromAll(allResponse, query);
     }
 
-    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(dimension.columnMetadata.source);
-    const adapter = this.adapterFor(dataSourceType);
+    const dataSourceName = dimension.columnMetadata.source;
+    const adapter = this.adapterFor(dataSourceName);
     const payload: unknown = yield adapter.search(dimension, query, options);
-    const results = this.serializerFor(dataSourceType).normalize(dimension, payload, options);
+    const results = this.serializerFor(dataSourceName).normalize(dimension, payload, options);
 
     return results;
   }

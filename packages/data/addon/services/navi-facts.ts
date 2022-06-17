@@ -26,19 +26,19 @@ export default class NaviFactsService extends Service implements FactService {
   declare yavinClient: YavinClientService;
 
   /**
-   * @param type
-   * @returns adapter instance for type
+   * @param dataSourceName
+   * @returns adapter instance for dataSource
    */
-  _adapterFor(type = 'bard'): NaviFactAdapter {
-    return getOwner(this).lookup(`adapter:facts/${type}`) as NaviFactAdapter;
+  _adapterFor(dataSourceName: string): NaviFactAdapter {
+    return this.yavinClient.pluginConfig.adapterFor(dataSourceName, 'facts');
   }
 
   /**
-   * @param type
-   * @returns serializer instance for type
+   * @param dataSourceName
+   * @returns serializer instance for dataSource
    */
-  _serializerFor(type = 'bard'): NaviFactSerializer {
-    return getOwner(this).lookup(`serializer:facts/${type}`) as NaviFactSerializer;
+  _serializerFor(dataSourceName: string): NaviFactSerializer {
+    return this.yavinClient.pluginConfig.serializerFor(dataSourceName, 'facts');
   }
 
   /**
@@ -48,8 +48,7 @@ export default class NaviFactsService extends Service implements FactService {
    * @returns url for the request
    */
   getURL(request: RequestV2, options: RequestOptions = {}) {
-    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(request.dataSource);
-    const adapter = this._adapterFor(dataSourceType);
+    const adapter = this._adapterFor(request.dataSource);
     let query;
     try {
       query = adapter.urlForFindQuery(request, options);
@@ -85,8 +84,7 @@ export default class NaviFactsService extends Service implements FactService {
    * @returns - url for the request
    */
   @task *getDownloadURLTask(request: RequestV2, options: RequestOptions): TaskGenerator<string> {
-    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(request.dataSource);
-    const adapter = this._adapterFor(dataSourceType);
+    const adapter = this._adapterFor(request.dataSource);
     return yield adapter.urlForDownloadQuery(request, options);
   }
 
@@ -97,9 +95,8 @@ export default class NaviFactsService extends Service implements FactService {
    * @returns - Promise with the bard response model object
    */
   @task *fetchTask(request: RequestV2, options: RequestOptions = {}): TaskGenerator<NaviFactsModel> {
-    const { type: dataSourceType } = this.yavinClient.clientConfig.getDataSource(request.dataSource);
-    const adapter = this._adapterFor(dataSourceType);
-    const serializer = this._serializerFor(dataSourceType);
+    const adapter = this._adapterFor(request.dataSource);
+    const serializer = this._serializerFor(request.dataSource);
 
     try {
       const payload: unknown = yield adapter.fetchDataForRequest(request, options);
