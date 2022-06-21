@@ -1,22 +1,24 @@
+import type { DataSourcePluginConfig } from '@yavin/client/config/datasource-plugins';
 import type { ClientConfig } from '@yavin/client/config/datasources';
-import type { Injector } from '@yavin/client/models/native-with-create';
+import type { Injector, LookupType } from '@yavin/client/models/native-with-create';
 import type DimensionService from '@yavin/client/services/interfaces/dimension';
 import type FactService from '@yavin/client/services/interfaces/fact';
 import type MetadataService from '@yavin/client/services/interfaces/metadata';
 import type ServiceRegistry from '@yavin/client/services/interfaces/registry';
 import type RequestDecoratorService from '@yavin/client/services/interfaces/request-decorator';
+import invariant from 'tiny-invariant';
 
 interface MockConfig extends Partial<ServiceRegistry> {
-  config?: ClientConfig;
+  client?: ClientConfig;
+  plugin?: DataSourcePluginConfig;
 }
 
 export const mockInjector = (config: MockConfig = {}) =>
   ({
-    lookup(type, name) {
-      if (type === 'service' && name && config[name]) {
-        return config[name];
-      } else if (type === 'config' && config.config) {
-        return config.config;
+    lookup(type: LookupType, name: string) {
+      invariant(['config', 'service'].includes(type), 'Valid lookup type');
+      if (name in config) {
+        return config[name as keyof MockConfig];
       }
       return null;
     },
@@ -28,7 +30,7 @@ export const Mock = (config: MockConfig = {}) => {
     dims: (service: DimensionService) => Mock({ ...config, 'navi-dimension': service }),
     facts: (service: FactService) => Mock({ ...config, 'navi-facts': service }),
     decorator: (service: RequestDecoratorService) => Mock({ ...config, 'request-decorator': service }),
-    config: (clientConfig: ClientConfig) => Mock({ ...config, config: clientConfig }),
+    config: (clientConfig: ClientConfig) => Mock({ ...config, client: clientConfig }),
     build: () => mockInjector(config),
   };
 };

@@ -221,6 +221,7 @@ module('Unit | Metadata Model | Dimension', function (hooks) {
           };
         },
       },
+      //@ts-expect-error - partial dimension payload
       {
         id: 'dimensionOne',
         source: 'bardOne',

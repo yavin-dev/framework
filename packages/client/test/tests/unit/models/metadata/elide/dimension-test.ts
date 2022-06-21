@@ -49,7 +49,7 @@ module('Unit | Model | metadata/elide/dimension', function (hooks) {
         assert.equal(type, 'service', 'service is looked up');
         assert.equal(name, 'navi-metadata', 'metadata service is looked up');
         return {
-          getById(type, id, dataSourceName) {
+          getById(type: string, id: string, dataSourceName: string) {
             assert.deepEqual(type, 'dimension', 'Looks up column as dimension');
             assert.deepEqual(id, Model.tableSource?.valueSource, 'Looks up column using table source');
             assert.deepEqual(dataSourceName, Model.source, 'Looks up column using current datasource');
