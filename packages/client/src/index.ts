@@ -6,7 +6,6 @@
 import { ClientConfig } from './config/datasources.js';
 import { DataSourcePluginConfig } from './config/datasource-plugins.js';
 import { getInjector, setInjector } from './models/native-with-create.js';
-import invariant from 'tiny-invariant';
 import type { YavinClientConfig } from './config/datasources.js';
 import type { DataSourcePlugins } from './config/datasource-plugins.js';
 import type { ServicePlugins, Services } from './config/service-plugins.js';
@@ -37,11 +36,11 @@ export class Client {
 
   constructor(clientConfig: YavinClientConfig, plugins: PluginConfig) {
     this.clientConfig = new ClientConfig(clientConfig);
-    setInjector(this, this.#createInjector(this.clientConfig, plugins.servicePlugins));
+    setInjector(this, this.#createInjector(plugins.servicePlugins));
     this.pluginConfig = new DataSourcePluginConfig(getInjector(this), plugins.dataSourcePlugins);
   }
 
-  #createInjector(clientConfig: ClientConfig, servicePlugins: ServicePlugins): Injector {
+  #createInjector(servicePlugins: ServicePlugins): Injector {
     const serviceToPluginNames: Record<keyof ServiceRegistry, keyof PluginConfig['servicePlugins']> = {
       'request-decorator': 'requestDecorator',
       'navi-formatter': 'formatter',
@@ -50,21 +49,22 @@ export class Client {
       'navi-facts': 'facts',
     };
     const serviceCache: Partial<Services> = {};
+    const self = this;
     const injector: Injector = {
-      lookup<T extends ClientServices>(type: LookupType, service?: T): ClientConfig | ServiceRegistry[T] {
+      lookup<T extends ClientServices>(type: LookupType, service: string) {
         if (type === 'config') {
-          return clientConfig;
-        }
-        invariant(service, 'must be looking up service by name');
-        const serviceName = serviceToPluginNames[service];
-        let serviceInstance;
-        if (serviceCache[serviceName]) {
-          serviceInstance = serviceCache[serviceName];
+          return { client: self.clientConfig, plugin: self.pluginConfig }[service];
         } else {
-          serviceInstance = servicePlugins[serviceName](injector) as Services[typeof serviceName];
-          serviceCache[serviceName] = serviceInstance;
+          const serviceName = serviceToPluginNames[service as T];
+          let serviceInstance;
+          if (serviceCache[serviceName]) {
+            serviceInstance = serviceCache[serviceName];
+          } else {
+            serviceInstance = servicePlugins[serviceName](injector) as Services[typeof serviceName];
+            serviceCache[serviceName] = serviceInstance;
+          }
+          return serviceInstance as ServiceRegistry[T];
         }
-        return serviceInstance as ServiceRegistry[T];
       },
     };
     return injector;

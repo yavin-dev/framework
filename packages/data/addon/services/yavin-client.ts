@@ -6,6 +6,7 @@ import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import { Client } from '@yavin/client';
 import config from 'ember-get-config';
+import { getInjector } from '@yavin/client/models/native-with-create';
 import type NaviMetadataAdapter from '@yavin/client/adapters/metadata/interface';
 import type MetadataSerializer from '@yavin/client/serializers/metadata/interface';
 import type NaviFactAdapter from '@yavin/client/adapters/facts/interface';
@@ -73,6 +74,10 @@ export default class YavinClientService extends Service {
   }
   get pluginConfig() {
     return this.#client.pluginConfig;
+  }
+
+  get injector() {
+    return getInjector(this.#client);
   }
 }
 
