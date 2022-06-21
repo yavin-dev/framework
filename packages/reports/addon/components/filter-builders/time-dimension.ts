@@ -160,6 +160,11 @@ export function valuesForOperator(
   return [];
 }
 
+/**
+ * looks at the values and grain of a filter to determine what type of filter it is
+ * @param {FilterLike} filter the filter you're trying to determine the internal operator for
+ * @returns InternalOperatorType
+ */
 export function internalOperatorForValues(filter: FilterLike): InternalOperatorType {
   const { values, operator } = filter;
   const filterGrain = filter.parameters.grain as Grain;
@@ -187,9 +192,12 @@ export function internalOperatorForValues(filter: FilterLike): InternalOperatorT
   if (start === 'current' && end === 'next') {
     internalId = OPERATORS.current;
   } else if (
+    // check that lookbackDuration & lookbackGrain exist
     lookbackDuration &&
     lookbackGrain &&
+    // check that lookback is of valid grain
     ['day', 'week', 'month', 'year'].includes(lookbackGrain) &&
+    // check that lookback grain matches filter grain
     (lookbackGrain === getPeriodForGrain(filterGrain) ||
       (filterGrain === 'quarter' && lookbackGrain === 'month' && lookbackDuration % MONTHS_IN_QUARTER === 0) ||
       // TODO: Remove once sub day grain is supported
@@ -306,5 +314,22 @@ export default class TimeDimensionFilterBuilder extends BaseFilterBuilderCompone
       operator: newBuilder.operator,
       values: arr(newInterval),
     });
+  }
+
+  @action
+  updateParameters(key: string, value: string) {
+    // if the grain is changing, update the start/end values as well
+    if (key === 'grain') {
+      const internalOp = internalOperatorForValues(this.args.filter);
+      const values = valuesForOperator(this.args.filter, value as Grain, internalOp);
+      this.args.onUpdateFilter({
+        parameters: { ...this.args.filter.parameters, [key]: value },
+        values: values,
+      });
+    } else {
+      this.args.onUpdateFilter({
+        parameters: { ...this.args.filter.parameters, [key]: value },
+      });
+    }
   }
 }

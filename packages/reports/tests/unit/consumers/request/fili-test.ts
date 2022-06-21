@@ -378,8 +378,8 @@ module('Unit | Consumer | request fili', function (hooks) {
     );
     assert.deepEqual(
       dispatchedActionArgs[0],
-      [request.dateTimeFilter, { parameters: { grain: 'week' } }],
-      'UPDATE_FILTER is dispatched with the updated grain parameter'
+      [request.dateTimeFilter, { parameters: { grain: 'week' }, values: ['P1W', 'current'] }],
+      'UPDATE_FILTER is dispatched with the updated grain parameter and associated values'
     );
 
     dispatchedActions.length = 0;
@@ -528,8 +528,11 @@ module('Unit | Consumer | request fili', function (hooks) {
 
     assert.deepEqual(
       dispatchedActionArgs[2],
-      [request.filters.objectAt(1), { parameters: { grain: 'day' } }],
-      'The dateTime filter is updated to match the new grain since tableB does not support "hour"'
+      [
+        request.filters.objectAt(1),
+        { parameters: { grain: 'day' }, values: ['2015-11-09T00:00:00.000Z', '2015-11-13T00:00:00.000Z'] },
+      ],
+      'The dateTime filter is updated to match the new grain and values since tableB does not support "hour"'
     );
 
     assert.deepEqual(

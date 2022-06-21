@@ -1,16 +1,12 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionConsumer from 'navi-core/consumers/action-consumer';
 import { inject as service } from '@ember/service';
 import { assert } from '@ember/debug';
 import { RequestActions } from 'navi-reports/services/request-action-dispatcher';
-import { valuesForOperator } from 'navi-reports/components/filter-builders/time-dimension';
-import { getPeriodForGrain } from '@yavin/client/utils/date';
-import { GrainOrdering } from '@yavin/client/models/metadata/bard/table';
-import moment from 'moment';
-import Interval from '@yavin/client/utils/classes/interval';
+import { internalOperatorForValues, valuesForOperator } from 'navi-reports/components/filter-builders/time-dimension';
 import type RequestActionDispatcher from 'navi-reports/services/request-action-dispatcher';
 import type ColumnFragment from 'navi-core/models/request/column';
 import type ReportModel from 'navi-core/models/report';
@@ -48,36 +44,12 @@ export default class FiliConsumer extends ActionConsumer {
   }
 
   expandFilterInterval(route: Route, dateTimeFilter: FilterFragment, newGrain: Grain) {
-    let intervalGrain = newGrain;
-    if (newGrain === 'hour' || newGrain === 'minute' || newGrain === 'second') {
-      intervalGrain = 'day';
-    }
-    let values;
-    if (dateTimeFilter.operator === 'bet') {
-      const oldGrain = dateTimeFilter.parameters.grain as Grain;
-      let [start, end] = dateTimeFilter.values as string[];
-      if (intervalGrain === oldGrain) {
-        // don't update values unnecessarily
-      } else if (typeof end === 'string' && moment.utc(end).isValid()) {
-        if (GrainOrdering[oldGrain] > GrainOrdering[intervalGrain]) {
-          end = moment
-            .utc(end as string)
-            .add(1, getPeriodForGrain(oldGrain))
-            .subtract(1, getPeriodForGrain(intervalGrain))
-            .toISOString();
-        } else {
-          const minGrain = GrainOrdering[oldGrain] < GrainOrdering.day ? 'day' : oldGrain;
-          const interval = Interval.parseInclusive(start, end, minGrain).asMomentsInclusive(intervalGrain);
-          start = interval.start.toISOString();
-          end = interval.end.toISOString();
-        }
-        values = [start, end];
-      }
-    }
+    const internalOp = internalOperatorForValues(dateTimeFilter);
+    const values = valuesForOperator(dateTimeFilter, newGrain, internalOp);
 
     const changeset = {
       parameters: { ...dateTimeFilter.parameters, grain: newGrain },
-      ...(values ? { values } : {}),
+      values,
     };
     this.requestActionDispatcher.dispatch(RequestActions.UPDATE_FILTER, route, dateTimeFilter, changeset);
   }
