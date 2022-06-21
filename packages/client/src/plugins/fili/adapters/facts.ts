@@ -21,7 +21,7 @@ import NativeWithCreate, { ClientService, Config } from '../../../models/native-
 import invariant from 'tiny-invariant';
 import fetch from 'cross-fetch';
 import mapValues from 'lodash/mapValues.js';
-import { run } from 'effection';
+import { ensure, run, withLabels } from 'effection';
 import type { Operation } from 'effection';
 import type MetadataService from '../../../services/interfaces/metadata.js';
 import type RequestDecoratorService from '../../../services/interfaces/request-decorator.js';
@@ -215,7 +215,7 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
   @ClientService('request-decorator')
   declare requestDecorator: RequestDecoratorService;
 
-  @Config()
+  @Config('client')
   declare config: ClientConfig;
 
   /**
@@ -487,7 +487,7 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
   }
 
   fetchDataForRequest(request: RequestV2, options?: RequestOptions): Promise<unknown> {
-    return run(this.fetchDataForRequestTask(request, options));
+    return run(withLabels(this.fetchDataForRequestTask(request, options), { name: 'fetchDataForRequest' }));
   }
 
   /**
@@ -522,35 +522,32 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
     const urlRequest = `${url}?${new URLSearchParams(mapValues(query, (val) => `${val}`)).toString()}`;
 
     const controller = new AbortController();
-    try {
-      const id = setTimeout(() => controller.abort(), timeout);
-      const response: Response = yield fetch(urlRequest, {
-        credentials: 'include',
-        headers: {
-          clientid: clientId,
-          ...customHeaders,
-        },
-        signal: controller.signal,
-      });
-      clearTimeout(id);
-      if (!response.ok) {
-        let payload: string;
-        if (controller.signal.aborted) {
-          payload = 'The fetch operation timed out';
-        } else {
-          payload = yield response.text();
-          try {
-            payload = JSON.parse(payload);
-          } catch {
-            // nothing to do
-          }
+    const id = setTimeout(() => controller.abort(), timeout);
+    yield ensure(() => controller.abort());
+    const response: Response = yield fetch(urlRequest, {
+      credentials: 'include',
+      headers: {
+        clientid: clientId,
+        ...customHeaders,
+      },
+      signal: controller.signal,
+    });
+    clearTimeout(id);
+    if (!response.ok) {
+      let payload: string;
+      if (controller.signal.aborted) {
+        payload = 'The fetch operation timed out';
+      } else {
+        payload = yield response.text();
+        try {
+          payload = JSON.parse(payload);
+        } catch {
+          // nothing to do
         }
-        throw new FetchError(response.status, payload);
       }
-      return yield response.json();
-    } finally {
-      controller.abort();
+      throw new FetchError(response.status, payload);
     }
+    return yield response.json();
   }
 
   asyncFetchDataForRequest(_request: Request, _options: RequestOptions): Promise<AsyncQueryResponse> {

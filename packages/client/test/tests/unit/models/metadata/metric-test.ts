@@ -245,6 +245,7 @@ module('Unit | Metadata Model | Metric', function (hooks) {
           };
         },
       },
+      //@ts-expect-error - partial metric payload
       {
         id: 'metricOne',
         source: 'bardOne',

@@ -10,6 +10,7 @@ import { getOwner } from '@ember/application';
 export default class NaviFiliFactsAdapter extends FiliFactsAdapter {
   static create(args: unknown) {
     const owner = getOwner(args);
-    return new NaviFiliFactsAdapter(owner.lookup('service:client-injector'));
+    const yavinClient = owner.lookup('service:yavin-client');
+    return new this(yavinClient.injector);
   }
 }

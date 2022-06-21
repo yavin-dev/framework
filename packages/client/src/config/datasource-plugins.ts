@@ -36,7 +36,7 @@ type ServiceAdapter = ResolvedResolvedConfig[DataSourceService]['adapter'];
 type ServiceSerializer = ResolvedResolvedConfig[DataSourceService]['serializer'];
 
 export class DataSourcePluginConfig extends NativeWithCreate {
-  @Config()
+  @Config('client')
   private declare clientConfig: ClientConfig;
 
   #config: Record<string, DataSourcePlugins | undefined>;
