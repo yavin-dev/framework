@@ -104,7 +104,12 @@ type TableNode = {
 };
 
 export interface TablePayload {
-  table: Connection<TableNode>;
+  data?: {
+    table: Connection<TableNode>;
+  };
+  error?: {
+    message: string;
+  };
 }
 
 function isPresent<T>(t: T | undefined | null | void): t is T {
@@ -449,7 +454,14 @@ export default class ElideMetadataSerializer extends NaviMetadataSerializer {
       this.supportedTypes.has(type)
     );
 
-    const normalized: MetadataModelMap['everything'] = this._normalizeTableConnection(rawPayload.table, dataSourceName);
+    if (rawPayload.error || !rawPayload.data) {
+      throw new Error(rawPayload?.error?.message ?? 'Error Fetching Metadata');
+    }
+
+    const normalized: MetadataModelMap['everything'] = this._normalizeTableConnection(
+      rawPayload.data.table,
+      dataSourceName
+    );
     return normalized as MetadataModelMap[K];
   }
 }

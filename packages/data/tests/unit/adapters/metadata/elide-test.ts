@@ -2,7 +2,7 @@ import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
-import * as GQLQueries from '@yavin/client/gql/metadata-queries';
+import GQLQueries from '@yavin/client/gql/metadata-queries';
 import { print } from 'graphql/language/printer';
 import ElideOneScenario from 'navi-data/mirage/scenarios/elide-one';
 import ElideOneDemoNamespaceScenario from 'navi-data/mirage/scenarios/elide-one-demo-namespace';
@@ -126,7 +126,9 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
       '__typename',
     ];
 
-    const { table: tableConnection } = await Adapter.fetchAll('table', {
+    const {
+      data: { table: tableConnection },
+    } = await Adapter.fetchAll('table', {
       dataSourceName: 'elideOne',
     });
     const tables = tableConnection.edges.map((edge: TODO) => edge.node);
@@ -428,7 +430,9 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
       '__typename',
     ];
 
-    const { table: tableConnection } = await Adapter.fetchAll('table', {
+    const {
+      data: { table: tableConnection },
+    } = await Adapter.fetchAll('table', {
       dataSourceName: 'elideOne.DemoNamespace',
     });
     const tables = tableConnection.edges.map((edge: TODO) => edge.node);
@@ -685,7 +689,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
     });
 
     assert.deepEqual(
-      result,
+      result.data,
       {
         table: {
           edges: [
@@ -911,7 +915,7 @@ module('Unit | Adapter | metadata/elide', function (hooks) {
       dataSourceName: 'elideOne',
     });
     assert.deepEqual(
-      result,
+      result.data,
       {
         table: {
           edges: [
