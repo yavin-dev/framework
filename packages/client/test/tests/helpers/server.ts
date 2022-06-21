@@ -9,7 +9,7 @@ async function getServer() {
     return server;
   }
   if (IS_NODE) {
-    server = (await import('msw/node')).setupServer();
+    server = (await import('msw/lib/node/index.js')).setupServer();
     server.listen({ onUnhandledRequest: 'error' });
     return server;
   } else {
