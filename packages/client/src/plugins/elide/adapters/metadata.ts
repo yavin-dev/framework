@@ -12,7 +12,7 @@ import NativeWithCreate, { Config } from '../../../models/native-with-create.js'
 import type { Injector } from '../../../models/native-with-create.js';
 import type { ApolloClient } from '@apollo/client/core';
 import getClient from '../../elide-apollo-client.js';
-import { ClientConfig } from 'config/datasources';
+import type { ClientConfig } from '../../../config/datasources';
 
 export type MetadataQueryType = keyof typeof queries;
 

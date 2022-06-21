@@ -8,6 +8,6 @@ import ElideMetadataAdapter from '@yavin/client/plugins/elide/adapters/metadata'
 export default class NaviElideMetadataAdapter extends ElideMetadataAdapter {
   static create(args: unknown) {
     const owner = getOwner(args);
-    return new NaviElideMetadataAdapter(owner.lookup('service:client-injector'));
+    return new this(owner.lookup('service:client-injector'));
   }
 }

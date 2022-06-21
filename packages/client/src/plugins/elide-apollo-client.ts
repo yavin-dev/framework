@@ -18,6 +18,7 @@ export default function getClient(config: ClientConfig) {
     const httpLink = new HttpLink(linkOptions);
 
     const contextLink = setContext((_, context) => {
+      // TODO: allow for clientId to be overridden
       context.headers = Object.assign(context.headers ?? {}, { clientId: 'UI' });
 
       context.uri = buildURLPath(context.dataSourceName);
