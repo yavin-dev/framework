@@ -11,6 +11,7 @@ import { getOwner } from '@ember/application';
 export default class NaviFiliFactsSerializer extends FiliFactsSerializer {
   static create(args: unknown) {
     const owner = getOwner(args);
-    return new this(owner.lookup('service:client-injector'));
+    const yavinClient = owner.lookup('service:yavin-client');
+    return new this(yavinClient.injector);
   }
 }
