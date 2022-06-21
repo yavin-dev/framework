@@ -7,10 +7,11 @@ import { Grain } from '@yavin/client/utils/date';
 import { ClientConfig } from '@yavin/client/config/datasources';
 import setupServer, { WithServer } from '../../../../helpers/server';
 import { Mock } from '../../../../helpers/injector';
-import { config } from '../../../../helpers/config';
+import { mockConfig } from '../../../../helpers/config';
 import { rest } from 'msw';
 import type MetadataService from '@yavin/client/services/interfaces/metadata';
 
+const config = mockConfig();
 const HOST = config.dataSources[0].uri;
 const HOST2 = config.dataSources[1].uri;
 

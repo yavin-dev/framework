@@ -31,6 +31,8 @@ export const Mock = (config: MockConfig = {}) => {
     facts: (service: FactService) => Mock({ ...config, 'navi-facts': service }),
     decorator: (service: RequestDecoratorService) => Mock({ ...config, 'request-decorator': service }),
     config: (clientConfig: ClientConfig) => Mock({ ...config, client: clientConfig }),
+    plugin: (pluginConfig: (injector: Injector) => DataSourcePluginConfig) =>
+      Mock({ ...config, plugin: pluginConfig(mockInjector(config)) }),
     build: () => mockInjector(config),
   };
 };
