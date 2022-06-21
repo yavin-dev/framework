@@ -60,8 +60,8 @@ export function getStrictPartialMatchWeight(string: string, query: string): numb
   // ignore special characters unless query also contains them
   const specChar = new RegExp(/[^\w\s]/gi);
   if (!specChar.test(query)) {
-    origString = origString.replaceAll(specChar, '');
-    stringTokens = stringTokens.map((token) => token.replaceAll(specChar, ''));
+    origString = origString.replace(specChar, '');
+    stringTokens = stringTokens.map((token) => token.replace(specChar, ''));
   }
 
   // Check that all words in the search query can be found in the given string

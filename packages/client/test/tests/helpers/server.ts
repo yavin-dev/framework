@@ -5,7 +5,7 @@ const IS_NODE = typeof process !== 'undefined' && process.versions != null && pr
 
 async function getServer() {
   if (IS_NODE) {
-    const server = (await import('msw/node')).setupServer();
+    const server = (await import('msw/lib/node/index.js')).setupServer();
     server.listen();
     return server;
   } else {

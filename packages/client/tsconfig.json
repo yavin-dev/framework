@@ -4,6 +4,7 @@
     "module": "ES2020",
     "lib": ["ESNext"],
 
+    "incremental": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
@@ -15,10 +16,7 @@
     "moduleResolution": "node",
     "baseUrl": "./src",
 
-    "rootDir": "src",
-
-    "typeRoots": ["node_modules/@types", "types"]
+    "rootDir": "src"
   },
-  "files": ["types/graphql.d.ts"],
   "include": ["src"]
 }
