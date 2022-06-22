@@ -19,6 +19,7 @@ import type { DimensionFilter, Options } from '@yavin/client/adapters/dimensions
 import type ElideFactsAdapter from '../facts/elide';
 import type { DimensionColumn } from '@yavin/client/models/metadata/dimension';
 import type ElideDimensionMetadataModel from '@yavin/client/models/metadata/elide/dimension';
+import type { FetchResult } from '@apollo/client/core';
 
 type EnumFilter = (values: string[], filterValues: (string | number)[]) => (string | number)[];
 
@@ -38,7 +39,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
   @task private *formatEnumResponse(
     dimension: DimensionColumn,
     values: (string | number)[]
-  ): TaskGenerator<AsyncQueryResponse> {
+  ): TaskGenerator<FetchResult<AsyncQueryResponse>> {
     const { columnMetadata } = dimension;
     const { tableId } = columnMetadata;
     const nodes = values.map((value) => `{"node":{"col0":"${value}"}}`);
@@ -51,27 +52,29 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     }
 
     return yield {
-      asyncQuery: {
-        edges: [
-          {
-            node: {
-              id: 'enum query',
-              query: 'n/a - enum',
-              status: QueryStatus.COMPLETE,
-              result: {
-                responseBody,
-                httpStatus: 200,
-                contentLength: 0,
-                recordCount: values.length,
+      data: {
+        asyncQuery: {
+          edges: [
+            {
+              node: {
+                id: 'enum query',
+                query: 'n/a - enum',
+                status: QueryStatus.COMPLETE,
+                result: {
+                  responseBody,
+                  httpStatus: 200,
+                  contentLength: 0,
+                  recordCount: values.length,
+                },
               },
             },
-          },
-        ],
+          ],
+        },
       },
     };
   }
 
-  all(dimension: DimensionColumn, options: Options = {}): Promise<AsyncQueryResponse> {
+  all(dimension: DimensionColumn, options: Options = {}): Promise<FetchResult<AsyncQueryResponse>> {
     return taskFor(this.findTask).perform(dimension, [], options);
   }
 
@@ -79,11 +82,11 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     dimension: DimensionColumn,
     predicate: DimensionFilter[] = [],
     options: Options = {}
-  ): Promise<AsyncQueryResponse> {
+  ): Promise<FetchResult<AsyncQueryResponse>> {
     return taskFor(this.findTask).perform(dimension, predicate, options);
   }
 
-  search(dimension: DimensionColumn, query: string, options: Options = {}): Promise<AsyncQueryResponse> {
+  search(dimension: DimensionColumn, query: string, options: Options = {}): Promise<FetchResult<AsyncQueryResponse>> {
     return taskFor(this.searchTask).perform(dimension, query, options);
   }
 
@@ -91,7 +94,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     dimension: DimensionColumn,
     predicate: DimensionFilter[] = [],
     options: Options = {}
-  ): TaskGenerator<AsyncQueryResponse> {
+  ): TaskGenerator<FetchResult<AsyncQueryResponse>> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
 
     return columnMetadata.hasEnumValues
@@ -103,7 +106,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     dimension: DimensionColumn,
     predicate: DimensionFilter[],
     _options: Options
-  ): TaskGenerator<AsyncQueryResponse> {
+  ): TaskGenerator<FetchResult<AsyncQueryResponse>> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
     const { values } = columnMetadata;
 
@@ -121,7 +124,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     dimension: DimensionColumn,
     predicate: DimensionFilter[] = [],
     options: Options = {}
-  ): TaskGenerator<AsyncQueryResponse> {
+  ): TaskGenerator<FetchResult<AsyncQueryResponse>> {
     const { columnMetadata, parameters = {} } = dimension;
     const { valueSource, suggestionColumns } = columnMetadata as ElideDimensionMetadataModel;
     const { id, source, tableId } = valueSource;
@@ -153,7 +156,7 @@ export default class ElideDimensionAdapter extends EmberObject implements NaviDi
     dimension: DimensionColumn,
     query: string,
     options: Options = {}
-  ): TaskGenerator<AsyncQueryResponse> {
+  ): TaskGenerator<FetchResult<AsyncQueryResponse>> {
     const columnMetadata = dimension.columnMetadata as ElideDimensionMetadataModel;
 
     let predicate: DimensionFilter[];

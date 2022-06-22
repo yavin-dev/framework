@@ -6,36 +6,39 @@ import type { AsyncQueryResponse } from '@yavin/client/adapters/facts/interface'
 import type { RequestV2 } from '@yavin/client/request';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import { ExecutionResult, GraphQLError } from 'graphql';
-import { getPaginationFromPageInfo } from 'navi-data/serializers/facts/elide';
+import { getPaginationFromPageInfo } from '@yavin/client/plugins/elide/serializers/facts';
+import type { FetchResult } from '@apollo/client/core';
 
-const Payload: AsyncQueryResponse = {
-  asyncQuery: {
-    edges: [
-      {
-        node: {
-          id: 'c7d2fe70-b63f-11ea-b45b-bf754c72eca6',
-          query: '"{ "query": "{ tableA { edges { node { col0:datestamp col1:user_count } } } } " }',
-          status: QueryStatus.COMPLETE,
-          result: {
-            contentLength: 129,
-            httpStatus: 200,
-            recordCount: 2,
-            responseBody: JSON.stringify({
-              data: {
-                tableA: {
-                  edges: [{ node: { col0: '202003', col1: 10 } }, { node: { col0: '202004', col1: 20 } }],
-                  pageInfo: {
-                    startCursor: '0',
-                    endCursor: '2',
-                    totalRecords: 2,
+const Payload: FetchResult<AsyncQueryResponse> = {
+  data: {
+    asyncQuery: {
+      edges: [
+        {
+          node: {
+            id: 'c7d2fe70-b63f-11ea-b45b-bf754c72eca6',
+            query: '"{ "query": "{ tableA { edges { node { col0:datestamp col1:user_count } } } } " }',
+            status: QueryStatus.COMPLETE,
+            result: {
+              contentLength: 129,
+              httpStatus: 200,
+              recordCount: 2,
+              responseBody: JSON.stringify({
+                data: {
+                  tableA: {
+                    edges: [{ node: { col0: '202003', col1: 10 } }, { node: { col0: '202004', col1: 20 } }],
+                    pageInfo: {
+                      startCursor: '0',
+                      endCursor: '2',
+                      totalRecords: 2,
+                    },
                   },
                 },
-              },
-            }),
+              }),
+            },
           },
         },
-      },
-    ],
+      ],
+    },
   },
 };
 
@@ -120,23 +123,25 @@ module('Unit | Serializer | facts/elide', function (hooks) {
       requestVersion: '2.0',
     };
 
-    const response: AsyncQueryResponse = {
-      asyncQuery: {
-        edges: [
-          {
-            node: {
-              id: 'c7d2fe70-b63f-11ea-b45b-bf754c72eca6',
-              query: '"{ "query": "{ tableA { edges { node { datestamp user_count } } } } " }',
-              status: QueryStatus.COMPLETE,
-              result: {
-                contentLength: 129,
-                httpStatus: 200,
-                recordCount: 2,
-                responseBody: '{"errors": [ { "message": "bad request" } ] }',
+    const response: FetchResult<AsyncQueryResponse> = {
+      data: {
+        asyncQuery: {
+          edges: [
+            {
+              node: {
+                id: 'c7d2fe70-b63f-11ea-b45b-bf754c72eca6',
+                query: '"{ "query": "{ tableA { edges { node { datestamp user_count } } } } " }',
+                status: QueryStatus.COMPLETE,
+                result: {
+                  contentLength: 129,
+                  httpStatus: 200,
+                  recordCount: 2,
+                  responseBody: '{"errors": [ { "message": "bad request" } ] }',
+                },
               },
             },
-          },
-        ],
+          ],
+        },
       },
     };
     const error = Serializer.extractError(response, request);

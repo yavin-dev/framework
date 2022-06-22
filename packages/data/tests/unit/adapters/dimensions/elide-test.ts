@@ -15,6 +15,7 @@ import ElideTwoScenario from 'navi-data/mirage/scenarios/elide-two';
 import { setupMirage } from 'ember-cli-mirage/test-support';
 import { Server } from 'miragejs';
 import { ResponseEdge } from 'navi-data/serializers/dimensions/elide';
+import type { FetchResult } from '@apollo/client/core';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
@@ -22,12 +23,14 @@ interface TestContext extends Context {
 }
 
 function assertRequest(context: TestContext, callback: (request: RequestV2, options?: RequestOptions) => void) {
-  const fakeResponse: AsyncQueryResponse = {
-    asyncQuery: { edges: [{ node: { id: '1', query: 'foo', status: QueryStatus.COMPLETE, result: null } }] },
+  const fakeResponse: FetchResult<AsyncQueryResponse> = {
+    data: {
+      asyncQuery: { edges: [{ node: { id: '1', query: 'foo', status: QueryStatus.COMPLETE, result: null } }] },
+    },
   };
   const originalFactAdapter = context.owner.factoryFor('adapter:facts/elide').class;
   class TestAdapter extends originalFactAdapter {
-    fetchDataForRequest(request: RequestV2, options?: RequestOptions): Promise<AsyncQueryResponse> {
+    fetchDataForRequest(request: RequestV2, options?: RequestOptions): Promise<FetchResult<AsyncQueryResponse>> {
       callback(request, options);
       return Promise.resolve(fakeResponse);
     }
@@ -36,8 +39,8 @@ function assertRequest(context: TestContext, callback: (request: RequestV2, opti
   context.owner.register('adapter:facts/elide', TestAdapter);
 }
 
-function extractDimValues(dimension: DimensionColumn, rawResponse: AsyncQueryResponse): string[] {
-  const responseStr = rawResponse?.asyncQuery.edges[0].node.result?.responseBody || '';
+function extractDimValues(dimension: DimensionColumn, rawResponse: FetchResult<AsyncQueryResponse>): string[] {
+  const responseStr = rawResponse.data?.asyncQuery.edges[0].node.result?.responseBody || '';
   const response = JSON.parse(responseStr);
   const { tableId } = dimension.columnMetadata;
   return response.data[tableId as string].edges.map((edge: ResponseEdge) => edge.node.col0);
