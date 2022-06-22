@@ -41,9 +41,10 @@ export default class NaviMetadataService extends MetadataService {
   @task *taskWrapper<T>(taskLike: () => Promise<T>): TaskGenerator<T> {
     const result = taskLike();
     try {
-      return yield waitForPromise(result);
+      // Wrap promise value since waitForPromise assumes they are unique
+      return yield waitForPromise(result.then((v) => Promise.resolve(v)));
     } finally {
-      maybeHalt(result);
+      yield waitForPromise(maybeHalt(result));
     }
   }
 
