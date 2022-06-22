@@ -1,18 +1,20 @@
 import { module, test } from 'qunit';
-import { setupTest } from 'ember-qunit';
-import Pretender, { Server as PretenderServer } from 'pretender';
-import config from 'ember-get-config';
 import type { RequestOptions } from '@yavin/client/adapters/facts/interface';
 import type { RequestV2 } from '@yavin/client/request';
-import NaviFactsService from 'navi-data/services/navi-facts';
-import { TestContext } from 'ember-test-helpers';
+import NaviFactsService from '@yavin/client/services/fact';
 import { ResponseV1 } from '@yavin/client/serializers/facts/interface';
 import NaviFactResponse from '@yavin/client/models/navi-fact-response';
 import NaviAdapterError from '@yavin/client/errors/navi-adapter-error';
-import { task, TaskGenerator } from 'ember-concurrency';
-import type NaviFacts from '@yavin/client/models/navi-facts';
-
-let Server: PretenderServer;
+import setupServer, { WithServer } from '../../helpers/server';
+import { rest } from 'msw';
+import { mockConfig } from '../../helpers/config';
+import { Mock, nullInjector } from '../../helpers/injector';
+import { ClientConfig } from '@yavin/client/config/datasources';
+import { Injector, setInjector } from '@yavin/client/models/native-with-create';
+import { DataSourcePluginConfig } from '@yavin/client/config/datasource-plugins';
+import FiliFactsAdapter from '@yavin/client/plugins/fili/adapters/facts';
+import FiliFactsSerializer from '@yavin/client/plugins/fili/serializers/facts';
+import MetadataService from '@yavin/client/services/interfaces/metadata';
 
 const TestRequest: RequestV2 = {
   table: 'table1',
@@ -76,61 +78,79 @@ const Response: ResponseV1 = {
   },
 };
 
-const HOST = config.navi.dataSources[0].uri;
+const config = mockConfig();
+const HOST = config.dataSources[0].uri;
+let FactsService: NaviFactsService;
+let injector: Injector;
 
-function assertRequest(context: TestContext, callback: (request: RequestV2, options?: RequestOptions) => void) {
+function assertRequest(callback: (request: RequestV2, options?: RequestOptions) => void) {
   class TestService extends NaviFactsService {
-    @task *fetchTask(request: RequestV2, options?: RequestOptions): TaskGenerator<NaviFacts> {
-      callback(request, options);
-      return yield;
+    //@ts-expect-error - override base fetch method
+    *fetchTask(request: RequestV2, options?: RequestOptions) {
+      yield Promise.resolve(callback(request, options));
+      return null;
     }
   }
-  context.owner.unregister('service:navi-facts');
-  context.owner.register('service:navi-facts', TestService);
+  return new TestService(injector);
 }
 
-module('Unit | Service | Navi Facts', function (hooks) {
-  setupTest(hooks);
+module('Unit | Service | Fact', function (hooks) {
+  setupServer(hooks);
 
-  hooks.beforeEach(function (this: TestContext) {
-    //setup Pretender
-    Server = new Pretender(function () {
-      this.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, function (request) {
-        if (request.queryParams.page && request.queryParams.perPage) {
-          return [
-            200,
-            { 'Content-Type': 'application/json' },
-            JSON.stringify({
+  hooks.beforeEach(function (this: WithServer) {
+    this.server.use(
+      rest.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, (req, res, ctx) => {
+        const queryParams = new URL(req.url).searchParams;
+        const page = queryParams.get('page');
+        const perPage = queryParams.get('perPage');
+        if (page && perPage) {
+          return res(
+            ctx.json({
               rows: [],
               meta: {
                 paginated: {
-                  page: request.queryParams.page,
-                  perPage: request.queryParams.perPage,
+                  page,
+                  perPage,
                 },
               },
-            }),
-          ];
+            })
+          );
         } else {
-          return [200, { 'Content-Type': 'application/json' }, JSON.stringify(Response)];
+          return res(ctx.json(Response));
         }
-      });
-    });
-  });
+      })
+    );
 
-  hooks.afterEach(function () {
-    //shutdown pretender
-    Server.shutdown();
+    FactsService = new NaviFactsService(nullInjector);
+    injector = Mock()
+      .config(new ClientConfig(config))
+      .decorator({ applyGlobalDecorators: (request) => request })
+      .facts(FactsService)
+      .meta({ getById: () => null } as unknown as MetadataService)
+      .plugin(
+        (injector) =>
+          new DataSourcePluginConfig(injector, {
+            //@ts-expect-error - only fact config
+            bard: {
+              facts: {
+                adapter: (injector) => new FiliFactsAdapter(injector),
+                serializer: (injector) => new FiliFactsSerializer(injector),
+              },
+            },
+          })
+      )
+      .build();
+
+    setInjector(FactsService, injector);
   });
 
   test('Service Exists', function (assert) {
-    const service: NaviFactsService = this.owner.lookup('service:navi-facts');
-    assert.ok(!!service, 'Service exists');
+    assert.ok(!!FactsService, 'Service exists');
   });
 
   test('getURL', function (assert) {
-    const service: NaviFactsService = this.owner.lookup('service:navi-facts');
     assert.deepEqual(
-      service.getURL(TestRequest),
+      FactsService.getURL(TestRequest),
       `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/?` +
         'dateTime=2015-01-03%2F2015-01-04T00%3A00%3A00.000&metrics=m1%2Cm2&' +
         'filters=d3%7Cid-in%5B%22v1%22%2C%22v2%22%5D%2Cd4%7Cid-in%5B%22v3%22%2C%22v4%22%5D&having=m1-gt%5B0%5D&' +
@@ -139,7 +159,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
     );
 
     assert.deepEqual(
-      service.getURL(TestRequest, { format: 'jsonApi' }),
+      FactsService.getURL(TestRequest, { format: 'jsonApi' }),
       `${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/?` +
         'dateTime=2015-01-03%2F2015-01-04T00%3A00%3A00.000&metrics=m1%2Cm2&' +
         'filters=d3%7Cid-in%5B%22v1%22%2C%22v2%22%5D%2Cd4%7Cid-in%5B%22v3%22%2C%22v4%22%5D&having=m1-gt%5B0%5D&' +
@@ -149,8 +169,7 @@ module('Unit | Service | Navi Facts', function (hooks) {
   });
 
   test('fetch', async function (assert) {
-    const service: NaviFactsService = this.owner.lookup('service:navi-facts');
-    const model = await service.fetch(TestRequest);
+    const model = await FactsService.fetch(TestRequest);
     const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
@@ -175,14 +194,13 @@ module('Unit | Service | Navi Facts', function (hooks) {
 
     assert.deepEqual(
       model['factService'],
-      service,
+      FactsService,
       'Fetch returns a navi response model object with the service instance'
     );
   });
 
   test('fetch with pagination', async function (assert) {
-    const service: NaviFactsService = this.owner.lookup('service:navi-facts');
-    const model = await service.fetch(TestRequest, { page: 2, perPage: 10 });
+    const model = await FactsService.fetch(TestRequest, { page: 2, perPage: 10 });
     const { rows, meta } = model.response as NaviFactResponse;
     assert.deepEqual(
       { rows, meta },
@@ -199,22 +217,22 @@ module('Unit | Service | Navi Facts', function (hooks) {
     );
   });
 
-  test('fetch and catch error', async function (assert) {
+  test('fetch and catch error', async function (this: WithServer, assert) {
     assert.expect(6);
 
-    const service: NaviFactsService = this.owner.lookup('service:navi-facts');
     // Return an error object
-    Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, () => {
-      return [
-        507,
-        { 'Content-Type': 'application/json' },
-        JSON.stringify({
-          description: 'Result set too large. Try reducing interval or dimensions.',
-        }),
-      ];
-    });
+    this.server.use(
+      rest.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, (_req, res, ctx) => {
+        return res(
+          ctx.status(507),
+          ctx.json({
+            description: 'Result set too large. Try reducing interval or dimensions.',
+          })
+        );
+      })
+    );
 
-    await service.fetch(TestRequest).catch((response: NaviAdapterError) => {
+    await FactsService.fetch(TestRequest).catch((response: NaviAdapterError) => {
       assert.ok(true, 'A request error falls into the promise catch block');
       assert.equal(
         response.details[0],
@@ -224,16 +242,18 @@ module('Unit | Service | Navi Facts', function (hooks) {
     });
 
     // Return an error string
-    Server.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, () => {
-      return [500, { 'Content-Type': 'text/plain' }, 'Server Error'];
-    });
+    this.server.use(
+      rest.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, (_req, res, ctx) => {
+        return res(ctx.status(500), ctx.text('Server Error'));
+      })
+    );
 
-    await service.fetch(TestRequest).catch((response: NaviAdapterError) => {
+    await FactsService.fetch(TestRequest).catch((response: NaviAdapterError) => {
       assert.ok(true, 'A request error falls into the promise catch block');
       assert.equal(response.details[0], 'Server Error', 'String error extracted');
     });
 
-    await service.fetch({ ...TestRequest, filters: [] }).catch((response: NaviAdapterError) => {
+    await FactsService.fetch({ ...TestRequest, filters: [] }).catch((response: NaviAdapterError) => {
       assert.ok(true, 'A request error falls into the promise catch block');
       assert.equal(
         response.details[0],
@@ -246,12 +266,11 @@ module('Unit | Service | Navi Facts', function (hooks) {
   test('fetchNext', async function (assert) {
     assert.expect(2);
 
-    assertRequest(this, (_request, options) => {
+    const service = assertRequest((_request, options) => {
       assert.equal(options?.page, 3, 'fetchNext calls fetch with updated options');
     });
-    const service: NaviFactsService = this.owner.lookup('service:navi-facts');
 
-    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
+    const response = new NaviFactResponse(nullInjector, {
       rows: [],
       meta: {
         pagination: {
@@ -277,12 +296,11 @@ module('Unit | Service | Navi Facts', function (hooks) {
   test('fetchPrevious', async function (assert) {
     assert.expect(2);
 
-    assertRequest(this, (_request, options) => {
+    const service = assertRequest((_request, options) => {
       assert.equal(options?.page, 1, 'fetchPrevious calls fetch with updated options');
     });
-    const service: NaviFactsService = this.owner.lookup('service:navi-facts');
 
-    const response = new NaviFactResponse(this.owner.lookup('service:client-injector'), {
+    const response = new NaviFactResponse(nullInjector, {
       rows: [],
       meta: {
         pagination: {

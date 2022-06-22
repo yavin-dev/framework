@@ -3,15 +3,23 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import type { DataSourcePluginConfig } from '../config/datasource-plugins.js';
 import type { ClientConfig } from '../config/datasources.js';
 import type ServiceRegistry from '../services/interfaces/registry.js';
 
+export interface ConfigRegistry {
+  client: ClientConfig;
+  plugin: DataSourcePluginConfig;
+}
+export type Configs = keyof ConfigRegistry;
 export type ClientServices = keyof ServiceRegistry;
 export type LookupType = 'config' | 'service';
+
+type LookupRegistry = { config: ConfigRegistry; service: ServiceRegistry };
 export interface Injector {
-  lookup(type: 'config'): ClientConfig;
+  lookup<C extends Configs>(type: 'config', name: C): ConfigRegistry[C];
   lookup<T extends ClientServices>(type: 'service', name: T): ServiceRegistry[T];
-  lookup<T extends ClientServices>(type: LookupType, name?: T): ServiceRegistry[T] | ClientConfig;
+  lookup<L extends LookupType>(type: L, name: string): LookupRegistry[L][keyof LookupRegistry[L]];
 }
 
 const INJECTOR = Symbol.for('injector');
@@ -41,9 +49,9 @@ function createGetter(
   };
 }
 
-export function Config<T extends NativeWithCreate>(): (...args: any[]) => void {
+export function Config<T extends NativeWithCreate, C extends Configs>(config: C): (...args: any[]) => void {
   return function getter(...args: any[]) {
-    return createGetter(...(args as [T, string, any]), ['config']);
+    return createGetter(...(args as [T, string, any]), ['config', config]);
   };
 }
 

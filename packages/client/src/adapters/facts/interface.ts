@@ -3,6 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import type { Request } from '../../request.js';
+import type { Task } from 'effection';
 
 export type RequestOptions = {
   clientId?: string;
@@ -83,7 +84,7 @@ export interface TableExportResult {
   message: string;
 }
 export default interface NaviFactAdapter {
-  fetchDataForRequest(request: Request, options: RequestOptions): Promise<unknown>;
+  fetchDataForRequest(request: Request, options: RequestOptions): Promise<unknown> | Task<unknown>;
   urlForFindQuery(request: Request, options: RequestOptions): string;
-  urlForDownloadQuery(request: Request, options: RequestOptions): Promise<string>;
+  urlForDownloadQuery(request: Request, options: RequestOptions): Promise<string> | Task<string>;
 }
