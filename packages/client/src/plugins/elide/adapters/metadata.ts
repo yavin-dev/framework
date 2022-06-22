@@ -4,7 +4,7 @@
  */
 import queries from '../../../gql/metadata-queries';
 import invariant from 'tiny-invariant';
-import { isPresent } from '../../../utils';
+import { isPresent } from '../../../utils/index.js';
 import type NaviMetadataAdapter from '../../../adapters/metadata/interface';
 import type { MetadataOptions } from '../../../adapters/metadata/interface';
 import { QueryOptions } from '@apollo/client/core';

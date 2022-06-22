@@ -3,6 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import NativeWithCreate, { ClientService, Injector } from '../native-with-create.js';
+import { isPresent } from '../../utils/index.js';
 import type { Cardinality } from '../../utils/enums/cardinality-sizes.js';
 import type DimensionMetadataModel from './dimension.js';
 import type MetricMetadataModel from './metric.js';
@@ -24,10 +25,6 @@ export interface TableMetadataPayload {
   requestConstraintIds: string[];
   source: string;
   tags?: string[];
-}
-
-function isPresent<T>(t: T | undefined | null | void): t is T {
-  return t !== undefined && t !== null;
 }
 
 export default class TableMetadataModel extends NativeWithCreate {
