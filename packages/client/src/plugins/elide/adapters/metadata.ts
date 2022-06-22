@@ -17,7 +17,7 @@ import type { ClientConfig } from '../../../config/datasources.js';
 export type MetadataQueryType = keyof typeof queries;
 
 export default class ElideMetadataAdapter extends NativeWithCreate implements NaviMetadataAdapter {
-  @Config()
+  @Config('client')
   declare yavinConfig: ClientConfig;
 
   declare apolloClient: ApolloClient<unknown>;
