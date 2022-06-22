@@ -75,6 +75,7 @@
     "@types/module-alias": "^2.0.1",
     "@types/node": "^16.4.2",
     "@types/qunit": "^2.11.3",
+    "@types/uuid": "^8.3.4",
     "@typescript-eslint/eslint-plugin": "^5.29.0",
     "@typescript-eslint/parser": "^5.29.0",
     "browserslist": "^4.20.4",
