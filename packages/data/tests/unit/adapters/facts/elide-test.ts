@@ -10,7 +10,8 @@ import {
 import Pretender from 'pretender';
 import config from 'ember-get-config';
 import moment from 'moment';
-import ElideFactsAdapter, { getElideField } from 'navi-data/adapters/facts/elide';
+import { getElideField } from '@yavin/client/plugins/elide/adapters/facts';
+import ElideFactsAdapter from 'navi-data/adapters/facts/elide';
 import type { Filter, RequestV2 } from '@yavin/client/request';
 import type MetadataModelRegistry from '@yavin/client/models/metadata/registry';
 
@@ -376,7 +377,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
     const asyncQuery = await adapter.createAsyncQuery(TestRequest);
 
-    assert.deepEqual(asyncQuery, response, 'createAsyncQuery returns the correct response payload');
+    assert.deepEqual(asyncQuery.data, response, 'createAsyncQuery returns the correct response payload');
   });
 
   test('createAsyncQuery - header', async function (assert) {
@@ -425,7 +426,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     try {
       await adapter.createAsyncQuery(TestRequest);
     } catch (error) {
-      assert.deepEqual(error, response, 'createAsyncQuery returns the error response payload');
+      assert.deepEqual(error.graphQLErrors, response.errors, 'createAsyncQuery returns the error response payload');
     }
   });
 
@@ -461,7 +462,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     });
 
     const result = await adapter.cancelAsyncQuery('request1', 'elideOne');
-    assert.deepEqual(result, response, 'createAsyncQuery returns the correct response payload');
+    assert.deepEqual(result.data, response, 'createAsyncQuery returns the correct response payload');
   });
 
   test('cancelAsyncQuery - header', async function (assert) {
@@ -548,7 +549,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     });
 
     const result = await adapter.fetchAsyncQuery('request1', 'elideOne');
-    assert.deepEqual(result, response, 'fetchAsyncQuery returns the correct response payload');
+    assert.deepEqual(result.data, response, 'fetchAsyncQuery returns the correct response payload');
   });
 
   test('fetchAsyncQuery - header', async function (assert) {
@@ -641,7 +642,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       return [200, { 'Content-Type': 'application/json' }, JSON.stringify({ data: response })];
     });
     const result = await adapter.fetchTableExport('request1', 'elideOne');
-    assert.deepEqual(result, response, 'fetchTableExport returns the correct response payload');
+    assert.deepEqual(result.data, response, 'fetchTableExport returns the correct response payload');
   });
 
   test('fetchTableExport - header', async function (assert) {
@@ -765,7 +766,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     });
 
     const result = await adapter.fetchDataForRequest(TestRequest);
-    assert.deepEqual(result, response, 'fetchDataForRequest returns the correct response payload');
+    assert.deepEqual(result.data, response, 'fetchDataForRequest returns the correct response payload');
   });
 
   test('fetchDataForRequest - error', async function (assert) {
@@ -777,9 +778,9 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
     try {
       await adapter.fetchDataForRequest(TestRequest);
-    } catch ({ errors }) {
-      const responseText = await errors[0].statusText;
-      assert.deepEqual(responseText, errors[0].messages, 'fetchDataForRequest an array of response objects on error');
+    } catch (e) {
+      const responseText = e.networkError.result.errors[0];
+      assert.deepEqual(responseText, errors[0], 'fetchDataForRequest an array of response objects on error');
     }
   });
 
@@ -856,8 +857,8 @@ module('Unit | Adapter | facts/elide', function (hooks) {
       await adapter.urlForDownloadQuery(TestRequest, {});
     } catch (e) {
       assert.deepEqual(
-        e.errors[0].response.statusText,
-        'Internal Server Error',
+        e.message,
+        'Response not successful: Received status code 500',
         'urlForDownloadQuery returns appropriate error message on server error'
       );
     }
@@ -1098,7 +1099,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     try {
       adapter['buildFilterStr'](intervalFilter, {});
     } catch (e) {
-      assert.equal(e.message, 'Assertion Failed: Filter operator not supported: intervals');
+      assert.equal(e.message, 'Invariant failed: Filter operator not supported: intervals');
     }
   });
 

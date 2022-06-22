@@ -13,6 +13,7 @@ import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import type { TestContext as Context } from 'ember-test-helpers';
 import type { Server } from 'miragejs';
 import type ElideDimensionSerializer from 'navi-data/serializers/dimensions/elide';
+import type { FetchResult } from '@apollo/client/core';
 
 interface TestContext extends Context {
   metadataService: NaviMetadataService;
@@ -31,34 +32,36 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
 
   test('normalize', function (this: TestContext, assert) {
     const serializer: ElideDimensionSerializer = this.owner.lookup('serializer:dimensions/elide');
-    const payload: AsyncQueryResponse = {
-      asyncQuery: {
-        edges: [
-          {
-            node: {
-              id: 'c7d2fe70-b63f-11ea-b45b-bf754c72eca6',
-              query: '"{ "query": "{ tableA { edges { node { col0:dimension1 } } } } " }',
-              status: QueryStatus.COMPLETE,
-              result: {
-                contentLength: 129,
-                httpStatus: 200,
-                recordCount: 3,
-                responseBody: JSON.stringify({
-                  data: {
-                    table0: {
-                      edges: [{ node: { col0: 'foo' } }, { node: { col0: 'bar' } }, { node: { col0: 'baz' } }],
-                      pageInfo: {
-                        startCursor: '0',
-                        endCursor: '3',
-                        totalRecords: 6,
+    const payload: FetchResult<AsyncQueryResponse> = {
+      data: {
+        asyncQuery: {
+          edges: [
+            {
+              node: {
+                id: 'c7d2fe70-b63f-11ea-b45b-bf754c72eca6',
+                query: '"{ "query": "{ tableA { edges { node { col0:dimension1 } } } } " }',
+                status: QueryStatus.COMPLETE,
+                result: {
+                  contentLength: 129,
+                  httpStatus: 200,
+                  recordCount: 3,
+                  responseBody: JSON.stringify({
+                    data: {
+                      table0: {
+                        edges: [{ node: { col0: 'foo' } }, { node: { col0: 'bar' } }, { node: { col0: 'baz' } }],
+                        pageInfo: {
+                          startCursor: '0',
+                          endCursor: '3',
+                          totalRecords: 6,
+                        },
                       },
                     },
-                  },
-                }),
+                  }),
+                },
               },
             },
-          },
-        ],
+          ],
+        },
       },
     };
     const dimensionColumn: DimensionColumn = {
@@ -108,38 +111,40 @@ module('Unit | Serializer | Dimensions | Elide', function (hooks) {
     const lookupField = 'dimension0';
 
     const serializer: ElideDimensionSerializer = this.owner.lookup('serializer:dimensions/elide');
-    const payload: AsyncQueryResponse = {
-      asyncQuery: {
-        edges: [
-          {
-            node: {
-              id: 'c7d2fe70-b63f-11ea-b45b-bf754c72eca6',
-              query: `"{ "query": "{ ${lookupTable} { edges { node { col0:${lookupField} } } } } " }`,
-              status: QueryStatus.COMPLETE,
-              result: {
-                contentLength: 129,
-                httpStatus: 200,
-                recordCount: 3,
-                responseBody: JSON.stringify({
-                  data: {
-                    [lookupTable]: {
-                      edges: [
-                        { node: { col0: 'foo', col1: 'Foo' } },
-                        { node: { col0: 'bar', col1: 'Bar' } },
-                        { node: { col0: 'baz', col1: 'Baz' } },
-                      ],
-                      pageInfo: {
-                        startCursor: '0',
-                        endCursor: '3',
-                        totalRecords: 6,
+    const payload: FetchResult<AsyncQueryResponse> = {
+      data: {
+        asyncQuery: {
+          edges: [
+            {
+              node: {
+                id: 'c7d2fe70-b63f-11ea-b45b-bf754c72eca6',
+                query: `"{ "query": "{ ${lookupTable} { edges { node { col0:${lookupField} } } } } " }`,
+                status: QueryStatus.COMPLETE,
+                result: {
+                  contentLength: 129,
+                  httpStatus: 200,
+                  recordCount: 3,
+                  responseBody: JSON.stringify({
+                    data: {
+                      [lookupTable]: {
+                        edges: [
+                          { node: { col0: 'foo', col1: 'Foo' } },
+                          { node: { col0: 'bar', col1: 'Bar' } },
+                          { node: { col0: 'baz', col1: 'Baz' } },
+                        ],
+                        pageInfo: {
+                          startCursor: '0',
+                          endCursor: '3',
+                          totalRecords: 6,
+                        },
                       },
                     },
-                  },
-                }),
+                  }),
+                },
               },
             },
-          },
-        ],
+          ],
+        },
       },
     };
     const baseDim = this.metadataService.getById(

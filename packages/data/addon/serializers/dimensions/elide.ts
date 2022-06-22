@@ -12,16 +12,21 @@ import NaviDimensionModel from '@yavin/client/models/navi-dimension';
 import NaviDimensionResponse from '@yavin/client/models/navi-dimension-response';
 import type { Options } from '@yavin/client/adapters/dimensions/interface';
 import { canonicalizeColumn } from '@yavin/client/utils/column';
-import { getPaginationFromPageInfo } from '../facts/elide';
+import { getPaginationFromPageInfo } from '@yavin/client/plugins/elide/serializers/facts';
 import type NaviDimensionSerializer from '@yavin/client/serializers/dimensions/interface';
+import type { FetchResult } from '@apollo/client/core';
 
 export type ResponseEdge = {
   node: Record<string, string>;
 };
 
 export default class ElideDimensionSerializer extends EmberObject implements NaviDimensionSerializer {
-  normalize(dimension: DimensionColumn, rawPayload?: AsyncQueryResponse, options: Options = {}): NaviDimensionResponse {
-    const responseStr = rawPayload?.asyncQuery.edges[0].node.result?.responseBody;
+  normalize(
+    dimension: DimensionColumn,
+    rawPayload?: FetchResult<AsyncQueryResponse>,
+    options: Options = {}
+  ): NaviDimensionResponse {
+    const responseStr = rawPayload?.data?.asyncQuery.edges[0].node.result?.responseBody;
     const { valueSource, suggestionColumns } = dimension.columnMetadata as ElideDimensionMetadataModel;
     const { tableId } = valueSource;
     assert('The tableId is defined', tableId);
