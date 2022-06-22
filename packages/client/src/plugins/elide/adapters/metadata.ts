@@ -2,17 +2,17 @@
  * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import queries from '../../../gql/metadata-queries';
+import queries from '../../../gql/metadata-queries.js';
 import invariant from 'tiny-invariant';
 import { isPresent } from '../../../utils/index.js';
-import type NaviMetadataAdapter from '../../../adapters/metadata/interface';
-import type { MetadataOptions } from '../../../adapters/metadata/interface';
+import type NaviMetadataAdapter from '../../../adapters/metadata/interface.js';
+import type { MetadataOptions } from '../../../adapters/metadata/interface.js';
 import { QueryOptions } from '@apollo/client/core';
 import NativeWithCreate, { Config } from '../../../models/native-with-create.js';
 import type { Injector } from '../../../models/native-with-create.js';
 import type { ApolloClient } from '@apollo/client/core';
 import getClient from '../../elide-apollo-client.js';
-import type { ClientConfig } from '../../../config/datasources';
+import type { ClientConfig } from '../../../config/datasources.js';
 
 export type MetadataQueryType = keyof typeof queries;
 
