@@ -243,7 +243,7 @@ module('Unit | Service | Fact', function (hooks) {
 
     // Return an error string
     this.server.use(
-      rest.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, (req, res, ctx) => {
+      rest.get(`${HOST}/v1/data/table1/grain1/d1;show=id/d2;show=id/`, (_req, res, ctx) => {
         return res(ctx.status(500), ctx.text('Server Error'));
       })
     );
