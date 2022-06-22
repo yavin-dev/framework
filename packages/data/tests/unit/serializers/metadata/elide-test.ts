@@ -35,242 +35,244 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
 
   test('normalize', function (assert) {
     const tableConnectionPayload: TablePayload = {
-      table: {
-        edges: [
-          {
-            node: {
-              id: 'tableA',
-              name: 'Table A',
-              friendlyName: 'Friendly Table A',
-              description: 'Table A',
-              category: 'cat1',
-              cardinality: 'SMALL',
-              isFact: true,
-              namespace: {
-                edges: [
-                  {
-                    node: {
-                      id: 'default',
-                      name: 'default',
-                      friendlyName: 'default',
-                      description: 'Default Namespace',
-                    },
-                    cursor: '',
-                  },
-                ],
-                pageInfo: [],
-              },
-              metrics: {
-                edges: [
-                  {
-                    node: {
-                      id: 'tableA.m1',
-                      name: 'M1',
-                      friendlyName: 'Friendly M1',
-                      description: 'Table A Metric 1',
-                      category: 'cat1',
-                      valueType: 'NUMBER',
-                      tags: ['IMPORTANT'],
-                      defaultFormat: 'NONE',
-                      columnType: 'field',
-                      expression: '',
-                      arguments: { edges: [] },
-                    },
-                    cursor: '',
-                  },
-                ],
-                pageInfo: [],
-              },
-              dimensions: {
-                edges: [
-                  {
-                    node: {
-                      id: 'tableA.d1',
-                      name: 'D1',
-                      friendlyName: 'Friendly D1',
-                      description: 'Table A Dimension 1',
-                      cardinality: 'TINY',
-                      category: 'cat1',
-                      valueType: 'TEXT',
-                      tags: ['IMPORTANT'],
-                      columnType: 'field',
-                      expression: '',
-                      valueSourceType: ValueSourceType.NONE,
-                      tableSource: null,
-                      values: [],
-                      arguments: { edges: [] },
-                    },
-                    cursor: '',
-                  },
-                  {
-                    node: {
-                      id: 'tableA.d2',
-                      name: 'D2',
-                      friendlyName: 'Friendly D2',
-                      description: 'Table A Dimension 2',
-                      cardinality: 'MEDIUM',
-                      category: 'cat1',
-                      valueType: 'TEXT',
-                      tags: ['IMPORTANT'],
-                      columnType: 'field',
-                      expression: '',
-                      valueSourceType: ValueSourceType.NONE,
-                      tableSource: null,
-                      values: [],
-                      arguments: { edges: [] },
-                    },
-                    cursor: '',
-                  },
-                ],
-                pageInfo: {},
-              },
-              timeDimensions: {
-                edges: [
-                  {
-                    node: {
-                      id: 'tableA.td1',
-                      name: 'TD1',
-                      friendlyName: 'Friendly TD1',
-                      description: 'Table A Time Dimension 1',
-                      cardinality: 'UNKNOWN',
-                      category: 'cat1',
-                      valueType: 'DATE',
-                      tags: ['IMPORTANT'],
-                      supportedGrains: {
-                        edges: [
-                          { node: { id: 'day', grain: 'DAY', expression: '' }, cursor: '' },
-                          { node: { id: 'week', grain: 'WEEK', expression: '' }, cursor: '' },
-                        ],
-                        pageInfo: {},
+      data: {
+        table: {
+          edges: [
+            {
+              node: {
+                id: 'tableA',
+                name: 'Table A',
+                friendlyName: 'Friendly Table A',
+                description: 'Table A',
+                category: 'cat1',
+                cardinality: 'SMALL',
+                isFact: true,
+                namespace: {
+                  edges: [
+                    {
+                      node: {
+                        id: 'default',
+                        name: 'default',
+                        friendlyName: 'default',
+                        description: 'Default Namespace',
                       },
-                      timeZone: 'UTC',
-                      columnType: 'field',
-                      expression: '',
-                      valueSourceType: ValueSourceType.NONE,
-                      tableSource: null,
-                      values: [],
-                      arguments: { edges: [] },
+                      cursor: '',
                     },
-                    cursor: '',
-                  },
-                ],
-                pageInfo: {},
+                  ],
+                  pageInfo: [],
+                },
+                metrics: {
+                  edges: [
+                    {
+                      node: {
+                        id: 'tableA.m1',
+                        name: 'M1',
+                        friendlyName: 'Friendly M1',
+                        description: 'Table A Metric 1',
+                        category: 'cat1',
+                        valueType: 'NUMBER',
+                        tags: ['IMPORTANT'],
+                        defaultFormat: 'NONE',
+                        columnType: 'field',
+                        expression: '',
+                        arguments: { edges: [] },
+                      },
+                      cursor: '',
+                    },
+                  ],
+                  pageInfo: [],
+                },
+                dimensions: {
+                  edges: [
+                    {
+                      node: {
+                        id: 'tableA.d1',
+                        name: 'D1',
+                        friendlyName: 'Friendly D1',
+                        description: 'Table A Dimension 1',
+                        cardinality: 'TINY',
+                        category: 'cat1',
+                        valueType: 'TEXT',
+                        tags: ['IMPORTANT'],
+                        columnType: 'field',
+                        expression: '',
+                        valueSourceType: ValueSourceType.NONE,
+                        tableSource: null,
+                        values: [],
+                        arguments: { edges: [] },
+                      },
+                      cursor: '',
+                    },
+                    {
+                      node: {
+                        id: 'tableA.d2',
+                        name: 'D2',
+                        friendlyName: 'Friendly D2',
+                        description: 'Table A Dimension 2',
+                        cardinality: 'MEDIUM',
+                        category: 'cat1',
+                        valueType: 'TEXT',
+                        tags: ['IMPORTANT'],
+                        columnType: 'field',
+                        expression: '',
+                        valueSourceType: ValueSourceType.NONE,
+                        tableSource: null,
+                        values: [],
+                        arguments: { edges: [] },
+                      },
+                      cursor: '',
+                    },
+                  ],
+                  pageInfo: {},
+                },
+                timeDimensions: {
+                  edges: [
+                    {
+                      node: {
+                        id: 'tableA.td1',
+                        name: 'TD1',
+                        friendlyName: 'Friendly TD1',
+                        description: 'Table A Time Dimension 1',
+                        cardinality: 'UNKNOWN',
+                        category: 'cat1',
+                        valueType: 'DATE',
+                        tags: ['IMPORTANT'],
+                        supportedGrains: {
+                          edges: [
+                            { node: { id: 'day', grain: 'DAY', expression: '' }, cursor: '' },
+                            { node: { id: 'week', grain: 'WEEK', expression: '' }, cursor: '' },
+                          ],
+                          pageInfo: {},
+                        },
+                        timeZone: 'UTC',
+                        columnType: 'field',
+                        expression: '',
+                        valueSourceType: ValueSourceType.NONE,
+                        tableSource: null,
+                        values: [],
+                        arguments: { edges: [] },
+                      },
+                      cursor: '',
+                    },
+                  ],
+                  pageInfo: {},
+                },
               },
+              cursor: '',
             },
-            cursor: '',
-          },
-          {
-            node: {
-              id: 'tableB',
-              name: 'Table B',
-              friendlyName: 'Friendly Table B',
-              description: 'Table B',
-              category: 'cat2',
-              cardinality: 'MEDIUM',
-              isFact: true,
-              namespace: {
-                edges: [
-                  {
-                    node: {
-                      id: 'default',
-                      name: 'default',
-                      friendlyName: 'default',
-                      description: 'Default Namespace',
+            {
+              node: {
+                id: 'tableB',
+                name: 'Table B',
+                friendlyName: 'Friendly Table B',
+                description: 'Table B',
+                category: 'cat2',
+                cardinality: 'MEDIUM',
+                isFact: true,
+                namespace: {
+                  edges: [
+                    {
+                      node: {
+                        id: 'default',
+                        name: 'default',
+                        friendlyName: 'default',
+                        description: 'Default Namespace',
+                      },
+                      cursor: '',
                     },
-                    cursor: '',
-                  },
-                ],
-                pageInfo: [],
+                  ],
+                  pageInfo: [],
+                },
+                metrics: {
+                  edges: [
+                    {
+                      node: {
+                        id: 'tableB.m2',
+                        name: 'M2',
+                        friendlyName: 'Friendly M2',
+                        description: 'Table B Metric 2',
+                        category: 'cat2',
+                        valueType: 'NUMBER',
+                        tags: ['IMPORTANT'],
+                        defaultFormat: 'NONE',
+                        columnType: 'field',
+                        expression: '',
+                        arguments: { edges: [] },
+                      },
+                      cursor: '',
+                    },
+                    {
+                      node: {
+                        id: 'tableB.m3',
+                        name: 'M3',
+                        friendlyName: 'Friendly M3',
+                        description: 'Table B Metric 3',
+                        category: 'cat2',
+                        valueType: 'NUMBER',
+                        tags: ['IMPORTANT'],
+                        defaultFormat: 'NONE',
+                        columnType: 'field',
+                        expression: '',
+                        arguments: { edges: [] },
+                      },
+                      cursor: '',
+                    },
+                  ],
+                  pageInfo: {},
+                },
+                dimensions: {
+                  edges: [
+                    {
+                      node: {
+                        id: 'tableB.d1',
+                        name: 'D1',
+                        friendlyName: 'Friendly D1',
+                        description: 'Table B Dimension 1',
+                        cardinality: 'SMALL',
+                        category: 'cat2',
+                        valueType: 'TEXT',
+                        tags: ['IMPORTANT'],
+                        columnType: 'field',
+                        expression: '',
+                        valueSourceType: ValueSourceType.NONE,
+                        tableSource: null,
+                        values: [],
+                        arguments: { edges: [] },
+                      },
+                      cursor: '',
+                    },
+                    {
+                      node: {
+                        id: 'tableB.d2',
+                        name: 'D2',
+                        friendlyName: 'Friendly D2',
+                        description: 'Table B Dimension 2',
+                        cardinality: 'LARGE',
+                        category: 'cat2',
+                        valueType: 'TEXT',
+                        tags: ['IMPORTANT'],
+                        columnType: 'field',
+                        expression: '',
+                        valueSourceType: ValueSourceType.NONE,
+                        tableSource: null,
+                        values: [],
+                        arguments: { edges: [] },
+                      },
+                      cursor: '',
+                    },
+                  ],
+                  pageInfo: {},
+                },
+                timeDimensions: {
+                  edges: [],
+                  pageInfo: {},
+                },
               },
-              metrics: {
-                edges: [
-                  {
-                    node: {
-                      id: 'tableB.m2',
-                      name: 'M2',
-                      friendlyName: 'Friendly M2',
-                      description: 'Table B Metric 2',
-                      category: 'cat2',
-                      valueType: 'NUMBER',
-                      tags: ['IMPORTANT'],
-                      defaultFormat: 'NONE',
-                      columnType: 'field',
-                      expression: '',
-                      arguments: { edges: [] },
-                    },
-                    cursor: '',
-                  },
-                  {
-                    node: {
-                      id: 'tableB.m3',
-                      name: 'M3',
-                      friendlyName: 'Friendly M3',
-                      description: 'Table B Metric 3',
-                      category: 'cat2',
-                      valueType: 'NUMBER',
-                      tags: ['IMPORTANT'],
-                      defaultFormat: 'NONE',
-                      columnType: 'field',
-                      expression: '',
-                      arguments: { edges: [] },
-                    },
-                    cursor: '',
-                  },
-                ],
-                pageInfo: {},
-              },
-              dimensions: {
-                edges: [
-                  {
-                    node: {
-                      id: 'tableB.d1',
-                      name: 'D1',
-                      friendlyName: 'Friendly D1',
-                      description: 'Table B Dimension 1',
-                      cardinality: 'SMALL',
-                      category: 'cat2',
-                      valueType: 'TEXT',
-                      tags: ['IMPORTANT'],
-                      columnType: 'field',
-                      expression: '',
-                      valueSourceType: ValueSourceType.NONE,
-                      tableSource: null,
-                      values: [],
-                      arguments: { edges: [] },
-                    },
-                    cursor: '',
-                  },
-                  {
-                    node: {
-                      id: 'tableB.d2',
-                      name: 'D2',
-                      friendlyName: 'Friendly D2',
-                      description: 'Table B Dimension 2',
-                      cardinality: 'LARGE',
-                      category: 'cat2',
-                      valueType: 'TEXT',
-                      tags: ['IMPORTANT'],
-                      columnType: 'field',
-                      expression: '',
-                      valueSourceType: ValueSourceType.NONE,
-                      tableSource: null,
-                      values: [],
-                      arguments: { edges: [] },
-                    },
-                    cursor: '',
-                  },
-                ],
-                pageInfo: {},
-              },
-              timeDimensions: {
-                edges: [],
-                pageInfo: {},
-              },
+              cursor: '',
             },
-            cursor: '',
-          },
-        ],
-        pageInfo: {},
+          ],
+          pageInfo: {},
+        },
       },
     };
 
@@ -493,6 +495,18 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
         requestConstraints: [],
       },
       'Table 0'
+    );
+  });
+
+  test('normalize - error', function (assert) {
+    const message = 'Bad Request';
+    const tableConnectionPayload: TablePayload = {
+      error: { message },
+    };
+    assert.throws(
+      () => Serializer.normalize('everything', tableConnectionPayload, 'bardOne'),
+      new RegExp(message),
+      'it throws an error if `error` field is present'
     );
   });
 

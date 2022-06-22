@@ -541,7 +541,9 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
           payload = yield response.text();
           try {
             payload = JSON.parse(payload);
-          } catch {}
+          } catch {
+            // nothing to do
+          }
         }
         throw new FetchError(response.status, payload);
       }
