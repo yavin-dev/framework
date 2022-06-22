@@ -86,5 +86,5 @@ export interface TableExportResult {
 export default interface NaviFactAdapter {
   fetchDataForRequest(request: Request, options: RequestOptions): Promise<unknown> | Task<unknown>;
   urlForFindQuery(request: Request, options: RequestOptions): string;
-  urlForDownloadQuery(request: Request, options: RequestOptions): Promise<string> | Task<unknown>;
+  urlForDownloadQuery(request: Request, options: RequestOptions): Promise<string> | Task<string>;
 }
