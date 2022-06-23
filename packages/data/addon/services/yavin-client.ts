@@ -53,7 +53,7 @@ export default class YavinClientService extends Service {
 
     return {
       requestDecorator: () => owner.lookup('service:request-decorator'),
-      formatter: () => owner.lookup('service:formatter'),
+      formatter: () => owner.lookup('service:navi-formatter'),
       facts: () => owner.lookup('service:navi-facts'),
       metadata: () => owner.lookup('service:navi-metadata'),
       dimensions: () => owner.lookup('service:navi-dimension'),
