@@ -20,7 +20,7 @@ import {
 import { getPeriodForGrain, Grains } from '@yavin/client/utils/date';
 import type { Grain } from '@yavin/client/utils/date';
 import { groupBy, difference } from 'lodash-es';
-import type { GrainWithAll } from 'navi-data/serializers/metadata/bard';
+import type { GrainWithAll } from '@yavin/client/plugins/fili/serializers/metadata';
 
 const API_DATE_FORMAT = 'YYYY-MM-DD HH:mm:ss.SSS';
 const DATA_EPOCH = '2010-01-01';

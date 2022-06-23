@@ -3,6 +3,7 @@ import { setupTest } from 'ember-qunit';
 import { TestContext } from 'ember-test-helpers';
 import config from 'ember-get-config';
 import NaviMetadataService from 'navi-data/services/navi-metadata';
+import BardTableMetadataModel from '@yavin/client/models/metadata/bard/table';
 import TableMetadataModel from '@yavin/client/models/metadata/table';
 //@ts-ignore
 import { setupMirage } from 'ember-cli-mirage/test-support';
@@ -13,6 +14,7 @@ import TimeDimensionMetadataModel from '@yavin/client/models/metadata/time-dimen
 import ColumnFunctionMetadataModel from '@yavin/client/models/metadata/column-function';
 import { Server } from 'miragejs';
 import Mirage from 'ember-cli-mirage';
+import ElideDimensionMetadataModel from '@yavin/client/models/metadata/elide/dimension';
 
 interface Context extends TestContext {
   server: Server;
@@ -39,7 +41,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
 
     const tables = keg.all('metadata/table', 'bardTwo');
     assert.ok(
-      tables.every((table) => table instanceof TableMetadataModel),
+      tables.every((table) => table.constructor.name === BardTableMetadataModel.name),
       '`bardTwo` `TableMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -50,7 +52,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
 
     const dimensions = keg.all('metadata/dimension', 'bardTwo');
     assert.ok(
-      dimensions.every((dim) => dim instanceof DimensionMetadataModel),
+      dimensions.every((dim) => dim.constructor.name === DimensionMetadataModel.name),
       '`bardTwo` `DimensionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -71,7 +73,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
 
     const timeDimensions = keg.all('metadata/timeDimension', 'bardTwo');
     assert.ok(
-      timeDimensions.every((dim) => dim instanceof TimeDimensionMetadataModel),
+      timeDimensions.every((dim) => dim.constructor.name === TimeDimensionMetadataModel.name),
       '`bardTwo` `TimeDimensionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -82,7 +84,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
 
     const metrics = keg.all('metadata/metric', 'bardTwo');
     assert.ok(
-      metrics.every((metric) => metric instanceof MetricMetadataModel),
+      metrics.every((metric) => metric.constructor.name === MetricMetadataModel.name),
       '`bardTwo` `MetricMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -93,7 +95,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
 
     const columnFunctions = keg.all('metadata/columnFunction', 'elideTwo');
     assert.ok(
-      columnFunctions.every((fn) => fn instanceof ColumnFunctionMetadataModel),
+      columnFunctions.every((fn) => fn.constructor.name === ColumnFunctionMetadataModel.name),
       '`bardTwo` `ColumnFunctionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -113,7 +115,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
 
     const tables = keg.all('metadata/table', 'elideTwo');
     assert.ok(
-      tables.every((table) => table instanceof TableMetadataModel),
+      tables.every((table) => table.constructor.name === TableMetadataModel.name),
       '`elideTwo` `TableMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -124,7 +126,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
 
     const dimensions = keg.all('metadata/dimension', 'elideTwo');
     assert.ok(
-      dimensions.every((dim) => dim instanceof DimensionMetadataModel),
+      dimensions.every((dim) => dim.constructor.name === ElideDimensionMetadataModel.name),
       '`elideTwo` `DimensionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -142,7 +144,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
 
     const timeDimensions = keg.all('metadata/timeDimension', 'elideTwo');
     assert.ok(
-      timeDimensions.every((dim) => dim instanceof TimeDimensionMetadataModel),
+      timeDimensions.every((dim) => dim.constructor.name === TimeDimensionMetadataModel.name),
       '`elideTwo` `TimeDimensionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -166,7 +168,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
 
     const metrics = keg.all('metadata/metric', 'elideTwo');
     assert.ok(
-      metrics.every((metric) => metric instanceof MetricMetadataModel),
+      metrics.every((metric) => metric.constructor.name === MetricMetadataModel.name),
       '`elideTwo` `MetricMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -177,7 +179,7 @@ module('Unit | Service | navi-metadata', function (hooks) {
 
     const columnFunctions = keg.all('metadata/columnFunction', 'elideTwo');
     assert.ok(
-      columnFunctions.every((fn) => fn instanceof ColumnFunctionMetadataModel),
+      columnFunctions.every((fn) => fn.constructor.name === ColumnFunctionMetadataModel.name),
       '`elideTwo` `ColumnFunctionMetadataModel`s are loaded into the keg'
     );
     assert.deepEqual(
@@ -319,8 +321,10 @@ module('Unit | Service | navi-metadata', function (hooks) {
       '`all` returns all loaded tables when data source is not specified'
     );
     assert.ok(
-      allTables.every((table) => table instanceof TableMetadataModel),
-      'All returns instances of `TableMetadataModel`s'
+      allTables.every((table) =>
+        [TableMetadataModel.name, BardTableMetadataModel.name].includes(table.constructor.name)
+      ),
+      'All returns `TableMetadataModel`s'
     );
 
     assert.throws(
@@ -335,16 +339,18 @@ module('Unit | Service | navi-metadata', function (hooks) {
     await this.service.loadMetadata({ dataSourceName: 'bardTwo' });
 
     const metricOne = this.service.getById('metric', 'table1.metric1', 'elideTwo');
-    assert.ok(
-      metricOne instanceof MetricMetadataModel,
-      '`getById` returns a loaded instance of `MetricMetadataModel` when requesting `metric` type'
+    assert.strictEqual(
+      metricOne?.constructor.name,
+      MetricMetadataModel.name,
+      '`getById` returns a `MetricMetadataModel` when requesting `metric` type'
     );
     assert.equal(metricOne?.name, 'Metric 1', '`getById returns a metadata model given a type, id, & datasource');
 
     const revenue = this.service.getById('metric', 'revenue', 'bardTwo');
-    assert.ok(
-      revenue instanceof MetricMetadataModel,
-      '`getById` returns a loaded instance of `MetricMetadataModel` when requesting `metric` type'
+    assert.strictEqual(
+      revenue?.constructor.name,
+      MetricMetadataModel.name,
+      '`getById` returns a `MetricMetadataModel` when requesting `metric` type'
     );
     assert.equal(revenue?.name, 'Revenue', '`getById returns a metadata model given a type, id, & datasource');
 
@@ -365,16 +371,18 @@ module('Unit | Service | navi-metadata', function (hooks) {
 
   test('fetchById - fili', async function (this: Context, assert) {
     const metric = await this.service.fetchById('metric', 'revenue', 'bardTwo');
-    assert.ok(
-      metric instanceof MetricMetadataModel,
-      '`getById` returns an instance of `MetricMetadataModel` when requesting `metric` type'
+    assert.strictEqual(
+      metric?.constructor.name,
+      MetricMetadataModel.name,
+      '`getById` returns a `MetricMetadataModel` when requesting `metric` type'
     );
     assert.equal(metric?.name, 'Revenue', '`getById returns a metadata model given a type, id, & datasource');
 
     const dimension = await this.service.fetchById('dimension', 'currency', 'bardOne');
-    assert.ok(
-      dimension instanceof DimensionMetadataModel,
-      '`getById` returns an instance of `DimensionMetadataModel` when requesting `dimension` type'
+    assert.strictEqual(
+      dimension?.constructor.name,
+      DimensionMetadataModel.name,
+      '`getById` returns a `DimensionMetadataModel` when requesting `dimension` type'
     );
     assert.equal(dimension?.name, 'Currency', '`getById returns a metadata model given a type, id, & datasource');
 
@@ -386,9 +394,10 @@ module('Unit | Service | navi-metadata', function (hooks) {
     assert.equal(this.service.loadedDataSources.size, 0, 'no data sources are initially loaded');
 
     const metric1 = await this.service.findById('metric', 'revenue', 'bardTwo');
-    assert.ok(
-      metric1 instanceof MetricMetadataModel,
-      '`findById` fetches an instance of `MetricMetadataModel` when requesting `metric` type'
+    assert.strictEqual(
+      metric1?.constructor.name,
+      MetricMetadataModel.name,
+      '`findById` fetches a `MetricMetadataModel` when requesting `metric` type'
     );
     assert.equal(metric1?.name, 'Revenue', '`fetchById fetches a metadata model given a type, id, & datasource');
 

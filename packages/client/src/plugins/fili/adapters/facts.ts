@@ -25,14 +25,10 @@ import { ensure, run, withLabels } from 'effection';
 import type { Operation } from 'effection';
 import type MetadataService from '../../../services/interfaces/metadata.js';
 import type RequestDecoratorService from '../../../services/interfaces/request-decorator.js';
+import type { GrainWithAll } from '../serializers/metadata.js';
 import { FetchError } from '../../../errors/fetch-error.js';
 // Node 14 support
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only.js';
-
-/**
- * @deprecated TODO import this from the bard metadata serializer
- */
-type GrainWithAll = Grain | 'all';
 
 export type Query = Record<string, string | number | boolean>;
 

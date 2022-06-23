@@ -1,13 +1,13 @@
 import { module, test } from 'qunit';
 import { setupTest } from 'ember-qunit';
-import config from 'ember-get-config';
 import { TestContext } from 'ember-test-helpers';
-import BardMetadataSerializer, {
+import BardMetadataSerializer from 'navi-data/serializers/metadata/bard';
+import {
   RawEverythingPayload,
   RawDimensionPayload,
   RawMetricPayload,
   RawTablePayload,
-} from 'navi-data/serializers/metadata/bard';
+} from '@yavin/client/plugins/fili/serializers/metadata';
 import DimensionMetadataModel, { DimensionMetadataPayload } from '@yavin/client/models/metadata/dimension';
 import TimeDimensionMetadataModel, { TimeDimensionMetadataPayload } from '@yavin/client/models/metadata/time-dimension';
 import MetricMetadataModel, { MetricMetadataPayload } from '@yavin/client/models/metadata/metric';
@@ -21,6 +21,7 @@ import RequestConstraintMetadataModel, {
 import type { EverythingMetadataPayload } from '@yavin/client/serializers/metadata/interface';
 import { DataType } from '@yavin/client/models/metadata/function-parameter';
 import { ValueSourceType } from '@yavin/client/models/metadata/elide/dimension';
+import { getInjector, Injector as InjectorType } from '@yavin/client/models/native-with-create';
 
 const Payload: RawEverythingPayload = {
   tables: [
@@ -860,6 +861,7 @@ const RequestConstraintPayloads: RequestConstraintMetadataPayload[] = [
   },
 ];
 
+let Injector: InjectorType;
 let Serializer: BardMetadataSerializer;
 let ColumnFunctions: ColumnFunctionMetadataModel[];
 let RequestConstraints: RequestConstraintMetadataModel[];
@@ -873,13 +875,13 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
 
   hooks.beforeEach(function (this: TestContext) {
     Serializer = this.owner.lookup('serializer:metadata/bard');
-    const injector = this.owner.lookup('service:client-injector');
-    Tables = TablePayloads.map((p) => new BardTableMetadataModel(injector, p));
-    Dimensions = DimensionsPayloads.map((p) => new DimensionMetadataModel(injector, p));
-    TimeDimensions = TimeDimensionPayloads.map((p) => new TimeDimensionMetadataModel(injector, p));
-    Metrics = MetricPayloads.map((p) => new MetricMetadataModel(injector, p));
-    ColumnFunctions = ColumnFunctionPayloads.map((p) => new ColumnFunctionMetadataModel(injector, p));
-    RequestConstraints = RequestConstraintPayloads.map((p) => new RequestConstraintMetadataModel(injector, p));
+    Injector = getInjector(Serializer);
+    Tables = TablePayloads.map((p) => new BardTableMetadataModel(Injector, p));
+    Dimensions = DimensionsPayloads.map((p) => new DimensionMetadataModel(Injector, p));
+    TimeDimensions = TimeDimensionPayloads.map((p) => new TimeDimensionMetadataModel(Injector, p));
+    Metrics = MetricPayloads.map((p) => new MetricMetadataModel(Injector, p));
+    ColumnFunctions = ColumnFunctionPayloads.map((p) => new ColumnFunctionMetadataModel(Injector, p));
+    RequestConstraints = RequestConstraintPayloads.map((p) => new RequestConstraintMetadataModel(Injector, p));
   });
 
   test('normalize `everything` with metric legacy `parameters`', function (assert) {
@@ -900,7 +902,7 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
       'Everything metadata payload has all types'
     );
     Object.keys(expected).forEach((key: keyof EverythingMetadataPayload) => {
-      assert.deepEqual(normalized?.[key], expected[key], `All normalized ${key} are created correctly`);
+      assert.propEqual(normalized?.[key], expected[key], `All normalized ${key} are created correctly`);
     });
   });
 
@@ -987,9 +989,9 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
       },
     ];
 
-    assert.deepEqual(
+    assert.propEqual(
       metrics,
-      expectedMetricPayloads.map((p) => new MetricMetadataModel(this.owner.lookup('service:client-injector'), p)),
+      expectedMetricPayloads.map((p) => new MetricMetadataModel(Injector, p)),
       'The metric with parameters has a columnFunctionId provided by the raw data'
     );
 
@@ -1040,11 +1042,9 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
         ],
       },
     ];
-    assert.deepEqual(
+    assert.propEqual(
       columnFunctions,
-      expectedColumnFunctionPayloads.map(
-        (p) => new ColumnFunctionMetadataModel(this.owner.lookup('service:client-injector'), p)
-      ),
+      expectedColumnFunctionPayloads.map((p) => new ColumnFunctionMetadataModel(Injector, p)),
       'Raw column functions are normalized correctly'
     );
   });
@@ -1089,9 +1089,9 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
       partialData: true,
     };
 
-    assert.deepEqual(
+    assert.propEqual(
       Serializer['normalizeDimensions']([rawDimension], source),
-      [new DimensionMetadataModel(this.owner.lookup('service:client-injector'), expectedDimensionPayload)],
+      [new DimensionMetadataModel(Injector, expectedDimensionPayload)],
       'New dimension is constructed correctly normalized'
     );
   });
@@ -1120,15 +1120,15 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
       partialData: true,
     };
 
-    assert.deepEqual(
+    assert.propEqual(
       Serializer['normalizeMetrics']([rawMetric], source),
-      [new MetricMetadataModel(this.owner.lookup('service:client-injector'), expectedMetricPayload)],
+      [new MetricMetadataModel(Injector, expectedMetricPayload)],
       'Metric is constructed correctly with no new column function id or parameter'
     );
   });
 
   test('configure defaultTimeGrain if it exists', async function (assert) {
-    const originalDefaultTimeGrain = config.navi.defaultTimeGrain;
+    const originalDefaultTimeGrain = Serializer.clientConfig.defaultTimeGrain;
 
     const table: RawTablePayload = {
       name: 'table',
@@ -1141,19 +1141,19 @@ module('Unit | Serializer | metadata/bard', function (hooks) {
       ],
     };
 
-    config.navi.defaultTimeGrain = 'isoWeek';
+    Serializer.clientConfig.defaultTimeGrain = 'isoWeek';
     const tableGrainInfo = Serializer['parseTableGrains'](table);
     let columnFunction = Serializer['createTimeGrainColumnFunction'](table, tableGrainInfo, 'bardOne');
     assert.equal(columnFunction['_parametersPayload'][0].defaultValue, 'isoWeek', 'Picks default from config');
 
-    config.navi.defaultTimeGrain = 'year';
+    Serializer.clientConfig.defaultTimeGrain = 'year';
     columnFunction = Serializer['createTimeGrainColumnFunction'](table, tableGrainInfo, 'bardOne');
     assert.equal(columnFunction['_parametersPayload'][0].defaultValue, 'hour', 'Falls back to first defined grain');
 
-    config.navi.defaultTimeGrain = 'hour';
+    Serializer.clientConfig.defaultTimeGrain = 'hour';
     columnFunction = Serializer['createTimeGrainColumnFunction'](table, tableGrainInfo, 'bardOne');
     assert.equal(columnFunction['_parametersPayload'][0].defaultValue, 'hour', 'Picks default from config');
 
-    config.navi.defaultTimeGrain = originalDefaultTimeGrain;
+    Serializer.clientConfig.defaultTimeGrain = originalDefaultTimeGrain;
   });
 });

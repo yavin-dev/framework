@@ -4,7 +4,7 @@
  */
 
 export type MetadataOptions = {
-  query?: object;
+  query?: Record<string, unknown>;
   clientId?: string;
   timeout?: number;
   dataSourceName?: string;
