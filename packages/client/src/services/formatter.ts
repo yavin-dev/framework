@@ -9,10 +9,10 @@ import type { MetricColumn } from '../models/metadata/metric.js';
 import type { ResponseRow } from '../models/navi-fact-response.js';
 import type { MetricValue } from '../serializers/facts/interface.js';
 import type { PotentialParameterValue } from '../models/metadata/function-parameter.js';
-import type FormatterService from './interfaces/formatter.js';
+import type FormatterServiceInterface from './interfaces/formatter.js';
 import NativeWithCreate from '../models/native-with-create.js';
 
-export default class NaviFormatterService extends NativeWithCreate implements FormatterService {
+export default class FormatterService extends NativeWithCreate implements FormatterServiceInterface {
   async formatNiceColumnName(
     columnMetadata?: ColumnMetadataModel,
     parameters: Parameters = {},

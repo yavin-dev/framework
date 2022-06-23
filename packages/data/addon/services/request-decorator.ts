@@ -2,16 +2,14 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Service from '@ember/service';
-import type { RequestV2 } from '@yavin/client/request';
+import RequestDecoratorService from '@yavin/client/services/request-decorator';
+import { getOwner } from '@ember/application';
 
-export default class RequestDecoratorService extends Service {
-  /**
-   * @param request - object to modify
-   * @returns transformed version of request
-   */
-  applyGlobalDecorators(request: RequestV2): RequestV2 {
-    return request;
+export default class NaviRequestDecoratorService extends RequestDecoratorService {
+  static create(args: unknown) {
+    const owner = getOwner(args);
+    const yavinClient = owner.lookup('service:yavin-client');
+    return new this(yavinClient.injector);
   }
 }
 
