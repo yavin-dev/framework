@@ -7,10 +7,9 @@ import invariant from 'tiny-invariant';
 import { isPresent } from '../../../utils/index.js';
 import type NaviMetadataAdapter from '../../../adapters/metadata/interface.js';
 import type { MetadataOptions } from '../../../adapters/metadata/interface.js';
-import { QueryOptions } from '@apollo/client/core';
 import NativeWithCreate, { Config } from '../../../models/native-with-create.js';
 import type { Injector } from '../../../models/native-with-create.js';
-import type { ApolloClient } from '@apollo/client/core';
+import type { QueryOptions, ApolloClient } from '@apollo/client/core/index.js';
 import getClient from '../../elide-apollo-client.js';
 import type { ClientConfig } from '../../../config/datasources.js';
 
