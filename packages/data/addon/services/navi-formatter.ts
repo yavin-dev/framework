@@ -2,60 +2,39 @@
  * Copyright 2020, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import Service from '@ember/service';
-import { isEmpty } from '@ember/utils';
-import numbro from 'numbro';
-import type { Parameters } from '@yavin/client/request';
+import FormatterService from '@yavin/client/services/formatter';
+import { getOwner } from '@ember/application';
+import { waitForPromise } from '@ember/test-waiters';
+import { maybeHalt } from '@yavin/client/utils/task';
+import { task, TaskGenerator } from 'ember-concurrency';
+import { taskFor } from 'ember-concurrency-ts';
 import type ColumnMetadataModel from '@yavin/client/models/metadata/column';
-import type { MetricColumn } from '@yavin/client/models/metadata/metric';
-import type { ResponseRow } from '@yavin/client/models/navi-fact-response';
-import type { MetricValue } from '@yavin/client/serializers/facts/interface';
-import type { PotentialParameterValue } from '@yavin/client/models/metadata/function-parameter';
-import { hash } from 'ember-concurrency';
-import type FormatterService from '@yavin/client/services/interfaces/formatter';
+import type { Parameters } from '@yavin/client/request';
 
-export default class NaviFormatterService extends Service implements FormatterService {
-  async formatNiceColumnName(
-    columnMetadata?: ColumnMetadataModel,
-    parameters: Parameters = {},
-    alias?: string | null
-  ): Promise<string> {
-    if (alias) {
-      return alias;
-    }
-
-    const lookups: Record<string, Promise<PotentialParameterValue[]>> = {};
-    columnMetadata?.parameters?.forEach((e) => (lookups[e.id] = e.values));
-    const parameterValueLookups = await hash(lookups);
-
-    const paramNames = Object.entries(parameters).map(([name, value]) =>
-      parameterValueLookups[name] ? parameterValueLookups[name].find((e) => e.id === value)?.name ?? value : value
-    );
-
-    const name = columnMetadata?.name ?? '--';
-    return paramNames.length ? `${name} (${paramNames.join(',')})` : name;
+export default class NaviFormatterService extends FormatterService {
+  formatNiceColumnName(columnMetadata?: ColumnMetadataModel, parameters?: Parameters, alias?: string | null) {
+    return taskFor(this.taskWrapper).perform(() =>
+      super.formatNiceColumnName(columnMetadata, parameters, alias)
+    ) as Promise<string>;
   }
 
-  formatColumnName(columnMetadata?: ColumnMetadataModel, parameters?: Parameters, alias?: string | null): string {
-    if (alias) {
-      return alias;
-    }
-
-    const paramValues = Object.values(parameters || {});
-    const name = columnMetadata?.name || '--';
-    if (paramValues.length) {
-      return `${name} (${paramValues.join(',')})`;
-    } else {
-      return name;
+  @task *taskWrapper<T>(taskLike: () => Promise<T>): TaskGenerator<T> {
+    const result = taskLike();
+    try {
+      /**
+       * Wrap promise because waitForPromise assumes they are unique
+       * and services might cache and return the same promise
+       */
+      return yield waitForPromise(result.then((v) => Promise.resolve(v)));
+    } finally {
+      yield waitForPromise(maybeHalt(result));
     }
   }
 
-  formatMetricValue(value: MetricValue, _column: MetricColumn, _row: ResponseRow, requestedFormat?: string): string {
-    if (isEmpty(value)) {
-      return '--';
-    }
-    const format = requestedFormat ? requestedFormat : { thousandSeparated: true };
-    return numbro(value).format(format);
+  static create(args: unknown) {
+    const owner = getOwner(args);
+    const yavinClient = owner.lookup('service:yavin-client');
+    return new this(yavinClient.injector);
   }
 }
 

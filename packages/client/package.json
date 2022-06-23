@@ -66,6 +66,7 @@
     "effection": "^2.0.4",
     "lodash": "^4.17.21",
     "moment": "^2.29.3",
+    "numbro": "^2.3.6",
     "tiny-invariant": "^1.2.0"
   },
   "devDependencies": {
