@@ -10,7 +10,7 @@ import type {
   DimensionNode,
   TimeDimensionNode,
   TimeDimensionGrainNode,
-} from 'navi-data/serializers/metadata/elide';
+} from '@yavin/client/plugins/elide/serializers/metadata';
 import { DataType } from '@yavin/client/models/metadata/function-parameter';
 import { capitalize } from 'lodash-es';
 import TableMetadataModel, { TableMetadataPayload } from '@yavin/client/models/metadata/table';
@@ -23,6 +23,7 @@ import ElideDimensionMetadataModel, {
   ElideDimensionMetadataPayload,
   ValueSourceType,
 } from '@yavin/client/models/metadata/elide/dimension';
+import { getInjector } from '@yavin/client/models/native-with-create';
 
 let Serializer: ElideMetadataSerializer;
 
@@ -483,8 +484,9 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
       },
     ];
 
-    const injector = this.owner.lookup('service:client-injector');
-    assert.deepEqual(
+    const injector = getInjector(Serializer);
+
+    assert.propEqual(
       Serializer.normalize('everything', tableConnectionPayload, 'bardOne'),
       {
         tables: expectedTablePayloads.map((p) => new TableMetadataModel(injector, p)),
@@ -685,23 +687,19 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
     const metricModels = metrics.map((m) => m.metricModel);
     const columnFunctions = metrics.map((m) => m.columnFunction);
 
-    assert.deepEqual(
+    assert.propEqual(
       metricModels,
-      expectedMetricPayloads.map((p) => new MetricMetadataModel(this.owner.lookup('service:client-injector'), p)),
+      expectedMetricPayloads.map((p) => new MetricMetadataModel(getInjector(Serializer), p)),
       'metric models are normalized properly'
     );
 
-    assert.deepEqual(
+    assert.propEqual(
       columnFunctions,
-      [
-        ...expectedFunctionPayloads.map(
-          (p) => new ColumnFunctionMetadataModel(this.owner.lookup('service:client-injector'), p)
-        ),
-      ],
+      [...expectedFunctionPayloads.map((p) => new ColumnFunctionMetadataModel(getInjector(Serializer), p))],
       'metric column functions are normalized properly'
     );
 
-    assert.deepEqual(
+    assert.propEqual(
       Serializer._normalizeTableMetrics({ edges: [], pageInfo: {} }, tableId, source),
       [],
       'A connection with no edges returns an empty array'
@@ -872,26 +870,19 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
     const dimensionModels = dimensions.map((d) => d.dimensionModel);
     const columnFunctions = dimensions.map((d) => d.columnFunction);
 
-    assert.deepEqual(
+    assert.propEqual(
       dimensionModels,
-      expectedDimensionPayloads.map(
-        (p) => new ElideDimensionMetadataModel(this.owner.lookup('service:client-injector'), p)
-      ),
+      expectedDimensionPayloads.map((p) => new ElideDimensionMetadataModel(getInjector(Serializer), p)),
       'dimension models are normalized properly'
     );
 
-    assert.deepEqual(
+    assert.propEqual(
       columnFunctions,
-      [
-        null,
-        ...expectedFunctionPayloads.map(
-          (p) => new ColumnFunctionMetadataModel(this.owner.lookup('service:client-injector'), p)
-        ),
-      ],
+      [null, ...expectedFunctionPayloads.map((p) => new ColumnFunctionMetadataModel(getInjector(Serializer), p))],
       'dimension column functions are normalized properly'
     );
 
-    assert.deepEqual(
+    assert.propEqual(
       Serializer._normalizeTableDimensions({ edges: [], pageInfo: {} }, tableId, source),
       [],
       'A connection with no edges returns an empty array'
@@ -1065,11 +1056,11 @@ module('Unit | Serializer | metadata/elide', function (hooks) {
       },
     ];
 
-    assert.deepEqual(
+    assert.propEqual(
       Serializer._normalizeTableTimeDimensions(timeDimensionPayload, tableId, source),
       expected.map(({ timeDimension, columnFunction }) => ({
-        timeDimension: new TimeDimensionMetadataModel(this.owner.lookup('service:client-injector'), timeDimension),
-        columnFunction: new ColumnFunctionMetadataModel(this.owner.lookup('service:client-injector'), columnFunction),
+        timeDimension: new TimeDimensionMetadataModel(getInjector(Serializer), timeDimension),
+        columnFunction: new ColumnFunctionMetadataModel(getInjector(Serializer), columnFunction),
       })),
       'Time Dimension connection payload is normalized properly for a table'
     );

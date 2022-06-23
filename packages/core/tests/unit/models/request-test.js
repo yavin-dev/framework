@@ -127,8 +127,9 @@ module('Unit | Model | Fragment | BardRequest  - Request', function (hooks) {
   test('time-dimension matches table metadata', async function (assert) {
     const { request } = mockModel;
     let timeDimension = request.columns.objectAt(0).columnMetadata;
-    assert.ok(
-      timeDimension instanceof TimeDimensionMetadataModel,
+    assert.strictEqual(
+      timeDimension.constructor.name,
+      TimeDimensionMetadataModel.name,
       'dateTime time-dimension uses actual metadata model'
     );
 

@@ -10,7 +10,7 @@ import { canonicalizeColumn } from '../../../utils/column.js';
 import omitBy from 'lodash/omitBy.js';
 import NativeWithCreate, { ClientService, Config, Injector } from '../../../models/native-with-create.js';
 import invariant from 'tiny-invariant';
-import { Operation, run, spawn, Task, timeout, withLabels } from 'effection';
+import { Operation, run, sleep, spawn, Task, withLabels } from 'effection';
 import getClient from '../../elide-apollo-client.js';
 import { v1 } from 'uuid';
 import type { RequestOptions, AsyncQueryResponse, TableExportResponse } from '../../../adapters/facts/interface.js';
@@ -377,7 +377,7 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
 
     try {
       while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
-        yield spawn(timeout(this._pollingInterval));
+        yield sleep(this._pollingInterval);
         tableExportPayload = yield this.fetchTableExport(id, request.dataSource, options);
         const { data } = tableExportPayload;
         invariant(data, 'table export response is valid');
@@ -419,7 +419,7 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
 
     try {
       while (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
-        yield spawn(timeout(this._pollingInterval));
+        yield sleep(this._pollingInterval);
         asyncQueryPayload = yield this.fetchAsyncQuery(id, request.dataSource, options);
         const { data } = asyncQueryPayload;
         invariant(data, 'async query response is valid');
