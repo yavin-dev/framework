@@ -4,7 +4,6 @@
     "module": "ES2020",
     "lib": ["ESNext"],
 
-    "incremental": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,

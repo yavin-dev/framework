@@ -9,10 +9,10 @@ import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import FileTypes from 'navi-directory/utils/enums/file-types';
 import { inject as service } from '@ember/service';
-import { Registry as Services } from '@ember/service';
+import type RouterService from '@ember/routing/router-service';
 
 export default class DirNewButtonComponent extends Component {
-  @service router!: Services['router'];
+  @service router!: RouterService;
 
   /**
    * @property {Array} fileTypeNames - Names of file types in directory

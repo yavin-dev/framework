@@ -24,7 +24,7 @@ module('Integration | Helper | tooltip-value-formatter', function (this: TestCon
     this.set('metric', this.fragmentFactory.createColumn('metric', 'bardOne', 'uniqueIdentifier', {}));
     this.set('row', {});
 
-    await render(hbs`{{tooltip-value-formatter inputValue metric row}}`);
+    await render(hbs`{{tooltip-value-formatter this.inputValue this.metric this.row}}`);
 
     assert.dom().hasText('1,234', 'Formatted number is returned');
 

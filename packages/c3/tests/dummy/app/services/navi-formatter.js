@@ -1,4 +1,5 @@
 import NaviFormatterService from 'navi-data/services/navi-formatter';
+import { getOwner, setOwner } from '@ember/application';
 import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
 import { action } from '@ember/object';
@@ -22,5 +23,17 @@ export default class CustomFormatterService extends NaviFormatterService {
     assert('The row is passed', typeof row === 'object');
     assert('The correct value is passed', row[column.canonicalName] === value);
     return numbro(value).format(format) + ` rc=${Object.keys(row).length}`;
+  }
+
+  /**
+   * Overrides the default create method to also register the owner
+   * of the instance so ember service lookups work correctly
+   */
+  static create(args: unknown) {
+    const owner = getOwner(args);
+    const yavinClient = owner.lookup('service:yavin-client');
+    const formatter = new this(yavinClient.injector);
+    setOwner(formatter, owner);
+    return formatter;
   }
 }
