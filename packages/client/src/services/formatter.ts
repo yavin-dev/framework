@@ -54,8 +54,13 @@ export default class FormatterService extends NativeWithCreate implements Format
     }
   }
 
-  formatMetricValue(value: MetricValue, _column: MetricColumn, _row: ResponseRow, requestedFormat?: string): string {
-    if (!value) {
+  formatMetricValue(
+    value: MetricValue | string,
+    _column: MetricColumn,
+    _row: ResponseRow,
+    requestedFormat?: string
+  ): string {
+    if (value === null || value === undefined || value === '') {
       return '--';
     }
     const format = requestedFormat ? requestedFormat : { thousandSeparated: true };
