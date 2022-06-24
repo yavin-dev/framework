@@ -35,14 +35,16 @@ type DataSourceService = keyof DataSourcePlugins;
 type ServiceAdapter = ResolvedResolvedConfig[DataSourceService]['adapter'];
 type ServiceSerializer = ResolvedResolvedConfig[DataSourceService]['serializer'];
 
+export type DataSourcePluginMap = Record<string, DataSourcePlugins | undefined>;
+
 export class DataSourcePluginConfig extends NativeWithCreate {
   @Config('client')
   private declare clientConfig: ClientConfig;
 
-  #config: Record<string, DataSourcePlugins | undefined>;
+  #config: DataSourcePluginMap;
   #cache = new Map<string, ServiceAdapter | ServiceSerializer>();
 
-  constructor(injector: Injector, config: Record<string, DataSourcePlugins | undefined>) {
+  constructor(injector: Injector, config: DataSourcePluginMap) {
     super(injector);
     this.#config = config;
   }

@@ -2,9 +2,14 @@
  * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-
-import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client/core/index.js';
-import { setContext } from '@apollo/client/link/context/index.js';
+//@ts-ignore - no types for cjs direct import
+import * as ApolloClientCore from '@apollo/client/core/core.cjs';
+import type ApolloClientCoreType from '@apollo/client/core/index.js';
+const { ApolloClient, InMemoryCache, HttpLink } = ApolloClientCore as typeof ApolloClientCoreType;
+import type ApolloLinkContextType from '@apollo/client/link/context/index.js';
+//@ts-ignore - no types for cjs direct import
+import * as ApolloLinkContext from '@apollo/client/link/context/context.cjs';
+const { setContext } = ApolloLinkContext as typeof ApolloLinkContextType;
 import type { ClientConfig } from '../config/datasources.js';
 import fetch from 'cross-fetch';
 
@@ -12,8 +17,9 @@ export default function getClient(config: ClientConfig) {
   function buildURLPath(dataSourceName: string): string {
     const host = config.configHost({ dataSourceName });
     let baseUrl;
-    if (document) {
-      baseUrl = `${document.location.protocol}${document.location.host}`;
+    if (globalThis.document) {
+      const { protocol, host } = globalThis.document.location;
+      baseUrl = `${protocol}${host}`;
     }
     return new URL(host, baseUrl).href;
   }

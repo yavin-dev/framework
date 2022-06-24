@@ -14,6 +14,11 @@ import type NaviFactSerializer from '@yavin/client/serializers/facts/interface';
 import type NaviDimensionAdapter from '@yavin/client/adapters/dimensions/interface';
 import type NaviDimensionSerializer from '@yavin/client/serializers/dimensions/interface';
 import type { ServicePlugins } from '@yavin/client/config/service-plugins';
+import type FactService from '@yavin/client/services/interfaces/fact';
+import type MetadataService from '@yavin/client/services/interfaces/metadata';
+import type DimensionService from '@yavin/client/services/interfaces/dimension';
+import type { ClientConfig } from '@yavin/client/config/datasources';
+import type { DataSourcePluginConfig } from '@yavin/client/config/datasource-plugins';
 
 export default class YavinClientService extends Service {
   #client: Client;
@@ -60,19 +65,19 @@ export default class YavinClientService extends Service {
     };
   }
 
-  get facts() {
+  get facts(): FactService {
     return this.#client.facts;
   }
-  get metadata() {
+  get metadata(): MetadataService {
     return this.#client.metadata;
   }
-  get dimensions() {
+  get dimensions(): DimensionService {
     return this.#client.dimensions;
   }
-  get clientConfig() {
+  get clientConfig(): ClientConfig {
     return this.#client.clientConfig;
   }
-  get pluginConfig() {
+  get pluginConfig(): DataSourcePluginConfig {
     return this.#client.pluginConfig;
   }
 

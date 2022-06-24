@@ -19,7 +19,7 @@ import type { DocumentNode } from 'graphql';
 import type { Moment } from 'moment';
 import type { Grain } from '../../../utils/date.js';
 import type MetadataService from '../../../services/interfaces/metadata.js';
-import type { ApolloClient, FetchResult } from '@apollo/client/core';
+import type { ApolloClient, FetchResult } from '@apollo/client/core/index.js';
 import type { ClientConfig } from '../../../config/datasources.js';
 
 const escape = (value: string) => value.replace(/'/g, "\\\\'");

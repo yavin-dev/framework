@@ -4,44 +4,78 @@
  */
 
 import { ClientConfig } from './config/datasources.js';
-import { DataSourcePluginConfig } from './config/datasource-plugins.js';
+import { DataSourcePluginConfig, DataSourcePluginMap } from './config/datasource-plugins.js';
 import { getInjector, setInjector } from './models/native-with-create.js';
+import { buildFiliPlugin } from './plugins/fili.js';
+import { buildElidePlugin } from './plugins/elide.js';
 import type { YavinClientConfig } from './config/datasources.js';
 import type { DataSourcePlugins } from './config/datasource-plugins.js';
 import type { ServicePlugins, Services } from './config/service-plugins.js';
-import type FactService from './services/interfaces/fact.js';
-import type MetadataService from './services/interfaces/metadata.js';
-import type DimensionService from './services/interfaces/dimension.js';
+import type FactServiceInterface from './services/interfaces/fact.js';
+import type MetadataServiceInterface from './services/interfaces/metadata.js';
+import type DimensionServiceInterface from './services/interfaces/dimension.js';
 import type { ClientServices, Injector, LookupType } from './models/native-with-create.js';
 import type ServiceRegistry from './services/interfaces/registry.js';
+import RequestDecoratorService from './services/request-decorator.js';
+import FormatterService from './services/formatter.js';
+import MetadataService from './services/metadata.js';
+import FactsService from './services/fact.js';
 
 interface PluginConfig {
-  dataSourcePlugins: Record<string, DataSourcePlugins>;
-  servicePlugins: ServicePlugins;
+  dataSourcePlugins?: Record<string, DataSourcePlugins>;
+  servicePlugins?: Partial<ServicePlugins>;
 }
 
 export class Client {
-  get facts(): FactService {
+  get facts(): FactServiceInterface {
     return getInjector(this).lookup('service', 'navi-facts');
   }
-  get metadata(): MetadataService {
+  get metadata(): MetadataServiceInterface {
     return getInjector(this).lookup('service', 'navi-metadata');
   }
-  get dimensions(): DimensionService {
+  get dimensions(): DimensionServiceInterface {
     return getInjector(this).lookup('service', 'navi-dimension');
   }
 
   clientConfig: ClientConfig;
   pluginConfig: DataSourcePluginConfig;
 
-  constructor(clientConfig: YavinClientConfig, plugins: PluginConfig) {
+  constructor(clientConfig: YavinClientConfig, plugins: PluginConfig = {}) {
     this.clientConfig = new ClientConfig(clientConfig);
-    setInjector(this, this.#createInjector(plugins.servicePlugins));
-    this.pluginConfig = new DataSourcePluginConfig(getInjector(this), plugins.dataSourcePlugins);
+
+    const servicePlugins = this.getServicePluginConfig(plugins.servicePlugins);
+    const dataSourcePlugins = this.getDataSourcePluginConfig(plugins.dataSourcePlugins);
+    setInjector(this, this.#createInjector(servicePlugins));
+    this.pluginConfig = new DataSourcePluginConfig(getInjector(this), dataSourcePlugins);
+  }
+
+  protected getServicePluginConfig(servicePlugins: Partial<ServicePlugins> = {}): ServicePlugins {
+    const services: ServicePlugins = {
+      requestDecorator: (injector: Injector) => new RequestDecoratorService(injector),
+      formatter: (injector: Injector) => new FormatterService(injector),
+      metadata: (injector: Injector) => new MetadataService(injector),
+      facts: (injector: Injector) => new FactsService(injector),
+      dimensions: (_injector: Injector) => {
+        throw new Error('Dimension service does not exist yet');
+      },
+    };
+    Object.assign(services, servicePlugins);
+    return services;
+  }
+
+  protected getDataSourcePluginConfig(dataSourcePlugins: DataSourcePluginMap = {}): DataSourcePluginMap {
+    const bard = buildFiliPlugin();
+    const elide = buildElidePlugin();
+    const dataSources: DataSourcePluginMap = {
+      bard,
+      elide,
+    };
+    Object.assign(dataSources, dataSourcePlugins);
+    return dataSources;
   }
 
   #createInjector(servicePlugins: ServicePlugins): Injector {
-    const serviceToPluginNames: Record<keyof ServiceRegistry, keyof PluginConfig['servicePlugins']> = {
+    const serviceToPluginNames: Record<keyof ServiceRegistry, keyof ServicePlugins> = {
       'request-decorator': 'requestDecorator',
       'navi-formatter': 'formatter',
       'navi-metadata': 'metadata',
@@ -49,11 +83,10 @@ export class Client {
       'navi-facts': 'facts',
     };
     const serviceCache: Partial<Services> = {};
-    const self = this;
     const injector: Injector = {
-      lookup<T extends ClientServices>(type: LookupType, service: string) {
+      lookup: <T extends ClientServices>(type: LookupType, service: string) => {
         if (type === 'config') {
-          return { client: self.clientConfig, plugin: self.pluginConfig }[service];
+          return { client: this.clientConfig, plugin: this.pluginConfig }[service];
         } else {
           const serviceName = serviceToPluginNames[service as T];
           let serviceInstance;

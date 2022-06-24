@@ -12,7 +12,7 @@ import { canonicalizeColumn } from '../../../utils/column.js';
 import NaviFactResponse from '../../../models/navi-fact-response.js';
 import NaviFactError, { NaviErrorDetails } from '../../../errors/navi-adapter-error.js';
 import { ExecutionResult } from 'graphql';
-import type { FetchResult } from '@apollo/client/core';
+import type { FetchResult } from '@apollo/client/core/index.js';
 import NativeWithCreate, { getInjector } from '../../../models/native-with-create.js';
 import invariant from 'tiny-invariant';
 
