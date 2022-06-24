@@ -22,8 +22,8 @@ import MetadataService from './services/metadata.js';
 import FactsService from './services/fact.js';
 
 interface PluginConfig {
-  dataSourcePlugins: Record<string, DataSourcePlugins>;
-  servicePlugins: ServicePlugins;
+  dataSourcePlugins?: Record<string, DataSourcePlugins>;
+  servicePlugins?: Partial<ServicePlugins>;
 }
 
 export class Client {
@@ -40,7 +40,7 @@ export class Client {
   clientConfig: ClientConfig;
   pluginConfig: DataSourcePluginConfig;
 
-  constructor(clientConfig: YavinClientConfig, plugins: PluginConfig) {
+  constructor(clientConfig: YavinClientConfig, plugins: PluginConfig = {}) {
     this.clientConfig = new ClientConfig(clientConfig);
 
     const servicePlugins = this.getServicePluginConfig(plugins.servicePlugins);
@@ -49,7 +49,7 @@ export class Client {
     this.pluginConfig = new DataSourcePluginConfig(getInjector(this), dataSourcePlugins);
   }
 
-  protected getServicePluginConfig(servicePlugins: ServicePlugins): ServicePlugins {
+  protected getServicePluginConfig(servicePlugins: Partial<ServicePlugins> = {}): ServicePlugins {
     const services: ServicePlugins = {
       requestDecorator: (injector: Injector) => new RequestDecoratorService(injector),
       formatter: (injector: Injector) => new FormatterService(injector),
@@ -63,7 +63,7 @@ export class Client {
     return services;
   }
 
-  protected getDataSourcePluginConfig(dataSourcePlugins: DataSourcePluginMap): DataSourcePluginMap {
+  protected getDataSourcePluginConfig(dataSourcePlugins: DataSourcePluginMap = {}): DataSourcePluginMap {
     const bard = buildFiliPlugin();
     const elide = buildElidePlugin();
     const dataSources: DataSourcePluginMap = {
@@ -75,7 +75,7 @@ export class Client {
   }
 
   #createInjector(servicePlugins: ServicePlugins): Injector {
-    const serviceToPluginNames: Record<keyof ServiceRegistry, keyof PluginConfig['servicePlugins']> = {
+    const serviceToPluginNames: Record<keyof ServiceRegistry, keyof ServicePlugins> = {
       'request-decorator': 'requestDecorator',
       'navi-formatter': 'formatter',
       'navi-metadata': 'metadata',
