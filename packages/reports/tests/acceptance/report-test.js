@@ -1856,9 +1856,12 @@ module('Acceptance | Navi Report', function (hooks) {
     assert
       .dom('.filter-builder__operator-trigger')
       .hasText('In The Past', 'In The Past is displayed even after changing to grain `Quarter`');
+    const currentTime = new Date();
+    const currentQuarter = parseInt(currentTime.getMonth() / 3);
+    const currentYear = currentTime.getFullYear();
     assert
       .dom('.filter-values--lookback-input__label')
-      .hasText('quarter (Q1 2022)', 'values have updated to match new grain');
+      .hasText(`quarter (Q${currentQuarter} ${currentYear})`, 'values have updated to match new grain');
 
     await selectChoose('.filter-builder__operator-trigger', 'Advanced');
     await setInput(startInput(), 'P4M');
