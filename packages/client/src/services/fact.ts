@@ -36,7 +36,7 @@ export default class FactsService extends NativeWithCreate implements FactServic
   }
 
   /**
-   * Uses the adapter to get the bard query url for the request
+   * Uses the adapter to get the query url for the request
    * @param request - request object
    * @param options - options object
    * @returns url for the request

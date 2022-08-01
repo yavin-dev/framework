@@ -255,9 +255,7 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
       pageInfoString = ' pageInfo { startCursor endCursor totalRecords }';
     }
 
-    return JSON.stringify({
-      query: `{ ${table}${argsString} { edges { node { ${columnsStr} } }${pageInfoString} } }`,
-    });
+    return `{ ${table}${argsString} { edges { node { ${columnsStr} } }${pageInfoString} } }`;
   }
 
   /**
@@ -267,7 +265,8 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
    */
   createAsyncQuery(request: Request, options: RequestOptions = {}) {
     const mutation: DocumentNode = GQLQueries['asyncFactsMutation'];
-    const query = this.dataQueryFromRequest(request, options);
+    const queryStr = this.dataQueryFromRequest(request, options);
+    const query = JSON.stringify({ query: queryStr });
     const asyncAfterSeconds = DEFAULT_ASYNC_AFTER_SECONDS;
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
@@ -322,7 +321,8 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
   createTableExport(request: Request, options: RequestOptions = {}): Promise<FetchResult<TableExportResponse>> {
     const headers = options.customHeaders || {};
     const mutation: DocumentNode = GQLQueries['tableExportFactsMutation'];
-    const query = this.dataQueryFromRequest(request, options);
+    const queryStr = this.dataQueryFromRequest(request, options);
+    const query = JSON.stringify({ query: queryStr });
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
     const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName, headers } };
