@@ -100,7 +100,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     const queryStr = adapter['dataQueryFromRequest'](TestRequest);
     assert.equal(
       queryStr,
-      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10000\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ table1(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')",sort: "col3",first: "10000") { edges { node { col0:m1 col1:m2 col2:r(p:"123") col3:d1 col4:d2 } } pageInfo { startCursor endCursor totalRecords } } }`,
       'dataQueryFromRequestV2 returns the correct query string for the given request V2'
     );
 
@@ -117,7 +117,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         requestVersion: '2.0',
         dataSource: 'elideOne',
       }),
-      `{"query":"{ myTable { edges { node { col0:m1(p:\\"q\\") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ myTable { edges { node { col0:m1(p:"q") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }`,
       'Arguments are properly excluded if they are not in the request'
     );
 
@@ -138,7 +138,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         requestVersion: '2.0',
         dataSource: 'elideOne',
       }),
-      `{"query":"{ myTable(sort: \\"-col1,col2\\") { edges { node { col0:m1 col1:m1(p:\\"q\\") col2:d1 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ myTable(sort: "-col1,col2") { edges { node { col0:m1 col1:m1(p:"q") col2:d1 } } pageInfo { startCursor endCursor totalRecords } } }`,
       'Request with sorts and parameters is queried correctly'
     );
 
@@ -160,7 +160,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"col1=in=('v1','v2');col2!=('a');d2==('b')\\") { edges { node { col0:m1 col1:m1(p:\\"q\\") col2:d1 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ myTable(filter: "col1=in=('v1','v2');col2!=('a');d2==('b')") { edges { node { col0:m1 col1:m1(p:"q") col2:d1 } } pageInfo { startCursor endCursor totalRecords } } }`,
       'Request with filters and parameters is queried correctly'
     );
 
@@ -179,7 +179,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"col0=ge=('v1');col0=le=('v2')\\") { edges { node { col0:m1(p:\\"q\\") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ myTable(filter: "col0=ge=('v1');col0=le=('v2')") { edges { node { col0:m1(p:"q") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }`,
       'Request with "between" filter operator splits the filter into two correctly'
     );
 
@@ -198,7 +198,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"col0=lt=('v1'),col0=gt=('v2')\\") { edges { node { col0:m1(p:\\"q\\") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ myTable(filter: "col0=lt=('v1'),col0=gt=('v2')") { edges { node { col0:m1(p:"q") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }`,
       'Request with "not between" filter operator splits the filter into two correctly'
     );
 
@@ -224,7 +224,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"col0=ge=('${lastMonth}');col0=le=('${lastMonth}')\\") { edges { node { col0:time(grain:\\"MONTH\\") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ myTable(filter: "col0=ge=('${lastMonth}');col0=le=('${lastMonth}')") { edges { node { col0:time(grain:"MONTH") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }`,
       'Macros and durations in time-dimension filters are converted to date strings properly ([P1X, current] -> equals 1 X duration)'
     );
 
@@ -249,7 +249,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"col0=isnull=true\\") { edges { node { col0:time(grain:\\"DAY\\") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ myTable(filter: "col0=isnull=true") { edges { node { col0:time(grain:"DAY") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }`,
       'Filter without 2 filter values is unaffected'
     );
 
@@ -274,13 +274,13 @@ module('Unit | Adapter | facts/elide', function (hooks) {
         dataSource: 'elideOne',
         limit: null,
       }),
-      `{"query":"{ myTable(filter: \\"col0=ge=('2020-05-05');col0=le=('2020-05-08')\\") { edges { node { col0:time(grain:\\"DAY\\") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ myTable(filter: "col0=ge=('2020-05-05');col0=le=('2020-05-08')") { edges { node { col0:time(grain:"DAY") col1:d1 } } pageInfo { startCursor endCursor totalRecords } } }`,
       'Filter with 2 non-macro date values is unaffected'
     );
 
     assert.strictEqual(
       adapter['dataQueryFromRequest']({ ...TestRequest, limit: null }, { page: 3, perPage: 10 }),
-      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10\\",after: \\"20\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ table1(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')",sort: "col3",first: "10",after: "20") { edges { node { col0:m1 col1:m2 col2:r(p:"123") col3:d1 col4:d2 } } pageInfo { startCursor endCursor totalRecords } } }`,
       'The first and after pagination options are applied to the query'
     );
   });
@@ -942,7 +942,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     //test all of the escaped functionalities and verify them in the below assert
     assert.equal(
       queryStr,
-      `{"query":"{ table1(filter: \\"d6[field:id]=in=('with, comma','no comma');d7[field:id]=in=('with \\"quote\\"','but why');d8[field:id]=in=('okay','with \\\\\\\\'single quote\\\\\\\\'')\\",sort: \\"d1\\",first: \\"10000\\") { edges { node {  } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ table1(filter: "d6[field:id]=in=('with, comma','no comma');d7[field:id]=in=('with "quote"','but why');d8[field:id]=in=('okay','with \\\\'single quote\\\\'')",sort: "d1",first: "10000") { edges { node {  } } pageInfo { startCursor endCursor totalRecords } } }`,
       'dataQueryFromRequestV2 returns the correct query string with escaped quotes and commas for the given request V2'
     );
   });
@@ -1108,7 +1108,7 @@ module('Unit | Adapter | facts/elide', function (hooks) {
     const adapter: ElideFactsAdapter = this.owner.lookup('adapter:facts/elide');
     assert.equal(
       decodeURIComponent(adapter.urlForFindQuery(TestRequest, {})),
-      `{"query":"{ table1(filter: \\"d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')\\",sort: \\"col3\\",first: \\"10000\\") { edges { node { col0:m1 col1:m2 col2:r(p:\\"123\\") col3:d1 col4:d2 } } pageInfo { startCursor endCursor totalRecords } } }"}`,
+      `{ table1(filter: "d3=in=('v1','v2');d4=in=('v3','v4');d5=isnull=true;time[grain:day]=ge=('2015-01-03');time[grain:day]=lt=('2015-01-04');col0=gt=('0')",sort: "col3",first: "10000") { edges { node { col0:m1 col1:m2 col2:r(p:"123") col3:d1 col4:d2 } } pageInfo { startCursor endCursor totalRecords } } }`,
       'urlForFindQuery correctly built the query for the provided request'
     );
   });
