@@ -51,6 +51,9 @@ import javax.validation.constraints.NotNull
     hook = DeliveryRuleConditionalRecipientsHook::class
 )
 class DeliveryRule : HasOwner {
+    fun disableRule() {
+        this.isDisabled = true
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
