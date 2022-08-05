@@ -28,6 +28,13 @@ elide:
     path: demo-configs
     configApiEnabled: true
 
+navi:
+  deliveryConfig:
+    maximumFailures:
+      default: 9,
+      week: 6,
+      quarter: 9
+
 spring:
   application:
     name: NaviWS

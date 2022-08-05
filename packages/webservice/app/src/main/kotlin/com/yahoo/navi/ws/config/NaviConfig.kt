@@ -7,6 +7,7 @@ package com.yahoo.navi.ws.config
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.annotation.JsonSerialize
 import com.yahoo.elide.spring.config.ElideConfigProperties
+import com.yahoo.navi.ws.models.config.DeliveryConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
@@ -16,6 +17,8 @@ import org.springframework.context.annotation.Configuration
 @JsonSerialize(`as` = NaviConfig::class)
 class NaviConfig @Autowired constructor(elideSettings: ElideConfigProperties) {
     var user = ""
+
+    var deliveryConfig: DeliveryConfig = DeliveryConfig()
 
     var dataSources: List<DataSource> = listOf(
         DataSource(
