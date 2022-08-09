@@ -105,6 +105,20 @@ module('Acceptance | Exploring Widgets', function (hooks) {
     assert.ok(currentURL().endsWith('/dashboards/1/widgets/2/view'), 'Explore action links to widget view route');
   });
 
+  test('Changing a widget visualization', async function (assert) {
+    assert.expect(1);
+
+    // Add a metric to widget 2, save, and return to dashboard route
+    await visit('/dashboards/1/widgets/2/view');
+
+    // Dimension series always attempt to rebuild, but the config should be the same
+    await clickItem('dimension', 'Age');
+
+    await click('.navi-report-widget__save-btn');
+
+    assert.dom('.navi-report-widget__save-btn').doesNotExist('Save widget button is hidden once widget is up to date');
+  });
+
   test('Changing and saving a widget', async function (assert) {
     assert.expect(4);
 
