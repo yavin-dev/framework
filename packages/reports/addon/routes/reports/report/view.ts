@@ -5,7 +5,7 @@
 import { action } from '@ember/object';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
-import { merge } from 'lodash-es';
+import { isEqual, merge } from 'lodash-es';
 import { reject } from 'rsvp';
 import { assert } from '@ember/debug';
 import { isForbidden } from 'navi-core/helpers/is-forbidden';
@@ -112,7 +112,9 @@ export default class ReportsReportViewRoute extends Route {
     const { manifest } = visualization;
 
     const newSettings = manifest.dataDidUpdate(report.visualization.metadata, request, response);
-    visualization.metadata = newSettings;
+    if (!isEqual(visualization.metadata, newSettings)) {
+      visualization.metadata = newSettings;
+    }
     report.updateVisualization(visualization);
   }
 
