@@ -170,7 +170,7 @@ module('Integration | Component | perspective', function (hooks) {
   });
 
   test('it renders timeDimension columns correctly', async function (this: TestContext, assert) {
-    assert.expect(2);
+    assert.expect(4);
     await render(TEMPLATE);
 
     const fetchWithGrain = async (grain: Grain) => {
@@ -187,14 +187,44 @@ module('Integration | Component | perspective', function (hooks) {
       return dateTimeElement?.textContent?.trim() ?? '';
     };
 
-    await waitFor('td', { timeout: 10000 });
-    const DATE = /\d\d?\/\d\d?\/\d{4}/;
-    assert.ok(DATE.test(getFirstRow()), 'First row renders correctly for day grain');
+    const done = assert.async();
+    this.onUpdateSettings = (settings: PerspectiveSettings) => {
+      assert.deepEqual(
+        settings.configuration?.plugin_config.columns,
+        {
+          'network.dateTime(grain=day)': {
+            timeStyle: 'disabled',
+            timeZone: 'UTC',
+          },
+        },
+        'day aligned timeDimensions set the timeZone to UTC and disables the time styling'
+      );
+      done();
+    };
+
+    const expected1 = '5/30/16';
+    await waitUntil(() => getFirstRow() === expected1, { timeout: 10000 });
+    assert.strictEqual(getFirstRow(), expected1, 'First row renders correctly for day grain');
+
+    const done2 = assert.async();
+    this.onUpdateSettings = (settings: PerspectiveSettings) => {
+      assert.deepEqual(
+        settings.configuration?.plugin_config.columns,
+        {
+          'network.dateTime(grain=day)': {
+            timeZone: 'UTC',
+          },
+        },
+        'sub day aligned timeDimensions only set the timeZone to UTC'
+      );
+      done2();
+    };
 
     // Now restore the method to its original version
     await fetchWithGrain('hour');
-    const DATETIME = /\d\d?\/\d\d?\/\d{4}, \d\d?:\d{2}:\d{2} [AP]M/;
-    assert.ok(DATETIME.test(getFirstRow()), 'First row renders correctly for hour grain');
+    const expected2 = '5/30/16, 12:00:00 AM';
+    await waitUntil(() => getFirstRow() === expected2, { timeout: 10000 });
+    assert.strictEqual(getFirstRow(), expected2, 'First row renders correctly for hour grain');
   });
 
   test('it disables settings when read only', async function (this: TestContext, assert) {
