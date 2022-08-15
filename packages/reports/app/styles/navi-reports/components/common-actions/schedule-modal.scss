@@ -2,6 +2,21 @@
 * Copyright 2021, Yahoo Holdings Inc.
 * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
 */
+
+// https://stackoverflow.com/a/44794221
+@mixin shadow-scroll-container {
+  background: /* Shadow covers */ linear-gradient(rgb(255, 255, 255) 30%, rgba(255, 255, 255, 0)),
+    linear-gradient(rgba(255, 255, 255, 0), rgb(255, 255, 255) 70%) 0 100%,
+    /* Shadows */ radial-gradient(farthest-side at 50% 0, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)),
+    radial-gradient(farthest-side at 50% 100%, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0)) 0 100%;
+  /* Opera doesn't support this in the shorthand */
+  background-attachment: local, local, scroll, scroll;
+  background-color: rgb(255, 255, 255);
+  background-repeat: no-repeat;
+  background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
+  overflow: auto;
+}
+
 .schedule {
   &__modal {
     &-unsaved-rule {
@@ -50,14 +65,20 @@
     }
 
     &-options {
-      align-items: center;
-      height: 570px;
+      display: flex;
+      flex: 1;
+      flex-flow: column;
 
-      justify-content: center;
-      position: relative;
+      &-container {
+        display: flex;
+        flex: 1;
+        height: 570px;
+      }
 
       &-inputs {
-        height: 455px;
+        @include shadow-scroll-container;
+        display: flex;
+        flex: 1;
         overflow-y: auto;
       }
     }
@@ -85,13 +106,16 @@
     }
 
     &-no-schedule {
-      height: 350px;
-      left: 50%;
-      margin-top: 50px;
-      position: absolute;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      width: 300px;
+      align-self: center;
+      display: flex;
+      flex: 1;
+      flex-flow: column;
+
+      &-image {
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
     }
 
     &-buttons {

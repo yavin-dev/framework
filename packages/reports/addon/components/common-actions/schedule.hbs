@@ -57,7 +57,7 @@
             {{/each}}
           </DenaliSidebar>
         </div>
-        <div class="sm-col-1-1 col-3-5 p-0">
+        <div class="schedule__modal-options-container sm-col-1-1 col-3-5 p-0">
           <div class="schedule__modal-options p-24">
             <div class="schedule__modal-options-inputs">
               {{#if this.notification}}
@@ -88,13 +88,13 @@
               {{else}}
                   {{#if (eq this.currentDisplayedRule undefined)}}
                     <div class="schedule__modal-no-schedule">
-                      <img class="d-icon m-x-80 justify-content-center" alt="schedule" src="{{this.rootURL}}assets/images/schedule.svg"/>
+                      <img class="schedule__modal-no-schedule-image d-icon w-20" alt="schedule" src="{{this.rootURL}}assets/images/schedule.svg"/>
                       <h3 class="flex justify-content-center">Let's Jump Right In!</h3>
                       <p class="flex justify-content-center">You currently have no schedules for this {{this.modelType}}.</p>
                       <DenaliButton
                         @style="text"
                         @size="large"
-                        class="w-full schedule__modal-no-schedule-new-delivery"
+                        class="align-self-center schedule__modal-no-schedule-new-delivery"
                         {{on "click" this.addNewRule}}
                       >
                         <DenaliIcon @icon="add-circle" />
@@ -102,127 +102,129 @@
                       </DenaliButton>
                     </div>
                   {{else}}
-                    <DenaliInputGroup @isStacked={{true}} @label="Schedule Name" class="m-b-30">
-                      <DenaliInput 
-                        @wrapperClass="w-full" 
-                        type="text" 
-                        placeholder="Schedule Name (Optional)"
-                        class="schedule__modal-name"
-                        value={{unless this.currentDisplayedRule.name this.currentDisplayedRule.defaultName this.currentDisplayedRule.name}}
-                        {{on "focusout" (pipe (pick "target.value") (fn (mut this.currentDisplayedRule.name) ) )}}
-                      />
-                        <div class="schedule__modal-helper-name is-grey-800">
-                          Please enter a custom name for this schedule.
-                        </div>
-                    </DenaliInputGroup>
-                    <DenaliInputGroup @label="Delivery" @isStacked={{true}}>
-                      <PowerSelect
-                        class="w-full"
-                        @triggerClass="schedule__modal-delivery-trigger w-full"
-                        @dropdownClass="w-full"
-                        @options={{this.deliveryOptions}}
-                        @selected={{this.currentDisplayedRule.delivery}}
-                        @renderInPlace={{true}}
-                        @onChange={{fn (mut this.currentDisplayedRule.delivery)}}
-                        as | delivery |
-                      >
-                        {{capitalize delivery}}
-                      </PowerSelect>
-                      <div class="schedule__modal-helper-delivery m-b-30 is-grey-800">
-                        {{#if (eq this.currentDisplayedRule.delivery "email")}}
-                          Send this  {{this.modelType}} in an email on a recurring basis
-                        {{else}}
-                          Schedule and cache this {{this.modelType}} without delivery
-                        {{/if}}
-                      </div>
-                    </DenaliInputGroup>
-                    {{#if (eq this.currentDisplayedRule.delivery "email")}}
-                      <DenaliInputGroup
-                        @label="Recipients"
-                        @isStacked={{true}}
-                        class="{{unless this.isRuleValid "schedule__modal-recipients--invalid"}} m-b-30"
-                      >
-                        <NaviEmailInput
-                          class="schedule__modal-input--recipients w-full"
-                          @emails={{readonly this.currentDisplayedRule.recipients}}
-                          @onUpdateEmails={{this.updateRecipients}}
-                          @isDisabled={{this.errorWhileFetchingRules}}
+                    <div class="flex flex-column flex-1 p-r-15">
+                      <DenaliInputGroup @isStacked={{true}} @label="Schedule Name" class="m-b-30">
+                        <DenaliInput 
+                          @wrapperClass="w-full" 
+                          type="text" 
+                          placeholder="Schedule Name (Optional)"
+                          class="schedule__modal-name"
+                          value={{unless this.currentDisplayedRule.name this.currentDisplayedRule.defaultName this.currentDisplayedRule.name}}
+                          {{on "focusout" (pipe (pick "target.value") (fn (mut this.currentDisplayedRule.name) ) )}}
                         />
-                        <div class="schedule__modal-helper-recipients is-grey-800">
-                          Please enter valid email addresses separated by commas.
-                        </div>
+                          <div class="schedule__modal-helper-name is-grey-800">
+                            Please enter a custom name for this schedule.
+                          </div>
                       </DenaliInputGroup>
-                      <DenaliInputGroup @label="Format" class="m-b-30">
+                      <DenaliInputGroup @label="Delivery" @isStacked={{true}}>
                         <PowerSelect
                           class="w-full"
-                          @triggerClass="schedule__modal-format-trigger w-full"
-                          @dropdownClass="schedule__modal-format-dropdown"
-                          @disabled={{lt this.formats.length 2}}
-                          @options={{this.formats}}
-                          @selected={{this.currentDisplayedRule.format.type}}
-                          @searchEnabled={{false}}
-                          @onChange={{this.updateFormat}}
-                          @renderInPlace={{false}}
-                          as | format |
+                          @triggerClass="schedule__modal-delivery-trigger w-full"
+                          @dropdownClass="w-full"
+                          @options={{this.deliveryOptions}}
+                          @selected={{this.currentDisplayedRule.delivery}}
+                          @renderInPlace={{true}}
+                          @onChange={{fn (mut this.currentDisplayedRule.delivery)}}
+                          as | delivery |
                         >
-                          {{format}}
+                          {{capitalize delivery}}
+                        </PowerSelect>
+                        <div class="schedule__modal-helper-delivery m-b-30 is-grey-800">
+                          {{#if (eq this.currentDisplayedRule.delivery "email")}}
+                            Send this  {{this.modelType}} in an email on a recurring basis
+                          {{else}}
+                            Schedule and cache this {{this.modelType}} without delivery
+                          {{/if}}
+                        </div>
+                      </DenaliInputGroup>
+                      {{#if (eq this.currentDisplayedRule.delivery "email")}}
+                        <DenaliInputGroup
+                          @label="Recipients"
+                          @isStacked={{true}}
+                          class="{{unless this.isRuleValid "schedule__modal-recipients--invalid"}} m-b-30"
+                        >
+                          <NaviEmailInput
+                            class="schedule__modal-input--recipients w-full"
+                            @emails={{readonly this.currentDisplayedRule.recipients}}
+                            @onUpdateEmails={{this.updateRecipients}}
+                            @isDisabled={{this.errorWhileFetchingRules}}
+                          />
+                          <div class="schedule__modal-helper-recipients is-grey-800">
+                            Please enter valid email addresses separated by commas.
+                          </div>
+                        </DenaliInputGroup>
+                        <DenaliInputGroup @label="Format" class="m-b-30">
+                          <PowerSelect
+                            class="w-full"
+                            @triggerClass="schedule__modal-format-trigger w-full"
+                            @dropdownClass="schedule__modal-format-dropdown"
+                            @disabled={{lt this.formats.length 2}}
+                            @options={{this.formats}}
+                            @selected={{this.currentDisplayedRule.format.type}}
+                            @searchEnabled={{false}}
+                            @onChange={{this.updateFormat}}
+                            @renderInPlace={{false}}
+                            as | format |
+                          >
+                            {{format}}
+                          </PowerSelect>
+                        </DenaliInputGroup>
+                      {{/if}}
+                      <DenaliInputGroup @label="Frequency" class="m-b-30">
+                        <PowerSelect
+                          class="w-full"
+                          @triggerClass="schedule__modal-frequency-trigger w-full"
+                          @dropdownClass="schedule__modal-frequency-dropdown"
+                          @options={{this.frequencies}}
+                          @selected={{this.currentDisplayedRule.frequency}}
+                          @disabled={{this.errorWhileFetchingRules}}
+                          @searchEnabled={{false}}
+                          @onChange={{fn (mut this.currentDisplayedRule.frequency)}}
+                          @renderInPlace={{false}}
+                          as | frequency |
+                        >
+                          {{capitalize frequency}}
                         </PowerSelect>
                       </DenaliInputGroup>
-                    {{/if}}
-                    <DenaliInputGroup @label="Frequency" class="m-b-30">
-                      <PowerSelect
-                        class="w-full"
-                        @triggerClass="schedule__modal-frequency-trigger w-full"
-                        @dropdownClass="schedule__modal-frequency-dropdown"
-                        @options={{this.frequencies}}
-                        @selected={{this.currentDisplayedRule.frequency}}
-                        @disabled={{this.errorWhileFetchingRules}}
-                        @searchEnabled={{false}}
-                        @onChange={{fn (mut this.currentDisplayedRule.frequency)}}
-                        @renderInPlace={{false}}
-                        as | frequency |
-                      >
-                        {{capitalize frequency}}
-                      </PowerSelect>
-                    </DenaliInputGroup>
-                    {{#if (and (feature-flag "enabledNotifyIfData") (eq this.currentDisplayedRule.delivery "email"))}}
-                      <DenaliInputGroup @label="Only send if data is present" class="m-b-30">
-                        <DenaliSwitch
-                          class="schedule__modal-must-have-data-toggle"
-                          @isEnabled={{this.currentDisplayedRule.schedulingRules.mustHaveData}}
-                          @onChange={{toggle "mustHaveData" this.currentDisplayedRule.schedulingRules}}/>
-                      </DenaliInputGroup>
-                    {{/if}}
+                      {{#if (and (feature-flag "enabledNotifyIfData") (eq this.currentDisplayedRule.delivery "email"))}}
+                        <DenaliInputGroup @label="Only send if data is present" class="m-b-30">
+                          <DenaliSwitch
+                            class="schedule__modal-must-have-data-toggle"
+                            @isEnabled={{this.currentDisplayedRule.schedulingRules.mustHaveData}}
+                            @onChange={{toggle "mustHaveData" this.currentDisplayedRule.schedulingRules}}/>
+                        </DenaliInputGroup>
+                      {{/if}}
 
-                    {{#if (includes this.currentDisplayedRule.format.type this.overwriteableFormats)}}
-                      <DenaliInputGroup @label="Overwrite spreadsheet" class="schedule__modal-overwrite">
+                      {{#if (includes this.currentDisplayedRule.format.type this.overwriteableFormats)}}
+                        <DenaliInputGroup @label="Overwrite spreadsheet" class="schedule__modal-overwrite">
+                          <DenaliSwitch
+                            class="schedule__modal-overwrite-toggle"
+                            @isEnabled={{this.currentDisplayedRule.format.options.overwriteFile}}
+                            @onChange={{this.toggleOverwriteFile}}/>
+                        </DenaliInputGroup>
+                        <p class="help-text m-b-30 is-grey-800">
+                          {{#if this.currentDisplayedRule.format.options.overwriteFile}}
+                            Data will be replaced in the same sheet every {{this.currentDisplayedRule.frequency}}
+                          {{else}}
+                            A new sheet will be created every {{this.currentDisplayedRule.frequency}}
+                          {{/if}}
+                        </p>
+                      {{/if}}
+                      <DenaliInputGroup @label="Status" class="p-b-30 align-items-center">
                         <DenaliSwitch
-                          class="schedule__modal-overwrite-toggle"
-                          @isEnabled={{this.currentDisplayedRule.format.options.overwriteFile}}
-                          @onChange={{this.toggleOverwriteFile}}/>
+                          class="schedule__modal-disabled-status"
+                          @isEnabled={{not this.currentDisplayedRule.isDisabled}}
+                          @onChange={{toggle "isDisabled" this.currentDisplayedRule}}
+                          @onLabel="Active"
+                          @offLabel="Paused"
+                        />
                       </DenaliInputGroup>
-                      <p class="help-text m-b-30 is-grey-800">
-                        {{#if this.currentDisplayedRule.format.options.overwriteFile}}
-                          Data will be replaced in the same sheet every {{this.currentDisplayedRule.frequency}}
-                        {{else}}
-                          A new sheet will be created every {{this.currentDisplayedRule.frequency}}
-                        {{/if}}
-                      </p>
-                    {{/if}}
-                    <DenaliInputGroup @label="Status" class="m-b-30 align-items-center">
-                      <DenaliSwitch
-                        class="schedule__modal-disabled-status"
-                        @isEnabled={{not this.currentDisplayedRule.isDisabled}}
-                        @onChange={{toggle "isDisabled" this.currentDisplayedRule}}
-                        @onLabel="Active"
-                        @offLabel="Paused"
-                      />
-                    </DenaliInputGroup>
+                    </div>
                   {{/if}}
                 {{/if}}
               </div>
               {{#if this.currentDisplayedRule}}
-                <div class="schedule__modal-buttons w-full p-24">
+                <div class="schedule__modal-buttons w-full p-t-24">
                   {{#if (or (and this.currentDisplayedRule.isNew (not (await this.isValidForSchedule))) this.errorWhileFetchingRules)}}
                     <DenaliButton
                       class="schedule__modal-cancel-btn m-r-5"
