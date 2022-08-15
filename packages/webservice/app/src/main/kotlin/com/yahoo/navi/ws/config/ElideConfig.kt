@@ -42,7 +42,7 @@ class ElideConfig {
             DeliveryRule::class.java,
             LifeCycleHookBinding.Operation.UPDATE,
             PRESECURITY,
-            DisableDeliveryRuleHook(),
+            DisableDeliveryRuleHook(mapOf("day" to 6, "week" to 3, "default" to 1)),
             true,
         )
         return RefreshableElide(Elide(builder.build(), TransactionRegistry(), dictionary.getScanner(), true))

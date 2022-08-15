@@ -1077,7 +1077,7 @@ class DeliveryRulesTest : IntegrationTest() {
                         type("deliveryRules"),
                         id("1"),
                         attributes(
-                            attr("failureCount", 9),
+                            attr("failureCount", 4),
                         )
                     )
                 ).toJSON()
@@ -1095,7 +1095,72 @@ class DeliveryRulesTest : IntegrationTest() {
             .then()
             .assertThat()
             .body(
-                "data.attributes.failureCount", equalTo(9),
+                "data.attributes.failureCount", equalTo(4),
+                "data.attributes.isDisabled", equalTo(true)
+            )
+
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("deliveryRules"),
+                        id("1"),
+                        attributes(
+                            attr("frequency", "day"),
+                            attr("failureCount", 0),
+                            attr("isDisabled", false),
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .patch("/deliveryRules/1")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .`when`()["/deliveryRules/1"]
+            .then()
+            .assertThat()
+            .body(
+                "data.attributes.frequency", equalTo("day"),
+                "data.attributes.failureCount", equalTo(0),
+                "data.attributes.isDisabled", equalTo(false)
+            )
+
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("deliveryRules"),
+                        id("1"),
+                        attributes(
+                            attr("failureCount", 7),
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .patch("/deliveryRules/1")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .`when`()["/deliveryRules/1"]
+            .then()
+            .assertThat()
+            .body(
+                "data.attributes.failureCount", equalTo(7),
                 "data.attributes.isDisabled", equalTo(true)
             )
 
