@@ -14,11 +14,28 @@
   "directories": {
     "test": "tests"
   },
+  "scripts": {
+    "build": "ember build --environment=production",
+    "lint:hbs": "ember-template-lint .",
+    "lint:hbs:fix": "ember-template-lint . --fix",
+    "lint:js": "eslint . --cache",
+    "lint:ts": "ember ts:precompile && ember ts:clean",
+    "lint:fix": "npm-run-all --aggregate-output --continue-on-error --parallel lint:*:fix",
+    "lint": "npm-run-all --aggregate-output --continue-on-error --parallel 'lint:!(fix)'",
+    "lint:js:fix": "eslint . --fix",
+    "start": "ember serve",
+    "test": "npm-run-all lint test:*",
+    "test:ember": "ember test",
+    "try:ember-compatibility": "ember try:each",
+    "prepublishOnly": "ember ts:precompile",
+    "postpublish": "ember ts:clean"
+  },
   "dependencies": {
     "@ember/test-waiters": "^3.0.2",
     "@faker-js/faker": "^6.0.0",
     "@miragejs/graphql": "^0.1.13",
     "@rsql/parser": "^1.0.2",
+    "@yavin/client": "0.4.0",
     "apollo-link-context": "^1.0.19",
     "broccoli-funnel": "^3.0.8",
     "broccoli-merge-trees": "^4.2.0",
