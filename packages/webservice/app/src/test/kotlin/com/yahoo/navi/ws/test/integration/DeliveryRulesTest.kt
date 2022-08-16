@@ -1030,4 +1030,146 @@ class DeliveryRulesTest : IntegrationTest() {
                 "data.attributes.format.options.overwriteFile", equalTo(false)
             )
     }
+
+    @Test
+    fun `updating failure count disables rule`() {
+        val adminUser = "admin"
+        val adminRole = "admin"
+        registerUser(adminUser)
+        registerRole(adminRole)
+        registerUserRole(adminRole, adminUser)
+
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                data(
+                    resource(
+                        type("deliveryRules"),
+                        attributes(
+                            attr("frequency", "week"),
+                            attr("format", format),
+                            attr("delivery", "email"),
+                            attr("recipients", arrayOf("email1@yavin.dev", "email2@yavin.dev")),
+                            attr("version", "1"),
+                            attr("isDisabled", false),
+                            attr("name", "Test Name")
+                        ),
+                        relationships(
+                            relation("deliveredItem", linkage(type("reports"), id("1"))),
+                            relation("owner", linkage(type("users"), id(USER1)))
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .post("/deliveryRules")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_CREATED)
+
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("deliveryRules"),
+                        id("1"),
+                        attributes(
+                            attr("failureCount", 4),
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .patch("/deliveryRules/1")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .`when`()["/deliveryRules/1"]
+            .then()
+            .assertThat()
+            .body(
+                "data.attributes.failureCount", equalTo(4),
+                "data.attributes.isDisabled", equalTo(true)
+            )
+
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("deliveryRules"),
+                        id("1"),
+                        attributes(
+                            attr("frequency", "day"),
+                            attr("failureCount", 0),
+                            attr("isDisabled", false),
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .patch("/deliveryRules/1")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .`when`()["/deliveryRules/1"]
+            .then()
+            .assertThat()
+            .body(
+                "data.attributes.frequency", equalTo("day"),
+                "data.attributes.failureCount", equalTo(0),
+                "data.attributes.isDisabled", equalTo(false)
+            )
+
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .body(
+                datum(
+                    resource(
+                        type("deliveryRules"),
+                        id("1"),
+                        attributes(
+                            attr("failureCount", 7),
+                        )
+                    )
+                ).toJSON()
+            )
+            .`when`()
+            .patch("/deliveryRules/1")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+
+        given()
+            .header("User", adminUser)
+            .contentType("application/vnd.api+json")
+            .`when`()["/deliveryRules/1"]
+            .then()
+            .assertThat()
+            .body(
+                "data.attributes.failureCount", equalTo(7),
+                "data.attributes.isDisabled", equalTo(true)
+            )
+
+        given()
+            .header("User", adminUser)
+            .`when`()
+            .delete("/deliveryRules/1")
+            .then()
+            .assertThat()
+            .statusCode(HttpStatus.SC_NO_CONTENT)
+    }
 }

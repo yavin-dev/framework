@@ -16,6 +16,17 @@ const DeliveryRule = {
   validations: { isValid: true },
   id: 1,
 };
+const DeliveryRuleFailure = {
+  frequency: 'Week',
+  format: { type: 'csv' },
+  recipients: ['test@oath.com', 'rule@oath.com'],
+  delivery: 'email',
+  name: 'Email delivered csv every week',
+  isDisabled: true,
+  validations: { isValid: true },
+  id: 1,
+  failureCount: 9,
+};
 const NoDelivery = {
   frequency: 'Week',
   delivery: 'none',
@@ -41,6 +52,11 @@ const errorModel = {
   get deliveryRulesForUser() {
     return Promise.reject([DeliveryRule]);
   },
+};
+const disabledModel = {
+  constructor: { modelName: 'report' },
+  title: 'Test Test',
+  deliveryRulesForUser: Promise.resolve([DeliveryRuleFailure]),
 };
 const unscheduledModel = {
   title: 'Test Test',
@@ -636,5 +652,16 @@ module('Integration | Component | common actions/schedule', function (hooks) {
     assert.notOk(testDR.format.options.overwriteFile, 'overwrite file toggled off');
 
     config.navi.FEATURES.exportFileTypes = originalFlag;
+  });
+
+  test('Delivery Rule Disable', async function (assert) {
+    assert.expect(1);
+
+    this.set('model', disabledModel);
+
+    await render(TEMPLATE);
+    await click('.schedule-action__button');
+
+    assert.dom('.schedule__modal-disabled-status').isNotChecked('The rule is paused because its disabled');
   });
 });
