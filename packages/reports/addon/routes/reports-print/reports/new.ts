@@ -4,7 +4,7 @@
  */
 import ReportNewRoute from 'navi-reports/routes/reports/new';
 import type ReportModel from 'navi-core/models/report';
-import type { Transition } from 'navi-core/addon/utils/type-utils';
+import type { Transition } from 'navi-core/utils/type-utils';
 
 export default class ReportsPrintReportsNewRoute extends ReportNewRoute {
   /**

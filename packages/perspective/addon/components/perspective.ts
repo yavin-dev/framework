@@ -13,7 +13,7 @@ import { isEqual, merge } from 'lodash-es';
 import { task, TaskGenerator } from 'ember-concurrency';
 import type { HTMLPerspectiveViewerElement } from '@finos/perspective-viewer';
 import type { Grain } from '@yavin/client/utils/date';
-import ColumnFragment from 'navi-core/addon/models/request/column';
+import ColumnFragment from 'navi-core/models/request/column';
 import { shouldPolyfill as shouldPolyfillSupportedValues, supportedValuesOf } from '@formatjs/intl-enumerator';
 import '@formatjs/intl-datetimeformat/polyfill';
 import '@formatjs/intl-datetimeformat/locale-data/en'; // locale-data for en
