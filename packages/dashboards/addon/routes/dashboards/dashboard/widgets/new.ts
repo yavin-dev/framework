@@ -4,7 +4,7 @@
  */
 import { A } from '@ember/array';
 import ReportsNewRoute from 'navi-reports/routes/reports/new';
-import type { Transition } from 'navi-core/addon/utils/type-utils';
+import type { Transition } from 'navi-core/utils/type-utils';
 import type { ReportLike } from 'navi-reports/routes/reports/report';
 
 export default class DashboardsDashboardWidgetsNewRoute extends ReportsNewRoute {
