@@ -6,6 +6,7 @@ import type FactService from '@yavin/client/services/interfaces/fact';
 import type MetadataService from '@yavin/client/services/interfaces/metadata';
 import type ServiceRegistry from '@yavin/client/services/interfaces/registry';
 import type RequestDecoratorService from '@yavin/client/services/interfaces/request-decorator';
+import debug, { Debugger } from 'debug';
 import invariant from 'tiny-invariant';
 
 interface MockConfig extends Partial<ServiceRegistry> {
@@ -24,12 +25,13 @@ export const mockInjector = (config: MockConfig = {}) =>
     },
   } as Injector);
 
-export const Mock = (config: MockConfig = {}) => {
+export const Mock = (config: MockConfig = { logger: debug('test-client') }) => {
   return {
     meta: (service: MetadataService) => Mock({ ...config, 'navi-metadata': service }),
     dims: (service: DimensionService) => Mock({ ...config, 'navi-dimension': service }),
     facts: (service: FactService) => Mock({ ...config, 'navi-facts': service }),
     decorator: (service: RequestDecoratorService) => Mock({ ...config, 'request-decorator': service }),
+    logger: (logger: Debugger) => Mock({ ...config, logger }),
     config: (clientConfig: ClientConfig) => Mock({ ...config, client: clientConfig }),
     plugin: (pluginConfig: (injector: Injector) => DataSourcePluginConfig) =>
       Mock({ ...config, plugin: pluginConfig(mockInjector(config)) }),

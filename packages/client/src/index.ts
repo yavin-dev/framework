@@ -20,6 +20,7 @@ import RequestDecoratorService from './services/request-decorator.js';
 import FormatterService from './services/formatter.js';
 import MetadataService from './services/metadata.js';
 import FactsService from './services/fact.js';
+import debug from 'debug';
 
 interface PluginConfig {
   dataSourcePlugins?: Record<string, DataSourcePlugins>;
@@ -47,6 +48,9 @@ export class Client {
     const dataSourcePlugins = this.getDataSourcePluginConfig(plugins.dataSourcePlugins);
     setInjector(this, this.#createInjector(servicePlugins));
     this.pluginConfig = new DataSourcePluginConfig(getInjector(this), dataSourcePlugins);
+
+    const logger = getInjector(this).lookup('service', 'logger');
+    logger('initialized with', { clientConfig: this.clientConfig, pluginConfig: this.pluginConfig });
   }
 
   protected getServicePluginConfig(servicePlugins: Partial<ServicePlugins> = {}): ServicePlugins {
@@ -58,6 +62,7 @@ export class Client {
       dimensions: (_injector: Injector) => {
         throw new Error('Dimension service does not exist yet');
       },
+      logger: (_injector: Injector) => debug('yavin:client'),
     };
     Object.assign(services, servicePlugins);
     return services;
@@ -81,6 +86,7 @@ export class Client {
       'navi-metadata': 'metadata',
       'navi-dimension': 'dimensions',
       'navi-facts': 'facts',
+      logger: 'logger',
     };
     const serviceCache: Partial<Services> = {};
     const injector: Injector = {

@@ -3,5 +3,9 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
+import type { Debugger } from 'debug';
+
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export default interface ServiceRegistry {}
+export default interface ServiceRegistry {
+  logger: Debugger;
+}

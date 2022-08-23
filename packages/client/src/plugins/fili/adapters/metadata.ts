@@ -3,7 +3,7 @@
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
-import NativeWithCreate, { Config } from '../../../models/native-with-create.js';
+import NativeWithCreate, { Config, Logger } from '../../../models/native-with-create.js';
 import fetch from 'cross-fetch';
 import mapValues from 'lodash/mapValues.js';
 import { FetchError } from '../../../errors/fetch-error.js';
@@ -12,8 +12,11 @@ import type NaviMetadataAdapter from '../../../adapters/metadata/interface.js';
 import type { MetadataOptions } from '../../../adapters/metadata/interface.js';
 import type { MetadataModelTypes } from '../../../services/metadata.js';
 import type { ClientConfig } from '../../../config/datasources.js';
+import type { Debugger } from 'debug';
 // Node 14 support
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only.js';
+
+const PLUGIN_NAMESPACE = 'plugins:fili:metadata:adapter';
 
 export default class BardMetadataAdapter extends NativeWithCreate implements NaviMetadataAdapter {
   /**
@@ -23,6 +26,9 @@ export default class BardMetadataAdapter extends NativeWithCreate implements Nav
 
   @Config('client')
   declare clientConfig: ClientConfig;
+
+  @Logger(PLUGIN_NAMESPACE)
+  declare LOG: Debugger;
 
   private typeTransform: Record<string, string> = {
     columnFunction: 'metricFunction',
@@ -62,6 +68,7 @@ export default class BardMetadataAdapter extends NativeWithCreate implements Nav
     const { query = {}, clientId = 'UI', timeout = 300000, customHeaders } = options;
 
     const urlRequest = `${url}?${new URLSearchParams(mapValues(query, (val) => `${val}`)).toString()}`;
+    this.LOG(`GET ${urlRequest}`);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -74,6 +81,7 @@ export default class BardMetadataAdapter extends NativeWithCreate implements Nav
     });
     clearTimeout(timeoutId);
     if (!response.ok) {
+      this.LOG(`Error HTTP${response.status} while fetching ${urlRequest}`);
       let payload: string;
       if (controller.signal.aborted) {
         payload = 'The fetch operation timed out';

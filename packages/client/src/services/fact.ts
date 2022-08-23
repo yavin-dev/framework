@@ -4,9 +4,9 @@
  */
 import NaviFactsModel from '../models/navi-facts.js';
 import NaviFactResponse from '../models/navi-fact-response.js';
-import NativeWithCreate, { Config, getInjector } from '../models/native-with-create.js';
+import NativeWithCreate, { Config, getInjector, Logger } from '../models/native-with-create.js';
 import { ensureHalt } from '../utils/task.js';
-import { Operation, run, spawn, withLabels } from 'effection';
+import { label, Operation, run, spawn } from 'effection';
 import invariant from 'tiny-invariant';
 import type NaviFactAdapter from '../adapters/facts/interface.js';
 import type { RequestOptions } from '../adapters/facts/interface.js';
@@ -14,10 +14,15 @@ import type { RequestV2 } from '../request.js';
 import type NaviFactSerializer from '../serializers/facts/interface.js';
 import type FactServiceInterface from '../services/interfaces/fact.js';
 import type { DataSourcePluginConfig } from '../config/datasource-plugins.js';
+import type { Debugger } from 'debug';
+import { nanoid } from 'nanoid';
 
 export default class FactsService extends NativeWithCreate implements FactServiceInterface {
   @Config('plugin')
   declare pluginConfig: DataSourcePluginConfig;
+
+  @Logger('facts')
+  private declare LOG: Debugger;
 
   /**
    * @param dataSourceName
@@ -53,19 +58,19 @@ export default class FactsService extends NativeWithCreate implements FactServic
   }
 
   getDownloadURL(request: RequestV2, options: RequestOptions): Promise<string> {
-    return run(withLabels(this.getDownloadURLTask(request, options), { name: 'getDownloadURL' }));
+    return run(this.getDownloadURLTask(request, options), { labels: { name: 'services:facts:getDownloadURL' } });
   }
 
   fetch(request: RequestV2, options: RequestOptions = {}): Promise<NaviFactsModel> {
-    return run(withLabels(this.fetchTask(request, options), { name: 'fetch' }));
+    return run(this.fetchTask(request, options), { labels: { name: 'services:facts:fetch' } });
   }
 
   fetchNext(response: NaviFactResponse, request: RequestV2): Promise<NaviFactsModel | null> {
-    return run(withLabels(this.fetchNextTask(response, request), { name: 'fetchNext' }), {});
+    return run(this.fetchNextTask(response, request), { labels: { name: 'fservices:facts:etchNext' } });
   }
 
   fetchPrevious(response: NaviFactResponse, request: RequestV2): Promise<NaviFactsModel | null> {
-    return run(withLabels(this.fetchPreviousTask(response, request), { name: 'fetchPrevious' }));
+    return run(this.fetchPreviousTask(response, request), { labels: { name: 'services:facts:fetchPrevious' } });
   }
 
   /**
@@ -78,7 +83,9 @@ export default class FactsService extends NativeWithCreate implements FactServic
     const adapter = this.adapterFor(request.dataSource);
     const getUrl = adapter.urlForDownloadQuery(request, options);
     yield ensureHalt(getUrl);
-    return yield getUrl;
+    const url = yield getUrl;
+    this.LOG('download url generated', { request, url });
+    return url;
   }
 
   /**
@@ -91,14 +98,19 @@ export default class FactsService extends NativeWithCreate implements FactServic
     const adapter = this.adapterFor(request.dataSource);
     const serializer = this.serializerFor(request.dataSource);
 
+    const requestId = nanoid(8);
+    yield label({ requestId });
     try {
+      this.LOG(`fetching request ${requestId} %o`, request);
       const fetchData: unknown = adapter.fetchDataForRequest(request, options);
       yield ensureHalt(fetchData);
       const payload: unknown = yield fetchData;
       const response = serializer.normalize(payload, request, options);
       invariant(response, 'The response is defined');
+      this.LOG(`successfully finished fetching ${requestId}`);
       return new NaviFactsModel(getInjector(this), { request, response });
     } catch (e) {
+      this.LOG(`error while fetching request ${requestId}`, e);
       const errorModel: Error = serializer.extractError(e, request, options);
       throw errorModel;
     }

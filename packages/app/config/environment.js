@@ -49,6 +49,7 @@ module.exports = function (environment) {
     ENV['ember-cli-mirage'] = {
       enabled: !(process.env.DISABLE_MOCKS || process.env.APP_ENV === 'localElide'),
     };
+    ENV.navi.clientLoggingEnabled = true;
     /*
      * ENV.APP.LOG_RESOLVER = true;
      * ENV.APP.LOG_ACTIVE_GENERATION = true;

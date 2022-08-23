@@ -8,9 +8,9 @@ import * as GQLQueries from '../../../gql/fact-queries.js';
 import moment from 'moment';
 import { canonicalizeColumn } from '../../../utils/column.js';
 import omitBy from 'lodash/omitBy.js';
-import NativeWithCreate, { ClientService, Config, Injector } from '../../../models/native-with-create.js';
+import NativeWithCreate, { ClientService, Config, Injector, Logger } from '../../../models/native-with-create.js';
 import invariant from 'tiny-invariant';
-import { Operation, run, sleep, spawn, Task, withLabels } from 'effection';
+import { Operation, run, sleep, spawn, Task } from 'effection';
 import getClient from '../../elide-apollo-client.js';
 import { v1 } from 'uuid';
 import type { RequestOptions, AsyncQueryResponse, TableExportResponse } from '../../../adapters/facts/interface.js';
@@ -21,6 +21,7 @@ import type { Grain } from '../../../utils/date.js';
 import type MetadataService from '../../../services/interfaces/metadata.js';
 import type { ApolloClient, FetchResult } from '@apollo/client/core/index.js';
 import type { ClientConfig } from '../../../config/datasources.js';
+import type { Debugger } from 'debug';
 
 const escape = (value: string) => value.replace(/'/g, "\\\\'");
 
@@ -65,6 +66,8 @@ type PaginationOptions = {
   after: number;
 };
 
+const PLUGIN_NAMESPACE = 'plugins:elide:facts:adapter';
+
 export default class ElideFactsAdapter extends NativeWithCreate implements NaviFactAdapter {
   declare apolloClient: ApolloClient<unknown>;
 
@@ -73,6 +76,9 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
 
   @ClientService('navi-metadata')
   declare naviMetadata: MetadataService;
+
+  @Logger(PLUGIN_NAMESPACE)
+  declare LOG: Debugger;
 
   constructor(injector: Injector) {
     super(injector);
@@ -278,6 +284,7 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
       variables: { id, query, asyncAfterSeconds },
       context: { dataSourceName, headers },
     };
+    this.LOG(`creating async query ${id}`);
     return this.apolloClient.mutate(queryOptions);
   }
 
@@ -288,6 +295,7 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
   cancelAsyncQuery(id: string, dataSourceName: string, options: RequestOptions = {}) {
     const headers = options.customHeaders || {};
     const mutation: DocumentNode = GQLQueries['asyncFactsCancel'];
+    this.LOG(`cancelling async query ${id}`);
     return this.apolloClient.mutate({ mutation, variables: { id }, context: { dataSourceName, headers } });
   }
 
@@ -302,6 +310,7 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
   ): Promise<FetchResult<AsyncQueryResponse>> {
     const headers = options.customHeaders || {};
     const query: DocumentNode = GQLQueries['asyncFactsQuery'];
+    this.LOG(`fetching async query ${id}`);
     return this.apolloClient.query({ query, variables: { ids: [id] }, context: { dataSourceName, headers } });
   }
 
@@ -326,6 +335,7 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
     const id: string = options.requestId || v1();
     const dataSourceName = request.dataSource || options.dataSourceName;
     const queryOptions = { mutation, variables: { id, query }, context: { dataSourceName, headers } };
+    this.LOG(`creating table export ${id}`);
     return this.apolloClient.mutate(queryOptions);
   }
 
@@ -337,11 +347,14 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
   cancelTableExport(id: string, dataSourceName: string, options: RequestOptions = {}) {
     const headers = options.customHeaders || {};
     const mutation: DocumentNode = GQLQueries['tableExportFactsCancel'];
+    this.LOG(`cancelling table export ${id}`);
     return this.apolloClient.mutate({ mutation, variables: { id }, context: { dataSourceName, headers } });
   }
 
   urlForDownloadQuery(request: RequestV2, options: RequestOptions): Promise<string> {
-    return run(withLabels(this.urlForDownloadQueryTask(request, options), { name: 'urlForDownloadQuery' }));
+    return run(this.urlForDownloadQueryTask(request, options), {
+      labels: { name: `${PLUGIN_NAMESPACE}:urlForDownloadQuery` },
+    });
   }
 
   /**
@@ -383,6 +396,7 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
         invariant(data, 'table export response is valid');
         status = data.tableExport.edges[0]?.node.status;
       }
+      this.LOG(`finished table export ${id}`);
       return tableExportPayload;
     } finally {
       if (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
@@ -403,6 +417,7 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
   ): Promise<FetchResult<TableExportResponse>> {
     const headers = options.customHeaders || {};
     const query: DocumentNode = GQLQueries['tableExportFactsQuery'];
+    this.LOG(`fetching table export ${id}`);
     return this.apolloClient.query({ query, variables: { ids: [id] }, context: { dataSourceName, headers } });
   }
 
@@ -425,6 +440,7 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
         invariant(data, 'async query response is valid');
         status = data.asyncQuery.edges[0]?.node.status;
       }
+      this.LOG(`finished async query ${id}`);
       return asyncQueryPayload;
     } finally {
       if (status === QueryStatus.QUEUED || status === QueryStatus.PROCESSING) {
@@ -440,20 +456,18 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
   async fetchDataForRequest(request: Request, options: RequestOptions = {}): Promise<FetchResult<AsyncQueryResponse>> {
     const toSpawn = this.fetchDataForRequestTask(request, options);
     return run(
-      withLabels(
-        function* () {
-          const fetchTask: Task<FetchResult<AsyncQueryResponse>> = yield spawn(toSpawn);
-          const payload: FetchResult<AsyncQueryResponse> = yield fetchTask;
-          const responseStr = payload.data?.asyncQuery.edges[0].node.result?.responseBody || '{}';
-          const responseBody = JSON.parse(responseStr);
-          if (responseBody.errors) {
-            throw payload;
-          } else {
-            return payload;
-          }
-        },
-        { name: 'fetchDataForRequest' }
-      )
+      function* () {
+        const fetchTask: Task<FetchResult<AsyncQueryResponse>> = yield spawn(toSpawn);
+        const payload: FetchResult<AsyncQueryResponse> = yield fetchTask;
+        const responseStr = payload.data?.asyncQuery.edges[0].node.result?.responseBody || '{}';
+        const responseBody = JSON.parse(responseStr);
+        if (responseBody.errors) {
+          throw payload;
+        } else {
+          return payload;
+        }
+      },
+      { labels: { name: `${PLUGIN_NAMESPACE}:fetchDataForRequest` } }
     );
   }
 }

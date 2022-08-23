@@ -6,7 +6,7 @@ import NaviMetadataSerializer, {
   EverythingMetadataPayload,
   MetadataModelMap,
 } from '../serializers/metadata/interface.js';
-import NativeWithCreate, { Config } from '../models/native-with-create.js';
+import NativeWithCreate, { Config, Logger } from '../models/native-with-create.js';
 import Keg from '../utils/classes/keg.js';
 import type MetadataModelRegistry from '../models/metadata/registry.js';
 import type NaviMetadataAdapter from '../adapters/metadata/interface.js';
@@ -15,6 +15,7 @@ import type { RequestOptions } from '../adapters/facts/interface.js';
 import type MetadataServiceInterface from '../services/interfaces/metadata.js';
 import type { DataSourcePluginConfig } from '../config/datasource-plugins.js';
 import invariant from 'tiny-invariant';
+import { Debugger } from 'debug';
 
 export type MetadataModelTypes = keyof MetadataModelRegistry;
 
@@ -24,6 +25,9 @@ export default class MetadataService extends NativeWithCreate implements Metadat
 
   @Config('client')
   declare clientConfig: ClientConfig;
+
+  @Logger('metadata')
+  private declare LOG: Debugger;
 
   /**
    * TODO: define keg registry types to remove casting in this class
@@ -70,6 +74,7 @@ export default class MetadataService extends NativeWithCreate implements Metadat
     this.loadMetadataForType('columnFunction', payload.columnFunctions || [], dataSourceName);
     this.loadMetadataForType('requestConstraint', payload.requestConstraints, dataSourceName);
     this.loadedDataSources.add(dataSourceName);
+    this.LOG(`load completed for '${dataSourceName}'`);
   }
 
   /**
@@ -88,6 +93,7 @@ export default class MetadataService extends NativeWithCreate implements Metadat
   }
 
   private async loadAndProcessMetadata(dataSourceName: string, options: RequestOptions): Promise<void> {
+    this.LOG(`fetching everything for '${dataSourceName}'`);
     const payload = await this.adapterFor(dataSourceName).fetchEverything(options);
     const normalized = this.serializerFor(dataSourceName).normalize('everything', payload, dataSourceName);
     if (normalized) {
@@ -100,6 +106,7 @@ export default class MetadataService extends NativeWithCreate implements Metadat
     const existingPromise = this.loadMetadataPromises[dataSourceName];
 
     if (existingPromise) {
+      this.LOG(`reusing promise for '${dataSourceName}'`);
       return existingPromise;
     }
 
@@ -109,7 +116,10 @@ export default class MetadataService extends NativeWithCreate implements Metadat
     this.loadMetadataPromises[dataSourceName] = newPromise;
 
     //if load fails remove from cache so we can retry
-    newPromise.catch(() => delete this.loadMetadataPromises[dataSourceName]);
+    newPromise.catch((e) => {
+      this.LOG(`failed while loading '${dataSourceName}'`, e);
+      delete this.loadMetadataPromises[dataSourceName];
+    });
 
     return newPromise;
   }
