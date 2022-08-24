@@ -36,12 +36,13 @@ function createGetter(
   _target: NativeWithCreate,
   key: string,
   _descriptor: unknown,
-  params: Parameters<Injector['lookup']>
+  callback: (injector: Injector) => unknown
 ): PropertyDescriptor {
   return {
     enumerable: false,
     get(this: NativeWithCreate): unknown {
-      return this[INJECTOR]?.lookup(...params);
+      const injector = this[INJECTOR];
+      return injector ? callback(injector) : undefined;
     },
     set(value: unknown) {
       Object.defineProperty(this, key, { value });
@@ -49,18 +50,24 @@ function createGetter(
   };
 }
 
-export function Config<T extends NativeWithCreate, C extends Configs>(config: C): (...args: any[]) => void {
+function createDecorator<T extends NativeWithCreate>(
+  callback: (injector: Injector) => unknown
+): (...args: any[]) => void {
   return function getter(...args: any[]) {
-    return createGetter(...(args as [T, string, any]), ['config', config]);
+    return createGetter(...(args as [T, string, any]), callback);
   };
 }
 
-export function ClientService<T extends NativeWithCreate, S extends ClientServices>(
-  dependencyId: S
-): (...args: any[]) => void {
-  return function getter(...args: any[]) {
-    return createGetter(...(args as [T, string, any]), ['service', dependencyId]);
-  };
+export function Config<C extends Configs>(config: C) {
+  return createDecorator((injector: Injector) => injector.lookup('config', config));
+}
+
+export function ClientService<S extends ClientServices>(dependencyId: S) {
+  return createDecorator((injector: Injector) => injector.lookup('service', dependencyId));
+}
+
+export function Logger(namespace: string) {
+  return createDecorator((injector: Injector) => injector.lookup('service', 'logger').extend(namespace));
 }
 
 export function getInjector(obj: any): Injector {

@@ -17,15 +17,16 @@ import { ClientConfig, FiliDataSource } from '../../../config/datasources.js';
 import type { RequestOptions, AsyncQueryResponse } from '../../../adapters/facts/interface.js';
 import type { Request, Filter, Column, Sort, ParameterValue } from '../../../request.js';
 import type BardTableMetadataModel from '../../../models/metadata/bard/table.js';
-import NativeWithCreate, { ClientService, Config } from '../../../models/native-with-create.js';
+import NativeWithCreate, { ClientService, Config, Logger } from '../../../models/native-with-create.js';
 import invariant from 'tiny-invariant';
 import fetch from 'cross-fetch';
 import mapValues from 'lodash/mapValues.js';
-import { ensure, run, withLabels } from 'effection';
+import { ensure, label, run } from 'effection';
 import type { Operation } from 'effection';
 import type MetadataService from '../../../services/interfaces/metadata.js';
 import type RequestDecoratorService from '../../../services/interfaces/request-decorator.js';
 import type { GrainWithAll } from '../serializers/metadata.js';
+import type { Debugger } from 'debug';
 import { FetchError } from '../../../errors/fetch-error.js';
 // Node 14 support
 import 'abortcontroller-polyfill/dist/abortcontroller-polyfill-only.js';
@@ -37,16 +38,6 @@ export type Query = Record<string, string | number | boolean>;
  * @returns formatted dimension name
  */
 function canonicalizeFiliDimension(column: Column | Filter | Sort): string {
-  if (!column.parameters.field) {
-    console.warn(`Dimension '${column.field}' does not specify a 'field' parameter`, {
-      id: 'formatDimensionFieldName--no-field-parameter',
-    });
-  }
-  if (column.field.includes('.')) {
-    console.warn(`Dimension '${column.field}' includes '.', which is likely an error, use the parameters instead`, {
-      id: 'formatDimensionFieldName--dimension-with-period',
-    });
-  }
   const ignoredParams = ['field'];
   if (column.type === 'timeDimension') {
     ignoredParams.push('grain');
@@ -199,6 +190,8 @@ function isDateTime(column: Column | Filter | Sort) {
 export type FilterOperator = 'in' | 'notin' | 'contains';
 export type HavingOperator = 'gt' | 'gte' | 'lt' | 'lte' | 'eq' | 'neq' | 'bet' | 'nbet';
 
+const PLUGIN_NAMESPACE = 'plugins:fili:facts:adapter';
+
 export default class FiliFactsAdapter extends NativeWithCreate implements NaviFactAdapter {
   /**
    * @property namespace
@@ -213,6 +206,9 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
 
   @Config('client')
   declare config: ClientConfig;
+
+  @Logger(PLUGIN_NAMESPACE)
+  declare LOG: Debugger;
 
   /**
    * Builds the dimensions path for a request
@@ -483,7 +479,9 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
   }
 
   fetchDataForRequest(request: RequestV2, options?: RequestOptions): Promise<unknown> {
-    return run(withLabels(this.fetchDataForRequestTask(request, options), { name: 'fetchDataForRequest' }));
+    return run(this.fetchDataForRequestTask(request, options), {
+      labels: { name: `${PLUGIN_NAMESPACE}:fetchDataForRequest` },
+    });
   }
 
   /**
@@ -520,7 +518,9 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeout);
     yield ensure(() => controller.abort());
-    const response: Response = yield fetch(urlRequest, {
+    yield label({ state: 'fetching', url: urlRequest });
+    this.LOG(`GET ${urlRequest}`);
+    let response: Response = yield fetch(urlRequest, {
       credentials: 'include',
       headers: {
         clientid: clientId,
@@ -530,6 +530,8 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
     });
     clearTimeout(id);
     if (!response.ok) {
+      this.LOG(`Error HTTP${response.status} while fetching ${urlRequest}`);
+      yield label({ state: 'erroring', httpStatus: response.status });
       let payload: string;
       if (controller.signal.aborted) {
         payload = 'The fetch operation timed out';

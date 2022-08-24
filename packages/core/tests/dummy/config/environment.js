@@ -66,14 +66,16 @@ module.exports = function (environment) {
     },
   };
 
-  /*
-   * here you can enable a production-specific feature
-   * ENV.APP.LOG_RESOLVER = true;
-   * ENV.APP.LOG_ACTIVE_GENERATION = true;
-   * ENV.APP.LOG_TRANSITIONS = true;
-   * ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
-   * ENV.APP.LOG_VIEW_LOOKUPS = true;
-   */
+  if (environment === 'development') {
+    ENV.navi.clientLoggingEnabled = true;
+    /*
+     * ENV.APP.LOG_RESOLVER = true;
+     * ENV.APP.LOG_ACTIVE_GENERATION = true;
+     * ENV.APP.LOG_TRANSITIONS = true;
+     * ENV.APP.LOG_TRANSITIONS_INTERNAL = true;
+     * ENV.APP.LOG_VIEW_LOOKUPS = true;
+     */
+  }
 
   if (environment === 'test') {
     // Testem prefers this...

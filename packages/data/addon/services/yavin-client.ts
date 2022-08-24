@@ -6,7 +6,9 @@ import Service from '@ember/service';
 import { getOwner } from '@ember/application';
 import { Client } from '@yavin/client';
 import config from 'ember-get-config';
+import debug from 'debug';
 import { getInjector } from '@yavin/client/models/native-with-create';
+import { LOG_NAMESPACE } from '@yavin/client/services/logger';
 import type NaviMetadataAdapter from '@yavin/client/adapters/metadata/interface';
 import type MetadataSerializer from '@yavin/client/serializers/metadata/interface';
 import type NaviFactAdapter from '@yavin/client/adapters/facts/interface';
@@ -53,8 +55,12 @@ export default class YavinClientService extends Service {
     return Object.fromEntries(allDataSources.map((type) => [type, getDataSourcePlugin(type)]));
   }
 
-  #getServicePlugins(): ServicePlugins {
+  #getServicePlugins(): Partial<ServicePlugins> {
     const owner = getOwner(this);
+    const loggingEnabled = config.navi.clientLoggingEnabled ?? false;
+    if (loggingEnabled) {
+      debug.enable(`${LOG_NAMESPACE}*`);
+    }
 
     return {
       requestDecorator: () => owner.lookup('service:request-decorator'),

@@ -20,10 +20,41 @@ import RequestDecoratorService from './services/request-decorator.js';
 import FormatterService from './services/formatter.js';
 import MetadataService from './services/metadata.js';
 import FactsService from './services/fact.js';
+import Logger from './services/logger.js';
 
 interface PluginConfig {
   dataSourcePlugins?: Record<string, DataSourcePlugins>;
   servicePlugins?: Partial<ServicePlugins>;
+}
+
+function createInjector(client: Client, servicePlugins: ServicePlugins): Injector {
+  const serviceToPluginNames: Record<keyof ServiceRegistry, keyof ServicePlugins> = {
+    'request-decorator': 'requestDecorator',
+    'navi-formatter': 'formatter',
+    'navi-metadata': 'metadata',
+    'navi-dimension': 'dimensions',
+    'navi-facts': 'facts',
+    logger: 'logger',
+  };
+  const serviceCache: Partial<Services> = {};
+  const injector: Injector = {
+    lookup: <T extends ClientServices>(type: LookupType, service: string) => {
+      if (type === 'config') {
+        return { client: client.clientConfig, plugin: client.pluginConfig }[service];
+      } else {
+        const serviceName = serviceToPluginNames[service as T];
+        let serviceInstance;
+        if (serviceCache[serviceName]) {
+          serviceInstance = serviceCache[serviceName];
+        } else {
+          serviceInstance = servicePlugins[serviceName](injector) as Services[typeof serviceName];
+          serviceCache[serviceName] = serviceInstance;
+        }
+        return serviceInstance as ServiceRegistry[T];
+      }
+    },
+  };
+  return injector;
 }
 
 export class Client {
@@ -45,8 +76,11 @@ export class Client {
 
     const servicePlugins = this.getServicePluginConfig(plugins.servicePlugins);
     const dataSourcePlugins = this.getDataSourcePluginConfig(plugins.dataSourcePlugins);
-    setInjector(this, this.#createInjector(servicePlugins));
+    setInjector(this, createInjector(this, servicePlugins));
     this.pluginConfig = new DataSourcePluginConfig(getInjector(this), dataSourcePlugins);
+
+    const logger = getInjector(this).lookup('service', 'logger');
+    logger('initialized with', { clientConfig: this.clientConfig, pluginConfig: this.pluginConfig });
   }
 
   protected getServicePluginConfig(servicePlugins: Partial<ServicePlugins> = {}): ServicePlugins {
@@ -58,6 +92,7 @@ export class Client {
       dimensions: (_injector: Injector) => {
         throw new Error('Dimension service does not exist yet');
       },
+      logger: (_injector: Injector) => Logger,
     };
     Object.assign(services, servicePlugins);
     return services;
@@ -72,34 +107,5 @@ export class Client {
     };
     Object.assign(dataSources, dataSourcePlugins);
     return dataSources;
-  }
-
-  #createInjector(servicePlugins: ServicePlugins): Injector {
-    const serviceToPluginNames: Record<keyof ServiceRegistry, keyof ServicePlugins> = {
-      'request-decorator': 'requestDecorator',
-      'navi-formatter': 'formatter',
-      'navi-metadata': 'metadata',
-      'navi-dimension': 'dimensions',
-      'navi-facts': 'facts',
-    };
-    const serviceCache: Partial<Services> = {};
-    const injector: Injector = {
-      lookup: <T extends ClientServices>(type: LookupType, service: string) => {
-        if (type === 'config') {
-          return { client: this.clientConfig, plugin: this.pluginConfig }[service];
-        } else {
-          const serviceName = serviceToPluginNames[service as T];
-          let serviceInstance;
-          if (serviceCache[serviceName]) {
-            serviceInstance = serviceCache[serviceName];
-          } else {
-            serviceInstance = servicePlugins[serviceName](injector) as Services[typeof serviceName];
-            serviceCache[serviceName] = serviceInstance;
-          }
-          return serviceInstance as ServiceRegistry[T];
-        }
-      },
-    };
-    return injector;
   }
 }

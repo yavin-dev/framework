@@ -39,6 +39,7 @@ module.exports = function (environment) {
   };
 
   if (environment === 'development') {
+    ENV.navi.clientLoggingEnabled = true;
     /*
      * ENV.APP.LOG_RESOLVER = true;
      * ENV.APP.LOG_ACTIVE_GENERATION = true;

@@ -9,5 +9,6 @@ declare module 'navi-config' {
       timeoutMs?: number;
       cacheMs?: number;
     };
+    clientLoggingEnabled?: boolean;
   }
 }
