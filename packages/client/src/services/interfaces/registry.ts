@@ -5,3 +5,10 @@
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export default interface ServiceRegistry {}
+
+import './dimension.js';
+import './fact.js';
+import './formatter.js';
+import './logger.js';
+import './metadata.js';
+import './request-decorator.js';
