@@ -20,7 +20,7 @@ import RequestDecoratorService from './services/request-decorator.js';
 import FormatterService from './services/formatter.js';
 import MetadataService from './services/metadata.js';
 import FactsService from './services/fact.js';
-import debug from 'debug';
+import Logger from './services/logger.js';
 
 interface PluginConfig {
   dataSourcePlugins?: Record<string, DataSourcePlugins>;
@@ -62,7 +62,7 @@ export class Client {
       dimensions: (_injector: Injector) => {
         throw new Error('Dimension service does not exist yet');
       },
-      logger: (_injector: Injector) => debug('yavin:client'),
+      logger: (_injector: Injector) => Logger,
     };
     Object.assign(services, servicePlugins);
     return services;

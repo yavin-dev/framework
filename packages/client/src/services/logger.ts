@@ -2,6 +2,9 @@
  * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
+import debug from 'debug';
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export default interface ServiceRegistry {}
+export const LOG_NAMESPACE = 'yavin:client';
+const Logger = debug(LOG_NAMESPACE);
+
+export default Logger;

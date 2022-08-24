@@ -66,7 +66,7 @@ export default class FactsService extends NativeWithCreate implements FactServic
   }
 
   fetchNext(response: NaviFactResponse, request: RequestV2): Promise<NaviFactsModel | null> {
-    return run(this.fetchNextTask(response, request), { labels: { name: 'fservices:facts:etchNext' } });
+    return run(this.fetchNextTask(response, request), { labels: { name: 'services:facts:fetchNext' } });
   }
 
   fetchPrevious(response: NaviFactResponse, request: RequestV2): Promise<NaviFactsModel | null> {
