@@ -4,6 +4,8 @@
  */
 import type { Debugger } from 'debug';
 
+export default Debugger;
+
 declare module './registry' {
   export default interface ServiceRegistry {
     logger: Debugger;
