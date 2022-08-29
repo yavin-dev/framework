@@ -175,4 +175,11 @@
       }
     }
   }
+
+  &__row-limit {
+    &.input-group label {
+      font-size: 12px;
+      min-width: unset;
+    }
+  }
 }

@@ -43,9 +43,9 @@
             />
           </button>
           {{#unless @isFiltersCollapsed}}
-            <span class="report-builder__container-header__message flex align-items-center">
-              Click <DenaliIcon @icon="filter-add" @size="small" class="report-builder__container-header__message--icon m-x-2" /> next to a dimension/metric to add a filter.
-            </span>
+            <DenaliInputGroup @label="Row Limit" class="report-builder__row-limit">
+              <DenaliInput placeholder="Row Limit" @size="small" @wrapperClass="w-20" type="number"/>
+            </DenaliInputGroup>
           {{/unless}}
         </span>
 
