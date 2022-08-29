@@ -25,7 +25,7 @@ elide:
     enableMetaDataStore: true
   dynamic-config:
     enabled: true
-    path: demo-configs
+    path: ./demo-configs
     configApiEnabled: true
 
 spring:
