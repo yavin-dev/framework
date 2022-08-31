@@ -70,6 +70,7 @@ module('Unit | Serializer | Report', function (hooks) {
           },
           title: 'RequestV2 testing report',
           visualization: {
+            namespace: null,
             metadata: {
               columnAttributes: {
                 c1: {
@@ -172,6 +173,7 @@ module('Unit | Serializer | Report', function (hooks) {
           },
           title: 'RequestV2 multi-param testing report',
           visualization: {
+            namespace: null,
             metadata: {
               columnAttributes: {
                 c1: {

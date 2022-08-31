@@ -102,6 +102,7 @@ module('Unit | Route | reports/report/view', function (hooks) {
               },
               type: 'table',
               version: 2,
+              namespace: null,
             },
             'visualization is updated'
           );

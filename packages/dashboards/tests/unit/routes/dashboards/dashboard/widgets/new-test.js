@@ -23,6 +23,7 @@ const NEW_MODEL = {
   title: 'Untitled Widget',
   updatedOn: null,
   visualization: {
+    namespace: null,
     type: 'table',
     version: 2,
     metadata: {

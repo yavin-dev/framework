@@ -66,6 +66,7 @@ const ExpectedReport = {
         dataSource: 'bardOne',
       },
       visualization: {
+        namespace: null,
         type: 'table',
         version: 2,
         metadata: {
