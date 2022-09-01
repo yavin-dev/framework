@@ -18,16 +18,16 @@
     </PowerSelect>
   </div>
   <DenaliToggle
-    @options={{get this.valid.categoryToVisualizations this.selectedCategory}}
+    @options={{this.categoryVisualizations}}
     @activeOption={{this.selectedVisualization}}
     @onChange={{@onVisualizationTypeUpdate}}
     @isSmall={{true}}
     as |visualization|
   >
-    <DenaliIcon 
-      @icon={{visualization.icon}} 
+    <DenaliIcon
+      @icon={{visualization.icon}}
       @size="small"
-      class="visualization-toggle__option-icon {{if (eq this.selectedVisualization visualization) "visualization-toggle__option--is-active"}}" 
+      class="visualization-toggle__option-icon {{if (eq this.selectedVisualization visualization) "visualization-toggle__option--is-active"}}"
       title={{visualization.niceName}}
     />
   </DenaliToggle>

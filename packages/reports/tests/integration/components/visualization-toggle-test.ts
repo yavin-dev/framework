@@ -163,4 +163,18 @@ module('Integration | Component | visualization toggle', function (hooks) {
       'Only categories from valid visualizations are shown'
     );
   });
+
+  test('component does not crash when category becomes invalid', async function (this: TestContext, assert) {
+    assert.expect(1);
+
+    const TableManifest = this.visualizationService.getVisualization('yavin:table');
+
+    this.validVisualizations = [];
+    //@ts-expect-error - fake report
+    this.report = { visualization: { manifest: TableManifest } };
+
+    await render(TEMPLATE);
+
+    assert.dom('.visualization-toggle').exists('Component Renders without crashing');
+  });
 });

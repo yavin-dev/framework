@@ -55,6 +55,11 @@ export default class VisualizationToggle extends Component<Args> {
     return category ?? this.valid.categories[0];
   }
 
+  get categoryVisualizations() {
+    const visualizations = this.valid.categoryToVisualizations[this.selectedCategory];
+    return visualizations ?? [];
+  }
+
   get selectedVisualization() {
     return this.args.report.visualization.manifest;
   }
