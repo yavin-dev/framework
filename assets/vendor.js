@@ -13157,7 +13157,8 @@ class r extends t.default{normalize(e,t){const r=super.normalize(e,t)
 return r.data.attributes.vizModelType="visualization-v2",r}}e.default=r})),define("navi-core/serializers/visualization",["exports","@ember-data/serializer/json"],(function(e,t){"use strict"
 Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
 class r extends t.default{normalize(e,t){const r=super.normalize(e,t)
-return t?.type&&(r.data.attributes.vizModelType=t.type),r}}e.default=r})),define("navi-core/services/action-dispatcher",["exports"],(function(e){"use strict"
+return t?.type&&(r.data.attributes.vizModelType=t.type),r}serialize(){const e=super.serialize(...arguments)
+return e.namespace=e.namespace??null,e}}e.default=r})),define("navi-core/services/action-dispatcher",["exports"],(function(e){"use strict"
 Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
 class t extends Ember.Service{constructor(){var e,t,r
 super(...arguments),r=[],(t="_registeredConsumers")in(e=this)?Object.defineProperty(e,t,{value:r,enumerable:!0,configurable:!0,writable:!0}):e[t]=r}get consumers(){return[]}init(){super.init(),this.consumers.forEach((e=>this.registerConsumer(e)))}registerConsumer(e){const t=Ember.getOwner(this)
