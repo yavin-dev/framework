@@ -26,6 +26,7 @@ const NEW_MODEL = {
   title: 'Untitled Report',
   updatedOn: null,
   visualization: {
+    namespace: null,
     metadata: {
       columnAttributes: {},
     },

@@ -14,4 +14,14 @@ export default class VisualizationSerializer extends JSONSerializer {
     }
     return normalized;
   }
+
+  /**
+   * Adds namespace=null to v1 visualizations to overwrite any existing namespace
+   */
+  serialize() {
+    //@ts-expect-error using rest params
+    const visualization = super.serialize(...arguments) as Record<string, unknown>;
+    visualization.namespace = visualization.namespace ?? null;
+    return visualization;
+  }
 }

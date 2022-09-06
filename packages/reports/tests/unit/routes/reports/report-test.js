@@ -75,7 +75,7 @@ module('Unit | Route | reports/report', function (hooks) {
 
     assert.deepEqual(
       route.setDefaultVisualization(mockReport).visualization,
-      { type: 'table', version: 2, metadata: { columnAttributes: {} } },
+      { type: 'table', version: 2, metadata: { columnAttributes: {} }, namespace: null },
       'Default visualization is set for null value in visualization'
     );
 

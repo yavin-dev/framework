@@ -41,6 +41,7 @@ module('Unit | Service | visualization', function (hooks) {
         },
         type: 'table',
         version: 2,
+        namespace: null,
       },
       'it creates new table model'
     );
@@ -53,11 +54,12 @@ module('Unit | Service | visualization', function (hooks) {
     );
 
     assert.deepEqual(
-      (await table.normalizeModel({})).serialize(), // TODO: not quite right
+      (await table.normalizeModel({})).serialize(),
       {
         metadata: {},
         type: 'table',
         version: 2,
+        namespace: null,
       },
       'it normalizes settings'
     );
