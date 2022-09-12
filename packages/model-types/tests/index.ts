@@ -110,7 +110,10 @@ const dashboard: JSONAPI<Dashboard> = {
       createdOn: '234',
       updatedOn: '567',
       title: 'My Widget',
-      filters: [{ dimension: 'age', field: 'id', operator: 'in', values: ['4'] }],
+      filters: [
+        { dimension: 'age', field: 'id', operator: 'in', values: ['4'], type: 'dimension' },
+        { dimension: 'age', field: 'id', operator: 'in', values: ['4'] },
+      ],
       presentation: {
         version: 1,
         columns: 12,

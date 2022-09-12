@@ -6,7 +6,7 @@ import type { DeliveryRule } from './delivery-rule';
 import type { BelongsTo, HasMany, JSONApiDef } from './json-api';
 import type { User } from './user';
 import type { DashboardWidget } from './dashboard-widget';
-import type { Filter, FilterOperator } from '@yavin/client/request';
+import type { ColumnType, Filter, FilterOperator } from '@yavin/client/request';
 
 export type Dashboard = JSONApiDef<
   'dashboards',
@@ -19,6 +19,7 @@ export type Dashboard = JSONApiDef<
       operator: FilterOperator;
       values: Filter['values'];
       field: string;
+      type?: ColumnType;
     }>;
     presentation: {
       version: 1;
