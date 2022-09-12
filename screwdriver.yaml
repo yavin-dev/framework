@@ -70,6 +70,10 @@ jobs:
     <<: *main-npm-test-job
     environment:
       PACKAGE: navi-directory
+  main-model-types:
+    <<: *main-npm-test-job
+    environment:
+      PACKAGE: '@yavin/model-types'
   main-notifications:
     <<: *main-npm-test-job
     environment:

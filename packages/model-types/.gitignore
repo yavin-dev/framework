@@ -1,0 +1,12 @@
+.DS_Store
+.idea
+.vscode
+
+# Typescript Build Cache
+*.tsbuildinfo
+
+# Dependency directories
+node_modules/
+
+# Optional eslint cache
+.eslintcache

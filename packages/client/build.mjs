@@ -1,7 +1,7 @@
 import { build } from 'esbuild';
 import glob from 'glob';
 import browserslist from 'browserslist';
-import { esbuildPluginBrowserslist, resolveToEsbuildTarget } from 'esbuild-plugin-browserslist';
+import { esbuildPluginBrowserslist } from 'esbuild-plugin-browserslist';
 import graphqlLoaderPlugin from '@luckycatfactory/esbuild-graphql-loader/lib/index.mjs';
 import { argv } from 'node:process';
 import sh from 'shelljs';

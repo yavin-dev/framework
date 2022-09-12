@@ -15,7 +15,7 @@ module.exports = {
     'prefer-const': 'off',
     '@typescript-eslint/ban-ts-comment': 'off',
 
-    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+    '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
   },
   overrides: [
     {
