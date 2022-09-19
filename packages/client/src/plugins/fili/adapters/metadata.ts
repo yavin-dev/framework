@@ -93,7 +93,7 @@ export default class BardMetadataAdapter extends NativeWithCreate implements Nav
           // nothing to do
         }
       }
-      throw new FetchError(response.status, payload);
+      throw new FetchError(urlRequest, response.status, payload);
     }
     return await response.json();
   }

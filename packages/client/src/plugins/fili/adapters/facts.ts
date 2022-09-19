@@ -543,7 +543,7 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
           // nothing to do
         }
       }
-      throw new FetchError(response.status, payload);
+      throw new FetchError(urlRequest, response.status, payload);
     }
     return yield response.json();
   }

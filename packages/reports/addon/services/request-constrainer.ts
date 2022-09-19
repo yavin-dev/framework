@@ -10,11 +10,11 @@ import type RequestFragment from 'navi-core/models/request';
 import type { RequestV2 } from '@yavin/client/request';
 import type NaviMetadataService from 'navi-data/services/navi-metadata';
 import type Route from '@ember/routing/route';
-import type ReportModel from 'navi-core/models/report';
 import type UpdateReportActionDispatcher from './update-report-action-dispatcher';
 import type ColumnFragment from 'navi-core/models/request/column';
 import type FilterFragment from 'navi-core/models/request/filter';
 import type NaviNotificationService from 'navi-core/services/interfaces/navi-notifications';
+import type { ReportLike } from 'navi-reports/routes/reports/report';
 
 export type TemplateDispatcherAction = [string, ...any[]] & any[];
 
@@ -57,8 +57,8 @@ export default class RequestConstrainer extends Service {
       });
   }
 
-  constrain(route: Route): ReportModel {
-    const report = route.modelFor(route.routeName) as ReportModel;
+  constrain(route: Route): ReportLike {
+    const report = route.modelFor(route.routeName) as ReportLike;
     const { request } = report;
 
     const dispatcherActions = this.buildConstraints(request);

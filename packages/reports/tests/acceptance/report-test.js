@@ -1,4 +1,4 @@
-import { module, test, skip } from 'qunit';
+import { module, test } from 'qunit';
 import {
   blur,
   click,
@@ -1413,39 +1413,6 @@ module('Acceptance | Navi Report', function (hooks) {
       !!$('.table-header-row-vc--view .table-header-cell:contains(Time Spent)').length,
       'Time Spent column is not displayed'
     );
-  });
-
-  skip('Running a report against unauthorized table shows unauthorized route', async function (assert) {
-    //build-data issues
-    assert.expect(5);
-    await newReport();
-
-    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
-    await click('.report-builder-source-selector__source-button[data-source-name="Protected Table"]');
-    await animationsSettled();
-
-    await click('.navi-report__run-btn');
-
-    assert.equal(currentURL(), '/reports/1/unauthorized', 'check to seee if we are on the unauthorized route');
-
-    assert.ok(!!findAll('.navi-report-invalid__info-message .fa-lock').length, 'unauthorized component is loaded');
-
-    await click('.navi-report__cancel-btn');
-
-    await click('.report-builder-sidebar__breadcrumb-item[data-level="1"]');
-    await click('.report-builder-source-selector__source-button[data-source-name="Network"]');
-    await animationsSettled();
-    await click('.navi-report__run-btn');
-    await click('.visualization-toggle__option-icon[title="Table"]');
-
-    assert.equal(currentURL(), '/reports/1/view', 'check to seee if we are on the view route');
-
-    assert.notOk(
-      !!findAll('.navi-report-invalid__info-message .fa-lock').length,
-      'unauthorized component is not loaded'
-    );
-
-    assert.ok(!!findAll('.table-widget').length, 'Data table visualization loads');
   });
 
   test("filtering on a dimension with a storage strategy of 'none'", async function (assert) {

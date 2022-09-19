@@ -22,7 +22,6 @@ export default class ApplicationRoute extends Route {
       status: Status.OK,
       date: moment.utc().startOf('day'),
     }));
-    await this.naviMetadata.loadMetadata({ dataSourceName: 'bardOne' });
     return await this.user.findOrRegister();
   }
 }
