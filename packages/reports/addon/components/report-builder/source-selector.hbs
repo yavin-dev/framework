@@ -64,32 +64,37 @@
       <DenaliLoader />
     </div>
   {{else}}
-    <NaviInfoMessage
-      @icon="warning"
-      @title="Error Loading Tables"
-      @hideTechDetails={{true}}
-      class="report-builder-source-selector-error"
-    >
-      <:tech-details>
-        <ul class="report-builder-source-selector-error__error-list">
-          {{#if @sourcesTask.error}}
-            <li>{{@sourcesTask.error}}</li>
-          {{else}}
-            <li>Unexpected Error</li>
-          {{/if}}
-        </ul>
-      </:tech-details>
-      <:default>
-        <DenaliButton
-          @style="text"
-          @size="medium"
-          @icon="arrow-left"
-          {{on "click" @reset}}
-          class="m-t-10"
-        >
-          Select Another Data Source
-        </DenaliButton>
-      </:default>
-    </NaviInfoMessage>
+    {{#let (is-forbidden @sourcesTask.error) as |isForbidden|}}
+      <NaviInfoMessage
+        @icon={{if isForbidden "lock-close" "warning"}}
+        @title={{if isForbidden "Access Denied" "Error Loading Tables"}}
+        @hideTechDetails={{true}}
+        class="report-builder-source-selector-error"
+      >
+        <:tech-details>
+          <ul class="report-builder-source-selector-error__error-list">
+            {{#if isForbidden}}
+              <li>You are not authorized to access this resource</li>
+            {{/if}}
+            {{#if @sourcesTask.error}}
+              <li>{{@sourcesTask.error}}</li>
+            {{else}}
+              <li>Unexpected Error</li>
+            {{/if}}
+          </ul>
+        </:tech-details>
+        <:default>
+          <DenaliButton
+            @style="text"
+            @size="medium"
+            @icon="arrow-left"
+            {{on "click" @reset}}
+            class="m-t-10"
+          >
+            Select Another Data Source
+          </DenaliButton>
+        </:default>
+      </NaviInfoMessage>
+    {{/let}}
   {{/if}}
 </div>

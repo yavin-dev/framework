@@ -72,7 +72,8 @@ export default class ReportsReportViewRoute extends Route {
       })
       .catch((response) => {
         if (isForbidden(response.rootCause)) {
-          this.transitionTo('reports.report.unauthorized', report.id);
+          this.send('setReportState', 'failed');
+          this.transitionTo('reports.report.unauthorized', report.tempId ?? report.id);
         } else {
           return reject(response);
         }

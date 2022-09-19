@@ -103,7 +103,7 @@ module('Unit | Plugins | Fili | Serializers | facts', function (hooks) {
       status: 400,
       statusName: 'Bad request',
     };
-    const response = new FetchError(400, payload);
+    const response = new FetchError('url', 400, payload);
     const error = Serializer.extractError(response, request);
 
     assert.deepEqual(
@@ -131,7 +131,7 @@ module('Unit | Plugins | Fili | Serializers | facts', function (hooks) {
     };
 
     const payload = 'The adapter operation timed out';
-    const response = new FetchError(408, payload);
+    const response = new FetchError('url', 408, payload);
 
     const error = Serializer.extractError(response, request);
     assert.deepEqual(
@@ -160,7 +160,7 @@ module('Unit | Plugins | Fili | Serializers | facts', function (hooks) {
       status: 429,
       statusName: 'Too many requests',
     };
-    const response = new FetchError(payload.status, payload);
+    const response = new FetchError('url', payload.status, payload);
     const error = Serializer.extractError(response, request);
 
     assert.deepEqual(

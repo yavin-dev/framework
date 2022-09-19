@@ -34,6 +34,7 @@
 
   &-error {
     background-color: $body-bg-color;
+    max-width: 300px;
 
     .navi-info-message__tech-details {
       font-size: 14px;

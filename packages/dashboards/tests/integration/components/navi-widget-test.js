@@ -77,7 +77,7 @@ module('Integration | Component | navi widget', function (hooks) {
 
     this.set('taskInstance', {
       isError: true,
-      error: new FetchError(403, 'You are not authorized'),
+      error: new FetchError('url', 403, 'You are not authorized'),
     });
 
     assert

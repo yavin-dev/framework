@@ -2,12 +2,15 @@
  * Copyright 2021, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
-import { get, set, action } from '@ember/object';
+import { set, action } from '@ember/object';
 import { assert } from '@ember/debug';
 import Route from '@ember/routing/route';
 import { inject as service } from '@ember/service';
 import { isEmpty } from '@ember/utils';
-import RSVP from 'rsvp';
+import { isForbidden } from 'navi-core/helpers/is-forbidden';
+import { FetchError } from '@yavin/client/errors/fetch-error';
+import { htmlSafe } from '@ember/template';
+import { resolve, reject } from 'rsvp';
 import type NaviNotificationsService from 'navi-core/services/interfaces/navi-notifications';
 import type UserService from 'navi-core/services/user';
 import type UpdateReportActionDispatcher from 'navi-reports/services/update-report-action-dispatcher';
@@ -18,6 +21,9 @@ import type { RequestV2 } from '@yavin/client/request';
 import type ReportsReportController from 'navi-reports/controllers/reports/report';
 import type DashboardWidget from 'navi-core/models/dashboard-widget';
 import type YavinVisualizationsService from 'navi-core/services/visualization';
+import type NaviMetadataService from 'navi-data/services/navi-metadata';
+import type { SafeString } from 'navi-core/services/interfaces/navi-notifications';
+import type Model from 'ember-data-model-fragments/fragment';
 
 type ModelParams = { report_id: string } | { widget_id: string };
 type ReportModelParams = { report_id: string };
@@ -35,7 +41,11 @@ export default class ReportsReportRoute extends Route {
 
   @service declare requestConstrainer: RequestConstrainer;
 
+  @service declare naviMetadata: NaviMetadataService;
+
   declare controller: ReportsReportController;
+
+  metadataError: unknown | null = null;
 
   /**
    * visualization type if not specified in report
@@ -53,7 +63,12 @@ export default class ReportsReportRoute extends Route {
     const { report_id } = params as ReportModelParams;
     await this.user.findOrRegister();
     const report = this.findByTempId(report_id) || (await this.store.findRecord('report', report_id));
-    await report.request?.loadMetadata();
+    try {
+      this.metadataError = null;
+      await report.request?.loadMetadata();
+    } catch (e: unknown) {
+      this.metadataError = e;
+    }
     return this.setDefaultVisualization(report);
   }
 
@@ -61,10 +76,32 @@ export default class ReportsReportRoute extends Route {
    * @param report - resolved report model
    * @override
    */
-  afterModel(report: ReportModel): Transition | void {
+  afterModel(report: ReportLike): Transition | void {
+    if (this.metadataError) {
+      if (isForbidden(this.metadataError)) {
+        return this.replaceWith(`${this.routeName}.unauthorized`, report.tempId || report.id);
+      } else {
+        let context: string | SafeString;
+        if (this.metadataError instanceof FetchError) {
+          context = htmlSafe(`HTTP ${this.metadataError.status} while fetching ${this.metadataError.url}`);
+        } else {
+          context = `${this.metadataError}`;
+        }
+        this.naviNotifications.add({
+          title: 'Error while loading metadata',
+          style: 'warning',
+          timeout: 'medium',
+          context,
+        });
+        return this.replaceWith(`${this.routeName}.invalid`, report.tempId || report.id);
+      }
+    }
+    if (!report) {
+      return;
+    }
     this.requestConstrainer.constrain(this);
 
-    if (report.get('isNew') && report.request.validations.isInvalid) {
+    if ((report as Model).get('isNew') && report.request.validations.isInvalid) {
       return this.replaceWith(`${this.routeName}.edit`, report.tempId);
     }
 
@@ -147,18 +184,21 @@ export default class ReportsReportRoute extends Route {
   }
 
   /**
-   * @param request - object to validate
+   * @param report - object to validate
    * @returns promise that resolves or rejects based on validation status
    */
   @action
-  validate(report: ReportLike) {
+  validate(report: ReportLike): Promise<unknown> | Transition {
+    // If the user is not allowed access then metadata will not be loaded so the request will also be invalid
+    if (isForbidden(this.metadataError)) {
+      return this.transitionTo(`${this.routeName}.unauthorized`, report.tempId || report.id);
+    }
     return report.request.validate().then(({ validations }) => {
-      if (get(validations, 'isInvalid')) {
+      if (validations.isInvalid) {
         // Transition to invalid route to show user validation errors
-        return this.transitionTo(`${this.routeName}.invalid`, report.tempId || report.id).then(() => RSVP.reject());
+        return this.transitionTo(`${this.routeName}.invalid`, report.tempId || report.id).then(() => reject());
       }
-
-      return RSVP.resolve();
+      return resolve();
     });
   }
 
@@ -186,7 +226,7 @@ export default class ReportsReportRoute extends Route {
         });
 
         // Switch from temp id to permanent id
-        this.replaceWith('reports.report.view', get(report, 'id'));
+        this.replaceWith('reports.report.view', report.id);
       })
       .catch((_e) => {
         this.naviNotifications.add({

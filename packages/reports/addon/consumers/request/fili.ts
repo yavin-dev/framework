@@ -211,6 +211,11 @@ export default class FiliConsumer extends ActionConsumer {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
 
+      if (request.tableMetadata === table) {
+        // if we're on the requested table, do nothing
+        return;
+      }
+
       const oldDateTimeColumn = request.columns.find((col) => col.field.endsWith('.dateTime'));
       const newDateTimeMetadata = table.timeDimensions.find((timeDim) => timeDim.id === `${table.id}.dateTime`);
       if (oldDateTimeColumn && newDateTimeMetadata) {
