@@ -296,8 +296,8 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
     assert.deepEqual(
       adapter['getPaginationOptions'](TestRequest, { perPage: 3, page: 2 }),
-      { first: 3, after: 3 },
-      'specifying `perPage` and `page` overrides request limit'
+      { first: 10000, after: 0 },
+      'specifying `perPage` and `page` does not override request limit'
     );
 
     const limitless = { ...TestRequest, limit: null };
