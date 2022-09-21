@@ -13,10 +13,11 @@ export default class LimitConsumer extends ActionConsumer {
   declare requestActionDispatcher: RequestActionDispatcher;
 
   actions = {
-    [RequestActions.UPDATE_LIMIT](this: LimitConsumer, route: Route, limit: number | null) {
+    [RequestActions.UPDATE_LIMIT](this: LimitConsumer, route: Route, limit: string | number | null) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      request.limit = limit;
+      const limitNumber = typeof limit === 'string' ? parseInt(limit) : limit;
+      request.limit = !Number.isNaN(limitNumber) ? limitNumber : null;
     },
   };
 }
