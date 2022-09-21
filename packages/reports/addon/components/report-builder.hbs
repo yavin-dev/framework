@@ -44,7 +44,18 @@
           </button>
           {{#unless @isFiltersCollapsed}}
             <DenaliInputGroup @label="Row Limit" class="report-builder__row-limit">
-              <DenaliInput placeholder="Row Limit" @size="small" @wrapperClass="w-20" type="number"/>
+              {{#if (gt this.request.limit 10000)}}
+                <DenaliIcon @icon="warning" @size="small" id="report-builder__row-limit-warning" class="report-builder__row-limit-warning--icon"/>
+                <EmberTooltip targetId="report-builder__row-limit-warning" @popperContainer="body">
+                  You will likely have performance issues above 10,000 rows, use at your own risk.
+                </EmberTooltip>
+              {{/if}}
+              <DenaliInput placeholder="Row Limit"
+                @size="small"
+                @wrapperClass="w-20"
+                type="number"
+                value={{this.request.limit}}
+                {{on "input" (pipe (pick "target.value") (update-report-action "UPDATE_LIMIT"))}} />
             </DenaliInputGroup>
           {{/unless}}
         </span>

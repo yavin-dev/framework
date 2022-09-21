@@ -1,5 +1,5 @@
 /**
- * Copyright 2021, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 
@@ -180,6 +180,11 @@
     &.input-group label {
       font-size: 12px;
       min-width: unset;
+    }
+
+    &-warning--icon {
+      color: map-get($denali-colors, 'yellow', '700');
+      padding: 0 8px 0 0;
     }
   }
 }
