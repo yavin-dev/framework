@@ -16,7 +16,11 @@ export default class LimitConsumer extends ActionConsumer {
     [RequestActions.UPDATE_LIMIT](this: LimitConsumer, route: Route, limit: string | number | null) {
       const { routeName } = route;
       const { request } = route.modelFor(routeName) as ReportModel;
-      const limitNumber = typeof limit === 'string' ? parseInt(limit) : limit;
+      let limitNumber = typeof limit === 'string' ? parseInt(limit) : limit;
+      //cap at 10k for now
+      if (limitNumber !== null && limitNumber > 10_000) {
+        limitNumber = 10_000;
+      }
       request.limit = !Number.isNaN(limitNumber) ? limitNumber : null;
     },
   };

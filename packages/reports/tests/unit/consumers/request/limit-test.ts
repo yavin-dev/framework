@@ -41,7 +41,7 @@ module('Unit | Consumer | request limit', function (hooks) {
   });
 
   test('UPDATE LIMIT', function (assert) {
-    assert.expect(3);
+    assert.expect(5);
     run(() => {
       Consumer.send(RequestActions.UPDATE_LIMIT, Route, 10);
     });
@@ -52,12 +52,24 @@ module('Unit | Consumer | request limit', function (hooks) {
       Consumer.send(RequestActions.UPDATE_LIMIT, Route, 12000);
     });
 
-    assert.equal(CurrentModel.request.limit, 12000, 'Sets request limit to large number');
+    assert.equal(CurrentModel.request.limit, 10000, 'Sets request limit to max when given a large number');
 
     run(() => {
       Consumer.send(RequestActions.UPDATE_LIMIT, Route, null);
     });
 
     assert.equal(CurrentModel.request.limit, null, 'Sets request limit to null to pick up default');
+
+    run(() => {
+      Consumer.send(RequestActions.UPDATE_LIMIT, Route, '45');
+    });
+
+    assert.equal(CurrentModel.request.limit, 45, 'Strings get normalized to ints');
+
+    run(() => {
+      Consumer.send(RequestActions.UPDATE_LIMIT, Route, 'moose');
+    });
+
+    assert.equal(CurrentModel.request.limit, null, 'NaN get normalized to null');
   });
 });

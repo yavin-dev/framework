@@ -181,10 +181,5 @@
       font-size: 12px;
       min-width: unset;
     }
-
-    &-warning--icon {
-      color: map-get($denali-colors, 'yellow', '700');
-      padding: 0 8px 0 0;
-    }
   }
 }

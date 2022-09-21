@@ -2259,7 +2259,7 @@ module('Acceptance | Navi Report', function (hooks) {
   });
 
   test('Row Limit control', async function (assert) {
-    assert.expect(10);
+    assert.expect(5);
     await visit('/reports/1/view');
 
     const getLimitFromApi = async () => {
@@ -2273,26 +2273,21 @@ module('Acceptance | Navi Report', function (hooks) {
 
     let limit = await getLimitFromApi();
     assert.equal(limit, null, 'Default sends no page limit to api, allowing default page');
-    assert.dom('#report-builder__row-limit-warning').doesNotExist('Warning does not exist in this case');
 
     fillIn('.report-builder__row-limit input', 10);
     limit = await getLimitFromApi();
     assert.equal(limit, 10, '10 shows up as perPage limit in api');
-    assert.dom('#report-builder__row-limit-warning').doesNotExist('Warning does not exist in this case');
 
     fillIn('.report-builder__row-limit input', 30000);
     limit = await getLimitFromApi();
-    assert.equal(limit, 30000, '30000 shows up as perPage limit in api');
-    assert.dom('#report-builder__row-limit-warning').exists('Warning should show on large page numbers');
+    assert.equal(limit, 10000, '10000 large inputs get adjusted back to max');
 
     fillIn('.report-builder__row-limit input', 10000);
     limit = await getLimitFromApi();
     assert.equal(limit, 10000, '30000 shows up as perPage limit in api');
-    assert.dom('#report-builder__row-limit-warning').doesNotExist('Warning does not exist in this case');
 
     fillIn('.report-builder__row-limit input', '');
     limit = await getLimitFromApi();
     assert.equal(limit, null, 'default page limit when you empty the fillIn');
-    assert.dom('#report-builder__row-limit-warning').doesNotExist('Warning does not exist in this case');
   });
 });
