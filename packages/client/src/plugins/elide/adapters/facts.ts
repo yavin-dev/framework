@@ -180,8 +180,8 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
   private getPaginationOptions(request: Request, options: RequestOptions = {}) {
     // Elide does not have a `LIMIT` concept, so map limit value to pagination concepts
     let pagination: PaginationOptions | undefined;
+    const page = options.page ?? 1;
     if (options.perPage) {
-      const page = options.page ?? 1;
       pagination = {
         after: (page - 1) * options.perPage,
         first: options.perPage,
@@ -189,9 +189,26 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
     }
 
     //user preference should override adapter options
-    if (request.limit) {
+    if (request.limit && options.perPage) {
+      if (request.limit <= options.perPage) {
+        pagination = {
+          after: 0,
+          first: request.limit,
+        };
+      } else {
+        pagination = {
+          after: (page - 1) * options.perPage,
+          first: options.perPage,
+        };
+      }
+    } else if (options.perPage) {
       pagination = {
-        after: 0,
+        after: (page - 1) * options.perPage,
+        first: options.perPage,
+      };
+    } else if (request.limit) {
+      pagination = {
+        after: (page - 1) * request.limit,
         first: request.limit,
       };
     }
