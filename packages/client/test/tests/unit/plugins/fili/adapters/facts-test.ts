@@ -1229,7 +1229,7 @@ module('Unit | Plugins | Fili | Adapters | facts', function (hooks) {
         page: 1,
         perPage: 22,
       },
-      'the request limit overrides the perPage option'
+      'request limit override adapter options if limit is less than page size'
     );
   });
 

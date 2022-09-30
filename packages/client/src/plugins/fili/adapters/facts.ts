@@ -395,6 +395,7 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
     let pagination: { page: number; perPage: number } | undefined;
     const page = options.page ?? 1;
 
+    //Request limit override adapter options if limit is less than page size
     if (request.limit && options.perPage) {
       if (request.limit <= options.perPage) {
         pagination = {

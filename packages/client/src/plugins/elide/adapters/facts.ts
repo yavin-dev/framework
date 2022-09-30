@@ -188,7 +188,7 @@ export default class ElideFactsAdapter extends NativeWithCreate implements NaviF
       };
     }
 
-    //user preference should override adapter options
+    ///Request limit override adapter options if limit is less than page size
     if (request.limit && options.perPage) {
       if (request.limit <= options.perPage) {
         pagination = {
