@@ -2257,4 +2257,37 @@ module('Acceptance | Navi Report', function (hooks) {
       'availability summary is updated to show bard two status'
     );
   });
+
+  test('Row Limit control', async function (assert) {
+    assert.expect(5);
+    await visit('/reports/1/view');
+
+    const getLimitFromApi = async () => {
+      await click('.get-api__action-btn');
+      const url = find('.get-api__api-input').value;
+      await click('.d-close');
+
+      const result = url.match(/\?.*&perPage=(\d+)/);
+      return result?.[1] ?? null;
+    };
+
+    let limit = await getLimitFromApi();
+    assert.equal(limit, null, 'Default sends no page limit to api, allowing default page');
+
+    fillIn('.report-builder__row-limit input', 10);
+    limit = await getLimitFromApi();
+    assert.equal(limit, 10, '10 shows up as perPage limit in api');
+
+    fillIn('.report-builder__row-limit input', 30000);
+    limit = await getLimitFromApi();
+    assert.equal(limit, 10000, '30000 large inputs get adjusted back to max');
+
+    fillIn('.report-builder__row-limit input', 10000);
+    limit = await getLimitFromApi();
+    assert.equal(limit, 10000, '10000 shows up as perPage limit in api');
+
+    fillIn('.report-builder__row-limit input', '');
+    limit = await getLimitFromApi();
+    assert.equal(limit, null, 'default page limit when you empty the fillIn');
+  });
 });

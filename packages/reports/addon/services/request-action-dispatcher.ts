@@ -1,5 +1,5 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  */
 import ActionDispatcher from 'navi-core/services/action-dispatcher';
@@ -26,6 +26,8 @@ export const RequestActions = <const>{
   UPSERT_SORT: 'upsertSort',
   REMOVE_SORT: 'removeSort',
 
+  UPDATE_LIMIT: 'updateLimit',
+
   PUSH_ROLLUP_COLUMN: 'pushRollupColumn',
   REMOVE_ROLLUP_COLUMN: 'removeRollupColumn',
   UPDATE_GRAND_TOTAL: 'updateGrandTotal',
@@ -40,6 +42,7 @@ export default class RequestActionDispatcher extends ActionDispatcher {
       'request/table',
       'request/sort',
       'request/fili',
+      'request/limit',
       'request/constraint',
       'request/rollup',
     ];

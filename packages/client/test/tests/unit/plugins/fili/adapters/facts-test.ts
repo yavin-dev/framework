@@ -1227,9 +1227,9 @@ module('Unit | Plugins | Fili | Adapters | facts', function (hooks) {
         having: 'm1-gt[0]',
         format: 'json',
         page: 1,
-        perPage: 100,
+        perPage: 22,
       },
-      'it overrides the request limit with the pagination request options'
+      'request limit override adapter options if limit is less than page size'
     );
   });
 

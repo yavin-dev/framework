@@ -290,14 +290,20 @@ module('Unit | Adapter | facts/elide', function (hooks) {
 
     assert.deepEqual(
       adapter['getPaginationOptions'](TestRequest, {}),
-      { first: 10000, after: 0 },
+      { first: 10_000, after: 0 },
       'request `limit` is translated to the correct pagination options'
     );
 
     assert.deepEqual(
       adapter['getPaginationOptions'](TestRequest, { perPage: 3, page: 2 }),
       { first: 3, after: 3 },
-      'specifying `perPage` and `page` overrides request limit'
+      'specifying `perPage` smaller than request limit overrides request limit'
+    );
+
+    assert.deepEqual(
+      adapter['getPaginationOptions'](TestRequest, { perPage: 20_000, page: 2 }),
+      { first: 10_000, after: 0 },
+      'specifying `perPage` larger respects the request limit'
     );
 
     const limitless = { ...TestRequest, limit: null };

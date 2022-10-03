@@ -393,20 +393,30 @@ export default class FiliFactsAdapter extends NativeWithCreate implements NaviFa
   private _buildPagination(request: Request, options: RequestOptions = {}) {
     // Fili does not have a `LIMIT` concept, so map limit value to pagination concepts
     let pagination: { page: number; perPage: number } | undefined;
-    if (request.limit) {
-      pagination = {
-        page: 1,
-        perPage: request.limit,
-      };
-    }
+    const page = options.page ?? 1;
 
-    // Low level pagination options override request limit
-    if (options.perPage) {
-      const page = options.page ?? 1;
-
+    //Request limit override adapter options if limit is less than page size
+    if (request.limit && options.perPage) {
+      if (request.limit <= options.perPage) {
+        pagination = {
+          page: 1,
+          perPage: request.limit,
+        };
+      } else {
+        pagination = {
+          page,
+          perPage: options.perPage,
+        };
+      }
+    } else if (options.perPage) {
       pagination = {
         page,
         perPage: options.perPage,
+      };
+    } else if (request.limit) {
+      pagination = {
+        page,
+        perPage: request.limit,
       };
     }
     return pagination;
