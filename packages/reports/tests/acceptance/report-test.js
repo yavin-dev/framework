@@ -2280,11 +2280,11 @@ module('Acceptance | Navi Report', function (hooks) {
 
     fillIn('.report-builder__row-limit input', 30000);
     limit = await getLimitFromApi();
-    assert.equal(limit, 10000, '10000 large inputs get adjusted back to max');
+    assert.equal(limit, 10000, '30000 large inputs get adjusted back to max');
 
     fillIn('.report-builder__row-limit input', 10000);
     limit = await getLimitFromApi();
-    assert.equal(limit, 10000, '30000 shows up as perPage limit in api');
+    assert.equal(limit, 10000, '10000 shows up as perPage limit in api');
 
     fillIn('.report-builder__row-limit input', '');
     limit = await getLimitFromApi();
