@@ -36,6 +36,6 @@ export default class NaviAdapterError extends Error {
   }
 
   toString() {
-    return `${super.toString()}.`;
+    return `${super.toString()}. Root cause: ${this.rootCause}`;
   }
 }
