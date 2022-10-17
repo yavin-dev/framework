@@ -18,7 +18,7 @@ export default Mixin.create({
   _createWidget(report: ReportModel, title: string) {
     const { visualization } = report;
 
-    const widget = this.get('store').createRecord('dashboard-widget', {
+    const widget = this.store.createRecord('dashboard-widget', {
       title,
       requests: [report.request.clone()],
     });
