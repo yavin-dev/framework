@@ -38,7 +38,7 @@ module('Acceptance | Dashboard Editor', function (hooks) {
     await clickItem('metric', 'Total Clicks');
 
     await click('.navi-report-widget__save-btn');
-    const NEW_WIDGET_ID = 14;
+    const NEW_WIDGET_ID = 21;
     assert.equal(
       currentURL(),
       `/dashboards/3/view?highlightWidget=${NEW_WIDGET_ID}`,

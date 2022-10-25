@@ -447,7 +447,7 @@ module('Acceptance | Dashboards', function (hooks) {
 
     await click('.dashboard-header__clone-btn');
 
-    assert.equal(currentURL(), '/dashboards/9/view', 'Cloning a dashboard transitions to newly made dashboard');
+    assert.equal(currentURL(), '/dashboards/10/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     assert
       .dom('.dashboard-header__page-title .clickable')
@@ -504,7 +504,7 @@ module('Acceptance | Dashboards', function (hooks) {
 
     // Save without running
     await click('.navi-report-widget__save-btn');
-    let NEW_WIDGET_ID = 14;
+    let NEW_WIDGET_ID = 21;
     assert.equal(
       currentURL(),
       `/dashboards/1/view?highlightWidget=${NEW_WIDGET_ID}`,
@@ -806,7 +806,7 @@ module('Acceptance | Dashboards', function (hooks) {
 
     await click('.dashboard-header__clone-btn');
 
-    assert.equal(currentURL(), '/dashboards/9/view', 'Cloning a dashboard transitions to newly made dashboard');
+    assert.equal(currentURL(), '/dashboards/10/view', 'Cloning a dashboard transitions to newly made dashboard');
 
     // Create new widget
     await click('.dashboard-header__add-widget-btn');
@@ -823,10 +823,10 @@ module('Acceptance | Dashboards', function (hooks) {
 
     // Save without running
     await click('.navi-report-widget__save-btn');
-    const NEW_WIDGET_ID = 17;
+    const NEW_WIDGET_ID = 24;
     assert.equal(
       currentURL(),
-      `/dashboards/9/view?highlightWidget=${NEW_WIDGET_ID}`,
+      `/dashboards/10/view?highlightWidget=${NEW_WIDGET_ID}`,
       'After saving without running, user is brought back to dashboard view'
     );
     assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).exists('next widget is present');

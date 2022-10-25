@@ -183,4 +183,27 @@ export default [
       columns: 12,
     },
   },
+  {
+    id: 9,
+    title: 'Unordered Layout Dash',
+    ownerId: 'navi_user',
+    createdOn: '2022-01-01 03:00:00',
+    updatedOn: '2022-01-01 03:00:00',
+    deliveryRuleIds: [],
+    dashboardWidgetIds: [14, 15, 16, 17, 18, 19, 20],
+    filters: [],
+    presentation: {
+      version: 1,
+      layout: [
+        { column: 6, row: 16, height: 4, width: 6, widgetId: 14 },
+        { column: 0, row: 12, height: 4, width: 12, widgetId: 15 },
+        { column: 0, row: 16, height: 4, width: 6, widgetId: 16 },
+        { column: 0, row: 0, height: 4, width: 6, widgetId: 17 },
+        { column: 0, row: 8, height: 4, width: 12, widgetId: 18 },
+        { column: 0, row: 4, height: 4, width: 12, widgetId: 19 },
+        { column: 6, row: 0, height: 4, width: 6, widgetId: 20 },
+      ],
+      columns: 12,
+    },
+  },
 ];

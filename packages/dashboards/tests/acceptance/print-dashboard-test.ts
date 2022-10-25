@@ -80,4 +80,15 @@ module('Acceptance | print dashboard', function (hooks) {
     assert.dom('.table-widget').isVisible('Table shows up');
     assert.dom('.table-widget .table-row').exists('Table rows show up');
   });
+
+  test('Unordered layout gets ordered according to presentation', async function (assert) {
+    assert.expect(1);
+    await visit('/print/dashboards/9/view'); //dashboard 9 has random ordered presentation.layout
+    const titles = findAll('.navi-widget__title').map((el) => el.textContent?.trim());
+    assert.deepEqual(
+      titles,
+      ['Unordered 1', 'Unordered 2', 'Unordered 3', 'Unordered 4', 'Unordered 5', 'Unordered 6', 'Unordered 7'],
+      'Widgets are ordered based on where they appear in grid, not order in layout'
+    );
+  });
 });

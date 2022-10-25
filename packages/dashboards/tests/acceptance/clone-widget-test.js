@@ -15,7 +15,7 @@ module('Acceptance | Clone Widget', function (hooks) {
 
     await visit('/dashboards/1/widgets/2/clone');
 
-    const NEW_WIDGET_ID = 14;
+    const NEW_WIDGET_ID = 21;
 
     assert.equal(
       currentURL(),
@@ -60,7 +60,7 @@ module('Acceptance | Clone Widget', function (hooks) {
     await visit('/dashboards/1/');
     assert.dom('.navi-widget').exists({ count: 3 }, 'dashboard 1 initially has 3 widgets');
 
-    const NEW_WIDGET_ID = 14;
+    const NEW_WIDGET_ID = 21;
 
     assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
 
@@ -100,7 +100,7 @@ module('Acceptance | Clone Widget', function (hooks) {
     //Clone widget
     await click(findAll('.navi-widget__clone-btn')[1]);
 
-    const NEW_WIDGET_ID = 15;
+    const NEW_WIDGET_ID = 22;
 
     //Clone cloned widget
     await click(findAll('.navi-widget__clone-btn')[3]);
@@ -138,7 +138,7 @@ module('Acceptance | Clone Widget', function (hooks) {
     await visit('/dashboards/1/');
     assert.dom('.navi-widget').exists({ count: 3 }, 'dashboard 1 initially has 3 widgets');
 
-    let NEW_WIDGET_ID = 14;
+    let NEW_WIDGET_ID = 21;
 
     assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
 
@@ -201,7 +201,7 @@ module('Acceptance | Clone Widget', function (hooks) {
     await click('.dashboard-filters__expand-button');
     await click(findAll('.filter-collection__remove')[1]);
 
-    let NEW_WIDGET_ID = 14;
+    let NEW_WIDGET_ID = 21;
 
     assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
 
@@ -209,7 +209,7 @@ module('Acceptance | Clone Widget', function (hooks) {
     await click('.navi-widget__clone-btn');
 
     assert.ok(
-      currentURL().match(/^\/dashboards\/2\/view\?filters=.+&highlightWidget=14$/),
+      currentURL().match(/^\/dashboards\/2\/view\?filters=.+&highlightWidget=21$/),
       'cloning widget stays in dashboard view and adds query param correctly'
     );
 
@@ -234,7 +234,7 @@ module('Acceptance | Clone Widget', function (hooks) {
     await visit('/dashboards/2/');
     assert.dom('.navi-widget').exists({ count: 2 }, 'dashboard initially has 2 widgets');
 
-    let NEW_WIDGET_ID = 14;
+    let NEW_WIDGET_ID = 21;
 
     assert.dom(`[gs-id="${NEW_WIDGET_ID}"]`).doesNotExist('next widget is not present');
 

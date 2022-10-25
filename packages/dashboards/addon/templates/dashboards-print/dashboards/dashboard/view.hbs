@@ -31,7 +31,7 @@
       </GridStack>
     {{else}}
       <div class="navi-dashboard__widgets">
-        {{#each @model.dashboard.presentation.layout as |layout|}}
+        {{#each (sort-by-layout @model.dashboard.presentation.layout) as |layout|}}
           {{#with (get-widget layout.widgetId) as |widget|}}
             {{#if widget}}
               <NaviWidget
