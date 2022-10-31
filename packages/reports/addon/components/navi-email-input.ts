@@ -25,7 +25,7 @@ export default class NaviEmailInput extends Component<Args> {
    */
   @action
   addEmail(email: string) {
-    const { emails } = this.args;
+    const { emails = [] } = this.args;
     this.args.onUpdateEmails([...emails, email]);
   }
 
@@ -35,7 +35,7 @@ export default class NaviEmailInput extends Component<Args> {
    */
   @action
   removeEmailAtIndex(index: number) {
-    const { emails } = this.args;
+    const { emails = [] } = this.args;
     this.args.onUpdateEmails(emails.filter((_email, i) => i != index));
   }
 }
