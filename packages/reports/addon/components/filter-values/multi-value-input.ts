@@ -10,17 +10,14 @@
  */
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
-import { tracked } from '@glimmer/tracking';
 import Args from './args-interface';
-import type { Filter } from '@yavin/client/request';
 
 export default class MultiValueInput extends Component<Args> {
-  @tracked tags: Filter['values'] = [];
-
-  constructor(owner: unknown, args: Args) {
-    super(owner, args);
-
-    this.tags = this.args.filter.values || [];
+  /**
+   * list of filter values
+   */
+  get tags() {
+    return this.args.filter.values || [];
   }
 
   /**
@@ -34,7 +31,6 @@ export default class MultiValueInput extends Component<Args> {
     this.args.onUpdateFilter({
       values: tags.slice(),
     });
-    this.tags = tags;
   }
 
   /**
@@ -49,6 +45,5 @@ export default class MultiValueInput extends Component<Args> {
     this.args.onUpdateFilter({
       values: tags.slice(),
     });
-    this.tags = tags;
   }
 }
