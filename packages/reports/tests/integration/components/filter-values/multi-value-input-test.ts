@@ -51,6 +51,7 @@ module('Integration | Component | filter values/multi value input', function (ho
   test('changing values', async function (this: TestContext, assert) {
     assert.expect(3);
     this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
+      this.filter.setProperties(changeSet as object);
       assert.deepEqual(changeSet, { values: ['10', '11'] }, 'User inputted values are given to update action');
     });
 
@@ -58,6 +59,7 @@ module('Integration | Component | filter values/multi value input', function (ho
     await triggerEvent('.js-ember-tag-input-new', 'blur');
 
     this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
+      this.filter.setProperties(changeSet as object);
       assert.deepEqual(changeSet, { values: ['10', '11', '12'] }, 'User inputted values are given to update action');
     });
 
@@ -65,6 +67,7 @@ module('Integration | Component | filter values/multi value input', function (ho
     await triggerEvent('.js-ember-tag-input-new', 'blur');
 
     this.set('onUpdateFilter', (changeSet: Partial<FilterFragment>) => {
+      this.filter.setProperties(changeSet as object);
       assert.deepEqual(changeSet, { values: ['11', '12'] }, 'Removing a tag updates the filter values');
     });
 

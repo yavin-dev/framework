@@ -1,6 +1,6 @@
-{{!-- Copyright 2021, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
-<DenaliModal 
-  @isOpen={{@isOpen}} 
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms. --}}
+<DenaliModal
+  @isOpen={{@isOpen}}
   @onClose={{@onClose}}
   class="dimension-bulk-import-simple"
   ...attributes
@@ -10,7 +10,7 @@
     <h3 class="m-b-10">Paste Import</h3>
     <p class="m-b-20">Do you want to paste a list of values?</p>
 
-    <DenaliInputGroup 
+    <DenaliInputGroup
       @label="Value Split by Commas ({{this.splitValues.length}})"
       @isStacked={{true}}
       class="dimension-bulk-import-simple__split-values m-b-30"
@@ -23,7 +23,7 @@
         <DenaliTag>{{dimVal}}</DenaliTag>
       </PaginatedScrollList>
     </DenaliInputGroup>
-    <DenaliInputGroup 
+    <DenaliInputGroup
       @label="Raw Value"
       @isStacked={{true}}
       class="dimension-bulk-import-simple__raw-value m-b-20"
@@ -40,25 +40,25 @@
 
     <div class="flex space-between">
       <div>
-        <DenaliButton 
+        <DenaliButton
           {{on "click" (fn @onSelectValues this.splitValues)}}
           @size="medium"
           class="dimension-bulk-import-simple__split-btn m-r-10"
+          {{did-insert this.maybeForceSplit}}
         >
           Use Split Values
         </DenaliButton>
 
-        <DenaliButton 
+        <DenaliButton
           @style="ghost"
           @size="medium"
           class="dimension-bulk-import-simple__raw-btn"
           {{on "click" (fn @onSelectValues this.unsplitValue)}}
-
         >
           Use Raw Value
         </DenaliButton>
       </div>
-      <DenaliButton 
+      <DenaliButton
         @style="text"
         class="dimension-bulk-import-simple__cancel-btn"
         {{on "click" @onClose}}

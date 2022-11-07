@@ -1,17 +1,19 @@
 /**
- * Copyright 2020, Yahoo Holdings Inc.
+ * Copyright 2022, Yahoo Holdings Inc.
  * Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.
  * Usage:
- *  {{#tag-input
- *    tags=tags
- *    addTag=(action 'addTag')
- *    removeTagAtIndex=(action 'removeTagAtIndex')
- *    tagComponent='my-custom-tag-component'
- *    splitOnPaste=false
+ *  <NaviTagInput
+ *    @tags={{this.tags}}
+ *    @addTag={{this.addTag}}
+ *    @removeTagAtIndex={{this.removeTagAtIndex}}
+ *    @tagComponent="navi-tag-component"
+ *    @readOnly={{false}}
+ *    @splitOnPaste={{false}}
+ *    @alwaysUseSplit={{false}}
  *    as |tag|
- *  }}
+ *  >
  *    {{tag}}
- *  {{/tag-input}}
+ *  </NaviTagInput>
  */
 
 import layout from '../templates/components/navi-tag-input';
@@ -36,6 +38,11 @@ export default TagInput.extend({
    * @property {Boolean} splitOnPaste - whether or not to listen for paste input and handle importing lists
    */
   splitOnPaste: false,
+
+  /**
+   * @property {Boolean} alwaysUseSplit - whether or not to always use split values on paste
+   */
+  alwaysUseSplit: false,
 
   /**
    * Ignore comma so that only 'enter' key adds new tags

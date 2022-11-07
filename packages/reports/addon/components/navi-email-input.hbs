@@ -1,11 +1,13 @@
-{{!-- Copyright 2020, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.--}}
+{{!-- Copyright 2022, Yahoo Holdings Inc. Licensed under the terms of the MIT license. See accompanying LICENSE.md file for terms.--}}
 <div class="navi-email-input" ...attributes>
   <NaviTagInput
-    @tags={{readonly this.emails}}
+    @tags={{readonly @emails}}
     @addTag={{this.addEmail}}
     @removeTagAtIndex={{this.removeEmailAtIndex}}
     @tagComponent="navi-email-tag"
     @readOnly={{@isDisabled}}
+    @splitOnPaste={{true}}
+    @alwaysUseSplit={{true}}
     as |email|
   >
     {{email}}

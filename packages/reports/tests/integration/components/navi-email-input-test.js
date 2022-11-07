@@ -1,6 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import { render, click } from '@ember/test-helpers';
+import { render, click, triggerEvent } from '@ember/test-helpers';
 import hbs from 'htmlbars-inline-precompile';
 import $ from 'jquery';
 import { typeInInput } from '../../helpers/ember-tag-input';
@@ -17,7 +17,11 @@ module('Integration | Component | navi email input', function (hooks) {
   test('render emails', async function (assert) {
     assert.expect(1);
 
-    await render(hbs`{{navi-email-input emails=emails}}`);
+    await render(hbs`
+    <NaviEmailInput
+      @emails={{this.emails}}
+    />
+  `);
 
     assert.deepEqual(
       $('.navi-email-input .tag')
@@ -41,7 +45,12 @@ module('Integration | Component | navi email input', function (hooks) {
       );
     };
 
-    await render(hbs`{{navi-email-input emails=emails onUpdateEmails=(action onUpdateEmails)}}`);
+    await render(hbs`
+      <NaviEmailInput
+        @emails={{this.emails}}
+        @onUpdateEmails={{this.onUpdateEmails}}
+      />
+    `);
 
     typeInInput('.js-ember-tag-input-new', newEmail);
     $('.js-ember-tag-input-new').blur();
@@ -54,8 +63,53 @@ module('Integration | Component | navi email input', function (hooks) {
       assert.deepEqual(emails, EMAILS.slice(1), 'onUpdateEmails action is called with removed email excluded');
     };
 
-    await render(hbs`{{navi-email-input emails=emails onUpdateEmails=(action onUpdateEmails)}}`);
+    await render(hbs`
+      <NaviEmailInput
+        @emails={{this.emails}}
+        @onUpdateEmails={{this.onUpdateEmails}}
+      />
+    `);
 
     await click('.navi-tag-input__tag-remove');
+  });
+
+  test('paste a list of emails', async function (assert) {
+    assert.expect(4);
+
+    async function paste(text) {
+      const selector = '.js-ember-tag-input-new';
+      await triggerEvent(selector, 'paste', {
+        clipboardData: {
+          getData: () => text,
+        },
+      });
+    }
+
+    const newEmails = ['wolflinkamibo@naviapp.io', 'zelda@naviapp.io'];
+
+    this.onUpdateEmails = (emails) => {
+      this.set('emails', emails);
+      assert.step(emails.join(','));
+    };
+
+    await render(hbs`
+      <NaviEmailInput
+        @emails={{this.emails}}
+        @onUpdateEmails={{this.onUpdateEmails}}
+      />
+    `);
+
+    await paste(newEmails.join(','));
+    assert.verifySteps(
+      [[...EMAILS, newEmails[0]].join(','), [...EMAILS, ...newEmails].join(',')],
+      'onUpdateEmails action is called for every email in the comma-separated string'
+    );
+    assert.deepEqual(
+      $('.navi-email-input .tag')
+        .toArray()
+        .map((e) => e.textContent.trim()),
+      [...EMAILS, ...newEmails],
+      'all email tags are rendered correctly'
+    );
   });
 });
