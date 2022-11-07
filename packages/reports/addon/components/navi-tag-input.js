@@ -6,7 +6,7 @@
  *    @tags={{this.tags}}
  *    @addTag={{this.addTag}}
  *    @removeTagAtIndex={{this.removeTagAtIndex}}
- *    @tagComponent="my-custom-tag-component"
+ *    @tagComponent="navi-tag-component"
  *    @readOnly={{false}}
  *    @splitOnPaste={{false}}
  *    @alwaysUseSplit={{false}}
