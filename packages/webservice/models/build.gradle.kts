@@ -56,7 +56,7 @@ publishing {
             pom {
                 name.set("Navi: Webservice models")
                 description.set(project.description)
-                url.set("https://github.com/yahoo/navi/tree/master/packages/webservice")
+                url.set("https://github.com/yavin-dev/framework/tree/main/packages/webservice")
                 licenses {
                     license {
                         name.set("MIT License")

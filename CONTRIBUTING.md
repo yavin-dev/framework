@@ -31,7 +31,7 @@ for Github Issues.
 
 ### Reporting a Bug
 
-1. Update to the most recent master release if possible. We may have already
+1. Update to the most recent main release if possible. We may have already
    fixed your bug.
 
 1. Search for similar issues. It's possible somebody has encountered this bug
@@ -79,7 +79,7 @@ In short, if you have an idea that would be nice to have, create an issue.
 ## How to work with this project locally
 
 1. Selecting a Feature / Issue to which you wish to contribute
-1. Fork the master repo.
+1. Fork the main repo.
 1. Add a comment in the given issue to let our team know your intentions.
 1. Use the GitHub issue to converse regarding requirements.
 
