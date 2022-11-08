@@ -11,7 +11,7 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD);
 
 echo "Deploying yavin npm packages for branch $BRANCH"
 
-if [ $BRANCH = 'master' ]
+if [ $BRANCH = 'main' ]
 then
     echo 'Publishing beta build...'
     npm run-script lerna-ci-publish-beta

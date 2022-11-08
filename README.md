@@ -48,7 +48,7 @@ Assuming you have git, node (>=10), and [ember-cli](https://cli.emberjs.com/rele
 - `ember s` to run a local server
 - Then `npm test` to test your changes
 
-See [CONTRIBUTING.md](https://github.com/yavin-dev/framework/blob/master/CONTRIBUTING.md)
+See [CONTRIBUTING.md](https://github.com/yavin-dev/framework/blob/main/CONTRIBUTING.md)
 
 ## Resources
 

@@ -7,7 +7,7 @@ BRANCH=$(git rev-parse --abbrev-ref HEAD);
 
 echo "Deploying navi webservice models to artifactory for branch $BRANCH"
 
-if [ $BRANCH = 'master' ]
+if [ $BRANCH = 'main' ]
 then
     echo 'Publishing beta build...'
     ./gradlew -PpublishTag=beta -PisSnapshot=true -p models publish

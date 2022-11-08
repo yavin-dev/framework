@@ -9,11 +9,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yavin-dev/framework.git#master"
+    "url": "git+https://github.com/yavin-dev/framework.git#main"
   },
   "license": "MIT",
   "author": "yavin@yahooinc.com",
-  "homepage": "https://github.com/yavin-dev/framework/tree/master/packages/client#readme",
+  "homepage": "https://github.com/yavin-dev/framework/tree/main/packages/client#readme",
   "bugs": {
     "url": "https://github.com/yavin-dev/framework/issues"
   },
