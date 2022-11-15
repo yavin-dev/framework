@@ -9,5 +9,5 @@ enum class DeliveryType {
     pdf,
     png,
     gsheet,
-    anomalyalert,
+    anomaly,
 }
