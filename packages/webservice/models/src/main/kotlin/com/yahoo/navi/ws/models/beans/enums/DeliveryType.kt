@@ -8,5 +8,6 @@ enum class DeliveryType {
     csv,
     pdf,
     png,
-    gsheet
+    gsheet,
+    anomaly,
 }

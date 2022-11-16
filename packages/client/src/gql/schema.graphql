@@ -191,6 +191,7 @@ enum DeliveryType {
   pdf
   png
   gsheet
+  anomaly
 }
 
 type ElideArgument {
