@@ -90,7 +90,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await visit('/reports/1/clone');
 
-    assert.dom('.report-view').exists('The route transistions to report view');
+    assert.ok(currentURL().endsWith('/edit'), 'The route transistions to edit route');
 
     assert.equal(
       find('.report-header__title').innerText.trim(),
