@@ -1027,7 +1027,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     assert.ok(
       TempIdEditRegex.test(currentURL()),
-      'After cloning, user is brought to view route for a new report with a temp id'
+      'After cloning, user is brought to edit route for a new report with a temp id'
     );
 
     assert.dom('.report-header__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
