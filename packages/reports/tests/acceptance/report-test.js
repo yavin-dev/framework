@@ -91,7 +91,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await visit('/reports/1/clone');
 
-    assert.ok(TempIdEditRegex.test(currentURL()), 'The route transistions to edit route');
+    assert.ok(TempIdEditRegex.test(currentURL()), 'The route transitions to edit route');
 
     assert.equal(
       find('.report-header__title').innerText.trim(),
