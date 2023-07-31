@@ -15074,7 +15074,7 @@ var t,r,i
 Object.defineProperty(e,"__esModule",{value:!0}),e.default=void 0
 let n=(t=Ember.inject.service,r=class extends Ember.Route{constructor(){var e,t,r,n
 super(...arguments),e=this,t="user",n=this,(r=i)&&Object.defineProperty(e,t,{enumerable:r.enumerable,configurable:r.configurable,writable:r.writable,value:r.initializer?r.initializer.call(n):void 0})}model(){const e=this.modelFor("reports.report")
-return this.cloneReport(e)}afterModel(e){return this.replaceWith("reports.report.view",e.tempId)}cloneReport(e){const t=this.user.getUser(),r=e.clone()
+return this.cloneReport(e)}afterModel(e){return this.replaceWith("reports.report.edit",e.tempId)}cloneReport(e){const t=this.user.getUser(),r=e.clone()
 return Object.assign(r,{title:`Copy of ${r.title}`.substring(0,150),owner:t}),r}},a=r.prototype,o="user",s=[t],l={configurable:!0,enumerable:!0,writable:!0,initializer:null},c={},Object.keys(l).forEach((function(e){c[e]=l[e]})),c.enumerable=!!c.enumerable,c.configurable=!!c.configurable,("value"in c||c.initializer)&&(c.writable=!0),c=s.slice().reverse().reduce((function(e,t){return t(a,o,e)||e}),c),u&&void 0!==c.initializer&&(c.value=c.initializer?c.initializer.call(u):void 0,c.initializer=void 0),void 0===c.initializer&&(Object.defineProperty(a,o,c),c=null),i=c,r)
 var a,o,s,l,u,c
 e.default=n})),define("navi-reports/routes/reports/report/edit",["exports"],(function(e){"use strict"
