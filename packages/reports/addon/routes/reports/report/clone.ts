@@ -29,7 +29,7 @@ export default class ReportsReportCloneRoute extends Route {
    * @override
    */
   afterModel(report: ReportModel): Transition {
-    return this.replaceWith('reports.report.view', report.tempId);
+    return this.replaceWith('reports.report.edit', report.tempId);
   }
 
   /**

@@ -27,6 +27,7 @@ import moment from 'moment';
 import { getStatus, getDataSourceStatuses, DATE_FORMAT } from 'navi-core/test-support/data-availability';
 
 // Regex to check that a string ends with "{uuid}/view"
+const TempIdEditRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/edit$/;
 const TempIdRegex = /\/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}\/view$/;
 
 // Regex to check that a string ends with "{integer}/view"
@@ -90,7 +91,7 @@ module('Acceptance | Navi Report', function (hooks) {
 
     await visit('/reports/1/clone');
 
-    assert.dom('.report-view').exists('The route transistions to report view');
+    assert.ok(TempIdEditRegex.test(currentURL()), 'The route transitions to edit route');
 
     assert.equal(
       find('.report-header__title').innerText.trim(),
@@ -550,8 +551,8 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.report-actions__clone');
 
     assert.ok(
-      TempIdRegex.test(currentURL()),
-      'After cloning, user is brought to view route for a new report with a temp id'
+      TempIdEditRegex.test(currentURL()),
+      'After cloning, user is brought to edit route for a new report with a temp id'
     );
 
     assert.dom('.report-header__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
@@ -1025,8 +1026,8 @@ module('Acceptance | Navi Report', function (hooks) {
     await click('.navi-collection__row0 .navi-report-actions__clone');
 
     assert.ok(
-      TempIdRegex.test(currentURL()),
-      'After cloning, user is brought to view route for a new report with a temp id'
+      TempIdEditRegex.test(currentURL()),
+      'After cloning, user is brought to edit route for a new report with a temp id'
     );
 
     assert.dom('.report-header__title').hasText('Copy of Hyrule News', 'Cloned report is being viewed');
